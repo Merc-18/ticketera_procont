@@ -1,0 +1,531 @@
+{
+  "phase": "2B.3C",
+  "base_commit": "cb468be",
+  "reviewed_at_utc": "2026-11-17T22:26:31.029579+00:00",
+  "method": "local static source inspection and document consistency; no SQL or test execution",
+  "prepared_migrations": [
+    {
+      "file": "supabase/migrations/20261117000100_schema.sql",
+      "sha256": "4cc433c7eb91278abf020b82d9e40ddc39052642630db267e0753bf2c4f5fbcd",
+      "prepared_manifest_match": true,
+      "organization_area_terms": [],
+      "email_literals": [],
+      "manual_review": "schema, literals, executable top-level statements, function bodies and dependencies read"
+    },
+    {
+      "file": "supabase/migrations/20261117000200_security.sql",
+      "sha256": "669171a4a000c4dbfeb78ca53e4c58df3b7ba9473c7735ef4d024047d5bf8cf5",
+      "prepared_manifest_match": true,
+      "organization_area_terms": [],
+      "email_literals": [],
+      "manual_review": "schema, literals, executable top-level statements, function bodies and dependencies read"
+    },
+    {
+      "file": "supabase/migrations/20261117000300_operations.sql",
+      "sha256": "f697e130cf736a8b31476a73198b17f314293708263c7b1ec0da3954c44badc8",
+      "prepared_manifest_match": true,
+      "organization_area_terms": [],
+      "email_literals": [],
+      "manual_review": "schema, literals, executable top-level statements, function bodies and dependencies read"
+    },
+    {
+      "file": "supabase/migrations/20261117000400_reference_checklists.sql",
+      "sha256": "2ae7b98b460a040319e0c2007809c1842374e97cb2ee4ac140a8fdfc48b0b145",
+      "prepared_manifest_match": true,
+      "organization_area_terms": [],
+      "email_literals": [],
+      "manual_review": "schema, literals, executable top-level statements, function bodies and dependencies read"
+    }
+  ],
+  "migration_edits_required": false,
+  "sql_organizational_review": {
+    "area_field": "public.requests.requester_area: nullable text, length <= 200; public submission requires nonempty value",
+    "fixed_area_catalog": false,
+    "administrable_area_catalog_implemented": false,
+    "area_based_rls": false,
+    "generic_roles": [
+      "superadmin",
+      "admin",
+      "developer",
+      "viewer"
+    ],
+    "fixed_person_accounts": false,
+    "reference_data": "35 generic checklist steps only; no organizational import",
+    "retained_behaviors_pending_owner_ratification": [
+      "single shared workspace",
+      "low priority without SLA at approval",
+      "formal SLA days bounded 1..3650",
+      "existing phases and generic checklists"
+    ],
+    "regional_parameter": "America/Lima for year-based numbering; not organization-specific"
+  },
+  "deferred_frontend_findings": [
+    {
+      "category": "areas",
+      "files": [
+        {
+          "path": "src/lib/constants.ts",
+          "lines": [
+            42,
+            68
+          ]
+        },
+        {
+          "path": "src/components/requests/PublicRequestForm.tsx",
+          "lines": [
+            9
+          ]
+        }
+      ],
+      "status": "legacy static lists; future owner-defined values; no frontend edit"
+    },
+    {
+      "category": "import_default_area",
+      "files": [
+        {
+          "path": "src/components/requests/PlannerImportModal.tsx",
+          "lines": [
+            162,
+            339
+          ]
+        }
+      ],
+      "legacy_value": "DDC",
+      "status": "retained in code under frontend restriction; not approved Procont configuration"
+    },
+    {
+      "category": "sla",
+      "files": [
+        {
+          "path": "src/lib/sla-config.ts",
+          "lines": [
+            3,
+            17,
+            27,
+            40,
+            55,
+            71
+          ]
+        },
+        {
+          "path": "src/components/requests/PublicRequestForm.tsx",
+          "lines": [
+            25,
+            39,
+            46
+          ]
+        }
+      ],
+      "status": "inherited values, factors, multiple-type formula and calendar; owner decisions pending",
+      "preexisting_discrepancy": {
+        "request_type": "Dashboard / Visualización (Streamlit)",
+        "public_form_days": 4,
+        "internal_config_days": 5,
+        "changed": false
+      }
+    },
+    {
+      "category": "identity",
+      "files": [
+        {
+          "path": "src/App.tsx",
+          "lines": [
+            59
+          ]
+        },
+        {
+          "path": "src/components/requests/PublicLanding.tsx",
+          "lines": [
+            85,
+            101,
+            130,
+            158
+          ]
+        },
+        {
+          "path": "src/components/auth/LoginForm.tsx",
+          "lines": [
+            37,
+            97
+          ]
+        },
+        {
+          "path": "index.html",
+          "lines": [
+            6
+          ]
+        },
+        {
+          "path": "package.json",
+          "lines": [
+            2
+          ]
+        }
+      ],
+      "status": "inventoried; no frontend/manifest edits"
+    }
+  ],
+  "legacy_artifacts": [
+    {
+      "file": "admin_setup.sql",
+      "organization_area_reference_lines": [
+        2,
+        22,
+        23,
+        24,
+        33,
+        45,
+        53,
+        55,
+        57,
+        67,
+        79,
+        87,
+        89,
+        91,
+        101,
+        113,
+        121,
+        123,
+        125,
+        135,
+        147,
+        155,
+        157,
+        159,
+        171,
+        177,
+        181,
+        186,
+        190,
+        195,
+        199,
+        204
+      ],
+      "email_literal_lines": [
+        22,
+        23,
+        24,
+        33,
+        45,
+        53,
+        55,
+        57,
+        67,
+        79,
+        87,
+        89,
+        91,
+        101,
+        113,
+        121,
+        123,
+        125,
+        135,
+        147,
+        155,
+        157,
+        159,
+        171,
+        177,
+        181,
+        186,
+        190,
+        195,
+        199,
+        204
+      ],
+      "disposition": "historical only; excluded from migrations; unchanged; do not run or import"
+    },
+    {
+      "file": "seed_data.sql",
+      "organization_area_reference_lines": [
+        2,
+        32,
+        33,
+        34,
+        47,
+        55,
+        63,
+        71,
+        79,
+        87,
+        98,
+        106,
+        117,
+        120,
+        125,
+        133,
+        136,
+        141,
+        144,
+        152,
+        163,
+        169,
+        348,
+        359,
+        365,
+        376,
+        388,
+        447,
+        503
+      ],
+      "email_literal_lines": [
+        32,
+        33,
+        34,
+        47,
+        55,
+        63,
+        71,
+        79,
+        87,
+        98,
+        106,
+        117,
+        125,
+        133,
+        141,
+        152,
+        163
+      ],
+      "disposition": "historical only; excluded from migrations; unchanged; do not run or import"
+    },
+    {
+      "file": "seed_test_data.sql",
+      "organization_area_reference_lines": [
+        83,
+        154
+      ],
+      "email_literal_lines": [
+        83,
+        90,
+        97,
+        113,
+        120,
+        127,
+        134,
+        141,
+        154,
+        160,
+        173
+      ],
+      "disposition": "historical only; excluded from migrations; unchanged; do not run or import"
+    },
+    {
+      "file": "tags_migration.sql",
+      "organization_area_reference_lines": [
+        2
+      ],
+      "email_literal_lines": [],
+      "disposition": "historical only; excluded from migrations; unchanged; do not run or import"
+    },
+    {
+      "file": "tags_cleanup.sql",
+      "organization_area_reference_lines": [
+        8,
+        18
+      ],
+      "email_literal_lines": [],
+      "disposition": "historical only; excluded from migrations; unchanged; do not run or import"
+    },
+    {
+      "file": "setup.js",
+      "organization_area_reference_lines": [
+        33,
+        141,
+        149,
+        192
+      ],
+      "email_literal_lines": [],
+      "disposition": "historical only; excluded from migrations; unchanged; do not run or import"
+    }
+  ],
+  "recovery_artifacts": [
+    {
+      "file": "scripts/build_migration_recovery.py",
+      "sha256": "7c8ed619c9c812930a25a367b7f496baf84578ade282b6121ea2d1a9d4a37837",
+      "unchanged_since_cb468be": true
+    },
+    {
+      "file": "supabase/tests/recovery_local.py",
+      "sha256": "8d88f6123010e3c0780c54b113d611a558482208458df54a74e0273811df0b08",
+      "unchanged_since_cb468be": true
+    },
+    {
+      "file": "docs/fase-2b3b-recovery-plan.md",
+      "sha256": "e3a066044ea59368920298582a41bdf71448f6e15ed242a79fd66c2823d4f111",
+      "unchanged_since_cb468be": true
+    },
+    {
+      "file": "supabase/recovery/compensate_01.sql",
+      "sha256": "0e433e4079be8eb2f2ed7dc8d5efce0b96cbbed55d7beec866a139d7b2f1f4b0",
+      "unchanged_since_cb468be": true
+    },
+    {
+      "file": "supabase/recovery/compensate_02.sql",
+      "sha256": "90a07f689ff0235388b578b51c3dc2bdefd1eeef45cf62a211fa11eae75cb3ec",
+      "unchanged_since_cb468be": true
+    },
+    {
+      "file": "supabase/recovery/compensate_03.sql",
+      "sha256": "569b1ebe1493bfcc849e589f9174d81003a87cfb98c8e9db0a47fac9b0826c31",
+      "unchanged_since_cb468be": true
+    },
+    {
+      "file": "supabase/recovery/compensate_04.sql",
+      "sha256": "07f6dd6c01df984824fa79ee360712bd710e10cb4f71cb3e43b4aeb07842c4ec",
+      "unchanged_since_cb468be": true
+    },
+    {
+      "file": "supabase/recovery/inventory.sql",
+      "sha256": "c8bd96229d4233f723938c146dd2c693db94d04e63717a1554a8a329a4cc6d0c",
+      "unchanged_since_cb468be": true
+    },
+    {
+      "file": "supabase/recovery/scope.json",
+      "sha256": "2926329c0cf55365eb4fe18a35693b4eff3f02c10ba758cb6bf0125fd48e9268",
+      "unchanged_since_cb468be": true
+    }
+  ],
+  "unchanged_groups": {
+    "frontend_and_manifests": true,
+    "sql_and_supabase_configuration": true,
+    "prior_test_suites": true,
+    "private_setup_assistant": true
+  },
+  "pending_owner_decisions": [
+    "areas and maintenance",
+    "people/emails/role assignments",
+    "request types and systems",
+    "SLA/priority/calendar/urgency policies",
+    "confirm generic checklists/phases",
+    "confirm visibility/responsibilities",
+    "visible identity and import mapping"
+  ],
+  "execution": {
+    "local_sql_executed": false,
+    "remote_sql_executed": false,
+    "migrations_applied": false,
+    "postgresql_started": false,
+    "prior_tests_repeated": false,
+    "new_runtime_tests_executed": false,
+    "frontend_build_executed": false,
+    "auth_accounts_created": 0,
+    "superadmin_created": false,
+    "gilat_data_imported": false,
+    "push_merge_deploy": false
+  },
+  "result": {
+    "organizational_sql_review": "complete; no inherited organization catalogs or identities in prepared migrations",
+    "application_organizational_configuration": "pending owner decisions and later frontend adaptation",
+    "remote_migration_verdict": "unchanged: NO APTO pending actual inventory, numeric PostgreSQL version and operator privileges"
+  },
+  "historical_evidence": "2B.3B evidence preserved; document digests describe its historical delivery, not later documentation edits",
+  "documentation_checks": {
+    "local_markdown_links_exist": true,
+    "json_valid": true,
+    "diff_whitespace_valid": true,
+    "validation_type": "static delivery checks only; no runtime suite executed"
+  },
+  "delivery": {
+    "review_and_documentation_prepared": true,
+    "local_commit_created": true,
+    "git_clean": true,
+    "head_before_closeout": "cb468be49ed77f842fb8401016a3a35e2c9db162",
+    "commit_message": "docs: revisar adaptación organizacional de Procont",
+    "commit_reference": "the enclosing Git commit; inspect git log -1",
+    "git_permissions_changed": false,
+    "git_owner_changed": false,
+    "git_mount_in_normal_ubuntu_terminal": "rw",
+    "postgresql_shutdown": {
+      "stopped": true,
+      "method": "pg_ctl kill INT (fast shutdown of verified host PID)",
+      "verified_master": {
+        "pid": 101817,
+        "namespace_pids": [
+          101817,
+          2
+        ],
+        "start_ticks": 485747
+      },
+      "pid_file_removed": true,
+      "other_servers_signaled": false
+    },
+    "remote_operations": false,
+    "tests_run_during_closeout": false
+  },
+  "closeout_diagnostics": {
+    "checked_at_utc": "2026-11-17T22:38:53.976578+00:00",
+    "git": {
+      "owner": "procont:procont",
+      "uid": 1000,
+      "gid": 1000,
+      "directory_mode": "0777",
+      "index_mode": "0644",
+      "project_mount": "rw",
+      "git_mount": "ro",
+      "immutable_attribute": false,
+      "permissions_already_sufficient": true,
+      "chmod_executed": false,
+      "chown_executed": false,
+      "remount_attempted": false
+    },
+    "postgresql": {
+      "original_tool_session_id": 20861,
+      "original_tool_session_still_running": true,
+      "data_directory": "/tmp/procont-2b3b-db/cluster",
+      "recorded_inner_pid": 2,
+      "same_pid_in_diagnostic_namespace": "/bin/bash",
+      "port": 55474,
+      "cluster_marker_present": true,
+      "stop_confirmed": false,
+      "signals_sent_by_this_intervention": false,
+      "prior_shutdown_statement_corrected": true,
+      "reason": "PID namespaces differ; pg_ctl stop here would target the wrong PID"
+    },
+    "seven_document_paths_checked": [
+      "README.md",
+      "supabase/README.md",
+      "docs/fase-2a-supabase.md",
+      "docs/fase-2b1-integracion.md",
+      "docs/fase-2b2-preparacion.md",
+      "docs/fase-2b3c-adaptacion-procont.md",
+      "docs/validation/fase-2b3c-organizational-review.json"
+    ],
+    "protected_migrations_and_recovery_hashes_match": true,
+    "executable_commit_hooks_present": false,
+    "external_closeout_script": {
+      "path": "/tmp/procont-close-fase-2b3c.py",
+      "sha256": "a2f1064af1f8250cc6d979dcdf0d8ca399a97c4a8d8296b5d3cacc582b20c9b6",
+      "python_syntax_checked": true,
+      "executed_by_agent": false,
+      "required_execution_context": "normal Ubuntu terminal, same instance, procont UID 1000, outside agent isolation"
+    },
+    "local_commit_created": false,
+    "clean_git_confirmed": false,
+    "tests_executed": false,
+    "sql_executed": false,
+    "observations_recorded_inside_agent_before_external_closeout": true,
+    "resolved_from_normal_ubuntu_terminal": true,
+    "normal_terminal_result": {
+      "postgresql_shutdown": {
+        "stopped": true,
+        "method": "pg_ctl kill INT (fast shutdown of verified host PID)",
+        "verified_master": {
+          "pid": 101817,
+          "namespace_pids": [
+            101817,
+            2
+          ],
+          "start_ticks": 485747
+        },
+        "pid_file_removed": true,
+        "other_servers_signaled": false
+      },
+      "commit_message": "docs: revisar adaptación organizacional de Procont",
+      "commit_reference": "the enclosing Git commit",
+      "git_clean": true
+    }
+  }
+}

@@ -1,5 +1,12 @@
 # FASE 2B.2 — Preparación de Supabase
 
+**Revisión organizacional 2B.3C (17/11/2026):** las cuatro migraciones ya son
+independientes de áreas/personas de Gilat y se conservan sin cambios ni nuevas
+pruebas SQL. [Adaptación Procont](fase-2b3c-adaptacion-procont.md) documenta los
+catálogos/textos/SLA del frontend aún pendientes. No se copian al backend ni se
+definen áreas o cuentas nuevas. La recuperación 2B.3B y sus condiciones de parada
+permanecen vigentes; esta revisión no cambia el NO APTO remoto ni lo autoriza.
+
 **Actualización 2B.3B (17/11/2026):** el procedimiento vigente de aplicación por
 pasos, detención e historial está en [recuperación](fase-2b3b-recovery-plan.md).
 Sustituye el push único de esta preparación y su reversión todavía conceptual.

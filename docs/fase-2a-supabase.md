@@ -244,10 +244,19 @@ esa operación como un cambio con efectos sobre los datos del flujo.
 
 No se fijó un catálogo SQL de áreas, personas o productos. El cálculo de días
 hábiles y del plazo SLA por tipo de solicitud sigue siendo responsabilidad del
-adaptador, que podrá utilizar la configuración actual hasta definir las reglas
-de Procont. Las nuevas RPC admiten los valores resultantes sin incorporar el
-catálogo empresarial anterior. La creación interna conserva su plazo explícito
-y no registra inicio SLA automáticamente, como en el flujo manual actual.
+adaptador. **Aclaración 2B.3C:** el frontend aún contiene la matriz heredada;
+su conservación funcional no la convierte en política aprobada para Procont.
+Los nuevos parámetros se decidirán con el propietario antes del uso operativo,
+sin importar el catálogo empresarial anterior. Las RPC admiten los valores
+resultantes. La creación interna conserva su plazo explícito y no registra
+inicio SLA automáticamente, como en el flujo manual actual.
+
+La [revisión organizacional 2B.3C](fase-2b3c-adaptacion-procont.md) confirma por
+inspección estática que las cuatro migraciones no contienen áreas ni personas
+prefijadas. `requester_area` permite texto libre sin catálogo SQL; no existe una
+pantalla ni tabla administrable de áreas. No se modifica el esquema ni se repiten
+las pruebas de esta fase. Los roles, fases y la regla existente de prioridad
+baja sin SLA se conservan como base funcional y se documentan para revisión.
 
 ## Compatibilidad y cambios necesarios en consumidores
 

@@ -27,3 +27,32 @@ No hay credenciales ni un identificador de proyecto remoto en este directorio.
 El esquema, la matriz RLS, los contratos de RPC, la reproducción de pruebas y
 los requisitos de integración están en
 [docs/fase-2a-supabase.md](../docs/fase-2a-supabase.md).
+
+## Independencia organizacional — FASE 2B.3C
+
+Las cuatro migraciones se revisaron sin ejecutar SQL ni repetir pruebas. No
+contienen áreas de Gilat, nombres de personas, correos corporativos, cuentas,
+contraseñas, datos demo ni un catálogo de SLA por área/producto. Conservan los
+roles genéricos `superadmin`, `admin`, `developer` y `viewer`; no asignan esos
+roles a personas concretas. Las funciones de provisión/bootstrap solo se definen,
+no se invocan al aplicar los archivos.
+
+`requests.requester_area` es texto de hasta 200 caracteres, sin ENUM, lista
+CHECK ni FK a áreas heredadas. La solicitud pública exige un valor no vacío;
+el alta interna y la edición admiten que no esté definido. Esto mantiene el
+esquema abierto a valores futuros, pero no implementa un catálogo administrable
+de áreas. Su gestión y nombres se decidirán con el propietario, sin nuevas tablas
+ni formularios en esta fase.
+
+El SQL conserva fechas SLA recibidas, el límite de días formales 1–3650 y el
+comportamiento de prioridad baja sin SLA en la aprobación. Son comportamientos
+existentes por revisar con el propietario; no se consideran una política de
+Procont aprobada. La matriz de tipos/plazos y factores heredados sigue solo en
+frontend y no se copia al backend.
+
+No se alteraron archivos SQL ni hashes. El
+[procedimiento de recuperación 2B.3B](../docs/fase-2b3b-recovery-plan.md) sigue
+vigente, con sus condiciones remotas pendientes. El inventario organizacional y
+las decisiones pendientes están en
+[FASE 2B.3C](../docs/fase-2b3c-adaptacion-procont.md). Esta revisión no autoriza
+migraciones, cuentas ni bootstrap.

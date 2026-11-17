@@ -9,6 +9,13 @@ No se modificaron las migraciones ni las dependencias. No se cambió la
 identidad visual ni se definieron nuevas áreas, usuarios o reglas empresariales.
 No se repitieron las 72 comprobaciones SQL ni la auditoría inicial.
 
+**Continuación organizacional 2B.3C:** la conservación del frontend no supone
+adoptar la estructura empresarial anterior. Sus áreas, área fija del importador,
+textos y parámetros de SLA están inventariados en
+[adaptación Procont](fase-2b3c-adaptacion-procont.md), pendientes de decisiones del
+propietario y de una fase posterior de frontend. El backend no impone esas áreas
+ni correos. No se cambian consumidores ni se repiten las 19 pruebas en 2B.3C.
+
 La integración está validada por compilación y por pruebas de consumidores con
 dobles de SDK y transporte HTTP simulado. No está validada contra Supabase real
 ni mediante recorridos en navegador. No hay `.env.local`, enlace CLI remoto,
@@ -60,9 +67,11 @@ aprobación y la actualización directa de estado/enlace de solicitudes. Esos
 efectos pertenecen a las RPC. Los eventos `created`, `sla_started` y las
 notificaciones de aprobación tampoco se duplican desde el consumidor.
 
-La aprobación conserva el cálculo existente en `sla-config.ts`, autorizado por
-el contrato de FASE 2A, y envía `sla_formal_days` y `sla_target_date`. No se
-introdujo otro catálogo o cálculo de numeración/checklist.
+La aprobación conserva el cálculo existente en `sla-config.ts` por compatibilidad
+con FASE 2A y envía `sla_formal_days` y `sla_target_date`. La revisión 2B.3C
+mantiene ese contrato técnico; los valores heredados de SLA siguen pendientes de
+aprobación por el propietario. No se introdujo otro catálogo o cálculo de
+numeración/checklist.
 
 Los payloads se construyen con campos permitidos: no se propagan IDs, números,
 estado aprobado ni enlaces que pudiera contener un objeto del formulario.

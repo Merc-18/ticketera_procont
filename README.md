@@ -1,6 +1,17 @@
-# Ticketera Controlling
+# Ticketera Procont
 
-Sistema de gestión de tickets y proyectos para el área de Controlling de Gilat Perú. Permite administrar solicitudes internas y externas, gestionar flujos de desarrollo y proyectos administrativos, y hacer seguimiento de SLAs en tiempo real.
+Sistema de gestión de tickets y proyectos para un entorno laboral independiente.
+Reutiliza la arquitectura y las funcionalidades de la ticketera original; las
+áreas, personas y políticas de Procont se definirán con el propietario del proyecto.
+Permite administrar solicitudes internas y externas, proyectos y flujos de trabajo,
+checklists, tableros, comentarios, notificaciones y seguimiento de SLA.
+
+La revisión organizacional está en
+[FASE 2B.3C: adaptación a Procont](docs/fase-2b3c-adaptacion-procont.md).
+Las cuatro migraciones no contienen áreas, cuentas ni datos empresariales de
+Gilat. El frontend aún conserva catálogos, textos y parámetros SLA heredados:
+están inventariados y pendientes de adaptación; no constituyen la configuración
+aprobada de Procont. No se modificó el frontend en esta fase.
 
 ---
 
@@ -43,7 +54,7 @@ Sistema de gestión de tickets y proyectos para el área de Controlling de Gilat
 ### Dashboard y analítica
 - Conteo de proyectos por estado y prioridad
 - Vista de carga de trabajo por miembro del equipo
-- Métricas por área (SAQ, DDC, QA, ATC, AASS, PMO, OC, Controlling)
+- Métricas por área; el catálogo organizacional de Procont está pendiente de definición
 
 ### Administración
 - Gestión completa de usuarios (CRUD)
@@ -155,6 +166,12 @@ en Supabase** hasta obtener el inventario real de catálogo/permisos y versión
 numérica PostgreSQL bajo autorización separada. El plan Free confirmado no
 ofrece backups automáticos/PITR.
 
+La revisión 2B.3C conserva las cuatro migraciones y la recuperación 2B.3B sin
+cambios. El área se almacena como texto sin lista empresarial en SQL; todavía
+no existe un catálogo administrable de áreas. Su definición y la adaptación de
+los selectores/importador del frontend se decidirán posteriormente, sin importar
+áreas ni usuarios de la organización original.
+
 ---
 
 ## Variables de entorno
@@ -196,6 +213,14 @@ su revisión y corrección corresponde a la FASE 2.
 | `migrate_number_format.sql` | Formato de numeración |
 | `rls_fix.sql` | Políticas de Row Level Security |
 | `seed_data.sql` | Datos demo; elimina registros existentes y desactiva comprobaciones |
+| `seed_test_data.sql` | Escenarios heredados con áreas, solicitantes y fechas; no son las pruebas aisladas actuales |
+| `tags_migration.sql`, `tags_cleanup.sql` | Etiquetas históricas y limpieza ligada a áreas anteriores |
+| `fix_enable_rls_all_tables.sql` | Ajustes históricos de RLS; no sustituye las políticas preparadas |
+
+Las identidades, correos, áreas, plazos y ejemplos de esos archivos no forman
+parte de la configuración de Procont. Se conservan como antecedentes; no se
+importan ni se ejecutan. El único contenido inicial previsto en las migraciones
+son los 35 pasos genéricos de checklist, editables por administradores autorizados.
 
 No ejecutar `setup.js`: es un generador histórico que sobrescribe archivos de
 la aplicación. Ahora toma la plantilla `.env.example` en lugar de contener
