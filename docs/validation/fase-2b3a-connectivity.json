@@ -1,0 +1,96 @@
+{
+  "phase": "2B.3A",
+  "checked_at_utc": "2026-11-17T20:42:23.413853+00:00",
+  "destination": {
+    "expected_name": "ticketera-procont",
+    "private_pin_matches": true,
+    "name_confirmation": "user_dashboard_attestation",
+    "management_api_verified": false
+  },
+  "request": {
+    "method": "GET",
+    "path": "/rest/v1/",
+    "explicit_headers": {
+      "apikey": "[REDACTED]",
+      "Accept": "application/openapi+json"
+    },
+    "authorization_header_present": false,
+    "default_user_agent": "Python-urllib",
+    "redirects_allowed": false,
+    "environment_proxies_used": false,
+    "table_or_rpc_endpoint": false
+  },
+  "prior_http_status": 401,
+  "migrations": [
+    {
+      "file": "20261117000100_schema.sql",
+      "sha256": "4cc433c7eb91278abf020b82d9e40ddc39052642630db267e0753bf2c4f5fbcd"
+    },
+    {
+      "file": "20261117000200_security.sql",
+      "sha256": "669171a4a000c4dbfeb78ca53e4c58df3b7ba9473c7735ef4d024047d5bf8cf5"
+    },
+    {
+      "file": "20261117000300_operations.sql",
+      "sha256": "f697e130cf736a8b31476a73198b17f314293708263c7b1ec0da3954c44badc8"
+    },
+    {
+      "file": "20261117000400_reference_checklists.sql",
+      "sha256": "2ae7b98b460a040319e0c2007809c1842374e97cb2ee4ac140a8fdfc48b0b145"
+    }
+  ],
+  "response": {
+    "http_status": 401,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8",
+      "Server": "cloudflare"
+    },
+    "raw_body_retained": false,
+    "json_parsed": true,
+    "sanitized_error": {
+      "message": "Secret API key required",
+      "hint": "Only secret API keys can be used for this endpoint."
+    }
+  },
+  "env_changed": false,
+  "remote_sql_executed": false,
+  "remote_mutations_performed": false,
+  "auth_metadata_checks": [
+    {
+      "label": "configured_publishable_key",
+      "checked_at_utc": "2026-11-17T20:43:08.202118+00:00",
+      "method": "GET",
+      "path": "/auth/v1/settings",
+      "apikey_present": true,
+      "authorization_present": false,
+      "redirects_allowed": false,
+      "environment_proxies_used": false,
+      "http_status": 200,
+      "content_type": "application/json",
+      "raw_body_retained": false,
+      "json_parsed": true,
+      "auth_settings_shape": true,
+      "configuration_values_omitted": true
+    },
+    {
+      "label": "no_api_key_control",
+      "checked_at_utc": "2026-11-17T20:43:08.742718+00:00",
+      "method": "GET",
+      "path": "/auth/v1/settings",
+      "apikey_present": false,
+      "authorization_present": false,
+      "redirects_allowed": false,
+      "environment_proxies_used": false,
+      "http_status": 401,
+      "content_type": "application/json;charset=UTF-8",
+      "raw_body_retained": false,
+      "json_parsed": true,
+      "sanitized_error": {
+        "message": "No API key found in request",
+        "hint": "No `apikey` request header or url param was found."
+      }
+    }
+  ],
+  "network_requests_total": 3,
+  "business_record_endpoints_requested": []
+}

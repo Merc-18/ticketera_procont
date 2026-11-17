@@ -5,6 +5,11 @@ entradas visibles: `28acd95`. Cierre de preparación después de la captura loca
 confirmada por el usuario. Este informe complementa FASE 2A y sustituye los
 comandos de conexión de 2B.1 para la CLI instalada **3.2.0**.
 
+Actualización de diagnóstico 2B.3A: [preflight](fase-2b3a-preflight.md).
+El 401 de OpenAPI quedó explicado por una restricción del endpoint; la clave
+publicable sí fue aceptada por Auth. Esta actualización corrige la condición
+previa de obtener HTTP 200 en OpenAPI. No autoriza migraciones.
+
 ## Estado
 
 - CLI oficial instalada fuera del repositorio en
@@ -24,12 +29,13 @@ comandos de conexión de 2B.1 para la CLI instalada **3.2.0**.
   archivos de estado tienen permisos `600`, dentro de un directorio `700`.
 - El usuario confirmó `ticketera-procont` desde Dashboard. Se conserva esa
   confirmación manual, sin presentarla como verificación de Management API.
-- La evidencia existente de Data API contiene **HTTP 401** (`accepted=false`).
-  No se repitió la petición. No están confirmados la correspondencia funcional
-  URL/clave, los esquemas expuestos ni la versión PostgreSQL remota.
-- **No apto todavía para ejecutar DDL**: primero hay que resolver el 401 y
-  comprobar los requisitos remotos. Puede autorizarse la siguiente fase de
-  forma condicionada a superar esas comprobaciones.
+- La evidencia original contiene **HTTP 401** (`accepted=false`). El diagnóstico
+  posterior 2B.3A reprodujo «Secret API key required» en la raíz OpenAPI y
+  obtuvo HTTP 200 en configuración pública Auth con la clave existente.
+  No hay que sustituir la clave publicable ni exigir HTTP 200 en OpenAPI.
+- **No apto todavía para ejecutar DDL**: faltan las comprobaciones remotas de
+  Data API, esquemas expuestos, versión PostgreSQL y estado inicial. El 401
+  explicado no es por sí mismo un bloqueo para aplicar migraciones.
 
 La comprobación local sin valores se registra en
 [fase-2b2-local-ready.json](validation/fase-2b2-local-ready.json). No prueba que
@@ -68,10 +74,13 @@ recibir OpenAPI. No sigue redirecciones, no consulta registros, no llama RPC,
 Auth o Management API y no ejecuta SQL. `--offline` permite guardar sin ese GET.
 Un GET aceptado confirma disponibilidad de Data API/clave, **no el nombre del
 proyecto ni RLS**. Si falla, se registra como pendiente, sin mostrar respuesta
-ni credenciales. El asistente no inicia Vite. El 401 registrado debe tratarse
-como un resultado no satisfactorio; por sí solo no distingue clave incorrecta,
-clave de otro destino, restricciones de API u otra causa. No atribuirlo a la
-falta de migraciones ni repetir peticiones sin una corrección o motivo concreto.
+ni credenciales. El asistente no inicia Vite. Su GET de OpenAPI no constituye
+una prueba adecuada de validez de claves publicables en este destino:
+2B.3A confirmó que ese endpoint exige una clave secreta. El script original
+conserva el 401 como evidencia histórica, no como prueba de clave inválida.
+No atribuirlo a la falta de migraciones ni introducir claves privilegiadas para
+obtener HTTP 200. El GET de configuración pública Auth de 2B.3A valida la
+aceptación de la clave; no valida Data API, exposición de esquemas ni RLS.
 
 Confirmaciones manuales necesarias en el Dashboard del destino:
 
@@ -118,10 +127,10 @@ como permiso para modificar opciones remotas o desactivar RLS.
    del usuario. Si se corrige el archivo local, mantener permisos `600`; si
    cambia el ref, detenerse y volver a confirmar el destino antes de continuar.
 2. Confirmar Data API habilitada y esquemas expuestos: `public` presente;
-   `app_private` y `auth` ausentes. Resolver el 401. Solo tras una revisión o
-   corrección concreta realizar un GET de OpenAPI, sin enviar SQL ni llamar RPC
-   de escritura; conservar estado/HTTP, no respuesta ni credenciales. Si sigue
-   fallando, detenerse. Un resultado 200 no reemplaza la revisión de exposición.
+   `app_private` y `auth` ausentes. Reutilizar el diagnóstico 2B.3A: OpenAPI
+   devuelve 401 por exigir clave secreta, mientras Auth acepta la publicable.
+   No exigir HTTP 200 de OpenAPI ni cambiar la clave para sortear esa restricción.
+   La aceptación de Auth no reemplaza la revisión de Data API en Dashboard.
 3. Confirmar la versión PostgreSQL real y ajustar `db.major_version` local a
    ella; no inferir versión desde el TOML. Mantener la aplicación detenida.
 4. Confirmar proyecto sin esquema de negocio previo, usuarios a preservar ni
@@ -261,8 +270,9 @@ Evidencias: [asistente](validation/fase-2b2-preparation.txt),
 
 Preparación local completada; aplicación remota no autorizada. Se solicita
 autorización para iniciar 2B.3 con preflight y aplicación condicionada de las
-cuatro migraciones. El 401, la exposición Data API, la versión PostgreSQL y el
-historial remoto son condiciones de parada hasta comprobarlos. El bootstrap,
+cuatro migraciones. La exposición Data API, la versión PostgreSQL y el historial
+remoto son condiciones de parada hasta comprobarlos. El 401 quedó explicado en
+2B.3A y no requiere cambiar credenciales. El bootstrap,
 las cuentas y las pruebas con escrituras requieren autorización adicional.
 
 Referencias oficiales: [claves](https://supabase.com/docs/guides/getting-started/api-keys),
