@@ -1,5 +1,20 @@
 # FASE 2B.3B — Recuperación de las cuatro migraciones
 
+**Revisión vigente 2B.3D:** [resolución de bloqueos](fase-2b3d-resolucion-bloqueos.md)
+retira los triggers propios de Auth y la edición SQL directa del ledger. La CLI
+lo inicializa al primer push; la compensación conserva sus filas y emite un
+repair-plan separado para CLI. Véase el nuevo manifiesto y las siete pruebas
+del operador sin propiedad Auth. Las 26 pruebas de este informe son históricas,
+no una reejecución con la migración 3 revisada.
+
+**Siguiente lectura manual preparada desde `11b2c15`:** usar primero el
+[preflight de catálogos](fase-2b3-catalog-preflight.md), aún no ejecutado. El
+usuario pidió únicamente metadatos, sin cuentas, negocio ni credenciales. El
+`inventory.sql` descrito abajo tiene un alcance mayor (conteos, historial y
+definiciones/configuración) y **no debe ejecutarse para esta solicitud**. La
+consulta nueva no es `0.json` ni sustituye el formato del generador. Este plan,
+sus requisitos y compensaciones siguen sin autorización de ejecución remota.
+
 17/11/2026. Base: `d48dbfb`. Trabajo exclusivamente local. La autorización de
 esta fase cubre preparar y probar recuperación; no cubre conexión SQL remota,
 DDL remoto, cuentas, bootstrap, push, merge o despliegue.
@@ -8,9 +23,10 @@ DDL remoto, cuentas, bootstrap, push, merge o despliegue.
 
 **NO APTO todavía para aplicar en Supabase remoto.** La recuperación está
 preparada y probada en PostgreSQL aislado, pero falta el inventario real de
-catálogo/permisos, la versión numérica instalada y validar las condiciones de
+catálogo/permisos de recuperación y validar las condiciones de
 entrada contra ese inventario. No se vuelve a pedir la revisión visual ya hecha.
-Estos datos nuevos requieren una futura autorización de lectura SQL remota.
+La versión numérica 17.12 fue reportada posteriormente por el usuario. Las
+lecturas restantes requieren una futura autorización de lectura SQL remota.
 La autorización de aplicación y la de compensación destructiva son independientes.
 
 La ausencia de PITR no exige contratar otro plan para esta instalación vacía.
@@ -25,7 +41,8 @@ recuperación de datos una vez que la aplicación empieza a recibir escrituras.
 | [26 comprobaciones locales](validation/fase-2b3b-recovery.json) | Compensación, detención y preservación del catálogo/ACL iniciales en PostgreSQL 18.6 | Servicios Supabase, Auth real, controlador CLI o conexión alojada |
 | [Código CLI 3.2.0](https://github.com/supabase/cli/blob/v3.2.0/apps/cli/src/command-internal/migration-apply.ts) | Con archivos que incluyen control de transacción, el registro de versión ocurre después de ejecutar el archivo | Atomicidad conjunta entre su `COMMIT` y la escritura posterior de historial |
 
-No se modificaron las migraciones originales ni sus hashes. No se repitieron
+En la entrega original 2B.3B no se modificaron migraciones ni hashes. 2B.3D revisa
+M3 sin aplicación remota y fija un nuevo manifiesto. No se repitieron
 las 72 comprobaciones de 2A ni las 19 de integración de 2B.1. No se crearon
 cuentas Auth ni superadmin, tampoco en las pruebas nuevas. El soporte local
 crea únicamente roles PostgreSQL `NOLOGIN` de plataforma y un esquema Auth mínimo.
@@ -43,7 +60,7 @@ restricciones de catálogo de PG18: se registran en las columnas.
 |---|---|---|
 | 1 — schema | Esquema `app_private`; `valid_phase`; 9 tablas `public` y 4 privadas; 99 columnas; 77 restricciones CHECK/PK/UNIQUE/FK; 34 índices; 26 tipos implícitos de fila/array; RLS cerrado en las 13 tablas; revoca CREATE de `public` a PUBLIC/anon/authenticated y acceso a objetos nuevos | `auth.users`, `auth.uid()`, roles anon/authenticated, permisos de creación |
 | 2 — security | 2 funciones privadas (`has_role`, `can_read_project`); 20 políticas; USAGE privado para authenticated; EXECUTE de helpers; SELECT y grants por columna en las 9 tablas públicas | 1 |
-| 3 — operations | 26 funciones nuevas (15 privadas y 11 públicas); 14 triggers, incluidos 2 en `auth.users`; 4 entradas de restricciones de triggers diferidos; revoca/restablece EXECUTE de funciones privadas y de los nombres RPC públicos; añade 3 tablas a Realtime si existe la publicación; NOTIFY de caché | 1+2, service_role, permisos sobre Auth/publicación |
+| 3 — operations (2B.3D) | 26 funciones nuevas (15 privadas y 11 públicas); 12 triggers de tablas propias; provisión privada explícita desde Auth; 4 entradas de restricciones de triggers diferidos; EXECUTE limitado; 3 tablas Realtime y NOTIFY | 1+2, service_role, SELECT de fuente Auth y propiedad de publicación; sin propiedad/TRIGGER Auth |
 | 4 — reference_checklists | 35 filas genéricas en `public.checklist_templates`; ningún objeto nuevo ni cuenta | 1; operativamente siempre después de 3 |
 
 Tablas públicas: `users`, `requests`, `projects`, `project_flows`,
@@ -51,9 +68,10 @@ Tablas públicas: `users`, `requests`, `projects`, `project_flows`,
 `notifications`. Privadas: `number_counters`, `request_access`, `rpc_calls`,
 `security_events`.
 
-Los triggers sobre Auth son `procont_auth_profile_insert` y
-`procont_auth_profile_email`: no se modifica la estructura ni ninguna fila de
-`auth.users`. Crear la función `bootstrap_superadmin` no la invoca ni asigna roles.
+Desde 2B.3D no se crean `procont_auth_profile_insert`/`procont_auth_profile_email`
+ni se compensan triggers propios en Auth. Se conserva su FK y los triggers
+internos que PostgreSQL administra para esa dependencia. La provisión de perfil
+es explícita y privada. Crear `bootstrap_superadmin` no la invoca ni asigna roles.
 Realtime incorpora únicamente `public.projects`, `public.project_flows` y
 `public.notifications`; no crea ni elimina la publicación `supabase_realtime`.
 `storage`, `realtime`, `extensions`, roles, extensiones y defaults de plataforma
@@ -83,14 +101,13 @@ etc., fuera de Git, directorio 700 y archivos 600. Nunca sustituir un archivo ya
 aprobado. Los OID ligan las capturas a esa instancia: no reutilizarlas tras una
 recreación de base/proyecto. No copiar el ejemplo local de evidencia al remoto.
 
-El esquema/tabla del historial debe existir con columnas `version text`,
-`name text`, `statements text[]`, PK de versión e historial vacío **antes de
-`0.json`**. Si no existe, parar: conservar inventario de plataforma anterior y
-solicitar aprobación específica para preparar únicamente ese metadato usando
-el DDL de la CLI fijada. No inicializarlo silenciosamente, no borrar/recrear una
-tabla existente y no iniciar las migraciones para que aparezca por accidente.
-La compensación preserva siempre ese esquema/tabla; solo retira versiones
-Ticketera demostradas por las capturas. Su preparación es modificación remota.
+**Corrección 2B.3D:** `0.json` puede registrar historial ausente. No crearlo
+manualmente para cumplir el preflight. CLI 3.2.0 inicializa esquema, tabla,
+version/name/statements y PK antes de su primera migración pendiente, bajo la
+futura autorización de push. Se admite esa adición exacta en la transición 1.
+Si el ledger ya existe se valida su forma y que no haya versiones inesperadas.
+No se borra/recrea. La compensación conserva el ledger y sus filas; el ajuste
+posterior solo se realiza por CLI repair, con versiones exactas y autorización.
 
 Validación offline, sin conexión:
 
@@ -114,7 +131,7 @@ no mediante grants predeterminados ni supuestos sobre Supabase.
 | Cuerpo | Acción |
 |---|---|
 | [`compensate_04.sql`](../supabase/recovery/compensate_04.sql) | Retira las 35 plantillas solo tras comprobar conteo y checksum exactos; rechaza cambios posteriores |
-| [`compensate_03.sql`](../supabase/recovery/compensate_03.sql) | Retira los 2 triggers propios de Auth y los 12 propios de tablas públicas; quita solo las 3 membresías Realtime añadidas; elimina las 26 funciones propias; restaura ACL de helpers conservados |
+| [`compensate_03.sql`](../supabase/recovery/compensate_03.sql) | Retira los 12 triggers propios de tablas públicas; ninguna operación sobre triggers Auth; quita 3 membresías Realtime añadidas; elimina 26 funciones propias, incluida provisión privada; restaura ACL de helpers |
 | [`compensate_02.sql`](../supabase/recovery/compensate_02.sql) | Elimina las 20 políticas y los 2 helpers propios; restaura USAGE privado, ACL de tablas, columnas y helper existente a la captura 1 |
 | [`compensate_01.sql`](../supabase/recovery/compensate_01.sql) | Elimina las 13 tablas en un solo DROP RESTRICT, incluidos sus índices/FK/tipos/triggers internos; elimina valid_phase y esquema privado vacío; restaura ACL de `public` |
 
@@ -133,7 +150,7 @@ que tenga que restituir. Los grants de terceros requieren un plan específico:
 no se convierten en permisos de owner por conveniencia.
 
 El bundle completo usa **una transacción** con límites de espera, bloqueo
-cooperativo y bloqueos de Auth, tablas propias e historial. Comprueba el estado
+cooperativo y bloqueos de tablas propias e historial, sin LOCK Auth. Comprueba el estado
 exacto inicial, después de cada compensación y antes del COMMIT. Restaura los
 permisos efectivos con sus grant options; la representación interna NULL/array
 de ACL no se exige si los permisos efectivos son idénticos.
@@ -142,7 +159,9 @@ Los DROP son RESTRICT, sin `CASCADE`, sin `IF EXISTS` para ocultar discrepancias
 Retirar una tabla elimina sus propios índices, reglas, triggers y restricciones:
 por eso el inventario también los vigila. Un objeto extraño, ACL diferente,
 fila nueva, plantilla editada o dependencia inesperada provoca parada/rollback.
-La comparación final incluye plataforma y su historial. El bloqueo cooperativo
+La comparación final incluye plataforma e historial retenido; se admite únicamente
+la inicialización nativa CLI. Las versiones permanecen hasta el repair posterior.
+El bloqueo cooperativo
 no impide por sí solo todo DDL de un administrador no cooperante: reservar una
 ventana exclusiva, sin otros operadores ni automatizaciones.
 
@@ -160,8 +179,8 @@ del procedimiento 2B.2 cuando se autorice esta vía de recuperación.
    La revisión visual de Dashboard ya confirmada se reutiliza. Comparar la versión
    instalada con TOML; cualquier ajuste será local y explícito, nunca config push.
 2. Revisar baseline y privilegios reales del operador sobre esquema público,
-   triggers Auth, publicación e historial. Resolver previamente la eventual
-   ausencia del metadato de historial con autorización separada. Guardar 0.json.
+   SELECT/RLS de fuente Auth, publicación e historial existente. La ausencia
+   de historial es normal: la CLI lo inicializará al push autorizado. Guardar 0.json.
    El resultado local no concede permisos en Supabase ni evita estas condiciones.
 3. Obtener autorización expresa de aplicación, con ventana sin clientes/otros
    operadores y un procedimiento de recuperación acordado. Tener la aplicación
@@ -196,8 +215,10 @@ del procedimiento 2B.2 cuando se autorice esta vía de recuperación.
    con `psql -X --set ON_ERROR_STOP=1 --file ARCHIVO_PRIVADO`. No poner contraseñas
    en argumentos, historial, logs ni URLs. No usar pooler de transacción. Ante
    error, terminar/cerrar la sesión para asegurar rollback; no seguir en la misma
-   sesión. Los cambios en el historial se realizan en la misma transacción que
-   la compensación, después de cada cuerpo y antes de su comparación.
+   sesión. No hay cambios SQL en el historial dentro del bundle. Solo después
+   de compensación confirmada, revisar el repair-plan y autorizar CLI repair
+   sobre sus versiones exactas. Es otra transacción: mantener el servicio detenido
+   y verificar el resultado antes de cualquier push o reintento.
 10. Tras resultado o conexión perdida durante recuperación, recapturar: debe
     coincidir con el estado inicial o con el prefijo anterior completo. Si no se
     conoce cuál, parar. El bundle no es idempotente y su segunda ejecución se
@@ -212,6 +233,8 @@ se detiene; no ampliar la lista permitida para ignorarlo automáticamente.
 
 No usar `db reset`, `DROP SCHEMA public CASCADE`, seeds, SQL históricos,
 `migration down` genérico ni `migration repair` como sustituto de compensación.
+El repair seleccionado posterior de 2B.3D solo corrige historial ya contrastado;
+no deshace SQL y nunca se ejecuta antes del bundle.
 No borrar versiones de forma anticipada. Si se elige conservar SQL confirmado
 sin su versión, una reparación de historial es otra operación administrativa
 revisada y autorizada, después de demostrar contenido; no se ejecuta aquí.
@@ -286,9 +309,8 @@ sin eliminarlo y se necesita revisión manual.
 Las cinco comprobaciones visuales ya están confirmadas; no repetirlas. No se
 necesita Orca para usar esta evidencia. En una fase futura, el usuario debe:
 
-- Anotar el número exacto instalado mostrado en Infrastructure; si no aparece,
-  obtenerlo de la captura administrativa autorizada. «Última soportada» no fija
-  un major y no justifica cambiar TOML ni actualizar el servidor.
+- Reutilizar PostgreSQL 17.12 reportado por el usuario, sin repetir Infrastructure
+  ni actualizar el servidor. No equivale a verificar permisos de una sesión CLI.
 - Elegir acceso administrativo seguro y operador con permisos suficientes.
   Si se usa SQL Editor, la captura READ ONLY puede ejecutarse tras autorización;
   exportar el JSON completo de forma privada y comprobar que no fue truncado.
@@ -310,8 +332,9 @@ Antes de admitir cuentas o tráfico debe definirse una estrategia de copias y
 restauración de datos, con su propia autorización.
 
 Preparación de recuperación local completada. **NO APTO para aplicación remota
-en el estado actual de evidencias**: falta baseline real/versionado, número
-PostgreSQL, estado/privilegios del ledger y compatibilidad del operador real.
+en el estado actual de evidencias**: falta baseline real/versionado y compatibilidad
+del operador real/fuente Auth. La versión 17.12 ya fue reportada; ledger ausente
+es normal antes del primer push y la CLI lo inicializa sin SQL manual externo.
 El riesgo de estados parciales tiene ahora scripts y pruebas, pero no se
 confunde una simulación con garantía sobre una base alojada aún no inventariada.
 Siguiente paso posible: autorización expresa y acotada para esos metadatos;

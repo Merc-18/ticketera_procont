@@ -5,8 +5,6 @@ DO $$ BEGIN
   END IF;
 END $$;
 DELETE FROM pg_temp.procont_recovery_guard WHERE stage=3;
-DROP TRIGGER procont_auth_profile_email ON auth.users RESTRICT;
-DROP TRIGGER procont_auth_profile_insert ON auth.users RESTRICT;
 DROP TRIGGER validate_checklist ON public.checklist_items RESTRICT;
 DROP TRIGGER flow_project_consistency ON public.project_flows RESTRICT;
 DROP TRIGGER touch_updated_at ON public.project_flows RESTRICT;
@@ -36,7 +34,7 @@ DROP FUNCTION public.admin_update_user(p_user_id uuid, p_role text, p_is_active 
 DROP FUNCTION app_private.validate_checklist() RESTRICT;
 DROP FUNCTION app_private.validate_assignment() RESTRICT;
 DROP FUNCTION app_private.touch_updated_at() RESTRICT;
-DROP FUNCTION app_private.sync_auth_profile() RESTRICT;
+DROP FUNCTION app_private.provision_auth_profile(p_user_id uuid) RESTRICT;
 DROP FUNCTION app_private.require_role(allowed text[]) RESTRICT;
 DROP FUNCTION app_private.request_number() RESTRICT;
 DROP FUNCTION app_private.replay(p_operation text, p_key uuid, p_payload jsonb) RESTRICT;

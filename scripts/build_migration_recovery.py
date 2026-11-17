@@ -5,6 +5,7 @@ Snapshots must be captured by the same operator/database before and after each
 unchanged migration. Output is destructive SQL and requires separate approval.
 """
 import argparse
+import copy
 import hashlib
 import json
 from pathlib import Path
@@ -26,7 +27,7 @@ def ident(value):
 
 
 def manifest():
-    approved = json.loads((ROOT / 'docs/validation/fase-2b2-migrations.json').read_text())['migrations']
+    approved = json.loads((ROOT / 'docs/validation/fase-2b3d-migrations.json').read_text())['migrations']
     for item in approved:
         if hashlib.sha256((ROOT / 'supabase/migrations' / item['file']).read_bytes()).hexdigest() != item['sha256']:
             raise ValueError('Original migration hash changed')
@@ -36,15 +37,14 @@ def manifest():
 def history(snapshot):
     value = snapshot['history']
     if value is None:
-        raise ValueError('Initialize/inspect CLI ledger BEFORE the baseline; missing ledger')
+        if 'supabase_migrations.schema_migrations' in snapshot['relations']:
+            raise ValueError('Ledger exists but history was not captured')
+        return {}  # Native CLI creates its ledger before the first pending migration.
     rows = ET.fromstring('<history>' + value + '</history>')
     return {row.findtext('version'): {e.tag: e.text for e in row} for row in rows}
 
 
-def validate_baseline(snapshot):
-    scope = json.loads((RECOVERY / 'scope.json').read_text())
-    if snapshot.get('format') != 'procont-recovery-v1' or history(snapshot):
-        raise ValueError('Expected a complete baseline with empty CLI history')
+def validate_ledger_shape(snapshot):
     ledger = 'supabase_migrations.schema_migrations'
     expected_columns = {'version': 'text', 'name': 'text', 'statements': 'text[]'}
     if snapshot['relations'].get(ledger, {}).get('kind') != 'r' or any(
@@ -55,6 +55,38 @@ def validate_baseline(snapshot):
             key.startswith(ledger + '.') and value['definition'] == 'PRIMARY KEY (version)'
             for key, value in snapshot['constraints'].items()):
         raise ValueError('CLI ledger requires a non-null primary key on version')
+
+
+def retain_cli_ledger(target, source):
+    """Compare application restoration while preserving native CLI-owned metadata.
+
+Only the exact schema/table/columns/PK/composite types of the pinned CLI setup
+are adopted. Foreign objects in that namespace remain visible to drift checks.
+History rows are retained until a separate, authorized native CLI repair.
+"""
+    result = copy.deepcopy(target)
+    allowed = {
+        'schemas': {'supabase_migrations'},
+        'relations': {'supabase_migrations.schema_migrations'},
+        'columns': {'supabase_migrations.schema_migrations.' + x for x in ('version','name','statements')},
+        'indexes': {'supabase_migrations.schema_migrations_pkey'},
+        'constraints': {'supabase_migrations.schema_migrations.schema_migrations_pkey'},
+        'types': {'supabase_migrations.schema_migrations','supabase_migrations._schema_migrations'},
+    }
+    for category, keys in allowed.items():
+        for key in keys:
+            if key not in result[category] and key in source[category]:
+                result[category][key] = copy.deepcopy(source[category][key])
+    result['history'] = source['history']
+    return result
+
+
+def validate_baseline(snapshot):
+    scope = json.loads((RECOVERY / 'scope.json').read_text())
+    if snapshot.get('format') != 'procont-recovery-v1' or history(snapshot):
+        raise ValueError('Expected a complete baseline with empty/absent CLI history')
+    if 'supabase_migrations.schema_migrations' in snapshot['relations']:
+        validate_ledger_shape(snapshot)
     if snapshot['row_counts'].get('auth.users') != 0:
         raise ValueError('Initial installation requires no Auth accounts')
     for step in scope.values():
@@ -77,10 +109,20 @@ def validate_baseline(snapshot):
 def validate_transition(before, after, stage, scope):
     """Only names/fields attributable to this exact migration may differ."""
     allowed = scope[str(stage)]
+    validate_ledger_shape(after)
+    compared_before = before
+    if stage == 1 and 'supabase_migrations.schema_migrations' not in before['relations']:
+        if 'supabase_migrations' not in before['schemas'] and (
+                after['schemas']['supabase_migrations']['owner'] != after['operator']):
+            raise ValueError('Unexpected owner for newly initialized CLI schema')
+        native_table = after['relations']['supabase_migrations.schema_migrations']
+        if native_table['owner'] != after['operator'] or native_table['rls'] or native_table['force_rls']:
+            raise ValueError('New CLI ledger differs from native owner/RLS expectations')
+        compared_before = retain_cli_ledger(before, after)
     if before.keys() != after.keys():
         raise ValueError('Inventory format changed')
     for category in before:
-        left, right = before[category], after[category]
+        left, right = compared_before[category], after[category]
         if category in ('row_counts', 'templates_checksum', 'history'):
             continue
         if isinstance(left, dict):
@@ -118,6 +160,18 @@ def validate_transition(before, after, stage, scope):
     # Account for a connection/history failure AFTER the SQL COMMIT.
     if any(new.get(key) != value for key, value in old.items()) or set(new) - set(old) not in (set(), {version}):
         raise ValueError('Unexpected ledger change')
+
+
+def repair_plan(snapshots):
+    """Reviewable plan only. Never runs CLI or edits its ledger directly."""
+    baseline_versions = history(snapshots[0])
+    versions = [item['file'].split('_')[0] for item in manifest()[:len(snapshots)-1]]
+    recorded = history(snapshots[-1])
+    return {'after_successful_compensation_only': True,
+            'versions_to_mark_reverted': [v for v in reversed(versions) if v in recorded and v not in baseline_versions],
+            'tool': 'Supabase CLI 3.2.0 migration repair --status reverted',
+            'ledger_table_and_schema_preserved': True, 'automatic_execution': False,
+            'requires_separate_remote_authorization': True}
 
 
 def restore_acl(category, key, before, after):
@@ -180,7 +234,6 @@ def build(snapshots):
               "SET LOCAL lock_timeout = '5s';\nSET LOCAL statement_timeout = '60s';\n"
               "SELECT pg_advisory_xact_lock(743921003);\n"
               "CREATE TEMP TABLE procont_recovery_guard(stage integer) ON COMMIT DROP;\n"
-              "LOCK TABLE auth.users IN SHARE ROW EXCLUSIVE MODE;\n"
               "LOCK TABLE supabase_migrations.schema_migrations IN ACCESS EXCLUSIVE MODE;\n"]
     all_tables = ['public.' + t for t in TABLES] + ['app_private.' + t for t in PRIVATE]
     output.append('LOCK TABLE ' + ', '.join(all_tables) + ' IN ACCESS EXCLUSIVE MODE;\n')
@@ -196,11 +249,8 @@ def build(snapshots):
                     owner = before['relations'][key.rsplit('.', 1)[0]]['owner']
                     a, b = dict(a, _owner=owner), dict(b, _owner=owner)
                 output.append(restore_acl(category, key, a, b))
-        version = approved[stage - 1]['file'].split('_')[0]
-        # This row is part of the exact snapshot already checked. Preserve ledger table/schema.
-        if version in history(after) and version not in history(before):
-            output.append(f'DELETE FROM supabase_migrations.schema_migrations WHERE version={literal(version)};\n')
-        output.append(assertion(before, f'After compensation {stage}'))
+        # Native CLI owns ledger writes. Preserve all rows during SQL compensation.
+        output.append(assertion(retain_cli_ledger(before, snapshots[-1]), f'After compensation {stage}'))
     output.append("NOTIFY pgrst, 'reload schema';\nCOMMIT;\n")
     return '\n'.join(output)
 
@@ -221,9 +271,15 @@ def main():
         parser.error('Supply --check-baseline OR --snapshots, --through and --output')
     snapshots = [json.loads((args.snapshots / f'{n}.json').read_text()) for n in range(args.through + 1)]
     result = build(snapshots)
+    plan_file = args.output.with_suffix(args.output.suffix + '.repair-plan.json')
+    if args.output.exists() or plan_file.exists():
+        parser.error('Refusing to overwrite an existing SQL bundle or repair plan')
     # Remote inventories contain sensitive metadata. Never overwrite an approved bundle.
     with open(args.output, 'x', opener=lambda path, flags: __import__('os').open(path, flags, 0o600)) as handle:
         handle.write(result)
+    with open(plan_file, 'x', opener=lambda path, flags: __import__('os').open(path, flags, 0o600)) as handle:
+        json.dump(repair_plan(snapshots), handle, indent=2)
+        handle.write('\n')
     print('Offline compensation bundle created; no database connection made')
 
 

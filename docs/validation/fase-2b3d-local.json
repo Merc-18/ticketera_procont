@@ -1,0 +1,59 @@
+{
+  "phase": "2B.3D",
+  "base_commit": "11b2c15",
+  "checked_at_utc": "2026-11-17T23:36:00.718381+00:00",
+  "environment": {
+    "directory": "/tmp/procont-2b3d-l3266i_m/cluster",
+    "listen": "",
+    "version": "PostgreSQL 18.6 (Ubuntu 18.6-0ubuntu0.26.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 15.2.0-16ubuntu1) 15.2.0, 64-bit"
+  },
+  "tests": [
+    {
+      "name": "cold_cli_baseline_without_history_and_without_auth_ownership_accepted",
+      "passed": true
+    },
+    {
+      "name": "four_revised_migrations_under_non_superuser_without_auth_trigger_privilege",
+      "passed": true,
+      "application_ddl_succeeded": true,
+      "auth_owner_unchanged": true,
+      "auth_accounts": 0
+    },
+    {
+      "name": "owner_only_provisioning_rejects_missing_identity_without_creating_accounts",
+      "passed": true
+    },
+    {
+      "name": "compensation_without_auth_ownership_preserves_native_ledger_and_six_event_triggers",
+      "passed": true
+    },
+    {
+      "name": "separate_native_repair_semantics_restore_empty_history_without_dropping_platform_objects",
+      "passed": true,
+      "native_cli_driver": false,
+      "remote_execution": false
+    },
+    {
+      "name": "cold_cli_initialization_and_commit_without_last_version_recover_without_manual_ledger_sql",
+      "passed": true
+    },
+    {
+      "name": "offline_bundle_and_separate_supported_repair_plan_are_private_files",
+      "passed": true
+    }
+  ],
+  "passed": 7,
+  "model": "non-superuser migration operator; platform owns Auth and six event-trigger models",
+  "limits": [
+    "PostgreSQL 18.6 local; remote 17.12 only user-reported",
+    "No Auth identities created: positive provisioning/refresh with real identity not executed",
+    "PostgREST handlers modeled from reviewed behavior, not copied from hosted definitions",
+    "CLI initialization/repair SQL modeled from pinned source; native CLI driver not run"
+  ],
+  "prior_suites_repeated": false,
+  "auth_accounts_created": 0,
+  "bootstrap_executed": false,
+  "remote_sql_executed": false,
+  "external_mutations": false,
+  "postgresql_shutdown_confirmed": true
+}

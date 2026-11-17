@@ -158,19 +158,33 @@ y el plan de aplicación/reversión están en
 La aplicación remota sigue pendiente. El procedimiento vigente por pasos y los
 scripts de compensación están en
 [FASE 2B.3B: recuperación de migraciones](docs/fase-2b3b-recovery-plan.md).
-Las cuatro migraciones conservan sus hashes; las compensaciones están fuera de
+El manifiesto vigente es el de 2B.3D, que revisa M3 para evitar triggers propios
+en Auth; 1/2/4 conservan sus hashes. Las compensaciones están fuera de
 `supabase/migrations/` y solo se usan mediante un bundle generado desde
 inventarios privados del destino. Se probaron 26 casos locales de recuperación,
 sin repetir suites anteriores ni crear cuentas. **NO APTO todavía para aplicar
-en Supabase** hasta obtener el inventario real de catálogo/permisos y versión
-numérica PostgreSQL bajo autorización separada. El plan Free confirmado no
+en Supabase** hasta obtener el baseline real y confirmar privilegios de conexión
+CLI/fuente Auth bajo autorización separada. PostgreSQL 17.12 ya fue reportado
+por el usuario. El plan Free confirmado no
 ofrece backups automáticos/PITR.
+
+La [FASE 2B.3D](docs/fase-2b3d-resolucion-bloqueos.md) corrige los bloqueos de
+Auth e historial: provisión privada explícita, ledger inicializado por CLI y
+repair separado después de compensar. Siete comprobaciones locales nuevas
+pasaron sin cuentas ni suites anteriores. La conexión CLI real y permisos
+pendientes mantienen el **NO APTO remoto**. Los seis event triggers administrados
+se conservan; no se conceden privilegios ni se modificó Supabase.
 
 La revisión 2B.3C conserva las cuatro migraciones y la recuperación 2B.3B sin
 cambios. El área se almacena como texto sin lista empresarial en SQL; todavía
 no existe un catálogo administrable de áreas. Su definición y la adaptación de
 los selectores/importador del frontend se decidirán posteriormente, sin importar
 áreas ni usuarios de la organización original.
+
+El siguiente diagnóstico manual está preparado en
+[preflight de catálogos](docs/fase-2b3-catalog-preflight.md), con una sola consulta
+SQL de lectura de metadatos. Todavía no se ejecutó; no lee cuentas, registros de
+negocio ni credenciales y no reemplaza el baseline de recuperación.
 
 ---
 

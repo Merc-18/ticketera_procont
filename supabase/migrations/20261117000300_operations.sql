@@ -10,24 +10,23 @@ DO $$ DECLARE t text; BEGIN
   END LOOP;
 END $$;
 
-CREATE FUNCTION app_private.sync_auth_profile() RETURNS trigger
+-- Explicit owner-only provisioning/refresh after separately authorized Auth administration.
+-- No trigger is installed on a platform-owned table. Auth identities are never created here.
+CREATE FUNCTION app_private.provision_auth_profile(p_user_id uuid) RETURNS void
 LANGUAGE plpgsql SECURITY DEFINER SET search_path = '' AS $$
+DECLARE account_email text; account_name text;
 BEGIN
-  IF NEW.email IS NULL THEN RETURN NEW; END IF;
-  IF TG_OP = 'INSERT' THEN
-    INSERT INTO public.users(id,email,full_name,role,is_active)
-    VALUES (NEW.id, NEW.email,
-      left(coalesce(nullif(btrim(NEW.raw_user_meta_data->>'full_name'),''),'Usuario'),200),
-      'viewer', false);
-  ELSE
-    UPDATE public.users SET email = NEW.email WHERE id = NEW.id;
+  PERFORM pg_advisory_xact_lock(743921001);
+  SELECT email, left(coalesce(nullif(btrim(raw_user_meta_data->>'full_name'),''),'Usuario'),200)
+    INTO account_email, account_name FROM auth.users WHERE id=p_user_id;
+  IF NOT FOUND OR account_email IS NULL THEN
+    RAISE EXCEPTION 'Email Auth user required' USING ERRCODE = '22023';
   END IF;
-  RETURN NEW;
+  INSERT INTO public.users(id,email,full_name,role,is_active)
+    VALUES (p_user_id,account_email,account_name,'viewer',false)
+    ON CONFLICT (id) DO UPDATE SET email=EXCLUDED.email;
+  -- Existing name/role/activation are preserved; untrusted metadata never grants a role.
 END $$;
-CREATE TRIGGER procont_auth_profile_insert AFTER INSERT ON auth.users
-  FOR EACH ROW EXECUTE FUNCTION app_private.sync_auth_profile();
-CREATE TRIGGER procont_auth_profile_email AFTER UPDATE OF email ON auth.users
-  FOR EACH ROW EXECUTE FUNCTION app_private.sync_auth_profile();
 
 -- Owner-only bootstrap. No account or password is created by a migration.
 CREATE FUNCTION app_private.bootstrap_superadmin(p_user_id uuid) RETURNS void
@@ -37,10 +36,8 @@ BEGIN
   IF EXISTS (SELECT 1 FROM public.users WHERE role = 'superadmin' AND is_active) THEN
     RAISE EXCEPTION 'An active superadmin already exists' USING ERRCODE = '23514';
   END IF;
-  INSERT INTO public.users(id,email,full_name,role,is_active)
-    SELECT id,email,'Usuario','superadmin',true FROM auth.users WHERE id = p_user_id AND email IS NOT NULL
-    ON CONFLICT (id) DO UPDATE SET role = 'superadmin', is_active = true;
-  IF NOT FOUND THEN RAISE EXCEPTION 'Email Auth user required' USING ERRCODE = '22023'; END IF;
+  PERFORM app_private.provision_auth_profile(p_user_id);
+  UPDATE public.users SET role='superadmin',is_active=true WHERE id=p_user_id;
   INSERT INTO app_private.security_events(subject_id,action) VALUES (p_user_id,'superadmin_bootstrap');
 END $$;
 

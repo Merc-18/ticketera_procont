@@ -465,8 +465,6 @@
   "3": {
     "added": {
       "triggers": [
-        "auth.users.procont_auth_profile_email",
-        "auth.users.procont_auth_profile_insert",
         "public.checklist_items.validate_checklist",
         "public.project_flows.flow_project_consistency",
         "public.project_flows.touch_updated_at",
@@ -488,11 +486,11 @@
         "app_private.check_request_project()",
         "app_private.next_number(p_series text)",
         "app_private.project_number()",
+        "app_private.provision_auth_profile(p_user_id uuid)",
         "app_private.remember(p_operation text, p_key uuid, p_payload jsonb, p_result jsonb)",
         "app_private.replay(p_operation text, p_key uuid, p_payload jsonb)",
         "app_private.request_number()",
         "app_private.require_role(allowed text[])",
-        "app_private.sync_auth_profile()",
         "app_private.touch_updated_at()",
         "app_private.validate_assignment()",
         "app_private.validate_checklist()",

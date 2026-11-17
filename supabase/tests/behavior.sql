@@ -43,8 +43,11 @@ INSERT INTO auth.users(id,email,raw_user_meta_data) VALUES
  ('10000000-0000-4000-8000-000000000003','developer@example.invalid','{}'),
  ('10000000-0000-4000-8000-000000000004','viewer@example.invalid','{}'),
  ('10000000-0000-4000-8000-000000000005','inactive@example.invalid','{}');
+-- Explicit owner provisioning replaces the former trigger on platform-owned Auth.
+-- This historical suite is NOT run by the 2B.3D checks.
+SELECT app_private.provision_auth_profile(id) FROM auth.users;
 SELECT test.ok((SELECT bool_and(role='viewer' AND NOT is_active) FROM public.users),
-  'signup ignores role metadata and creates inactive viewers');
+  'explicit provisioning ignores role metadata and creates inactive viewers');
 SELECT app_private.bootstrap_superadmin('10000000-0000-4000-8000-000000000001');
 SELECT test.expect_error($q$SELECT app_private.bootstrap_superadmin('10000000-0000-4000-8000-000000000002')$q$,
   '23514','bootstrap can run only before first active superadmin');

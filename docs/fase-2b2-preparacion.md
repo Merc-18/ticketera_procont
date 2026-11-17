@@ -1,5 +1,16 @@
 # FASE 2B.2 — Preparación de Supabase
 
+**Procedimiento vigente 2B.3D:** [resolución de bloqueos](fase-2b3d-resolucion-bloqueos.md).
+PostgreSQL 17.12 fue reportado por el usuario; la CLI prevé rol efectivo postgres,
+sin conexión real confirmada. M3 revisada no instala triggers en Auth. El ledger
+ausente es normal y lo inicializa la CLI. No ejecutar SQL manual para crearlo.
+
+**Continuación desde `11b2c15`:** se preparó una
+[consulta manual de catálogos](fase-2b3-catalog-preflight.md), sin ejecutarla.
+Solo inspecciona versión, objetos, ACL, publicaciones y privilegios del operador;
+no consulta cuentas, datos ni filas del ledger. No es el baseline de recuperación
+ni cierra todos sus requisitos. La aplicación remota continúa sin autorización.
+
 **Revisión organizacional 2B.3C (17/11/2026):** las cuatro migraciones ya son
 independientes de áreas/personas de Gilat y se conservan sin cambios ni nuevas
 pruebas SQL. [Adaptación Procont](fase-2b3c-adaptacion-procont.md) documenta los
@@ -36,9 +47,9 @@ previa de obtener HTTP 200 en OpenAPI. No autoriza migraciones.
   mediante `config validate`: válido, sin advertencias ni contacto con la API.
 - Data API local: habilitada, esquemas `public` y `graphql_public`;
   `app_private` y `auth` no expuestos. Seeds deshabilitados y sin rutas.
-- `db.major_version=17` es el valor predeterminado de esta CLI, **no una versión
-  remota comprobada**. Antes de enlazar, confirmar en Dashboard la versión real
-  y ajustar ese valor local si corresponde. El SQL previo se probó en 18.6.
+- `db.major_version=17` coincide con PostgreSQL 17.12 reportado por el usuario
+  en el inventario posterior. No se repite esa lectura; no acredita sesión CLI.
+  Las pruebas locales usan 18.6, diferenciadas de la versión alojada.
 - No hay login/link CLI, cambios de configuración remota, SQL externo,
   migraciones aplicadas, usuarios ni privilegios asignados por esta fase.
 - `.env.local` existe con permisos `600`; sus dos variables están presentes,
@@ -113,15 +124,15 @@ Confirmaciones manuales necesarias en el Dashboard del destino:
 
 ## Orden obligatorio y dependencias
 
-El manifiesto [fase-2b2-migrations.json](validation/fase-2b2-migrations.json)
-fija nombres, orden y hashes. El asistente comprueba que sean exactamente cuatro
-archivos y que su contenido no cambió. No se añadieron ni alteraron migraciones.
+El manifiesto vigente es [fase-2b3d-migrations.json](validation/fase-2b3d-migrations.json),
+con los cuatro nombres y el hash revisado de M3. El manifiesto 2B.2 se conserva
+como histórico. No aplicar una copia con el hash antiguo de M3 o mezclar versiones.
 
 | Orden / archivo en `supabase/migrations/` | Dependencias y efectos |
 |---|---|
 | 1 — `20261117000100_schema.sql` | Supabase ya debe proporcionar `auth.users`, `auth.uid()`, roles `anon`/`authenticated`; crea 9 tablas públicas, 4 privadas, índices, FK y RLS inicialmente cerrado |
 | 2 — `20261117000200_security.sql` | Requiere 1; helpers, políticas y permisos de columnas; ningún perfil se activa por esta migración |
-| 3 — `20261117000300_operations.sql` | Requiere 1+2 y rol `service_role`; RPC, numeración, integridad diferida, trigger Auth, bootstrap, relaciones PostgREST y publicación de 3 tablas si existe `supabase_realtime` |
+| 3 — `20261117000300_operations.sql` | Requiere 1+2 y rol `service_role`; RPC, numeración, integridad diferida, provisión privada explícita desde Auth, definición de bootstrap, relaciones PostgREST y publicación de 3 tablas si existe `supabase_realtime` |
 | 4 — `20261117000400_reference_checklists.sql` | Requiere tabla de plantillas de 1; carga 35 pasos genéricos, sin cuentas ni registros empresariales |
 
 Cada archivo contiene su propia transacción. En CLI 3.2.0, sus BEGIN/COMMIT
@@ -180,7 +191,8 @@ como permiso para modificar opciones remotas o desactivar RLS.
 8. Realizar solo comprobaciones de lectura: cuatro versiones; 9 tablas públicas
    y 4 privadas con RLS; FK, índices, políticas y grants esperados; funciones con
    propietarios de confianza y search_path fijo; dos relaciones calculadas;
-   triggers Auth; publicación Realtime con las tres tablas; 35 plantillas.
+   ausencia de triggers propios Auth y función privada de provisión; publicación
+   Realtime con las tres tablas; 35 plantillas.
    No activar la aplicación ni ejecutar altas RPC para "ver si funciona".
 9. Entregar evidencias de aplicación y sus límites. La creación de la cuenta
    inicial y el bootstrap pasan por la autorización adicional siguiente.
@@ -221,8 +233,10 @@ ejecutar una operación de propietario.
 
 Solo con autorización adicional para crear esa cuenta y conceder el rol:
 
-1. Crear la cuenta Auth por un mecanismo de administración de confianza. El
-   trigger genera un perfil viewer inactivo, ignorando roles de metadatos.
+1. Crear la cuenta Auth solo por un mecanismo autorizado de administración de
+   confianza. No hay trigger propio: el propietario provisiona su perfil con la
+   función privada; bootstrap también la utiliza. Ninguna de esas acciones se
+   ejecuta en esta fase ni se autoriza por preparar migraciones.
 2. Como propietario, invocar `app_private.bootstrap_superadmin(uuid)` con su
    UUID confirmado. No hacerlo mediante Data API ni conceder EXECUTE público.
 3. Comprobar perfil activo/rol, un superadmin activo y evento privado de bootstrap;
@@ -253,8 +267,10 @@ Este diseño inicial se concreta en los cuerpos de `supabase/recovery/`, el
 generador offline `scripts/build_migration_recovery.py` y el plan 2B.3B. Los
 cuerpos no son migraciones ni se ejecutan sueltos. Las ACL de `public`, tablas,
 columnas y helpers se restituyen desde capturas, no desde permisos supuestos.
-El bundle compensa el prefijo completo en orden inverso, restaura las versiones
-propias dentro de esa misma transacción y preserva la tabla/esquema de historial.
+El bundle 2B.3D compensa el prefijo completo en orden inverso y conserva el
+historial. Su ajuste se hace después mediante CLI repair autorizado, en otra
+transacción, con las versiones exactas del repair-plan; no hay DELETE manual
+remoto del ledger ni atomicidad conjunta entre compensación y reparación.
 Se rechaza ante drift o datos nuevos. No hay restauración automática en Free.
 
 | Momento | Respuesta prevista |
@@ -264,8 +280,8 @@ Se rechaza ante drift o datos nuevos. No hay restauración automática en Free.
 | Lote aplicado y aún sin datos/usuarios | Preparar una migración compensatoria específica, revisada y autorizada, sobre los objetos creados por esta secuencia; no ejecutar `DROP SCHEMA public CASCADE` ni borrar plataforma |
 | Ya existen cuentas o datos | Priorizar corrección hacia adelante. Una restauración solo puede usarse si existe un respaldo adecuado y se aprueba su pérdida de cambios posteriores |
 
-La compensación debe retirar primero los triggers Auth `procont_auth_profile_*`
-y las entradas añadidas a publicación, después RPC/políticas, relaciones FK
+La compensación vigente no retira triggers propios de Auth, que ya no se crean.
+Retira los triggers de tablas propias y entradas añadidas a publicación, después RPC/políticas, relaciones FK
 circulares y objetos de negocio en orden inverso. Preservar `auth`, `storage`,
 roles de plataforma y `supabase_realtime` como publicación. La carga 4 no debe
 borrarse ciegamente si alguien modificó las plantillas después.
@@ -306,8 +322,8 @@ Evidencias: [asistente](validation/fase-2b2-preparation.txt),
 Preparación y recuperación local completadas (2B.3B); aplicación remota no
 autorizada. Data API, exposición e historial vacío se aceptan como confirmaciones
 manuales del usuario y no se repiten. **NO APTO todavía para aplicar remoto**:
-pendientes baseline real del catálogo/ACL, versión PostgreSQL numérica y permisos
-del operador/ledger. Su consulta requiere autorización de SQL administrativo de
+pendientes baseline real de recuperación y permisos efectivos de la conexión
+CLI/fuente Auth. La versión 17.12 ya fue reportada. Las lecturas adicionales requieren autorización de SQL administrativo de
 lectura, todavía no concedida. El 401 explicado no requiere cambiar credenciales.
 Aplicación, compensación destructiva, bootstrap, cuentas y pruebas remotas con
 escrituras mantienen autorizaciones independientes.

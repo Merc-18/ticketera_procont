@@ -12,8 +12,8 @@ max_rows = 1000
 [db]
 port = 54322
 shadow_port = 54320
-# CLI 3.2.0 default only. Remote major version is still UNVERIFIED.
-# Confirm it before linking or starting any local stack for parity.
+# User-reported catalog result: PostgreSQL 17.12 (170012), 2026-11-17.
+# No CLI connection or remote SQL was executed by this agent.
 major_version = 17
 
 [db.migrations]

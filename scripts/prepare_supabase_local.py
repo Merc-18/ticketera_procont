@@ -87,7 +87,7 @@ def migration_manifest(root=ROOT):
     folder = root / 'supabase/migrations'
     if sorted(p.name for p in folder.glob('*.sql')) != list(MIGRATION_FILES):
         raise PreparationError('La secuencia de migraciones difiere de las cuatro aprobadas. Detenerse y revisar.')
-    manifest = json.loads((root / 'docs/validation/fase-2b2-migrations.json').read_text())
+    manifest = json.loads((root / 'docs/validation/fase-2b3d-migrations.json').read_text())
     actual = [{'file': name, 'sha256': hashlib.sha256((folder / name).read_bytes()).hexdigest()}
               for name in MIGRATION_FILES]
     if actual != manifest['migrations']:

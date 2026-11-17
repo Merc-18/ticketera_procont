@@ -1,5 +1,10 @@
 # FASE 2B1 — Integración local de consumidores Supabase
 
+**Integración vigente tras 2B.3D:** la provisión/refresco de perfil es ahora
+administrativa y explícita, sin trigger propio en Auth. El frontend permanece
+intacto: antes de permitir login debe existir el perfil autorizado; su ausencia
+deniega acceso. Véase [resolución de bloqueos](fase-2b3d-resolucion-bloqueos.md).
+
 Fecha: 17/11/2026. Base: `1599d97` (FASE 2A), con FASE 1 en `827489b`.
 
 ## Resultado y alcance

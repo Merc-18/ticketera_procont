@@ -1,5 +1,16 @@
 # FASE 2B.3A — Diagnóstico de conectividad y preflight
 
+**Resultado posterior reportado y tratamiento 2B.3D:** PostgreSQL 17.12, operador
+SQL Editor postgres, Auth de otro propietario, ledger inexistente y seis event
+triggers administrados. No se repitió la lectura. [Resolución de bloqueos](fase-2b3d-resolucion-bloqueos.md)
+revisa M3 y la recuperación; la ausencia de ledger no exige SQL manual.
+
+**Consulta pendiente de ejecución manual, base `11b2c15`:**
+[preflight de catálogos](fase-2b3-catalog-preflight.md) contiene una sola sentencia
+de lectura para versión numérica, objetos y privilegios. El agente no la ejecutó.
+No repite la conectividad ni las comprobaciones Dashboard y no consulta registros
+de negocio, cuentas o versiones del historial. Los resultados siguen pendientes.
+
 **Continuación 2B.3B (17/11/2026):** comprobaciones visuales ya completadas por
 el usuario, sin nuevas peticiones: Data API habilitada; esquemas `public` y
 `extensions`; historial vacío; sin tablas de negocio; Free sin backups
@@ -96,21 +107,21 @@ No se modificó el estado privado histórico para ocultar el 401 inicial.
 | Causa de 401 OpenAPI | Confirmada; no requiere corregir credenciales |
 | Data API habilitada | Confirmada manualmente por usuario; sin verificación repetida |
 | `public` expuesto, `auth` y `app_private` excluidos | Confirmado manualmente: lista `public`, `extensions`; TOML no se aplica al remoto |
-| Versión PostgreSQL instalada | Usuario indicó «última soportada»; falta número; `db.major_version=17` local no se cambia por inferencia |
+| Versión PostgreSQL instalada | Usuario reportó 17.12 (`170012`) en inventario; major local 17 coincide; sin lectura repetida por agente |
 | Historial remoto vacío | Confirmado manualmente por usuario en Dashboard; captura administrativa para recuperación pendiente |
 | Ausencia de tablas de negocio previas | Revisión visual completada y confirmada por usuario |
 | Respaldo/restauración y alcance de reversión | Free sin backup automático/PITR confirmado por usuario; compensaciones 2B.3B probadas localmente, no autorizadas para remoto |
-| Inventario de objetos/ACL y privilegios del operador | Preparado como consulta local; captura remota todavía no autorizada |
+| Inventario de objetos/ACL y privilegios del operador | Usuario ejecutó consulta y reportó resultados; no equivale al baseline de recuperación ni a verificar sesión CLI |
 | CLI administrativa autenticada/enlazada | No realizada; la clave publicable no autentica Management API ni CLI |
-| Cuatro archivos, hashes, orden | Confirmados contra el manifiesto existente; sin cambios SQL |
+| Cuatro archivos, hashes, orden | M3 revisada en 2B.3D, nuevo manifiesto preparado; 1/2/4 sin cambios |
 | Compatibilidad funcional SQL/RPC | Evidencia local de 2A/2B.1 reutilizada; integración real pendiente |
 | Autorización de aplicar | **No otorgada en esta fase** |
 
 ## Comprobaciones manuales sin ejecutar SQL
 
-**Lista histórica ya completada por el usuario. No repetir.** Solo falta el
-número PostgreSQL, no una nueva ronda de las cinco comprobaciones. El inventario
-administrativo nuevo de recuperación se solicita bajo otra autorización.
+**Lista histórica ya completada por el usuario. No repetir.** El inventario
+posterior aportó PostgreSQL 17.12. La conexión CLI y el baseline de recuperación
+son asuntos distintos, todavía pendientes de autorización/comprobación.
 
 El usuario eligió Dashboard sin token personal en 2B.2. Se mantiene esa opción:
 
@@ -185,6 +196,7 @@ Diagnóstico del 401 completado. Se corrigió la exigencia errónea de obtener
 HTTP 200 en OpenAPI. Las cinco comprobaciones Dashboard fueron confirmadas
 manualmente después de este diagnóstico, sin repetir llamadas ni pruebas.
 2B.3B aporta compensación y 26 pruebas locales específicas. **NO APTO todavía
-para aplicar remoto**, hasta disponer del inventario de catálogo/ACL, versión
-numérica y privilegios necesarios. No se aplicó ninguna migración ni SQL remoto,
+para aplicar remoto**, hasta disponer del baseline y privilegios reales de
+conexión CLI. En 2B.3D el usuario ya reportó 17.12 y metadatos; no se repitió esa
+consulta ni se aplicó ninguna migración o SQL remoto por el agente,
 cambio de configuración, cuenta o bootstrap. Las autorizaciones siguen separadas.

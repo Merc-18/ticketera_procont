@@ -112,8 +112,17 @@ def apply(db, through, missing_last_history=False):
 
 def recover(db, snapshots):
     sql(recovery.build(snapshots), db)
+    assert inventory(db) == recovery.retain_cli_ledger(snapshots[0], snapshots[-1])
+    finish_cli_repair_model(db, snapshots)
     assert inventory(db) == snapshots[0], 'Catalog/ACL/history restoration mismatch'
     assert sql('SELECT value FROM storage.platform_guard WHERE id=1', db).stdout.strip() == 'preserve-platform-sentinel'
+
+
+def finish_cli_repair_model(db, snapshots):
+    # Isolated model of native migration repair --status reverted, AFTER SQL compensation.
+    # Never a direct remote ledger-edit procedure; this historical suite was not rerun in 2B.3D.
+    for version in recovery.repair_plan(snapshots)['versions_to_mark_reverted']:
+        sql('DELETE FROM supabase_migrations.schema_migrations WHERE version=' + recovery.literal(version), db)
 
 
 def expect_failure(statement, db):
@@ -291,6 +300,7 @@ try:
         assert output.stat().st_mode & 0o777 == 0o600
         assert subprocess.run(command, capture_output=True).returncode != 0
         sql(output.read_text(), db)
+        finish_cli_repair_model(db, snapshots)
         assert inventory(db) == snapshots[0]
     record('offline_generator_private_file_no_overwrite_and_executable_bundle')
     summary = {

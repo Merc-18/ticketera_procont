@@ -1,5 +1,10 @@
 # FASE 2A — PostgreSQL, migraciones y seguridad
 
+**Actualización técnica 2B.3D:** [resolución de bloqueos](fase-2b3d-resolucion-bloqueos.md)
+sustituye los triggers de perfil en Auth por provisión privada explícita y
+actualiza recuperación/historial. La evidencia de 72 pruebas es histórica; no
+se repitió ni se atribuye a la migración 3 revisada. Véanse las siete pruebas nuevas.
+
 Fecha: 17/11/2026. Base de trabajo: commit `827489b` de FASE 1.
 Destino previsto: proyecto independiente `ticketera-procont`, todavía sin
 conexión desde este repositorio.
@@ -160,10 +165,12 @@ sin grants de lectura o escritura para la API.
 
 ## Alta de usuarios y bootstrap
 
-El trigger de `auth.users` crea perfiles `viewer` **inactivos**, ignorando roles
-o activación en metadatos. No crea cuentas Auth, contraseñas ni usuarios de
-demostración. Los cambios de correo Auth se sincronizan al perfil.
-Se soporta el flujo actual con correo; un alta Auth sin correo no crea perfil.
+Desde 2B.3D no se instala un trigger de aplicación sobre `auth.users`.
+El propietario invoca `app_private.provision_auth_profile(uuid)` después de una
+administración Auth separadamente autorizada: crea un perfil viewer inactivo
+desde una identidad existente, ignorando roles/activación en metadatos. Rechaza
+identidad ausente o sin correo. El refresco explícito conserva nombre, rol y
+activación existentes y actualiza correo; no hay sincronización automática.
 
 En 2B, una vez que exista el usuario Auth inicial y su identidad esté definida,
 el propietario de la base podrá invocar de forma controlada
@@ -174,8 +181,8 @@ convierte en superadmin por ser el primer usuario.
 
 La provisión de cuentas adicionales mediante Auth Admin deberá realizarse en
 un backend de confianza. La administración visual actual basada en `signUp`
-y posterior `insert users` necesita adaptación: el trigger ya crea el perfil
-y este queda inactivo hasta que un administrador autorizado lo habilite.
+y posterior `insert users` necesita adaptación: el perfil debe provisionarse por
+el propietario y queda inactivo hasta que un administrador autorizado lo habilite.
 La eliminación definitiva de cuentas Auth y la edición administrativa del
 nombre de otros perfiles quedan fuera de las RPC de esta fase; se mantiene
 la desactivación y la edición del nombre propio.

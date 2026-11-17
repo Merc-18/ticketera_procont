@@ -1,5 +1,15 @@
 # FASE 2B.3C — Adaptación organizacional de Ticketera Procont
 
+**Cambio técnico posterior 2B.3D:** se revisa únicamente la integración de perfiles
+Auth y su recuperación, sin nuevas áreas, personas o reglas organizacionales.
+La revisión 2B.3C y su cierre `11b2c15` siguen como evidencia histórica;
+[resolución de bloqueos](fase-2b3d-resolucion-bloqueos.md) documenta el nuevo hash M3.
+
+**Continuidad posterior al cierre `11b2c15`:** la preparación de la
+[consulta manual de catálogos](fase-2b3-catalog-preflight.md) es una entrega
+posterior, sin ejecución SQL ni repetición de pruebas. La revisión organizacional
+permanece cerrada; no cambia frontend, migraciones, áreas o usuarios.
+
 17/11/2026. Base: `cb468be`. Revisión estática y documentación, sin SQL local
 ni remoto, sin aplicar migraciones ni repetir pruebas anteriores.
 

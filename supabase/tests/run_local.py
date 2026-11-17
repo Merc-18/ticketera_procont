@@ -153,6 +153,7 @@ try:
     super_a = '10000000-0000-4000-8000-000000000001'
     super_b = '10000000-0000-4000-8000-000000000006'
     sql(f"INSERT INTO auth.users(id,email) VALUES ('{super_b}','second-super@example.invalid')", database)
+    sql(f"SELECT app_private.provision_auth_profile('{super_b}')", database)
     call_as('authenticated', super_a, f"SELECT public.admin_update_user('{super_b}','superadmin',true)")
 
     def demote(pair):

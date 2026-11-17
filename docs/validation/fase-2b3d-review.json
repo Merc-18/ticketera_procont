@@ -1,0 +1,203 @@
+{
+  "phase": "2B.3D",
+  "base_commit": "11b2c15",
+  "reviewed_at_utc": "2026-11-17T23:34:13.768059+00:00",
+  "reported_inventory": {
+    "source": "user-executed catalog query; summary plus six explicit event-trigger metadata rows",
+    "postgresql": "17.12",
+    "server_version_num": 170012,
+    "current_user": "postgres",
+    "session_user": "postgres",
+    "public_business_objects_absent": true,
+    "auth_users_owner": "supabase_auth_admin",
+    "auth_trigger_privilege": true,
+    "auth_ownership_available": false,
+    "supabase_migrations_schema_present": false,
+    "original_blockers": 3,
+    "original_pending": 4,
+    "full_export_file_available": false,
+    "auth_source_column_select": {
+      "id": true,
+      "email": true,
+      "raw_user_meta_data": true
+    },
+    "postgres_role": {
+      "superuser": false,
+      "bypass_rls": true
+    },
+    "permission_evidence_source": "user read metadata from existing export; no additional SQL or account data"
+  },
+  "managed_event_triggers": [
+    {
+      "name": "issue_graphql_placeholder",
+      "owner": "supabase_admin",
+      "handler_schema": "extensions",
+      "handler_function": "set_graphql_placeholder",
+      "event": "sql_drop",
+      "enabled": "O",
+      "tags": [
+        "DROP EXTENSION"
+      ]
+    },
+    {
+      "name": "issue_pg_cron_access",
+      "owner": "supabase_admin",
+      "handler_schema": "extensions",
+      "handler_function": "grant_pg_cron_access",
+      "event": "ddl_command_end",
+      "enabled": "O",
+      "tags": [
+        "CREATE EXTENSION"
+      ]
+    },
+    {
+      "name": "issue_pg_graphql_access",
+      "owner": "supabase_admin",
+      "handler_schema": "extensions",
+      "handler_function": "grant_pg_graphql_access",
+      "event": "ddl_command_end",
+      "enabled": "O",
+      "tags": [
+        "CREATE EXTENSION"
+      ]
+    },
+    {
+      "name": "issue_pg_net_access",
+      "owner": "supabase_admin",
+      "handler_schema": "extensions",
+      "handler_function": "grant_pg_net_access",
+      "event": "ddl_command_end",
+      "enabled": "O",
+      "tags": [
+        "CREATE EXTENSION"
+      ]
+    },
+    {
+      "name": "pgrst_ddl_watch",
+      "owner": "supabase_admin",
+      "handler_schema": "extensions",
+      "handler_function": "pgrst_ddl_watch",
+      "event": "ddl_command_end",
+      "enabled": "O",
+      "tags": null
+    },
+    {
+      "name": "pgrst_drop_watch",
+      "owner": "supabase_admin",
+      "handler_schema": "extensions",
+      "handler_function": "pgrst_drop_watch",
+      "event": "sql_drop",
+      "enabled": "O",
+      "tags": null
+    }
+  ],
+  "public_sources": [
+    {
+      "url": "https://github.com/supabase/cli/blob/v3.2.0/apps/cli/src/command-internal/migration-history.ts",
+      "sha256": "83f8ecca5876d67fd897c5d7d36f0ec1a4061af5535c86ad99b779b966f3aaa8"
+    },
+    {
+      "url": "https://github.com/supabase/cli/blob/v3.2.0/apps/cli/src/command-internal/migration-apply.ts",
+      "sha256": "1607f492f16a74f9873dc5abb07debd767d4baa4a8337b2d4a453892f0e27311"
+    },
+    {
+      "url": "https://github.com/supabase/cli/blob/v3.2.0/apps/cli/src/command-internal/db-push-core.ts",
+      "sha256": "5982870daac248c5fa680cbc9c5848d4805bffd2ec2b68c4738728a07b853386"
+    },
+    {
+      "url": "https://github.com/supabase/cli/blob/v3.2.0/apps/cli/src/command-internal/db-config.layer.ts",
+      "sha256": "20b20403a794e322e00b7e616bfd52a5ba85f8519ca10d1741fb867acd8f199b"
+    },
+    {
+      "url": "https://github.com/supabase/cli/blob/v3.2.0/apps/cli/src/command-internal/db-connection.sql-pg.layer.ts",
+      "sha256": "f24010228e1a9cd446619df826bcd0752155ccd8e07214e07fe7f7684061a9c7"
+    },
+    {
+      "url": "https://github.com/supabase/cli/blob/v3.2.0/apps/cli/src/commands/migration/repair/repair.handler.ts",
+      "sha256": "368653ee97ef70cae6356360d04a2b31397bbca28c160511a05e0f0d584e6d61"
+    },
+    {
+      "url": "https://github.com/supabase/cli/blob/v3.2.0/apps/cli/src/commands/db/query/query.handler.ts",
+      "sha256": "dd75c575bc2e0bfe3448aa8cf63197cc8b76e858d6dac38345d10c291b5c2387"
+    },
+    {
+      "url": "https://github.com/supabase/postgres/blob/develop/migrations/db/migrations/20220321174452_fix-postgrest-alter-type-event-trigger.sql",
+      "sha256": "674bfe11a9cb828c55ca7c9e00d4f4edcbcb0003d956d8866c9563810e7f0f0e",
+      "hosted_definition_equivalence_verified": false
+    }
+  ],
+  "decisions": {
+    "auth": "owner-only explicit profile provision/refresh; no custom Auth triggers or Auth locks during compensation",
+    "history_initialization": "native CLI before first pending migration; absent ledger accepted in cold baseline",
+    "history_recovery": "SQL bundle preserves all native ledger rows; separate selected CLI repair after confirmed compensation",
+    "cli_effective_role_from_pinned_source": "postgres on standard linked path; actual session not observed",
+    "managed_event_trigger_policy": "preserve all six; four extension-only tags not used, two PostgREST watcher behaviors reviewed and modeled locally"
+  },
+  "limitations": {
+    "runtime_cli_identity_verified": false,
+    "auth_source_select_and_rls_verified": true,
+    "positive_provisioning_with_auth_identity_tested": false,
+    "hosted_event_handler_bodies_read": false,
+    "native_cli_driver_executed": false,
+    "real_recovery_baseline_available": false,
+    "local_engine_matches_remote_major": false,
+    "auth_permission_verification_scope": "reported postgres role; actual migration connection still not observed"
+  },
+  "execution": {
+    "new_local_checks": 7,
+    "previous_suites_repeated": false,
+    "remote_sql_executed": false,
+    "external_mutations": false,
+    "auth_users_created": 0,
+    "bootstrap_executed": false
+  },
+  "verdict": "NO APTO for remote migrations; Auth and ledger design resolved, postgres read privileges reported; actual CLI connection/baseline/approval still pending",
+  "delivery": {
+    "commit_created": true,
+    "git_clean": true,
+    "head_before_closeout": "11b2c158d0e7c0e623398a01595a371a2930b707",
+    "commit_message": "fix: resolver dependencias Auth e historial de migraciones",
+    "commit_reference": "the enclosing Git commit; inspect git log -1",
+    "context": "normal Ubuntu terminal; no remote operations or tests"
+  },
+  "local_cli_project_link_file_present": false,
+  "validation": {
+    "python_and_sql_syntax_valid": true,
+    "followup_is_one_catalog_select": true,
+    "local_markdown_links_valid": true,
+    "new_local_checks_passed": 7,
+    "disposable_postgresql_shutdown_confirmed": true,
+    "frontend_dependencies_unchanged": true,
+    "prior_suites_not_executed": true,
+    "fixtures_updated_but_historical_suites_not_revalidated": true
+  },
+  "artifacts_sha256": {
+    "README.md": "5f2196df8182245b8419508d9c429ef5e95eb3c161d68c0702cd8c4b472604d1",
+    "docs/fase-2a-supabase.md": "00fa35c10dcc1d0cf24448483c2b3ead0b0ff43ace2394d8b2821fd9f587d26e",
+    "docs/fase-2b1-integracion.md": "820a14a1cab16068c43bc0bab97883dce7577f58f0362acee6ac227d7ee1c73e",
+    "docs/fase-2b2-preparacion.md": "ff7a2bf7039e436dc0b7cd984ad70ed001421930d42cd3024e700d73b721036b",
+    "docs/fase-2b3-catalog-preflight.md": "6218228fb339ce990c930cfa63c0a960b163f6f3e961c808a514e729dc9534cd",
+    "docs/fase-2b3a-preflight.md": "25447c4aa4b7233d8390da232bea385e5a6e2923ff3688bb38e7c178bd49e7ce",
+    "docs/fase-2b3b-recovery-plan.md": "62142294d01fd532158fcfac61e3a5f73da52f2917fa34ecd975075425aed047",
+    "docs/fase-2b3c-adaptacion-procont.md": "c5debde50f957172dc1e69a0da87890ab752176bb599cce623c6c6c03d7f420e",
+    "docs/fase-2b3d-resolucion-bloqueos.md": "df43df6f117243dae2d0c3f3d0f2e3075a0cd68923b2f8203060006762c8937e",
+    "docs/validation/fase-2b3-catalog-preflight-review.json": "cae0a7daa29d54e000934babbdddb62a73071fa013081cde62c41a2e8486ebea",
+    "docs/validation/fase-2b3-catalog-preflight.sql": "77b8d704ef701169cd84acde4128319d02adf5843b2cf99a288ed15126836543",
+    "docs/validation/fase-2b3d-cli-preflight.sql": "aadac1e6aea1b30e268b9e6e6c594373771daf43f26e59bdf977a6a272cb040b",
+    "docs/validation/fase-2b3d-local.json": "8d3de2253064d485839bad2dc099ca8200681ee23f1b2f4783d9a13a56d153de",
+    "docs/validation/fase-2b3d-local.txt": "c1312953a86c4a9b23200820e84fae71de77ee8d34b6f0c3f496b86748702299",
+    "docs/validation/fase-2b3d-migrations.json": "377d2b99d321b47a8b3e35f926dc9bcffcacaca0c1cd75f001433569e175fc7f",
+    "scripts/build_migration_recovery.py": "39cd75afeafb4a0989bcc2910ac8a29022792f284513306874c64a63b5301b0b",
+    "scripts/prepare_supabase_local.py": "24492fc3ba82587e35ad0c0fd03b7e3a2488200eee9e67c759016816ac05174a",
+    "supabase/README.md": "4475f3ea91ef56e4dc94f96742fd0b9c55ff92701e70ae785fa05527ee17a4dc",
+    "supabase/config.toml": "7b1dae64694de8a8da56101789cdfc8743c6636f79f7c6659dcbde9dcb8680fd",
+    "supabase/migrations/20261117000300_operations.sql": "06b2bf5b0d5275c1e3d95b1848983c4242610f45d28a611fca256e3e696d206a",
+    "supabase/recovery/compensate_03.sql": "d38aad498041666bb837fe77a516375862a49906d7aaf42ead78abd0ba26d9ac",
+    "supabase/recovery/scope.json": "028f4c4ed8a171c968c0361217d17657847b24828ca078c35950eaec94888217",
+    "supabase/tests/behavior.sql": "4ff0cebc72d3fdec8bd32d827c208a8cd7ad11bd78b26f48d5d2728999d91982",
+    "supabase/tests/blockers_local.py": "8334b64546dd73b9e0f5b02edcdbfbc6a742e61d710eefb5140e3256e24bd66c",
+    "supabase/tests/recovery_local.py": "b9d3a1806ee575a2ec0c3b3bb717d4f04bf1d12b35dc37489eec5a92493d2b9c",
+    "supabase/tests/run_local.py": "18620c8736e4d09d9f7605c3b32ecf7a6ad7f9fb3d23afbbfb19c537acadcbe1",
+    "supabase/tests/support/pgrst_watchers_2b3d.sql": "fa2bab6cd1877020a47a381991fdf69234e98c793eb36f8faf21ac8f67550277"
+  }
+}

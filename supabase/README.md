@@ -1,5 +1,12 @@
 # Migraciones de Ticketera Procont
 
+**Vigente 2B.3D:** M3 revisada, [manifiesto](../docs/validation/fase-2b3d-migrations.json)
+y [resolución de bloqueos](../docs/fase-2b3d-resolucion-bloqueos.md). No se crean
+triggers propios en Auth. La provisión de perfil es privada y explícita; cambios
+de correo requieren refresco administrativo. El historial lo inicializa la CLI;
+la compensación no lo edita y genera un plan aparte de repair nativo posterior.
+No se ejecutaron estas operaciones remotamente. No aplicar el hash M3 anterior.
+
 La única secuencia nueva de migraciones está en `migrations/`, ordenada por el
 prefijo de versión. Está diseñada para un Supabase vacío, con `auth.users`,
 `auth.uid()` y los roles de plataforma ya existentes.
