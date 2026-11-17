@@ -1,0 +1,13 @@
+test_exact_target_and_canonical_url_required (__main__.PreparationTests.test_exact_target_and_canonical_url_required) ... ok
+test_existing_file_and_symlink_are_not_overwritten (__main__.PreparationTests.test_existing_file_and_symlink_are_not_overwritten) ... ok
+test_http_errors_never_return_response_details_or_credentials (__main__.PreparationTests.test_http_errors_never_return_response_details_or_credentials) ... ok
+test_migration_manifest_matches_the_four_existing_files (__main__.PreparationTests.test_migration_manifest_matches_the_four_existing_files) ... ok
+test_no_values_saved_if_git_does_not_ignore_them (__main__.PreparationTests.test_no_values_saved_if_git_does_not_ignore_them) ... ok
+test_only_publishable_keys_accepted (__main__.PreparationTests.test_only_publishable_keys_accepted) ... ok
+test_private_files_permissions_and_honest_status (__main__.PreparationTests.test_private_files_permissions_and_honest_status) ... ok
+test_probe_sends_only_get_schema_without_redirects (__main__.PreparationTests.test_probe_sends_only_get_schema_without_redirects) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.002s
+
+OK

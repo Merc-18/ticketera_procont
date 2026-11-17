@@ -1,0 +1,33 @@
+# Local CLI preparation only: this file has NOT been pushed to Supabase.
+# The local identifier does not authenticate the remote project name.
+project_id = "ticketera-procont"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+shadow_port = 54320
+# CLI 3.2.0 default only. Remote major version is still UNVERIFIED.
+# Confirm it before linking or starting any local stack for parity.
+major_version = 17
+
+[db.migrations]
+enabled = true
+schema_paths = []
+
+[db.seed]
+enabled = false
+sql_paths = []
+
+[realtime]
+enabled = true
+
+[auth]
+enabled = true
+site_url = "http://localhost:5173"
+additional_redirect_urls = ["http://localhost:5173"]

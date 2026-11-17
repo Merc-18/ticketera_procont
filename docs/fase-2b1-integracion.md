@@ -221,6 +221,10 @@ email, login real o escrituras reales en Supabase.
 
 ## Pasos exactos de conexión — solo para la siguiente fase autorizada
 
+Actualización de FASE 2B.2: para la CLI instalada 3.2.0 seguir
+[el procedimiento actualizado](fase-2b2-preparacion.md), que fija el destino
+con `--remote` y excluye Vault con `--skip-vault`. Estos pasos no se ejecutaron.
+
 Los pasos de esta sección **no se ejecutaron**. No iniciar Vite con valores
 remotos hasta que se autorice la conexión. El nombre visible del proyecto no
 permite deducir su project ref, URL ni clave: deben obtenerse del proyecto nuevo.
@@ -239,9 +243,9 @@ permite deducir su project ref, URL ni clave: deben obtenerse del proyecto nuevo
    supabase login
    read -r -p 'Project ref del proyecto independiente: ' PROCONT_SUPABASE_PROJECT_REF
    supabase link --project-ref "$PROCONT_SUPABASE_PROJECT_REF"
-   supabase db push --dry-run
+   supabase db push --remote --skip-vault --dry-run
    # Solo con autorización para aplicar y después de revisar el dry-run:
-   supabase db push
+   supabase db push --remote --skip-vault --yes
    ```
 
    `supabase init` solo se necesita si aún no existe `supabase/config.toml`.

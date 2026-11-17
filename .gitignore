@@ -8,6 +8,8 @@ dist-ssr/
 # Local Supabase CLI state (project links and temporary connection metadata)
 supabase/.temp/
 supabase/.branches/
+.supabase-local/
+scripts/__pycache__/
 
 # Environment variables (contain secrets)
 .env*

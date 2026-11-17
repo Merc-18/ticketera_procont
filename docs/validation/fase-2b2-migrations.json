@@ -1,0 +1,22 @@
+{
+  "base_commit": "eceb849",
+  "schema_commit": "1599d97",
+  "migrations": [
+    {
+      "file": "20261117000100_schema.sql",
+      "sha256": "4cc433c7eb91278abf020b82d9e40ddc39052642630db267e0753bf2c4f5fbcd"
+    },
+    {
+      "file": "20261117000200_security.sql",
+      "sha256": "669171a4a000c4dbfeb78ca53e4c58df3b7ba9473c7735ef4d024047d5bf8cf5"
+    },
+    {
+      "file": "20261117000300_operations.sql",
+      "sha256": "f697e130cf736a8b31476a73198b17f314293708263c7b1ec0da3954c44badc8"
+    },
+    {
+      "file": "20261117000400_reference_checklists.sql",
+      "sha256": "2ae7b98b460a040319e0c2007809c1842374e97cb2ee4ac140a8fdfc48b0b145"
+    }
+  ]
+}

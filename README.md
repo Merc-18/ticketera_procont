@@ -140,6 +140,10 @@ Los consumidores de la aplicación ya están adaptados localmente a esas RPC.
 La configuración, las pruebas y los pasos de conexión autorizada están en
 [FASE 2B1: integración local](docs/fase-2b1-integracion.md).
 
+El procedimiento actualizado para CLI 3.2.0, la captura local de configuración
+y el plan de aplicación/reversión están en
+[FASE 2B.2: preparación de Supabase](docs/fase-2b2-preparacion.md).
+
 ---
 
 ## Variables de entorno

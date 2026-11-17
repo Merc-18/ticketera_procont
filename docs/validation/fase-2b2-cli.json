@@ -1,0 +1,23 @@
+{
+  "cli_version": "3.2.0",
+  "binary_path": "/home/procont/.local/lib/supabase-cli/3.2.0/supabase",
+  "official_archive_sha256": "fb88b175a817563505be02c60872060bcb8d5c869a1aa5656eaeb085d4a2f1e4",
+  "installation_scope": "local_binary_outside_repository",
+  "local_config_parsed": true,
+  "local_seed_enabled": false,
+  "local_exposed_schemas": [
+    "public",
+    "graphql_public"
+  ],
+  "db_major_version": 17,
+  "db_major_remote_verified": false,
+  "remote_cli_commands_executed": [],
+  "cli_config_validation": {
+    "valid": true,
+    "complete": true,
+    "errors": 0,
+    "warnings": 0,
+    "resolve_env": false,
+    "contacts_api": false
+  }
+}
