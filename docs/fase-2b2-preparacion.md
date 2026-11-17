@@ -1,6 +1,8 @@
 # FASE 2B.2 — Preparación de Supabase
 
-17/11/2026. Base: `eceb849`. Este informe complementa FASE 2A y sustituye los
+17/11/2026. Base funcional: `eceb849`; preparación: `c6e79f4`; asistente con
+entradas visibles: `28acd95`. Cierre de preparación después de la captura local
+confirmada por el usuario. Este informe complementa FASE 2A y sustituye los
 comandos de conexión de 2B.1 para la CLI instalada **3.2.0**.
 
 ## Estado
@@ -17,39 +19,59 @@ comandos de conexión de 2B.1 para la CLI instalada **3.2.0**.
   y ajustar ese valor local si corresponde. El SQL previo se probó en 18.6.
 - No hay login/link CLI, cambios de configuración remota, SQL externo,
   migraciones aplicadas, usuarios ni privilegios asignados por esta fase.
-- Al preparar este informe todavía se espera la captura local del usuario.
-  No se afirma que exista `.env.local` ni que el destino real esté verificado.
-  El resultado posterior se conserva solo en `.supabase-local/status.json`.
+- `.env.local` existe con permisos `600`; sus dos variables están presentes,
+  no están versionadas y la URL coincide con el destino privado fijado. Los
+  archivos de estado tienen permisos `600`, dentro de un directorio `700`.
+- El usuario confirmó `ticketera-procont` desde Dashboard. Se conserva esa
+  confirmación manual, sin presentarla como verificación de Management API.
+- La evidencia existente de Data API contiene **HTTP 401** (`accepted=false`).
+  No se repitió la petición. No están confirmados la correspondencia funcional
+  URL/clave, los esquemas expuestos ni la versión PostgreSQL remota.
+- **No apto todavía para ejecutar DDL**: primero hay que resolver el 401 y
+  comprobar los requisitos remotos. Puede autorizarse la siguiente fase de
+  forma condicionada a superar esas comprobaciones.
+
+La comprobación local sin valores se registra en
+[fase-2b2-local-ready.json](validation/fase-2b2-local-ready.json). No prueba que
+el servidor esté vacío: esa condición sigue siendo una declaración del usuario
+que debe contrastarse en el preflight autorizado de 2B.3.
 
 La configuración TOML es local: `project_id="ticketera-procont"` no acredita
 el nombre del proyecto alojado. No ejecutar `config push` para trasladarla.
 
-## Captura local sin revelar valores
+## Configuración local completada
 
 El usuario eligió introducir URL y clave y confirmar el destino desde Dashboard,
 sin proporcionar token personal. Ejecutar desde una terminal interactiva:
 
 ```bash
-python3 /home/procont/projects/ticketera-procont/scripts/prepare_supabase_local.py
+python3 /home/procont/projects/ticketera-procont/scripts/prepare_supabase_local.py --offline
 ```
 
-Pide Project URL, Publishable key y el nombre observado en Dashboard mediante
-entrada oculta. Exige el nombre exacto `ticketera-procont` y una URL HTTPS
-canónica. Rechaza claves secretas, JWT, placeholders y configuración existente;
-no sobrescribe archivos. No solicita contraseñas ni tokens Management API.
+La captura ya fue realizada por el usuario; no volver a ejecutarla para
+sobrescribirla. El comando se documenta para instalaciones nuevas. Desde
+`28acd95`, utiliza entradas visibles y muestra la URL normalizada, limpia
+espacios/saltos de línea/comillas y explica errores de URL. No reimprime la clave
+ni la incorpora al historial. Exige el nombre exacto `ticketera-procont` y una
+URL HTTPS canónica. Rechaza claves secretas, JWT, placeholders y configuración
+existente. No solicita contraseñas ni tokens Management API.
 
 Guarda `.env.local` con las dos variables requeridas y permisos `600`:
 `VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE_KEY`. El directorio privado
 `.supabase-local/` tiene permisos `700`; contiene el destino fijado en
 `target.json` y un resumen sin valores de entorno en `status.json`. Los tres
-archivos están ignorados por Git. No imprimirlos con `cat`, `env` ni logs.
+archivos están ignorados por Git. No imprimirlos con `cat`, `env` ni logs. Este
+informe no incorpora URL, clave, project ref, UUID ni identidad de una cuenta.
 
 El único contacto opcional es **GET `/rest/v1/`** con la clave publicable, para
 recibir OpenAPI. No sigue redirecciones, no consulta registros, no llama RPC,
 Auth o Management API y no ejecuta SQL. `--offline` permite guardar sin ese GET.
 Un GET aceptado confirma disponibilidad de Data API/clave, **no el nombre del
 proyecto ni RLS**. Si falla, se registra como pendiente, sin mostrar respuesta
-ni credenciales. El asistente no inicia Vite.
+ni credenciales. El asistente no inicia Vite. El 401 registrado debe tratarse
+como un resultado no satisfactorio; por sí solo no distingue clave incorrecta,
+clave de otro destino, restricciones de API u otra causa. No atribuirlo a la
+falta de migraciones ni repetir peticiones sin una corrección o motivo concreto.
 
 Confirmaciones manuales necesarias en el Dashboard del destino:
 
@@ -80,22 +102,54 @@ Cada archivo contiene su propia transacción. **El lote de cuatro no es una
 aplicados. No reejecutar migraciones ya confirmadas ni usar scripts SQL raíz,
 `tests/support/auth_stub.sql`, `setup.js` o seeds para resolver un fallo.
 
-## Plan de ejecución — requiere autorización explícita posterior
+## Procedimiento definitivo — requiere autorización para 2B.3
 
-1. Confirmar destino fijado, versión PostgreSQL, proyecto vacío, historial y
-   permisos del operador. Guardar fuera de Git el estado inicial del esquema y
-   del historial y verificar qué respaldo/restauración ofrece el plan contratado;
-   no asumir que existe PITR. Confirmar que no hay usuarios o datos a preservar.
-2. Dar acceso CLI al operador mediante login interactivo de plataforma. La clave
-   publicable **no autentica la CLI**. Enlazar exclusivamente el ref del destino
-   fijado en `.supabase-local/target.json`; no seleccionar proyectos por similitud
-   de nombre. No se guardan tokens CLI en `.env.local` ni variables `VITE_*`.
-3. Inspeccionar historial y el dry-run. Detenerse ante cualquier versión remota
-   inesperada, objeto existente o lista distinta de las cuatro migraciones.
-4. Presentar destino, hashes y resultado de preflight para autorización de DDL;
-   aplicar las cuatro migraciones y conservar resultados sin credenciales.
-5. Verificar historial, objetos, RLS, grants, funciones y publicación antes de
-   iniciar la aplicación o crear la cuenta inicial.
+La autorización solicitada cubre conexión/preflight y aplicación de este
+manifiesto únicamente si se superan todos los requisitos. No cubre cambios
+arbitrarios de Auth/Data API, bootstrap, cuentas, datos de prueba, pruebas RPC
+de escritura ni reversión destructiva. No se interpreta un fallo de preflight
+como permiso para modificar opciones remotas o desactivar RLS.
+
+**A. Preflight; ningún DDL de aplicación hasta completar todos los puntos.**
+
+1. En Dashboard, contrastar nombre, URL/ref y organización con el destino local
+   elegido por el usuario. Revisar que la Publishable key pertenezca a ese mismo
+   proyecto y esté habilitada. Los valores solo se revisan en la terminal/editor
+   del usuario. Si se corrige el archivo local, mantener permisos `600`; si
+   cambia el ref, detenerse y volver a confirmar el destino antes de continuar.
+2. Confirmar Data API habilitada y esquemas expuestos: `public` presente;
+   `app_private` y `auth` ausentes. Resolver el 401. Solo tras una revisión o
+   corrección concreta realizar un GET de OpenAPI, sin enviar SQL ni llamar RPC
+   de escritura; conservar estado/HTTP, no respuesta ni credenciales. Si sigue
+   fallando, detenerse. Un resultado 200 no reemplaza la revisión de exposición.
+3. Confirmar la versión PostgreSQL real y ajustar `db.major_version` local a
+   ella; no inferir versión desde el TOML. Mantener la aplicación detenida.
+4. Confirmar proyecto sin esquema de negocio previo, usuarios a preservar ni
+   historial de migraciones inesperado. Verificar respaldo/restauración realmente
+   disponible y guardar fuera de Git el estado inicial de esquema e historial.
+   No asumir que existe PITR ni que un dry-run crea un punto de restauración.
+5. Autenticar al operador por CLI interactiva y enlazar solo el ref fijado en
+   `.supabase-local/target.json`. La Publishable key no autentica la CLI. No
+   copiar tokens CLI a `.env.local` ni variables `VITE_*`. Después de link,
+   comprobar localmente que `.temp/project-ref` coincida con el ref fijado.
+6. Contrastar nombres/hashes con el manifiesto ya aprobado, inspeccionar historial
+   y dry-run. La lista debe contener exactamente las cuatro versiones, en orden.
+   Ante cualquier objeto o versión ajenos, hash distinto o destino diferente,
+   detenerse y presentar el hallazgo antes de pedir una autorización ajustada.
+
+**B. Aplicación y cierre de DDL.**
+
+7. Si la autorización incluye aplicación condicionada y A está completamente
+   satisfecho, ejecutar una sola vez el push indicado abajo. Registrar versiones
+   confirmadas y resultado, sin credenciales. Ante error, no reintentar todo el
+   lote: inspeccionar primero transacción e historial.
+8. Realizar solo comprobaciones de lectura: cuatro versiones; 9 tablas públicas
+   y 4 privadas con RLS; FK, índices, políticas y grants esperados; funciones con
+   propietarios de confianza y search_path fijo; dos relaciones calculadas;
+   triggers Auth; publicación Realtime con las tres tablas; 35 plantillas.
+   No activar la aplicación ni ejecutar altas RPC para "ver si funciona".
+9. Entregar evidencias de aplicación y sus límites. La creación de la cuenta
+   inicial y el bootstrap pasan por la autorización adicional siguiente.
 
 Comandos para **una fase futura autorizada**, con la CLI fijada:
 
@@ -106,9 +160,11 @@ PROCONT_SUPABASE_CLI=/home/procont/.local/lib/supabase-cli/3.2.0/supabase
 # Leer el ref del destino local fijado, sin mostrar su contenido:
 PROCONT_SUPABASE_PROJECT_REF=$(python3 -c 'import json; print(json.load(open(".supabase-local/target.json"))["project_ref"])')
 "$PROCONT_SUPABASE_CLI" link --project-ref "$PROCONT_SUPABASE_PROJECT_REF"
+# Esta comprobación local no muestra el ref y evita un destino CLI diferente:
+python3 -c 'import json; from pathlib import Path; expected=json.load(open(".supabase-local/target.json"))["project_ref"]; actual=Path("supabase/.temp/project-ref").read_text().strip(); assert actual == expected, "El destino CLI no coincide; detenerse"'
 "$PROCONT_SUPABASE_CLI" migration list --remote
 "$PROCONT_SUPABASE_CLI" db push --remote --skip-vault --dry-run
-# Solo tras aprobación explícita para aplicar el manifiesto revisado:
+# Solo con aprobación explícita y TODOS los puntos de A satisfechos:
 "$PROCONT_SUPABASE_CLI" db push --remote --skip-vault --yes
 ```
 
@@ -122,10 +178,12 @@ la restricción actual. `--skip-vault` excluye la sincronización de secretos Va
 
 ## Primer superadmin — preparación, no asignación
 
-Requisitos: cuatro migraciones confirmadas; propietario/operador autorizado;
-identidad inicial definida por el usuario; cuenta Auth con correo en el mismo
-destino; UUID real contrastado en Authentication → Users; ausencia de un
-superadmin activo. No hay emails, contraseñas o UUID reales prefijados.
+Requisitos: etapa B correcta, propietarios/grants comprobados; autorización
+adicional para crear cuenta y conceder rol; identidad y correo elegidos por el
+usuario; cuenta Auth en el mismo destino y UUID real contrastado en
+Authentication → Users; ausencia de un superadmin activo. No hay emails,
+contraseñas ni UUID reales prefijados. No utilizar la clave publicable para
+ejecutar una operación de propietario.
 
 Solo con autorización adicional para crear esa cuenta y conceder el rol:
 
@@ -133,8 +191,24 @@ Solo con autorización adicional para crear esa cuenta y conceder el rol:
    trigger genera un perfil viewer inactivo, ignorando roles de metadatos.
 2. Como propietario, invocar `app_private.bootstrap_superadmin(uuid)` con su
    UUID confirmado. No hacerlo mediante Data API ni conceder EXECUTE público.
-3. Comprobar perfil activo/rol y evento privado de bootstrap; probar login.
+3. Comprobar perfil activo/rol, un superadmin activo y evento privado de bootstrap;
+   probar login solo cuando esté autorizado iniciar esa integración.
    La función impide repetir bootstrap si ya existe superadmin activo.
+
+La única llamada de asignación prevista es la función existente, desde SQL
+Editor como propietario o una conexión administrativa autorizada:
+
+```sql
+-- PROCEDIMIENTO FUTURO: sustituir el marcador por el UUID contrastado en Auth.
+-- No ejecutar este bloque durante la preparación ni desde el navegador.
+SELECT app_private.bootstrap_superadmin('UUID_REAL_CONFIRMADO_EN_AUTH'::uuid);
+```
+
+La función realiza la asignación y su auditoría dentro de la misma transacción.
+Si falla, no forzar UPDATE de roles o grants alternativos. Si se perdió la
+respuesta, comprobar perfil/auditoría antes de reintentar. Si se eligió una
+identidad incorrecta, detenerse y solicitar un procedimiento correctivo
+autorizado; no eliminar al último superadmin como mecanismo de reversión.
 
 La autorización de migraciones no se interpreta como autorización para crear
 cuentas ni ejecutar bootstrap. No usar `admin_setup.sql` o cuentas demo.
@@ -175,10 +249,21 @@ generó ni ejecutó un script destructivo de reversión.
   o registro empresarial incorporado por la migración.
 
 Reutilizar las evidencias previas; no repetir íntegramente las suites de 72 SQL
-y 19 consumidores. En esta fase solo se ejecutaron **8 pruebas nuevas** del
-asistente de preparación, sin red, más validación local CLI/TOML y hashes.
+y 19 consumidores. La preparación `c6e79f4` dejó **8 pruebas nuevas** del
+asistente, sin red, más validación local CLI/TOML y hashes. Su corrección
+`28acd95` dejó una prueba nueva de entradas visibles/URL inválida. Este cierre
+no vuelve a ejecutar ninguna de esas pruebas: solo verifica presencia,
+permisos, exclusiones y coherencia de la configuración local ya capturada.
 Evidencias: [asistente](validation/fase-2b2-preparation.txt),
 [CLI](validation/fase-2b2-cli.json). No se recompiló ni modificó el frontend.
+
+## Decisión pendiente
+
+Preparación local completada; aplicación remota no autorizada. Se solicita
+autorización para iniciar 2B.3 con preflight y aplicación condicionada de las
+cuatro migraciones. El 401, la exposición Data API, la versión PostgreSQL y el
+historial remoto son condiciones de parada hasta comprobarlos. El bootstrap,
+las cuentas y las pruebas con escrituras requieren autorización adicional.
 
 Referencias oficiales: [claves](https://supabase.com/docs/guides/getting-started/api-keys),
 [CLI y opciones de db push](https://supabase.com/docs/reference/cli/supabase-db-push),

@@ -1,0 +1,61 @@
+{
+  "phase": "2B.2",
+  "date": "2026-11-17",
+  "base_commit": "28acd95",
+  "scope": "Local readiness checks after user configuration; no new remote requests or SQL",
+  "environment": {
+    "present": true,
+    "regular_file_without_symlink": true,
+    "mode": "0600",
+    "gitignored_and_untracked": true,
+    "only_required_variables_present": true,
+    "publishable_key_format_accepted": true,
+    "url_matches_private_target_pin": true,
+    "values_omitted": true
+  },
+  "private_state": {
+    "directory_mode": "0700",
+    "files_mode": "0600",
+    "regular_files_without_symlinks": true,
+    "gitignored_and_untracked": true,
+    "target_fingerprint_consistent": true,
+    "migration_manifest_matches_saved_state": true
+  },
+  "destination": {
+    "expected_name": "ticketera-procont",
+    "confirmation": "manual_dashboard_attestation",
+    "management_api_identity_verified": false,
+    "empty_database": "user_reported_not_independently_verified",
+    "postgresql_major_version_verified": false,
+    "migration_history_verified": false
+  },
+  "data_api": {
+    "source": "Existing local status from user configuration; request not repeated",
+    "http_status": 401,
+    "accepted": false,
+    "cause": "undetermined",
+    "exposed_schemas_verified": false,
+    "rls_verified_remotely": false
+  },
+  "execution": {
+    "cli_linked": false,
+    "git_remotes_present": false,
+    "new_remote_requests": 0,
+    "remote_sql_executed": false,
+    "remote_mutations_authorized": false,
+    "remote_migrations_applied": false,
+    "migrations_modified": false,
+    "application_started": false,
+    "test_suites_rerun": []
+  },
+  "reused_evidence": {
+    "phase_2a_sql_checks": 72,
+    "phase_2b1_local_tests": 19,
+    "phase_2b2_helper_tests": 8,
+    "visible_input_correction_local_test": 1,
+    "cli_evidence": "docs/validation/fase-2b2-cli.json",
+    "preparation_evidence": "docs/validation/fase-2b2-preparation.txt",
+    "migration_manifest": "docs/validation/fase-2b2-migrations.json"
+  },
+  "decision": "Local preparation complete; remote DDL blocked pending explicit authorization and successful preflight"
+}

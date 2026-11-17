@@ -160,9 +160,11 @@ Se admite `VITE_SUPABASE_ANON_KEY` como compatibilidad con una clave JWT `anon`.
 Usar exclusivamente la URL y la clave publicable del proyecto independiente de
 pruebas. Las variables `VITE_*` se incluyen en el frontend: nunca colocar claves
 secretas o `service_role` en ellas. Solo `.env.example` debe estar versionado;
-los demás archivos `.env*` están ignorados. Ninguna fase completada ha creado
-`.env.local` ni conectado el backend remoto. Sin configuración válida, la
-aplicación muestra «Configuración pendiente» y no inicializa Supabase.
+los demás archivos `.env*` están ignorados. El usuario ya preparó `.env.local`
+en FASE 2B.2; las migraciones remotas siguen pendientes de autorización. No
+iniciar la aplicación contra ese destino hasta completar el procedimiento y
+los requisitos de [FASE 2B.2](docs/fase-2b2-preparacion.md). Sin configuración
+válida, la aplicación muestra «Configuración pendiente» y no inicializa Supabase.
 
 ---
 
