@@ -3,6 +3,10 @@ import { supabase } from '../lib/supabase'
 import type { Project, ProjectFlow } from '../types/database.types'
 import { logActivity } from './useActivityLog'
 import { sendNotification } from '../lib/notifications'
+import { operations } from '../lib/api'
+import { errorMessage, requireData } from '../lib/supabase-errors'
+import type { InternalProjectInput } from '../lib/operations'
+import type { RpcAttempt } from '../lib/rpc-attempt'
 
 type StatusFilter = 'active' | 'completed' | 'archived'
 
@@ -55,6 +59,7 @@ export function useProjects() {
   const loadProjects = async (status: StatusFilter = statusFilter, currentLimit = limit) => {
     try {
       setLoading(true)
+      setError(null)
       const { data, error } = await supabase
         .from('projects')
         .select(`
@@ -71,60 +76,29 @@ export function useProjects() {
       setHasMore(rows.length > currentLimit)
       setProjects(rows.slice(0, currentLimit))
     } catch (err: any) {
-      setError(err.message)
-      console.error('Error loading projects:', err)
+      setProjects([])
+      setError(errorMessage(err))
     } finally {
       setLoading(false)
     }
   }
 
   const updateProject = async (projectId: string, updates: Partial<Project>) => {
+    let saved = false
     try {
       // Leer estado actual para detectar cambios
       const current = projects.find(p => p.id === projectId)
 
-      const { error } = await supabase
-        .from('projects')
-        .update({ ...updates, updated_at: new Date().toISOString() })
-        .eq('id', projectId)
-
-      if (error) throw error
-
-      // Si cambió el tipo de proyecto, ajustar los flujos en project_flows
-      if (updates.project_type && current?.project_type !== updates.project_type) {
-        const { data: existingFlows } = await supabase
-          .from('project_flows')
-          .select('*')
-          .eq('project_id', projectId)
-
-        const flows = existingFlows ?? []
-        const hasDev = flows.some(f => f.flow_type === 'development')
-        const hasAdmin = flows.some(f => f.flow_type === 'administrative')
-
-        if (updates.project_type === 'development') {
-          if (hasAdmin) {
-            await supabase.from('project_flows').delete().eq('project_id', projectId).eq('flow_type', 'administrative')
-          }
-          if (!hasDev) {
-            await supabase.from('project_flows').insert([{ project_id: projectId, flow_type: 'development', current_phase: 'backlog', progress: 0 }])
-          }
-        } else if (updates.project_type === 'administrative') {
-          if (hasDev) {
-            await supabase.from('project_flows').delete().eq('project_id', projectId).eq('flow_type', 'development')
-          }
-          if (!hasAdmin) {
-            await supabase.from('project_flows').insert([{ project_id: projectId, flow_type: 'administrative', current_phase: 'backlog', progress: 0 }])
-          }
-        } else if (updates.project_type === 'dual') {
-          if (!hasDev) {
-            await supabase.from('project_flows').insert([{ project_id: projectId, flow_type: 'development', current_phase: 'backlog', progress: 0 }])
-          }
-          if (!hasAdmin) {
-            await supabase.from('project_flows').insert([{ project_id: projectId, flow_type: 'administrative', current_phase: 'backlog', progress: 0 }])
-          }
-        }
-
-        await logActivity(projectId, 'type_changed', { from: current?.project_type, to: updates.project_type })
+      const { project_type, ...fields } = updates
+      if (Object.keys(fields).length > 0) {
+        requireData(await supabase.from('projects')
+          .update({ ...fields, updated_at: new Date().toISOString() })
+          .eq('id', projectId).select('id').single(), 'Proyecto')
+        saved = true
+      }
+      if (project_type && current?.project_type !== project_type) {
+        await operations.changeProjectType(projectId, project_type)
+        saved = true
       }
 
       // Registrar actividad según qué cambió
@@ -228,7 +202,8 @@ export function useProjects() {
 
       await loadProjects()
     } catch (err: any) {
-      console.error('Error updating project:', err)
+      await loadProjects()
+      if (saved) throw new Error(`El proyecto se guardó total o parcialmente, pero falta completar la operación: ${errorMessage(err)}`)
       throw err
     }
   }
@@ -243,12 +218,12 @@ export function useProjects() {
         if (flow) { projectId = p.id; currentFlow = flow; break }
       }
 
-      const { error } = await supabase
+      const { data: updatedFlow, error } = await supabase
         .from('project_flows')
-        .update({ ...updates })
-        .eq('id', flowId)
+        .update({ ...updates, ...('assigned_to' in updates ? { assigned_to: updates.assigned_to || null } : {}) })
+        .eq('id', flowId).select('id').single()
 
-      if (error) throw error
+      requireData({ data: updatedFlow, error }, 'Flujo')
 
       // Log assignment change
       if (projectId && currentFlow && 'assigned_to' in updates) {
@@ -276,21 +251,14 @@ export function useProjects() {
 
       await loadProjects()
     } catch (err: any) {
-      console.error('Error updating flow details:', err)
+      await loadProjects()
       throw err
     }
   }
 
   const updateProjectFlow = async (flowId: string, newPhase: string) => {
     try {
-      // Optimistic update: reflect immediately in UI
       const newProgress = PHASE_PROGRESS[newPhase] ?? 0
-      setProjects(prev => prev.map(p => ({
-        ...p,
-        project_flows: (p as any).project_flows?.map((f: ProjectFlow) =>
-          f.id === flowId ? { ...f, current_phase: newPhase, progress: newProgress } : f
-        ),
-      })))
 
       // Encontrar la fase actual para registrar el cambio
       let projectId: string | undefined
@@ -300,12 +268,12 @@ export function useProjects() {
         if (flow) { projectId = p.id; fromPhase = flow.current_phase; break }
       }
 
-      const { error } = await supabase
+      const { data: updatedFlow, error } = await supabase
         .from('project_flows')
         .update({ current_phase: newPhase, progress: newProgress })
-        .eq('id', flowId)
+        .eq('id', flowId).select('id').single()
 
-      if (error) throw error
+      requireData({ data: updatedFlow, error }, 'Flujo')
 
       if (projectId) {
         // Calcular tiempo en la fase anterior
@@ -327,112 +295,25 @@ export function useProjects() {
 
       await loadProjects()
     } catch (err: any) {
-      console.error('Error updating project flow:', err)
+      await loadProjects()
       throw err
     }
   }
 
-  const createProject = async (projectData: {
-    title: string
-    description: string
-    project_type: 'development' | 'administrative' | 'dual'
-    priority: 'low' | 'medium' | 'high' | 'urgent'
-    start_date?: string
-    due_date?: string
-    area?: string
-    requester_name?: string
-  }) => {
-    try {
-        // Generate next INT{YY}-XXX number (resets each year)
-      const yearSuffix = new Date().getFullYear().toString().slice(2)
-      const intPrefix = `INT${yearSuffix}-`
-      const { data: lastInt } = await supabase
-        .from('projects')
-        .select('project_number')
-        .like('project_number', `${intPrefix}%`)
-        .order('project_number', { ascending: false })
-        .limit(1)
-      const lastNum = lastInt?.[0]?.project_number
-        ? parseInt(lastInt[0].project_number.replace(intPrefix, ''), 10)
-        : 0
-      const projectNumber = `${intPrefix}${String(lastNum + 1).padStart(3, '0')}`
-
-      const { data: project, error: projectError } = await supabase
-        .from('projects')
-        .insert([{
-          title: projectData.title.trim(),
-          description: projectData.description.trim(),
-          project_type: projectData.project_type,
-          priority: projectData.priority,
-          status: 'active',
-          is_blocked: false,
-          start_date: projectData.start_date || null,
-          due_date: projectData.due_date || null,
-          sla_target_date: projectData.due_date || null,
-          project_number: projectNumber,
-        }])
-        .select()
-        .single()
-
-      if (projectError) throw projectError
-
-      const flows = []
-      if (projectData.project_type === 'development' || projectData.project_type === 'dual') {
-        flows.push({ project_id: project.id, flow_type: 'development', current_phase: 'backlog', progress: 0 })
-      }
-      if (projectData.project_type === 'administrative' || projectData.project_type === 'dual') {
-        flows.push({ project_id: project.id, flow_type: 'administrative', current_phase: 'backlog', progress: 0 })
-      }
-
-      const { error: flowsError } = await supabase.from('project_flows').insert(flows)
-      if (flowsError) throw flowsError
-
-      // If an area (or requester name) was provided, create a stub request and link it
-      if (projectData.area) {
-        const { data: stubRequest } = await supabase
-          .from('requests')
-          .insert([{
-            request_number: projectNumber,
-            requester_name: projectData.requester_name?.trim() || '—',
-            requester_area: projectData.area,
-            request_type: 'INT',
-            origin: 'Interno',
-            description: projectData.description.trim(),
-            needs_code: false,
-            status: 'approved',
-            project_id: project.id,
-          }])
-          .select()
-          .single()
-
-        if (stubRequest) {
-          await supabase
-            .from('projects')
-            .update({ request_id: stubRequest.id })
-            .eq('id', project.id)
-        }
-      }
-
-      await logActivity(project.id, 'created', { title: project.title })
-      await loadProjects()
-      return project
-    } catch (err: any) {
-      console.error('Error creating project:', err)
-      throw err
-    }
+  const createProject = async (data: InternalProjectInput, attempt: RpcAttempt) => {
+    await operations.createInternalProject(data, attempt)
+    await loadProjects()
   }
 
   const deleteProject = async (projectId: string) => {
     try {
-      const { error } = await supabase
-        .from('projects')
+      requireData(await supabase.from('projects')
         .update({ status: 'deleted', updated_at: new Date().toISOString() })
-        .eq('id', projectId)
-      if (error) throw error
+        .eq('id', projectId).select('id').single(), 'Proyecto')
       await logActivity(projectId, 'project_deleted', {})
       await loadProjects()
     } catch (err: any) {
-      console.error('Error deleting project:', err)
+      await loadProjects()
       throw err
     }
   }
@@ -445,14 +326,13 @@ export function useProjects() {
 
   const bulkUpdateProjects = async (ids: string[], updates: Partial<Project>) => {
     try {
-      const { error } = await supabase
-        .from('projects')
+      const rows = requireData(await supabase.from('projects')
         .update({ ...updates, updated_at: new Date().toISOString() })
-        .in('id', ids)
-      if (error) throw error
+        .in('id', ids).select('id'), 'Proyectos')
+      if (rows.length !== ids.length) throw new Error('Solo se actualizaron algunos proyectos. Actualiza la vista y comprueba los permisos.')
       await loadProjects()
     } catch (err: any) {
-      console.error('Error bulk updating projects:', err)
+      await loadProjects()
       throw err
     }
   }

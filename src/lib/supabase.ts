@@ -1,6 +1,19 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient, type SupabaseClient } from '@supabase/supabase-js'
+import { readSupabaseConfig } from './supabase-config'
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+let client: SupabaseClient | undefined
+export let configurationError: string | null = null
+try { readSupabaseConfig(import.meta.env) } catch (error) {
+  configurationError = error instanceof Error ? error.message : 'Configuración Supabase inválida.'
+}
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = new Proxy({} as SupabaseClient, {
+  get(_target, property) {
+    if (!client) {
+      const { url, key } = readSupabaseConfig(import.meta.env)
+      client = createClient(url, key)
+    }
+    const value = Reflect.get(client, property)
+    return typeof value === 'function' ? value.bind(client) : value
+  },
+})

@@ -1,6 +1,8 @@
 import { useState, useRef } from 'react'
 import * as XLSX from 'xlsx'
 import { useRequests } from '../../hooks/useRequests'
+import { createRpcAttempt, type RpcAttempt } from '../../lib/rpc-attempt'
+import { errorMessage } from '../../lib/supabase-errors'
 import { toast } from '../../lib/toast'
 
 interface PlannerRow {
@@ -68,6 +70,8 @@ function buildObservations(row: ParsedRow): string {
 
 export default function PlannerImportModal({ onClose }: { onClose: () => void }) {
   const { createRequest } = useRequests()
+  const attempts = useRef(new Map<number, RpcAttempt>())
+  const [failures, setFailures] = useState<string[]>([])
   const inputRef = useRef<HTMLInputElement>(null)
 
   const [rows, setRows] = useState<ParsedRow[]>([])
@@ -109,6 +113,8 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
             }
           })
 
+        attempts.current.clear()
+        setFailures([])
         setRows(parsed)
         setSelected(new Set(parsed.map((_, i) => i)))
         setStep('preview')
@@ -139,12 +145,16 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
   }
 
   const handleImport = async () => {
-    const toImport = rows.filter((_, i) => selected.has(i))
+    const toImport = rows.map((row, index) => ({ row, index })).filter(item => selected.has(item.index))
     if (toImport.length === 0) return
     setImporting(true)
 
     let count = 0
-    for (const row of toImport) {
+    const failed: number[] = []
+    const messages: string[] = []
+    for (const { row, index } of toImport) {
+      const attempt = attempts.current.get(index) ?? createRpcAttempt()
+      attempts.current.set(index, attempt)
       try {
         await createRequest({
           requester_name:       row.requester_name,
@@ -155,21 +165,24 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
           data_system_involved: '',
           description:          row.description,
           observations:         buildObservations(row),
-          request_date:         new Date().toISOString().slice(0, 10),
+          request_date:         attempt.startedAt.toISOString().slice(0, 10),
           requested_date:       row.due_date || undefined,
           needs_code:           false,
-          status:               'pending',
-        })
+        }, attempt)
         count++
       } catch (err) {
-        console.error('Error importing row:', row.title, err)
+        failed.push(index)
+        messages.push(`Fila ${index + 1}: ${errorMessage(err)}`)
       }
     }
 
+    setFailures(messages)
+    setSelected(new Set(failed))
     setImported(count)
     setImporting(false)
     setDone(true)
-    toast.success(`${count} solicitudes importadas correctamente`)
+    if (failed.length) toast.error(`${count} confirmadas; ${failed.length} sin confirmar. Reintenta solo las filas pendientes.`)
+    else toast.success(`${count} solicitudes importadas correctamente`)
   }
 
   // ── Done screen ──
@@ -178,7 +191,11 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
         <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full text-center">
           <div className="text-5xl mb-4">✅</div>
-          <h2 className="text-xl font-bold text-gray-900 mb-2">{imported} solicitudes importadas</h2>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">{imported} solicitudes confirmadas</h2>
+          {failures.length > 0 && <div role="alert" className="text-red-700 text-sm mb-4">
+            {failures.map(message => <p key={message}>{message}</p>)}
+            <button className="underline" onClick={() => setDone(false)}>Reintentar filas pendientes</button>
+          </div>}
           <p className="text-gray-500 text-sm mb-6">
             Aparecen en la pestaña <strong>Pendientes</strong> listas para aprobar o rechazar.
           </p>

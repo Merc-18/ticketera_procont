@@ -1,6 +1,10 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useRequests } from '../../hooks/useRequests'
+import { createRpcAttempt } from '../../lib/rpc-attempt'
+import { errorMessage } from '../../lib/supabase-errors'
+import { handoffTracking } from '../../lib/tracking-handoff'
+import type { SubmissionReceipt } from '../../lib/operations'
 
 const AREAS   = ['AASS', 'ATC', 'DDC', 'GERE', 'QA', 'SAQ']
 const ORIGINS = ['Cliente', 'Externo', 'Interno', 'Regulatorio', 'Otro']
@@ -39,8 +43,8 @@ function calcSLA(selected: string[]): number {
 }
 
 // El conteo empieza desde el día laboral siguiente al envío
-function addWorkingDays(days: number): string {
-  const d = new Date()
+function addWorkingDays(days: number, start: Date): string {
+  const d = new Date(start)
   // Avanzar al primer día laboral posterior (el día de envío no cuenta)
   do { d.setDate(d.getDate() + 1) } while (d.getDay() === 0 || d.getDay() === 6)
   // Luego sumar los días laborales restantes (days - 1, ya usamos 1 arriba)
@@ -66,6 +70,8 @@ const EMPTY_FORM = {
 export default function PublicRequestForm() {
   const navigate = useNavigate()
   const { createRequest } = useRequests()
+  const attempt = useRef(createRpcAttempt())
+  const [receipt, setReceipt] = useState<SubmissionReceipt | null>(null)
   const [loading, setLoading]           = useState(false)
   const [success, setSuccess]           = useState(false)
   const [requestNumber, setRequestNumber] = useState('')
@@ -107,14 +113,14 @@ export default function PublicRequestForm() {
     }
     setLoading(true)
     try {
-      const today       = new Date().toISOString().slice(0, 10)
+      const today       = attempt.current.startedAt.toISOString().slice(0, 10)
       const requestType = needsCode ? selectedTypes.join(', ') : formData.request_type
       const observations = [
         isUrgent ? '🔴 URGENTE — requiere coordinación directa con el equipo.' : '',
         formData.observations,
       ].filter(Boolean).join(' ')
 
-      const requested_date = needsCode ? addWorkingDays(displaySLA) : ''
+      const requested_date = needsCode ? addWorkingDays(displaySLA, attempt.current.startedAt) : ''
 
       const result = await createRequest({
         ...formData,
@@ -123,15 +129,14 @@ export default function PublicRequestForm() {
         request_date: today,
         requested_date,
         observations,
-        status: 'pending',
-      })
+      }, attempt.current)
 
+      setReceipt(result)
       setRequestNumber(result.request_number)
       setSuccess(true)
       reset()
     } catch (err) {
-      console.error(err)
-      alert('Error al crear la solicitud. Intenta de nuevo.')
+      alert(errorMessage(err))
     } finally {
       setLoading(false)
     }
@@ -150,17 +155,21 @@ export default function PublicRequestForm() {
             <p className="text-3xl font-bold text-primary">{requestNumber}</p>
           </div>
           <p className="text-sm text-gray-500 mb-6">
-            Guarda este número para rastrear el estado de tu solicitud
+            Guarda el número y este token para consultar tu solicitud. El token solo se entrega en esta confirmación; no lo compartas.
           </p>
+          <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">
+            <p className="text-sm text-gray-600 mb-2">Token de seguimiento:</p>
+            <code className="break-all select-all">{receipt?.tracking_token}</code>
+          </div>
           <div className="space-y-3">
             <button
-              onClick={() => setSuccess(false)}
+              onClick={() => { attempt.current = createRpcAttempt(); setReceipt(null); setSuccess(false) }}
               className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-blue-600 transition"
             >
               Crear otra solicitud
             </button>
             <button
-              onClick={() => window.location.href = '/tracking'}
+              onClick={() => { if (receipt) handoffTracking(receipt); navigate('/tracking') }}
               className="w-full bg-gray-100 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-200 transition"
             >
               Rastrear mi solicitud
@@ -444,7 +453,7 @@ export default function PublicRequestForm() {
                       </div>
                       <p className={`text-xs ${isUrgent ? 'text-red-500' : 'text-blue-500'}`}>
                         * El plazo comienza a correr a partir del <strong>siguiente día hábil</strong> tras el envío de la solicitud. Los días hábiles excluyen sábados y domingos.
-                        <br />Fecha estimada de entrega: <strong>{new Date(addWorkingDays(displaySLA) + 'T00:00:00').toLocaleDateString('es-PE', { day: '2-digit', month: 'long', year: 'numeric' })}</strong>
+                        <br />Fecha estimada de entrega: <strong>{new Date(addWorkingDays(displaySLA, attempt.current.startedAt) + 'T00:00:00').toLocaleDateString('es-PE', { day: '2-digit', month: 'long', year: 'numeric' })}</strong>
                       </p>
                     </div>
                   )}

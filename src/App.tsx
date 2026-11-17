@@ -17,6 +17,8 @@ import PapeleraView from './components/admin/PapeleraView'
 import NotificationBell from './components/notifications/NotificationBell'
 import { usePendingCount } from './hooks/usePendingCount'
 import { useSlaWarnings } from './hooks/useSlaWarnings'
+import { errorMessage } from './lib/supabase-errors'
+import { toast } from './lib/toast'
 
 function AdminClock() {
   const [time, setTime] = useState('')
@@ -133,7 +135,7 @@ function Dashboard() {
                   <p className="text-sm text-gray-500 capitalize">{user?.role}</p>
                 </div>
                 <button
-                  onClick={signOut}
+                  onClick={() => { void signOut().catch(err => toast.error(errorMessage(err))) }}
                   className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition text-sm font-medium"
                 >
                   Cerrar Sesión

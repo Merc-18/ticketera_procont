@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from './useAuth'
+import { errorMessage, requireData } from '../lib/supabase-errors'
 import type { Notification } from '../types/database.types'
 
 export function useNotifications() {
   const { user } = useAuth()
+  const [error, setError] = useState<string | null>(null)
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (!user) { setLoading(false); return }
+    if (!user) { setNotifications([]); setLoading(false); return }
 
     load()
 
@@ -39,28 +41,34 @@ export function useNotifications() {
   const load = async () => {
     if (!user) return
     setLoading(true)
-    const { data } = await supabase
-      .from('notifications')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false })
-      .limit(30)
-    setNotifications(data || [])
-    setLoading(false)
+    setError(null)
+    try {
+      const result = await supabase.from('notifications').select('*').eq('user_id', user.id)
+        .order('created_at', { ascending: false }).limit(30)
+      if (result.error) throw result.error
+      setNotifications(result.data || [])
+    } catch (err) { setError(errorMessage(err)) }
+    finally { setLoading(false) }
   }
-
   const markAsRead = async (id: string) => {
-    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n))
-    await supabase.from('notifications').update({ read: true }).eq('id', id)
+    try {
+      requireData(await supabase.from('notifications').update({ read: true }).eq('id', id)
+        .eq('user_id', user!.id).select('id').single(), 'Notificación')
+      setNotifications(prev => prev.map(item => item.id === id ? { ...item, read: true } : item))
+    } catch (err) { setError(errorMessage(err)); throw err }
   }
-
   const markAllAsRead = async () => {
     if (!user) return
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })))
-    await supabase.from('notifications').update({ read: true }).eq('user_id', user.id).eq('read', false)
+    try {
+      const result = await supabase.from('notifications').update({ read: true }).eq('user_id', user.id)
+        .eq('read', false).select('id')
+      if (result.error) throw result.error
+      const ids = new Set((result.data || []).map(item => item.id))
+      setNotifications(prev => prev.map(item => ids.has(item.id) ? { ...item, read: true } : item))
+    } catch (err) { setError(errorMessage(err)); throw err }
   }
 
   const unreadCount = notifications.filter(n => !n.read).length
 
-  return { notifications, loading, unreadCount, markAsRead, markAllAsRead }
+  return { error, notifications, loading, unreadCount, markAsRead, markAllAsRead }
 }

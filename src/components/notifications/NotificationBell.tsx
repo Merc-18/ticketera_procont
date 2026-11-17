@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNotifications } from '../../hooks/useNotifications'
+import { toast } from '../../lib/toast'
+import { errorMessage } from '../../lib/supabase-errors'
 
 const TYPE_ICON: Record<string, string> = {
   project_assigned: '👤',
@@ -23,7 +25,7 @@ interface Props {
 }
 
 export default function NotificationBell({ onProjectClick }: Props) {
-  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications()
+  const { error, notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications()
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
 
@@ -71,7 +73,7 @@ export default function NotificationBell({ onProjectClick }: Props) {
             </span>
             {unreadCount > 0 && (
               <button
-                onClick={markAllAsRead}
+                onClick={() => { void markAllAsRead().catch(err => toast.error(errorMessage(err))) }}
                 className="text-xs text-primary hover:underline"
               >
                 Marcar todas leídas
@@ -81,7 +83,7 @@ export default function NotificationBell({ onProjectClick }: Props) {
 
           {/* List */}
           <div className="max-h-80 overflow-y-auto divide-y divide-gray-50">
-            {notifications.length === 0 ? (
+            {error ? <p role="alert" className="p-4 text-red-700">{error}</p> : notifications.length === 0 ? (
               <div className="text-center py-10 text-gray-400">
                 <p className="text-3xl mb-2">🔔</p>
                 <p className="text-sm">Sin notificaciones</p>
@@ -90,8 +92,8 @@ export default function NotificationBell({ onProjectClick }: Props) {
               notifications.map(n => (
                 <button
                   key={n.id}
-                  onClick={() => {
-                    if (!n.read) markAsRead(n.id)
+                  onClick={async () => {
+                    try { if (!n.read) await markAsRead(n.id) } catch (err) { toast.error(errorMessage(err)); return }
                     setOpen(false)
                     if (n.project_id && onProjectClick) onProjectClick(n.project_id)
                   }}

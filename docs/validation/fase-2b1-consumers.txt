@@ -1,0 +1,27 @@
+✔ public submission uses only RPC and excludes protected fields (1.197658ms)
+✔ network/permission failure retains the idempotency key on retry (0.498659ms)
+✔ double click and acknowledged retry share one request; new form is another intent (1.038177ms)
+✔ malformed submission acknowledgment never becomes a success (0.372146ms)
+✔ manual project delegates numbering, links, flows and checklist in one RPC (0.283628ms)
+✔ approval delegates side effects and sends SLA fields with stable retry input (0.603583ms)
+✔ low priority approval sends null SLA target; invalid approval response is rejected (0.312014ms)
+✔ void RPC acknowledgments are valid; Supabase errors still reject (0.299157ms)
+✔ project type change uses its dedicated RPC (0.180325ms)
+✔ tracking validates number and token without table access, including counters above 999 (0.382254ms)
+✔ SDK transport contract uses the expected RPC URL and serialized arguments, without network (17.635393ms)
+✔ zero matched writes and permission errors are not accepted as saved records (0.164374ms)
+✔ environment configuration accepts publishable and anon keys, rejects privileged or incomplete config (0.403262ms)
+✔ shared auth controller subscribes once and accepts only an active known profile (3.839167ms)
+✔ missing, inactive or unknown-role profiles reject login and close the session (0.702298ms)
+✔ late profile read and queued sign-in cannot resurrect a signed-out session (0.457713ms)
+✔ consumer role guards distinguish viewers, inactive profiles and administrative targets (0.151743ms)
+✔ a late initial session failure cannot overwrite a newer signed-in profile (0.417548ms)
+✔ same-user token refresh preserves forms while revalidation still rejects a revoked profile (0.501462ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 114.613828

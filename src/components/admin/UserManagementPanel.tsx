@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { useUsers } from '../../hooks/useUsers'
 import { useAuth } from '../../hooks/useAuth'
+import { canManageProfile } from '../../lib/access'
+import { errorMessage } from '../../lib/supabase-errors'
+import { toast } from '../../lib/toast'
 import UserModal from './UserModal'
 import { getAvatarColor, getInitials } from '../../lib/constants'
 import type { User } from '../../types/database.types'
@@ -176,7 +179,7 @@ export default function UserManagementPanel() {
             className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary w-52"
           />
           <button
-            onClick={() => { setEditing(null); setShowModal(true) }}
+            disabled title="La provisión de cuentas requiere el backend Auth"
             className="px-4 py-1.5 bg-primary text-white rounded-lg text-sm font-medium hover:bg-blue-600 transition flex items-center gap-1.5 shadow-sm"
           >
             ➕ Nuevo Usuario
@@ -206,7 +209,7 @@ export default function UserManagementPanel() {
             <tbody className="divide-y divide-gray-100">
               {filtered.map(u => {
                 // Admins cannot edit superadmin users (shouldn't appear, but guard anyway)
-                const canEdit = isSuperAdmin || u.role !== 'superadmin'
+                const canEdit = canManageProfile(currentUser, u)
                 return (
                   <tr key={u.id} className={`hover:bg-gray-50 transition ${u.is_active === false ? 'opacity-60' : ''}`}>
                     {/* Avatar + Nombre */}
@@ -255,7 +258,7 @@ export default function UserManagementPanel() {
                             ✏️ Editar
                           </button>
                           <button
-                            onClick={() => handleToggleActive(u)}
+                            onClick={() => { void handleToggleActive(u).catch(err => toast.error(errorMessage(err))) }}
                             className={`px-3 py-1 rounded-lg text-xs font-medium transition ${
                               u.is_active !== false
                                 ? 'bg-orange-50 text-orange-700 hover:bg-orange-100'
@@ -266,7 +269,7 @@ export default function UserManagementPanel() {
                           </button>
                           {isSuperAdmin && (
                             <button
-                              onClick={() => setConfirmDelete(u)}
+                              disabled title="Utiliza Desactivar; el borrado de cuentas requiere el backend Auth"
                               className="px-3 py-1 bg-red-50 text-red-600 rounded-lg text-xs font-medium hover:bg-red-100 transition"
                             >
                               🗑 Eliminar
@@ -308,7 +311,7 @@ export default function UserManagementPanel() {
                 Cancelar
               </button>
               <button
-                onClick={() => handleDelete(confirmDelete)}
+                onClick={() => { void handleDelete(confirmDelete).catch(err => toast.error(errorMessage(err))) }}
                 className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition"
               >
                 Sí, eliminar
@@ -322,6 +325,7 @@ export default function UserManagementPanel() {
       {showModal && (
         <UserModal
           user={editing ?? undefined}
+          currentUserId={currentUser?.id}
           currentUserRole={currentUserRole}
           onClose={() => { setShowModal(false); setEditing(null) }}
           onCreate={handleCreate}

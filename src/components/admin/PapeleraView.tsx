@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { logActivity } from '../../hooks/useActivityLog'
+import { operations } from '../../lib/api'
+import { errorMessage, requireData } from '../../lib/supabase-errors'
 
 interface DeletedProject {
   id: string
@@ -21,6 +23,7 @@ const TYPE_LABEL: Record<string, string> = {
 }
 
 export default function PapeleraView() {
+  const [error, setError] = useState<string | null>(null)
   const [projects, setProjects] = useState<DeletedProject[]>([])
   const [loading, setLoading] = useState(true)
   const [confirmRestore, setConfirmRestore] = useState<string | null>(null)
@@ -30,13 +33,15 @@ export default function PapeleraView() {
 
   const load = async () => {
     setLoading(true)
-    const { data } = await supabase
-      .from('projects')
-      .select('id, title, priority, project_type, updated_at, project_number, requests(request_number)')
-      .eq('status', 'deleted')
-      .order('updated_at', { ascending: false })
-    setProjects((data as unknown as DeletedProject[]) || [])
-    setLoading(false)
+    setError(null)
+    try {
+      const result = await supabase.from('projects')
+        .select('id, title, priority, project_type, updated_at, project_number, requests(request_number)')
+        .eq('status', 'deleted').order('updated_at', { ascending: false })
+      if (result.error) throw result.error
+      setProjects((result.data as unknown as DeletedProject[]) || [])
+    } catch (err) { setError(errorMessage(err)) }
+    finally { setLoading(false) }
   }
 
   useEffect(() => { load() }, [])
@@ -44,14 +49,12 @@ export default function PapeleraView() {
   const restore = async (id: string) => {
     setRestoring(true)
     try {
-      await supabase
-        .from('projects')
-        .update({ status: 'active', updated_at: new Date().toISOString() })
-        .eq('id', id)
+      requireData(await supabase.from('projects').update({ status: 'active' })
+        .eq('id', id).select('id').single(), 'Proyecto')
       await logActivity(id, 'project_restored', {})
       setConfirmRestore(null)
       await load()
-    } finally {
+    } catch (err) { setError(errorMessage(err)) } finally {
       setRestoring(false)
     }
   }
@@ -59,13 +62,15 @@ export default function PapeleraView() {
   const permanentDelete = async (id: string) => {
     setDeleting(true)
     try {
-      await supabase.from('projects').delete().eq('id', id)
+      await operations.purgeProject(id)
       setConfirmDelete(null)
       await load()
-    } finally {
+    } catch (err) { setError(errorMessage(err)) } finally {
       setDeleting(false)
     }
   }
+
+  if (error) return <div role="alert" className="text-red-700 p-4">{error} <button className="underline" onClick={load}>Actualizar</button></div>
 
   if (loading) return (
     <div className="flex items-center justify-center h-48">

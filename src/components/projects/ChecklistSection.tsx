@@ -1,8 +1,12 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { DragDropContext, Droppable, Draggable, type DropResult } from '@hello-pangea/dnd'
 import { useChecklist } from '../../hooks/useChecklist'
 import type { ProjectFlow } from '../../types/database.types'
 import { PHASE_LABELS } from '../../lib/constants'
+import { useAuth } from '../../hooks/useAuth'
+import { canEdit } from '../../lib/access'
+import { errorMessage, CommittedWriteError } from '../../lib/supabase-errors'
+import { toast } from '../../lib/toast'
 
 const DEV_PHASES = ['backlog', 'design', 'dev', 'testing', 'deploy', 'done']
 const ADMIN_PHASES = ['backlog', 'ready_to_start', 'discovery', 'design', 'build', 'uat_validation', 'deployed']
@@ -13,13 +17,21 @@ interface Props {
 }
 
 export default function ChecklistSection({ flow, onProgressUpdate }: Props) {
-  const { items, loading, toggleItem, addItem, deleteItem, reorderItems } = useChecklist(flow.id)
+  const { user } = useAuth()
+  const editable = canEdit(user)
+  const busy = useRef(false)
+  const { items, loading, error, toggleItem, addItem, deleteItem, reorderItems } = useChecklist(flow.id)
 
-  const handleDragEnd = (result: DropResult) => {
+  const handleDragEnd = async (result: DropResult) => {
     const { source, destination } = result
     if (!destination || source.droppableId !== destination.droppableId) return
     if (source.index === destination.index) return
-    reorderItems(source.droppableId, source.index, destination.index)
+    if (!editable || busy.current) return
+    busy.current = true
+    setSaving('order')
+    try { await reorderItems(source.droppableId, source.index, destination.index) }
+    catch (err) { toast.error(errorMessage(err)) }
+    finally { busy.current = false; setSaving(null) }
   }
   const [newItemText, setNewItemText] = useState<Record<string, string>>({})
   const [expandedPhase, setExpandedPhase] = useState<string | null>(flow.current_phase)
@@ -33,19 +45,36 @@ export default function ChecklistSection({ flow, onProgressUpdate }: Props) {
   }, {} as Record<string, typeof items>)
 
   const handleToggle = async (itemId: string, completed: boolean) => {
+    if (!editable || busy.current) return
+    busy.current = true
     setSaving(itemId)
-    await toggleItem(itemId, completed)
-    setSaving(null)
-    onProgressUpdate?.()
+    try { await toggleItem(itemId, completed); onProgressUpdate?.() }
+    catch (err) { toast.error(errorMessage(err)) }
+    finally { busy.current = false; setSaving(null) }
   }
-
   const handleAdd = async (phase: string) => {
     const text = newItemText[phase]?.trim()
-    if (!text) return
-    await addItem(phase, text)
-    setNewItemText(prev => ({ ...prev, [phase]: '' }))
+    if (!text || !editable || busy.current) return
+    busy.current = true
+    setSaving(phase)
+    try { await addItem(phase, text); setNewItemText(prev => ({ ...prev, [phase]: '' })); onProgressUpdate?.() }
+    catch (err) {
+      if (err instanceof CommittedWriteError) setNewItemText(prev => ({ ...prev, [phase]: '' }))
+      toast.error(errorMessage(err))
+    }
+    finally { busy.current = false; setSaving(null) }
   }
 
+  const handleDelete = async (id: string) => {
+    if (!editable || busy.current) return
+    busy.current = true
+    setSaving(id)
+    try { await deleteItem(id); onProgressUpdate?.() }
+    catch (err) { toast.error(errorMessage(err)) }
+    finally { busy.current = false; setSaving(null) }
+  }
+
+  if (error) return <p role="alert" className="text-red-700">{error}</p>
   if (loading) {
     return <p className="text-xs text-gray-400 py-2">Cargando checklist...</p>
   }
@@ -122,7 +151,7 @@ export default function ChecklistSection({ flow, onProgressUpdate }: Props) {
                   {(provided) => (
                     <div ref={provided.innerRef} {...provided.droppableProps} className="space-y-1">
                       {phaseItems.map((item, index) => (
-                        <Draggable key={item.id} draggableId={item.id} index={index}>
+                        <Draggable isDragDisabled={!editable || !!saving} key={item.id} draggableId={item.id} index={index}>
                           {(provided, snapshot) => (
                             <div
                               ref={provided.innerRef}
@@ -141,7 +170,7 @@ export default function ChecklistSection({ flow, onProgressUpdate }: Props) {
                               <input
                                 type="checkbox"
                                 checked={item.completed}
-                                disabled={saving === item.id}
+                                disabled={!editable || !!saving}
                                 onChange={() => handleToggle(item.id, !item.completed)}
                                 className="mt-0.5 w-4 h-4 text-blue-600 border-gray-300 rounded cursor-pointer flex-shrink-0"
                               />
@@ -153,7 +182,7 @@ export default function ChecklistSection({ flow, onProgressUpdate }: Props) {
                                 {item.description}
                               </span>
                               <button
-                                onClick={() => deleteItem(item.id)}
+                                disabled={!editable || !!saving} onClick={() => { void handleDelete(item.id) }}
                                 className="opacity-0 group-hover:opacity-100 text-gray-300 hover:text-red-500 transition text-xs ml-1 flex-shrink-0"
                                 title="Eliminar item"
                               >
@@ -180,7 +209,7 @@ export default function ChecklistSection({ flow, onProgressUpdate }: Props) {
                   />
                   <button
                     onClick={() => handleAdd(phase)}
-                    disabled={!newItemText[phase]?.trim()}
+                    disabled={!editable || !!saving || !newItemText[phase]?.trim()}
                     className="text-xs px-2.5 py-1.5 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 disabled:opacity-40 disabled:cursor-not-allowed transition"
                   >
                     + Agregar

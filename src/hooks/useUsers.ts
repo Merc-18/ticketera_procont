@@ -1,134 +1,50 @@
 import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '../lib/supabase'
+import { operations } from '../lib/api'
+import { errorMessage, requireData } from '../lib/supabase-errors'
+import { useAuth } from './useAuth'
+import { canEdit, canManageProfile } from '../lib/access'
 import type { User } from '../types/database.types'
 
 export function useUsers() {
+  const { user: actor } = useAuth()
   const [users, setUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-
   const loadUsers = useCallback(async () => {
+    if (!actor?.is_active) { setUsers([]); setLoading(false); return }
+    setLoading(true)
+    setError(null)
     try {
-      setLoading(true)
-      const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .order('full_name')
+      const result = await supabase.from('users').select('*').order('full_name')
+      if (result.error) throw result.error
+      setUsers(result.data || [])
+    } catch (err) { setUsers([]); setError(errorMessage(err)) }
+    finally { setLoading(false) }
+  }, [actor?.id, actor?.is_active])
+  useEffect(() => { void loadUsers() }, [loadUsers])
 
-      if (error) throw error
-      setUsers(data || [])
-    } catch (err: any) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
-    }
-  }, [])
-
-  useEffect(() => {
-    loadUsers()
-  }, [loadUsers])
-
-  /**
-   * Crea un nuevo usuario via supabase.auth.signUp.
-   * Si el proyecto NO requiere confirmación de email, la sesión del admin
-   * se reemplaza por la del nuevo usuario → retorna sessionLost: true
-   * para que el componente avise al usuario que debe re-loguearse.
-   */
-  const createUser = async (userData: {
-    email: string
-    password: string
-    full_name: string
-    role: 'superadmin' | 'admin' | 'developer' | 'viewer'
-  }): Promise<{ sessionLost: boolean }> => {
-    const { data, error: signUpError } = await supabase.auth.signUp({
-      email: userData.email,
-      password: userData.password,
-    })
-
-    if (signUpError) throw signUpError
-    if (!data.user) throw new Error('No se pudo crear el usuario en auth')
-
-    const { error: insertError } = await supabase
-      .from('users')
-      .insert({
-        id: data.user.id,
-        email: userData.email,
-        full_name: userData.full_name,
-        role: userData.role,
-        is_active: true,
-      })
-
-    if (insertError) throw insertError
-
-    // Si se creó una sesión nueva (confirmación de email desactivada),
-    // cerrarla para que el admin tenga que re-loguearse.
-    if (data.session) {
-      await supabase.auth.signOut()
-      return { sessionLost: true }
-    }
-
-    await loadUsers()
-    return { sessionLost: false }
+  const createUser = async (_data: { email: string; password: string; full_name: string; role: User['role'] }): Promise<{ sessionLost: boolean }> => {
+    throw new Error('La creación de cuentas requiere el backend de administración Auth. No está habilitada desde este navegador.')
   }
-
-  const updateUser = async (
-    userId: string,
-    updates: {
-      full_name?: string
-      role?: 'superadmin' | 'admin' | 'developer' | 'viewer'
-      is_active?: boolean
-    }
-  ) => {
-    const { is_active, ...baseUpdates } = updates
-
-    // Actualizar campos base (full_name, role) siempre
-    if (Object.keys(baseUpdates).length > 0) {
-      const { error } = await supabase
-        .from('users')
-        .update({ ...baseUpdates, updated_at: new Date().toISOString() })
-        .eq('id', userId)
-      if (error) throw error
-    }
-
-    // Actualizar is_active por separado — si falla, la columna aún no existe
-    if (is_active !== undefined) {
-      const { error } = await supabase
-        .from('users')
-        .update({ is_active, updated_at: new Date().toISOString() })
-        .eq('id', userId)
-      if (error) {
-        if (error.message.includes('is_active') || error.code === '42703') {
-          throw new Error(
-            'La columna "is_active" no existe aún. Ejecuta la migración en Supabase SQL Editor:\n\n' +
-            'ALTER TABLE public.users ADD COLUMN IF NOT EXISTS is_active boolean NOT NULL DEFAULT true;'
-          )
-        }
-        throw error
-      }
-    }
-
+  const deleteUser = async (_id: string) => {
+    throw new Error('La eliminación de cuentas requiere el backend de administración Auth. Utiliza la desactivación.')
+  }
+  const updateUser = async (id: string, updates: { full_name?: string; role?: User['role']; is_active?: boolean }) => {
+    const target = users.find(item => item.id === id)
+    if (!target || !actor) throw new Error('Actualiza la lista de usuarios antes de continuar.')
+    const nameChanged = updates.full_name !== undefined && updates.full_name !== target.full_name
+    const permissionsChanged = (updates.role !== undefined && updates.role !== target.role) ||
+      (updates.is_active !== undefined && updates.is_active !== target.is_active)
+    if (nameChanged && id !== actor.id) throw new Error('Solo puedes editar el nombre de tu propio perfil.')
+    if (permissionsChanged && !canManageProfile(actor, target)) throw new Error('No tienes permiso para administrar este perfil.')
+    if (nameChanged && permissionsChanged) throw new Error('Guarda el nombre y los permisos en operaciones separadas.')
+    if (nameChanged) requireData(await supabase.from('users').update({ full_name: updates.full_name })
+      .eq('id', id).select('id').single(), 'Perfil')
+    if (permissionsChanged) await operations.adminUpdateUser(id, updates.role ?? target.role, updates.is_active ?? target.is_active)
     await loadUsers()
   }
-
-  const deleteUser = async (userId: string) => {
-    const { error } = await supabase
-      .from('users')
-      .delete()
-      .eq('id', userId)
-    if (error) throw error
-    await loadUsers()
-  }
-
-  const activeUsers = users.filter(u => u.is_active !== false)
-
-  return {
-    users,
-    activeUsers,
-    loading,
-    error,
-    reload: loadUsers,
-    createUser,
-    updateUser,
-    deleteUser,
-  }
+  const activeUsers = users.filter(item => item.is_active)
+  return { users, activeUsers, assignableUsers: activeUsers.filter(canEdit), loading, error,
+    reload: loadUsers, createUser, updateUser, deleteUser }
 }

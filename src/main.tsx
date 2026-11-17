@@ -4,11 +4,18 @@ import App from './App'
 import ErrorBoundary from './components/ErrorBoundary'
 import Toaster from './components/ui/Toaster'
 import './index.css'
+import { configurationError } from './lib/supabase'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ErrorBoundary>
-      <App />
+      {configurationError ? (
+        <div role="alert" className="max-w-xl mx-auto p-8 text-red-800">
+          <h1 className="text-xl font-semibold mb-3">Configuración pendiente</h1>
+          <p>{configurationError}</p>
+          <p className="mt-3">Revisa .env.example y reinicia Vite después de configurar .env.local.</p>
+        </div>
+      ) : <App />}
       <Toaster />
     </ErrorBoundary>
   </React.StrictMode>,

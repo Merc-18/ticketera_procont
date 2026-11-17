@@ -136,6 +136,10 @@ El esquema nuevo, las políticas y las operaciones transaccionales están en
 está en `supabase/migrations/`; los SQL históricos de la raíz no forman parte
 de ella. Las migraciones todavía no se han aplicado al proyecto remoto.
 
+Los consumidores de la aplicación ya están adaptados localmente a esas RPC.
+La configuración, las pruebas y los pasos de conexión autorizada están en
+[FASE 2B1: integración local](docs/fase-2b1-integracion.md).
+
 ---
 
 ## Variables de entorno
@@ -143,14 +147,18 @@ de ella. Las migraciones todavía no se han aplicado al proyecto remoto.
 Crear un archivo `.env.local` en la raíz con:
 
 ```env
-VITE_SUPABASE_URL=https://<tu-proyecto>.supabase.co
-VITE_SUPABASE_ANON_KEY=<tu-anon-key>
+VITE_SUPABASE_URL=
+VITE_SUPABASE_PUBLISHABLE_KEY=
 ```
 
-Usar exclusivamente la URL y la clave pública del proyecto independiente de
+Completar ambos valores desde Connect / Settings → API Keys del proyecto nuevo.
+Se admite `VITE_SUPABASE_ANON_KEY` como compatibilidad con una clave JWT `anon`.
+Usar exclusivamente la URL y la clave publicable del proyecto independiente de
 pruebas. Las variables `VITE_*` se incluyen en el frontend: nunca colocar claves
 secretas o `service_role` en ellas. Solo `.env.example` debe estar versionado;
-los demás archivos `.env*` están ignorados. La FASE 1 no crea `.env.local`.
+los demás archivos `.env*` están ignorados. Ninguna fase completada ha creado
+`.env.local` ni conectado el backend remoto. Sin configuración válida, la
+aplicación muestra «Configuración pendiente» y no inicializa Supabase.
 
 ---
 

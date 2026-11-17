@@ -1,11 +1,11 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useRequests } from '../../hooks/useRequests'
-import { supabase } from '../../lib/supabase'
-import type { Request } from '../../types/database.types'
+import { operations } from '../../lib/api'
+import type { PublicTracking } from '../../lib/operations'
+import { errorMessage } from '../../lib/supabase-errors'
+import { peekTrackingReceipt, clearTrackingReceipt } from '../../lib/tracking-handoff'
 
 interface ProjectFlow {
-  id: string
   flow_type: string
   current_phase: string
   progress: number
@@ -41,42 +41,19 @@ const PHASE_LABELS: Record<string, string> = {
   discovery: 'Discovery', build: 'Build', uat_validation: 'UAT/Validation', deployed: 'Deployed',
 }
 
-const isUrgent = (r: Request) => !!r.observations?.startsWith('🔴 URGENTE')
-
-const cleanObservations = (obs: string) =>
-  obs.replace(/^🔴 URGENTE\.?\s*/i, '').trim()
-
-function TypeChips({ request }: { request: Request }) {
-  const types = request.needs_code
-    ? request.request_type.split(',').map(t => t.trim()).filter(Boolean)
-    : [request.request_type]
-  return (
-    <div className="flex flex-wrap gap-1.5">
-      {types.map(t => (
-        <span
-          key={t}
-          className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-            request.needs_code ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'
-          }`}
-        >
-          {t}
-        </span>
-      ))}
-    </div>
-  )
-}
-
 const CURRENT_PREFIX = `REQ${new Date().getFullYear().toString().slice(2)}-`
 
 export default function RequestTracking() {
   const navigate = useNavigate()
-  const { getRequestByNumber } = useRequests()
-  const [requestNumber, setRequestNumber] = useState('')
-  const [request, setRequest] = useState<Request | null>(null)
+  const [initialReceipt] = useState(peekTrackingReceipt)
+  useEffect(() => { clearTrackingReceipt() }, [])
+  const [requestNumber, setRequestNumber] = useState(initialReceipt?.request_number ?? '')
+  const [trackingToken, setTrackingToken] = useState(initialReceipt?.tracking_token ?? '')
+  const [searchError, setSearchError] = useState<string | null>(null)
+  const [request, setRequest] = useState<PublicTracking | null>(null)
   const [flows, setFlows] = useState<ProjectFlow[]>([])
   const [slaTargetDate, setSlaTargetDate] = useState<string | null>(null)
   const [projectStatus, setProjectStatus] = useState<string | null>(null)
-  const [projectCreatedAt, setProjectCreatedAt] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [notFound, setNotFound] = useState(false)
 
@@ -88,33 +65,22 @@ export default function RequestTracking() {
     setFlows([])
     setSlaTargetDate(null)
     setProjectStatus(null)
-    setProjectCreatedAt(null)
-    setRequestNumber('')
+    setSearchError(null)
 
     try {
       // Si el usuario ingresó solo dígitos, armar el número completo con el prefijo del año actual
       const fullNumber = /^\d+$/.test(requestNumber.trim())
         ? `${CURRENT_PREFIX}${requestNumber.trim().padStart(3, '0')}`
         : requestNumber.trim().toUpperCase()
-      const result = await getRequestByNumber(fullNumber)
+      const result = await operations.trackRequest(fullNumber, trackingToken)
       if (result) {
         setRequest(result)
-        if (result.project_id) {
-          const [{ data: flowData }, { data: projectData }] = await Promise.all([
-            supabase.from('project_flows').select('id, flow_type, current_phase, progress').eq('project_id', result.project_id),
-            supabase.from('projects').select('sla_target_date, status, created_at').eq('id', result.project_id).single(),
-          ])
-          setFlows((flowData as ProjectFlow[]) || [])
-          setSlaTargetDate(projectData?.sla_target_date ?? null)
-          setProjectStatus(projectData?.status ?? null)
-          setProjectCreatedAt(projectData?.created_at ?? null)
-        }
-      } else {
-        setNotFound(true)
-      }
+        setFlows(result.flows)
+        setSlaTargetDate(result.sla_target_date)
+        setProjectStatus(result.project_status)
+      } else { setNotFound(true) }
     } catch (err) {
-      console.error('Error searching request:', err)
-      setNotFound(true)
+      setSearchError(errorMessage(err))
     } finally {
       setLoading(false)
     }
@@ -151,9 +117,7 @@ export default function RequestTracking() {
       : {
           id: 'result',
           label: 'Aprobada y en curso',
-          date: projectCreatedAt
-            ? new Date(projectCreatedAt).toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: 'numeric' })
-            : null,
+          date: null,
           done: request.status === 'approved',
           icon: '✅',
         },
@@ -189,7 +153,7 @@ export default function RequestTracking() {
             <div className="text-center">
               <h1 className="text-3xl font-bold text-gray-900 mb-2">🔍 Rastrear Solicitud</h1>
               <p className="text-gray-600">
-                Ingresa tu número de seguimiento para ver el estado de tu solicitud
+                Ingresa el número completo y el token para ver el estado de tu solicitud
               </p>
             </div>
           </div>
@@ -198,34 +162,38 @@ export default function RequestTracking() {
           <form onSubmit={handleSearch} className="mb-8">
             <div className="flex gap-3">
               <div className="flex flex-1 border-2 border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-primary focus-within:border-transparent overflow-hidden">
-                <span className="flex items-center px-4 bg-gray-100 text-gray-500 font-mono text-lg border-r border-gray-300 select-none whitespace-nowrap">
-                  {CURRENT_PREFIX}
-                </span>
                 <input
                   type="text"
                   value={requestNumber}
-                  onChange={(e) => setRequestNumber(e.target.value.replace(/[^0-9]/g, '').slice(0, 3))}
-                  placeholder="001"
-                  maxLength={3}
+                  onChange={(e) => setRequestNumber(e.target.value.toUpperCase())}
+                  placeholder={`${CURRENT_PREFIX}001`}
+                  maxLength={40}
+                  required
                   className="flex-1 px-4 py-3 outline-none text-lg font-mono bg-white"
                   autoFocus
                 />
               </div>
               <button
                 type="submit"
-                disabled={loading || !requestNumber}
+                disabled={loading || !requestNumber || !trackingToken}
                 className="px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
                 {loading ? 'Buscando...' : 'Buscar'}
               </button>
             </div>
+            <label className="block mt-4 text-sm text-gray-600">
+              Token de seguimiento
+              <input type="password" value={trackingToken} onChange={e => setTrackingToken(e.target.value)}
+                autoComplete="off" required className="block w-full mt-1 border-2 border-gray-300 rounded-lg px-4 py-3" />
+            </label>
           </form>
+          {searchError && <p role="alert" className="p-4 text-red-700">{searchError}</p>}
 
           {/* Not Found */}
           {notFound && (
             <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
               <p className="text-red-800 font-medium mb-2">❌ Solicitud no encontrada</p>
-              <p className="text-sm text-red-600">Verifica que el número sea correcto</p>
+              <p className="text-sm text-red-600">Verifica que el número y el token sean correctos</p>
             </div>
           )}
 
@@ -272,19 +240,6 @@ export default function RequestTracking() {
                 </div>
               </div>
 
-              {/* Urgency Banner */}
-              {isUrgent(request) && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
-                  <span className="text-xl">🔴</span>
-                  <div>
-                    <p className="font-semibold text-red-800 text-sm">Solicitud marcada como Urgente</p>
-                    <p className="text-xs text-red-600 mt-0.5">
-                      El equipo se contactará contigo directamente para coordinar la atención.
-                    </p>
-                  </div>
-                </div>
-              )}
-
               {/* Request Details */}
               <div className="bg-gray-50 rounded-lg p-6 space-y-4">
                 <div>
@@ -292,58 +247,10 @@ export default function RequestTracking() {
                   <p className="font-mono font-bold text-xl text-primary">{request.request_number}</p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">Solicitante</p>
-                    <p className="font-medium text-gray-900">{request.requester_name}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">Área</p>
-                    <p className="font-medium text-gray-900">{request.requester_area}</p>
-                  </div>
-                </div>
-
                 <div>
-                  <p className="text-sm text-gray-600 mb-1.5">
-                    {request.needs_code ? 'Producto Final Requerido' : 'Tipo de Requerimiento'}
-                  </p>
-                  <TypeChips request={request} />
+                  <p className="text-sm text-gray-600 mb-1">Fecha de creación</p>
+                  <p>{new Date(request.created_at).toLocaleDateString('es-PE')}</p>
                 </div>
-
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Descripción</p>
-                  <p className="text-gray-900">{request.description}</p>
-                </div>
-
-                {request.observations && cleanObservations(request.observations) && (
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">Observaciones</p>
-                    <p className="text-gray-900">{cleanObservations(request.observations)}</p>
-                  </div>
-                )}
-
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Fecha de Creación</p>
-                  <p className="text-gray-900">{new Date(request.created_at).toLocaleDateString('es-PE')}</p>
-                </div>
-
-                {/* SLA / Fecha Estimada de Entrega */}
-                {request.requested_date && (
-                  <div className={`rounded-lg p-4 border ${isUrgent(request) ? 'bg-red-50 border-red-200' : 'bg-blue-50 border-blue-200'}`}>
-                    <p className={`text-xs font-semibold mb-1 ${isUrgent(request) ? 'text-red-600' : 'text-blue-600'}`}>
-                      ⏱ Fecha Estimada de Entrega (SLA)
-                    </p>
-                    <p className={`font-bold text-lg ${isUrgent(request) ? 'text-red-900' : 'text-blue-900'}`}>
-                      {new Date(request.requested_date + 'T12:00:00').toLocaleDateString('es-PE', {
-                        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-                      })}
-                    </p>
-                    <p className={`text-xs mt-1.5 ${isUrgent(request) ? 'text-red-500' : 'text-blue-500'}`}>
-                      * El plazo corre a partir del siguiente día laboral tras el envío de la solicitud. Los días laborales excluyen sábados y domingos.
-                    </p>
-                  </div>
-                )}
-
 
                 {/* Fecha compromiso (sla_target_date) */}
                 {slaTargetDate && (() => {
@@ -380,7 +287,7 @@ export default function RequestTracking() {
                       const phases = flow.flow_type === 'development' ? DEV_PHASES : ADM_PHASES
                       const currentIdx = phases.indexOf(flow.current_phase)
                       return (
-                        <div key={flow.id}>
+                        <div key={flow.flow_type}>
                           <div className="flex items-center justify-between mb-2">
                             <p className="text-sm font-medium text-gray-700">
                               {flow.flow_type === 'development' ? '💻 Desarrollo' : '📋 Administrativo'}
@@ -420,7 +327,7 @@ export default function RequestTracking() {
               {/* Actions */}
               <div className="flex gap-3">
                 <button
-                  onClick={() => { setRequest(null); setRequestNumber('') }}
+                  onClick={() => { setRequest(null); setRequestNumber(''); setTrackingToken('') }}
                   className="flex-1 bg-gray-100 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-200 transition"
                 >
                   Buscar otra solicitud

@@ -13,19 +13,19 @@ export interface Request {
   id: string;
   request_number: string;
   requester_name: string;
-  requester_email?: string;
-  requester_area: string;
+  requester_email?: string | null;
+  requester_area: string | null;
   request_type: string;
   origin: 'Interno' | 'Externo' | 'Regulatorio' | 'Cliente' | 'Otro';
-  data_system_involved?: string;
+  data_system_involved?: string | null;
   description: string;
-  observations?: string;
-  request_date?: string;
-  requested_date?: string;
+  observations?: string | null;
+  request_date?: string | null;
+  requested_date?: string | null;
   created_at: string;
   needs_code: boolean;
   status: 'pending' | 'approved' | 'rejected';
-  rejection_reason?: string;
+  rejection_reason?: string | null;
   project_id?: string;
   updated_at: string;
 }
@@ -38,13 +38,13 @@ export interface Project {
   project_type: 'development' | 'administrative' | 'dual';
   priority: 'low' | 'medium' | 'high' | 'urgent';
   status: 'active' | 'completed' | 'archived' | 'deleted';
-  start_date?: string;
-  due_date?: string;
-  sla_target_date?: string;
+  start_date?: string | null;
+  due_date?: string | null;
+  sla_target_date?: string | null;
   project_number?: string;
   is_blocked: boolean;
-  blocked_reason?: string;
-  blocked_since?: string;
+  blocked_reason?: string | null;
+  blocked_since?: string | null;
 
   created_at: string;
   updated_at: string;
@@ -55,7 +55,7 @@ export interface ProjectFlow {
   id: string;
   project_id: string;
   flow_type: 'administrative' | 'development';
-  assigned_to?: string;
+  assigned_to?: string | null;
   current_phase: string;
   progress: number;
   created_at: string;
@@ -70,7 +70,7 @@ export interface ChecklistItem {
   completed: boolean;
   order_index: number;
   created_at: string;
-  completed_at?: string;
+  completed_at?: string | null;
 }
 
 export interface Comment {

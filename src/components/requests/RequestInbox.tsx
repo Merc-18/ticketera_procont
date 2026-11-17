@@ -1,4 +1,6 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
+import { createRpcAttempt } from '../../lib/rpc-attempt'
+import { errorMessage } from '../../lib/supabase-errors'
 import { useRequests } from '../../hooks/useRequests'
 import { useUsers } from '../../hooks/useUsers'
 import { useAuth } from '../../hooks/useAuth'
@@ -35,8 +37,9 @@ function TypeChips({ request }: { request: Request }) {
 type InboxTab = 'pending' | 'approved' | 'rejected'
 
 export default function RequestInbox() {
-  const { requests, loading, approveRequest, rejectRequest } = useRequests()
-  const { activeUsers } = useUsers()
+  const { requests, loading, error, reload, approveRequest, rejectRequest } = useRequests({ loadInbox: true })
+  const { assignableUsers: activeUsers } = useUsers()
+  const approvalAttempt = useRef(createRpcAttempt())
   const { user: currentUser } = useAuth()
   const canManage = currentUser?.role === 'superadmin' || currentUser?.role === 'admin'
   const [activeTab, setActiveTab] = useState<InboxTab>('pending')
@@ -62,6 +65,7 @@ export default function RequestInbox() {
   const rejectedRequests = requests.filter(r => r.status === 'rejected')
 
   const openApproveModal = (request: Request) => {
+    approvalAttempt.current = createRpcAttempt()
     const urgent = isUrgent(request)
     const firstType = request.request_type.split(',')[0].trim()
     setSelectedRequest(request)
@@ -87,13 +91,13 @@ export default function RequestInbox() {
         assigned_admin: sameUser
           ? (approveData.assigned_dev || undefined)
           : (approveData.assigned_admin || undefined),
-      })
+      }, approvalAttempt.current)
       setShowApproveModal(false)
       setSelectedRequest(null)
       setSameUser(false)
       toast.success('Solicitud aprobada y proyecto creado')
     } catch (err) {
-      toast.error('Error al aprobar la solicitud')
+      toast.error(errorMessage(err))
     } finally {
       setActionLoading(false)
     }
@@ -109,7 +113,7 @@ export default function RequestInbox() {
       setSelectedRequest(null)
       toast.success('Solicitud rechazada')
     } catch (err) {
-      toast.error('Error al rechazar la solicitud')
+      toast.error(errorMessage(err))
     } finally {
       setActionLoading(false)
     }
@@ -120,6 +124,8 @@ export default function RequestInbox() {
     approved: 'bg-green-100 text-green-800 border-green-200',
     rejected: 'bg-red-100 text-red-800 border-red-200',
   }
+
+  if (error) return <div role="alert" className="p-4 text-red-700">{error} <button onClick={reload} className="underline">Reintentar</button></div>
 
   if (loading) {
     return (

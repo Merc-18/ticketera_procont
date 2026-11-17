@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { canEdit } from '../../lib/access'
 import type { Project, ProjectFlow, User } from '../../types/database.types'
 import { getAvatarColor, getInitials, PRIORITY_COLORS, AREA_COLORS } from '../../lib/constants'
 
@@ -182,7 +183,7 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
                   <p className="px-3 py-1 text-[10px] text-gray-400 font-semibold uppercase tracking-wide border-b border-gray-100 mb-1">
                     Asignar responsable
                   </p>
-                  {users.map(u => (
+                  {users.filter(canEdit).map(u => (
                     <button
                       key={u.id}
                       onClick={() => { onAssign(flow.id, u.id); setShowAssign(false) }}

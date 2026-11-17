@@ -3,11 +3,11 @@ import { useAuth } from '../../hooks/useAuth'
 
 interface Props {
   children: React.ReactNode
-  requiredRole?: 'admin' | 'developer' | 'viewer'
+  requiredRole?: 'superadmin' | 'admin' | 'developer' | 'viewer'
 }
 
 export default function ProtectedRoute({ children, requiredRole }: Props) {
-  const { user, loading } = useAuth()
+  const { user, loading, error } = useAuth()
 
   if (loading) {
     return (
@@ -20,11 +20,12 @@ export default function ProtectedRoute({ children, requiredRole }: Props) {
     )
   }
 
-  if (!user) {
+  if (error) return <div role="alert" className="p-8 text-red-700">{error} <a href="/login" className="underline">Iniciar sesión</a></div>
+  if (!user?.is_active) {
     return <Navigate to="/portal" replace />
   }
 
-  if (requiredRole && user.role !== requiredRole) {
+  if (requiredRole && user.role !== requiredRole && user.role !== 'superadmin') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <div className="bg-white p-8 rounded-lg shadow-lg text-center">

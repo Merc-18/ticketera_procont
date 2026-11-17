@@ -4,6 +4,10 @@ import type { Comment } from '../../types/database.types'
 import { logActivity } from '../../hooks/useActivityLog'
 import { useUsers } from '../../hooks/useUsers'
 import { sendNotification } from '../../lib/notifications'
+import { useAuth } from '../../hooks/useAuth'
+import { canEdit } from '../../lib/access'
+import { errorMessage } from '../../lib/supabase-errors'
+import { toast } from '../../lib/toast'
 
 interface Props {
   projectId: string
@@ -24,6 +28,8 @@ function renderContent(text: string) {
 
 export default function CommentsSection({ projectId }: Props) {
   const { activeUsers } = useUsers()
+  const { user } = useAuth()
+  const editable = canEdit(user)
   const [comments, setComments] = useState<CommentWithUser[]>([])
   const [newComment, setNewComment] = useState('')
   const [loading, setLoading] = useState(true)
@@ -46,7 +52,7 @@ export default function CommentsSection({ projectId }: Props) {
       if (error) throw error
       setComments(data || [])
     } catch (err) {
-      console.error('Error loading comments:', err)
+      toast.error(errorMessage(err))
     } finally {
       setLoading(false)
     }
@@ -86,7 +92,7 @@ export default function CommentsSection({ projectId }: Props) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!newComment.trim()) return
+    if (!newComment.trim() || !editable) return
 
     setSubmitting(true)
     try {
@@ -97,6 +103,9 @@ export default function CommentsSection({ projectId }: Props) {
         .single()
 
       if (error) throw error
+      if (!comment) throw new Error("No se confirmó el comentario.")
+      setNewComment('')
+      await loadComments()
 
       await logActivity(projectId, 'comment_added', {
         comment_id: comment.id,
@@ -122,7 +131,7 @@ export default function CommentsSection({ projectId }: Props) {
       setShowMentions(false)
       await loadComments()
     } catch (err) {
-      console.error('Error creating comment:', err)
+      toast.error(errorMessage(err))
     } finally {
       setSubmitting(false)
     }
@@ -140,7 +149,7 @@ export default function CommentsSection({ projectId }: Props) {
   return (
     <div className="space-y-4">
       {/* Form */}
-      <form onSubmit={handleSubmit} className="bg-gray-50 rounded-lg p-4 border space-y-2">
+      <form hidden={!editable} onSubmit={handleSubmit} className="bg-gray-50 rounded-lg p-4 border space-y-2">
         <div className="relative">
           <textarea
             ref={textareaRef}

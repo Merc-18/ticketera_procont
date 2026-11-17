@@ -56,8 +56,9 @@ interface Props {
 }
 
 export default function ActivitySection({ projectId }: Props) {
-  const { logs, loading } = useActivityLog(projectId)
+  const { logs, loading, error } = useActivityLog(projectId)
   const { users } = useUsers()
+  if (error) return <p role="alert" className="text-red-700">{error}</p>
   const userName = (id: string | null) => id ? (users.find(u => u.id === id)?.full_name ?? id.slice(0, 8)) : '—'
 
   if (loading) {

@@ -4,7 +4,11 @@ import CommentsSection from './CommentsSection'
 import ChecklistSection from './ChecklistSection'
 import ActivitySection from './ActivitySection'
 import { useUsers } from '../../hooks/useUsers'
-import { supabase } from '../../lib/supabase'
+import { operations } from '../../lib/api'
+import { useAuth } from '../../hooks/useAuth'
+import { canEdit } from '../../lib/access'
+import { errorMessage } from '../../lib/supabase-errors'
+import { toast } from '../../lib/toast'
 import { getAvatarColor, getInitials, AREA_COLORS, PHASE_LABELS, AREAS as ALL_AREAS } from '../../lib/constants'
 
 interface Props {
@@ -27,7 +31,9 @@ const PRIORITY_OPTIONS = [
 const KNOWN_AREAS = ALL_AREAS
 
 export default function ProjectModal({ project, flows, onClose, onUpdate, onDelete, updateProject, updateFlowDetails }: Props) {
-  const { activeUsers } = useUsers()
+  const { assignableUsers: activeUsers } = useUsers()
+  const { user } = useAuth()
+  const editable = canEdit(user)
   const [activeTab, setActiveTab] = useState<'details' | 'checklist' | 'comments' | 'activity'>('details')
   const [editMode, setEditMode] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -99,47 +105,22 @@ export default function ProjectModal({ project, flows, onClose, onUpdate, onDele
         description: editData.description,
         priority: editData.priority as Project['priority'],
         project_type: editData.project_type as Project['project_type'],
-        start_date: editData.start_date || undefined,
-        due_date: editData.due_date || undefined,
+        start_date: editData.start_date || null,
+        due_date: editData.due_date || null,
       })
-      // Update request fields (area + requester name) if changed
       const areaChanged = editData.requester_area !== (project.requests?.requester_area ?? '')
       const nameChanged = editData.requester_name !== (project.requests?.requester_name ?? '')
-      if (project.request_id && (areaChanged || nameChanged)) {
-        await supabase
-          .from('requests')
-          .update({
-            ...(areaChanged && { requester_area: editData.requester_area }),
-            ...(nameChanged  && { requester_name: editData.requester_name }),
-          })
-          .eq('id', project.request_id)
-      } else if (!project.request_id && (editData.requester_area || editData.requester_name.trim())) {
-        // No linked request yet — create a stub and link it
-        const { data: stubRequest } = await supabase
-          .from('requests')
-          .insert([{
-            request_number: project.project_number ?? project.id.slice(0, 8),
-            requester_name: editData.requester_name.trim() || '—',
-            requester_area: editData.requester_area,
-            request_type: 'INT',
-            origin: 'Interno',
-            description: project.description,
-            needs_code: false,
-            status: 'approved',
-            project_id: project.id,
-          }])
-          .select()
-          .single()
-        if (stubRequest) {
-          await supabase
-            .from('projects')
-            .update({ request_id: stubRequest.id })
-            .eq('id', project.id)
+      if (areaChanged || nameChanged) {
+        if (!project.request_id) throw new Error('Proyecto sin solicitud vinculada. Actualiza la vista antes de editar.')
+        try {
+          await operations.updateRequestDetails(project.request_id, editData.requester_area, editData.requester_name)
+        } catch (err) {
+          throw new Error(`El proyecto se guardó, pero no los datos del solicitante: ${errorMessage(err)}`)
         }
       }
       setEditMode(false)
       onUpdate?.()
-    } finally {
+    } catch (err) { toast.error(errorMessage(err)) } finally {
       setSaving(false)
     }
   }
@@ -150,11 +131,11 @@ export default function ProjectModal({ project, flows, onClose, onUpdate, onDele
       try {
         await updateProject(project.id, {
           is_blocked: false,
-          blocked_reason: undefined,
-          blocked_since: undefined,
+          blocked_reason: null,
+          blocked_since: null,
         })
         onUpdate?.()
-      } finally {
+      } catch (err) { toast.error(errorMessage(err)) } finally {
         setSaving(false)
       }
     } else {
@@ -174,7 +155,7 @@ export default function ProjectModal({ project, flows, onClose, onUpdate, onDele
       })
       setShowBlockForm(false)
       onUpdate?.()
-    } finally {
+    } catch (err) { toast.error(errorMessage(err)) } finally {
       setSaving(false)
     }
   }
@@ -186,7 +167,7 @@ export default function ProjectModal({ project, flows, onClose, onUpdate, onDele
       setShowStatusConfirm(null)
       onUpdate?.()
       onClose()
-    } finally {
+    } catch (err) { toast.error(errorMessage(err)) } finally {
       setSaving(false)
     }
   }
@@ -203,7 +184,7 @@ export default function ProjectModal({ project, flows, onClose, onUpdate, onDele
       setFlowSaved(prev => ({ ...prev, [flowId]: { ...edit } }))
       setReassigningFlow(null)
       onUpdate?.()
-    } finally {
+    } catch (err) { toast.error(errorMessage(err)) } finally {
       setSavingFlow(null)
     }
   }
@@ -379,7 +360,7 @@ export default function ProjectModal({ project, flows, onClose, onUpdate, onDele
             <div className="flex gap-2 pt-1">
               <button
                 onClick={() => handleChangeStatus(showStatusConfirm)}
-                disabled={saving}
+                disabled={!editable || saving}
                 className={`px-4 py-2 text-white rounded-lg text-sm font-medium disabled:opacity-50 ${
                   showStatusConfirm === 'completed' ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-600 hover:bg-gray-700'
                 }`}
@@ -554,7 +535,7 @@ export default function ProjectModal({ project, flows, onClose, onUpdate, onDele
                             <label className="text-xs font-medium text-gray-500">Responsable</label>
                             {updateFlowDetails && (
                               <button
-                                onClick={() => setReassigningFlow(reassigningFlow === flow.id ? null : flow.id)}
+                                onClick={() => setReassigningFlow(reassigningFlow === flow.id ? null : flow.id)} disabled={!editable}
                                 className="text-xs text-primary hover:underline"
                               >
                                 {reassigningFlow === flow.id ? 'Cancelar' : '✏️ Reasignar'}
@@ -661,7 +642,7 @@ export default function ProjectModal({ project, flows, onClose, onUpdate, onDele
               <>
                 <button
                   onClick={handleToggleBlock}
-                  disabled={saving}
+                  disabled={!editable || saving}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition disabled:opacity-50 ${
                     project.is_blocked
                       ? 'bg-green-100 text-green-700 hover:bg-green-200'
@@ -672,14 +653,14 @@ export default function ProjectModal({ project, flows, onClose, onUpdate, onDele
                 </button>
                 <button
                   onClick={() => openStatusConfirm('completed')}
-                  disabled={saving || project.status === 'completed'}
+                  disabled={!editable || saving || project.status === 'completed'}
                   className="px-4 py-2 bg-green-100 text-green-700 rounded-lg text-sm font-medium hover:bg-green-200 disabled:opacity-40 transition"
                 >
                   ✅ Completar
                 </button>
                 <button
                   onClick={() => openStatusConfirm('archived')}
-                  disabled={saving || project.status === 'archived'}
+                  disabled={!editable || saving || project.status === 'archived'}
                   className="px-4 py-2 bg-gray-200 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-300 disabled:opacity-40 transition"
                 >
                   📦 Archivar
@@ -702,7 +683,7 @@ export default function ProjectModal({ project, flows, onClose, onUpdate, onDele
                 </button>
                 <button
                   onClick={handleSaveEdit}
-                  disabled={saving || !editData.title.trim()}
+                  disabled={!editable || saving || !editData.title.trim()}
                   className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-blue-600 disabled:opacity-50"
                 >
                   {saving ? 'Guardando...' : 'Guardar cambios'}
@@ -711,7 +692,7 @@ export default function ProjectModal({ project, flows, onClose, onUpdate, onDele
             ) : (
               <>
                 <button
-                  onClick={() => setEditMode(true)}
+                  onClick={() => setEditMode(true)} disabled={!editable}
                   className="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-200 transition"
                 >
                   ✏️ Editar

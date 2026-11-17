@@ -6,6 +6,7 @@ type RoleOption = 'superadmin' | 'admin' | 'developer' | 'viewer'
 interface Props {
   user?: User
   currentUserRole: RoleOption
+  currentUserId?: string
   onClose: () => void
   onCreate?: (data: { email: string; password: string; full_name: string; role: RoleOption }) => Promise<{ sessionLost: boolean }>
   onUpdate?: (userId: string, data: { full_name?: string; role?: RoleOption; is_active?: boolean }) => Promise<void>
@@ -18,7 +19,7 @@ const ALL_ROLES: { value: RoleOption; label: string; desc: string; color: string
   { value: 'viewer',     label: 'Viewer',     desc: 'Solo lectura: puede ver proyectos y dashboard',                color: 'bg-gray-100 text-gray-700 border-gray-200' },
 ]
 
-export default function UserModal({ user, currentUserRole, onClose, onCreate, onUpdate }: Props) {
+export default function UserModal({ user, currentUserRole, currentUserId, onClose, onCreate, onUpdate }: Props) {
   const isEdit      = !!user
   const isSuperAdmin = currentUserRole === 'superadmin'
 
@@ -27,7 +28,7 @@ export default function UserModal({ user, currentUserRole, onClose, onCreate, on
     ? ALL_ROLES
     : ALL_ROLES.filter(r => r.value === 'developer' || r.value === 'viewer')
 
-  const defaultRole: RoleOption = isSuperAdmin ? (user?.role ?? 'developer') : 'developer'
+  const defaultRole: RoleOption = user?.role ?? 'developer'
 
   const [fullName, setFullName] = useState(user?.full_name ?? '')
   const [email,    setEmail]    = useState(user?.email ?? '')
@@ -79,6 +80,8 @@ export default function UserModal({ user, currentUserRole, onClose, onCreate, on
             <input
               type="text"
               value={fullName}
+              disabled={isEdit && user?.id !== currentUserId}
+              title={isEdit && user?.id !== currentUserId ? "Solo el titular puede editar su nombre" : undefined}
               onChange={e => setFullName(e.target.value)}
               placeholder="Ej: María García"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"

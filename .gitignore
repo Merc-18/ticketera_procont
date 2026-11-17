@@ -5,6 +5,10 @@ node_modules/
 dist/
 dist-ssr/
 
+# Local Supabase CLI state (project links and temporary connection metadata)
+supabase/.temp/
+supabase/.branches/
+
 # Environment variables (contain secrets)
 .env*
 !.env.example

@@ -11,6 +11,7 @@ import { useProjects } from '../../hooks/useProjects'
 import { useUsers } from '../../hooks/useUsers'
 import { useAuth } from '../../hooks/useAuth'
 import { toast } from '../../lib/toast'
+import { errorMessage } from '../../lib/supabase-errors'
 import type { ProjectFlow } from '../../types/database.types'
 import { AREAS } from '../../lib/constants'
 
@@ -66,7 +67,7 @@ const VIEW_MODES: { value: ViewMode; label: string; icon: string }[] = [
 ]
 
 export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }: Props) {
-  const { projects, loading, hasMore, loadMore, statusFilter, setStatusFilter, updateProjectFlow, updateProject, updateFlowDetails, createProject, deleteProject, reload, bulkUpdateProjects } = useProjects()
+  const { projects, loading, error, hasMore, loadMore, statusFilter, setStatusFilter, updateProjectFlow, updateProject, updateFlowDetails, createProject, deleteProject, reload, bulkUpdateProjects } = useProjects()
   const { activeUsers } = useUsers()
   const { user: currentUser } = useAuth()
   const role = currentUser?.role ?? 'viewer'
@@ -165,13 +166,15 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
     try {
       await updateProjectFlow(draggableId, destination.droppableId)
     } catch (error) {
-      console.error('Error moving project:', error)
+      toast.error(errorMessage(error))
     }
   }
 
   const hasFilters = priorityFilter !== 'all' || areaFilter !== 'all' || (canManage ? userFilter !== 'all' : myProjectsOnly) || searchQuery.trim() !== ''
   const filteredCount = filteredProjects.length
   const totalCount = projects.length
+
+  if (error) return <div role="alert" className="text-red-700 p-4">{error} <button className="underline" onClick={reload}>Reintentar</button></div>
 
   // Skeleton en la carga inicial (sin proyectos aún)
   if (loading && projects.length === 0) {
@@ -421,7 +424,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
                 projects={getProjectsByPhase(phase.id)}
                 onProjectClick={setSelectedProject}
                 users={activeUsers}
-                onAssign={(flowId, userId) => updateFlowDetails(flowId, { assigned_to: userId }).then(reload)}
+                onAssign={(flowId, userId) => { void updateFlowDetails(flowId, { assigned_to: userId }).catch(err => toast.error(errorMessage(err))) }}
                 selectedIds={canEdit ? selectedIds : []}
                 onSelect={canEdit ? (id => setSelectedIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id])) : undefined}
               />
@@ -464,9 +467,11 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
             onChange={async e => {
               const val = e.target.value
               if (!val) return
-              await bulkUpdateProjects(selectedIds, { priority: val as any })
-              setSelectedIds([])
-              toast.success(`Prioridad actualizada en ${selectedIds.length} proyecto${selectedIds.length !== 1 ? 's' : ''}`)
+              try {
+                await bulkUpdateProjects(selectedIds, { priority: val as any })
+                setSelectedIds([])
+                toast.success(`Prioridad actualizada en ${selectedIds.length} proyecto${selectedIds.length !== 1 ? 's' : ''}`)
+              } catch (err) { toast.error(errorMessage(err)) }
             }}
             className="text-sm border border-gray-200 rounded-lg px-2 py-1.5 text-gray-700 cursor-pointer outline-none hover:border-gray-300"
           >
@@ -479,9 +484,11 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
           <button
             onClick={async () => {
               const count = selectedIds.length
-              await bulkUpdateProjects(selectedIds, { status: 'archived' as any })
-              setSelectedIds([])
-              toast.success(`${count} proyecto${count !== 1 ? 's' : ''} archivado${count !== 1 ? 's' : ''}`)
+              try {
+                await bulkUpdateProjects(selectedIds, { status: 'archived' as any })
+                setSelectedIds([])
+                toast.success(`${count} proyecto${count !== 1 ? 's' : ''} archivado${count !== 1 ? 's' : ''}`)
+              } catch (err) { toast.error(errorMessage(err)) }
             }}
             className="text-sm text-orange-600 hover:text-orange-700 font-medium transition"
           >

@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
+import { createRpcAttempt, type RpcAttempt } from '../../lib/rpc-attempt'
 import { AREAS } from '../../lib/constants'
 
 interface Props {
@@ -13,7 +14,7 @@ interface Props {
     due_date?: string
     area?: string
     requester_name?: string
-  }) => Promise<void>
+  }, attempt: RpcAttempt) => Promise<void>
 }
 
 const PRIORITY_OPTS = [
@@ -30,6 +31,7 @@ const TYPE_OPTS = [
 ] as const
 
 export default function NewProjectModal({ boardType, onClose, onCreate }: Props) {
+  const attempt = useRef(createRpcAttempt())
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [projectType, setProjectType] = useState<'development' | 'administrative' | 'dual'>(boardType)
@@ -55,7 +57,7 @@ export default function NewProjectModal({ boardType, onClose, onCreate }: Props)
         due_date: dueDate || undefined,
         area: area || undefined,
         requester_name: requesterName.trim() || undefined,
-      })
+      }, attempt.current)
       onClose()
     } catch (err: any) {
       setError(err.message ?? 'Error al crear el proyecto')

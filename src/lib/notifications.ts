@@ -1,4 +1,5 @@
 import { supabase } from './supabase'
+import { errorMessage } from './supabase-errors'
 
 export async function sendNotification(params: {
   userId: string
@@ -14,5 +15,5 @@ export async function sendNotification(params: {
     message:    params.message ?? null,
     project_id: params.projectId ?? null,
   }])
-  if (error) console.warn('[Notification] Error al enviar:', error.message)
+  if (error) throw new Error(`El cambio principal puede estar guardado, pero no se envió la notificación: ${errorMessage(error)}`)
 }
