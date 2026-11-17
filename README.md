@@ -144,6 +144,17 @@ El procedimiento actualizado para CLI 3.2.0, la captura local de configuración
 y el plan de aplicación/reversión están en
 [FASE 2B.2: preparación de Supabase](docs/fase-2b2-preparacion.md).
 
+La aplicación remota sigue pendiente. El procedimiento vigente por pasos y los
+scripts de compensación están en
+[FASE 2B.3B: recuperación de migraciones](docs/fase-2b3b-recovery-plan.md).
+Las cuatro migraciones conservan sus hashes; las compensaciones están fuera de
+`supabase/migrations/` y solo se usan mediante un bundle generado desde
+inventarios privados del destino. Se probaron 26 casos locales de recuperación,
+sin repetir suites anteriores ni crear cuentas. **NO APTO todavía para aplicar
+en Supabase** hasta obtener el inventario real de catálogo/permisos y versión
+numérica PostgreSQL bajo autorización separada. El plan Free confirmado no
+ofrece backups automáticos/PITR.
+
 ---
 
 ## Variables de entorno

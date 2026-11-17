@@ -1,5 +1,13 @@
 # FASE 2B.3A — Diagnóstico de conectividad y preflight
 
+**Continuación 2B.3B (17/11/2026):** comprobaciones visuales ya completadas por
+el usuario, sin nuevas peticiones: Data API habilitada; esquemas `public` y
+`extensions`; historial vacío; sin tablas de negocio; Free sin backups
+automáticos/PITR. «Última versión soportada» no aporta número de PostgreSQL.
+La recuperación está preparada y probada solo localmente en
+[el plan 2B.3B](fase-2b3b-recovery-plan.md). NO APTO todavía para aplicar remoto:
+faltan inventario real de catálogo/ACL y versión numérica/privilegios del operador.
+
 17/11/2026. Base: `f77c378`. Alcance autorizado: diagnóstico local y GET de
 conectividad/metadatos, sin registros de negocio ni SQL remoto.
 
@@ -73,8 +81,8 @@ No se modificó el estado privado histórico para ocultar el 401 inicial.
 | Restricción de OpenAPI por tipo de clave | **Confirmada** por el mensaje del servidor |
 | Clave inválida o de otro origen | No explica el resultado actual: la clave es aceptada por Auth en el origen fijado |
 | Falta de sesión o JWT de usuario | No necesaria para el GET público Auth; no se añade Bearer ni se intenta login para abrir OpenAPI |
-| Data API deshabilitada | Pendiente; Auth 200 y rechazo de OpenAPI en el gateway no prueban disponibilidad de PostgREST |
-| `public` no expuesto u otros esquemas expuestos | Pendiente; no inferible del 401 de OpenAPI |
+| Data API deshabilitada | Descartada por confirmación manual posterior del usuario; no se repitió el GET |
+| `public` no expuesto u otros esquemas expuestos | Usuario confirmó `public` y `extensions`; `auth`/`app_private` excluidos |
 | RLS o tablas/migraciones faltantes | No hay evidencia de que causen este 401; no se probaron tablas ni políticas remotas |
 | Origen distinto de `ticketera-procont` por nombre | Pin local coherente y nombre confirmado por el usuario; no hay verificación administrativa automática del nombre |
 
@@ -86,18 +94,23 @@ No se modificó el estado privado histórico para ocultar el 401 inicial.
 | Nombre `ticketera-procont` y organización correctos | Confirmación manual previa reutilizada; no consultada Management API |
 | Par URL/clave aceptado | Confirmado en Auth con control negativo |
 | Causa de 401 OpenAPI | Confirmada; no requiere corregir credenciales |
-| Data API habilitada | Pendiente de Dashboard |
-| `public` expuesto, `auth` y `app_private` excluidos | Pendiente de Dashboard; TOML local no prueba configuración remota |
-| Versión PostgreSQL instalada | Pendiente; `db.major_version=17` local sigue siendo un valor no verificado |
-| Historial remoto vacío | Declaración previa del usuario; falta contraste en metadatos remotos |
-| Ausencia de tablas de negocio previas | Declaración previa del usuario; falta revisión visual del esquema sin abrir registros |
-| Respaldo/restauración y alcance de reversión | Pendiente de confirmar disponibilidad; plan en 2B.2, sin down automático autorizado |
+| Data API habilitada | Confirmada manualmente por usuario; sin verificación repetida |
+| `public` expuesto, `auth` y `app_private` excluidos | Confirmado manualmente: lista `public`, `extensions`; TOML no se aplica al remoto |
+| Versión PostgreSQL instalada | Usuario indicó «última soportada»; falta número; `db.major_version=17` local no se cambia por inferencia |
+| Historial remoto vacío | Confirmado manualmente por usuario en Dashboard; captura administrativa para recuperación pendiente |
+| Ausencia de tablas de negocio previas | Revisión visual completada y confirmada por usuario |
+| Respaldo/restauración y alcance de reversión | Free sin backup automático/PITR confirmado por usuario; compensaciones 2B.3B probadas localmente, no autorizadas para remoto |
+| Inventario de objetos/ACL y privilegios del operador | Preparado como consulta local; captura remota todavía no autorizada |
 | CLI administrativa autenticada/enlazada | No realizada; la clave publicable no autentica Management API ni CLI |
 | Cuatro archivos, hashes, orden | Confirmados contra el manifiesto existente; sin cambios SQL |
 | Compatibilidad funcional SQL/RPC | Evidencia local de 2A/2B.1 reutilizada; integración real pendiente |
 | Autorización de aplicar | **No otorgada en esta fase** |
 
 ## Comprobaciones manuales sin ejecutar SQL
+
+**Lista histórica ya completada por el usuario. No repetir.** Solo falta el
+número PostgreSQL, no una nueva ronda de las cinco comprobaciones. El inventario
+administrativo nuevo de recuperación se solicita bajo otra autorización.
 
 El usuario eligió Dashboard sin token personal en 2B.2. Se mantiene esa opción:
 
@@ -169,7 +182,9 @@ reales de configuración en los tres archivos de entrega y el formato del diff.
 ## Decisión
 
 Diagnóstico del 401 completado. Se corrigió la exigencia errónea de obtener
-HTTP 200 en OpenAPI del procedimiento 2B.2. Pendiente completar los metadatos
-manuales y obtener autorización expresa para la siguiente etapa. No se aplicó
-ninguna migración, SQL, cambio de configuración remoto, usuario ni bootstrap.
-La creación de cuenta y el bootstrap continúan requiriendo autorización separada.
+HTTP 200 en OpenAPI. Las cinco comprobaciones Dashboard fueron confirmadas
+manualmente después de este diagnóstico, sin repetir llamadas ni pruebas.
+2B.3B aporta compensación y 26 pruebas locales específicas. **NO APTO todavía
+para aplicar remoto**, hasta disponer del inventario de catálogo/ACL, versión
+numérica y privilegios necesarios. No se aplicó ninguna migración ni SQL remoto,
+cambio de configuración, cuenta o bootstrap. Las autorizaciones siguen separadas.

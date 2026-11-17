@@ -1,0 +1,62 @@
+{
+  "phase": "2B.3B",
+  "base_commit": "d48dbfb",
+  "manual_preflight": {
+    "source": "user_dashboard_attestation",
+    "repeated": false,
+    "data_api_enabled": true,
+    "exposed_schemas": [
+      "public",
+      "extensions"
+    ],
+    "business_tables_empty": true,
+    "migration_history_empty": true,
+    "postgresql_exact_version": null,
+    "postgresql_user_description": "última versión soportada por Supabase",
+    "free_plan_scheduled_backups": false,
+    "free_plan_pitr": false
+  },
+  "cli_source_review": {
+    "version": "3.2.0",
+    "sources": [
+      {
+        "source": "https://github.com/supabase/cli/blob/v3.2.0/apps/cli/src/command-internal/migration-apply.ts",
+        "sha256": "1607f492f16a74f9873dc5abb07debd767d4baa4a8337b2d4a453892f0e27311"
+      },
+      {
+        "source": "https://github.com/supabase/cli/blob/v3.2.0/apps/cli/src/command-internal/migration-history.ts",
+        "sha256": "83f8ecca5876d67fd897c5d7d36f0ec1a4061af5535c86ad99b779b966f3aaa8"
+      }
+    ],
+    "explicit_transaction_files": "sequential execution; history INSERT follows authored COMMIT",
+    "native_cli_driver_tested": false
+  },
+  "verdict": "NO APTO para aplicar remoto hasta inventario/version/privilegios administrativos reales",
+  "remote_operations": 0,
+  "original_sql_modified": false,
+  "artifact_sha256": {
+    "README.md": "a6a73369c8b8ea62851426d3297bb56a8b67a912ef49031fa6bded3a2cd086b0",
+    "docs/fase-2b2-preparacion.md": "5f362591df5a1730933bcfd3fb3b6c8c676752ad2eec91a1bf92fb036f42f071",
+    "docs/fase-2b3a-preflight.md": "c52ff84ab359b2dc8651db7e0a448a34ef3bc6eaf487f94bd54c112b3db469ae",
+    "docs/fase-2b3b-recovery-plan.md": "e3a066044ea59368920298582a41bdf71448f6e15ed242a79fd66c2823d4f111",
+    "docs/validation/fase-2b3b-recovery.json": "94b2e1cbf337d9a51ef48e31f82def937d50c74ce4c5b6a057cd5988f1b3d728",
+    "docs/validation/fase-2b3b-recovery.txt": "8929136b9a8b7331bcfe42f2cce2efb779f4edb1d3160853dae666f4681481c6",
+    "scripts/build_migration_recovery.py": "7c8ed619c9c812930a25a367b7f496baf84578ade282b6121ea2d1a9d4a37837",
+    "supabase/tests/recovery_local.py": "8d88f6123010e3c0780c54b113d611a558482208458df54a74e0273811df0b08",
+    "supabase/recovery/compensate_01.sql": "0e433e4079be8eb2f2ed7dc8d5efce0b96cbbed55d7beec866a139d7b2f1f4b0",
+    "supabase/recovery/compensate_02.sql": "90a07f689ff0235388b578b51c3dc2bdefd1eeef45cf62a211fa11eae75cb3ec",
+    "supabase/recovery/compensate_03.sql": "569b1ebe1493bfcc849e589f9174d81003a87cfb98c8e9db0a47fac9b0826c31",
+    "supabase/recovery/compensate_04.sql": "07f6dd6c01df984824fa79ee360712bd710e10cb4f71cb3e43b4aeb07842c4ec",
+    "supabase/recovery/inventory.sql": "c8bd96229d4233f723938c146dd2c693db94d04e63717a1554a8a329a4cc6d0c",
+    "supabase/recovery/scope.json": "2926329c0cf55365eb4fe18a35693b4eff3f02c10ba758cb6bf0125fd48e9268"
+  },
+  "delivery_checks": {
+    "json_valid": true,
+    "local_markdown_links_exist": true,
+    "private_configuration_absent": true,
+    "python_syntax_valid": true,
+    "recovery_test_count": 26,
+    "migration_hashes_verified_by_recovery_runner": true,
+    "review": "single-agent source/compensation inspection; no independent hosted validation"
+  }
+}

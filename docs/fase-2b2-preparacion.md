@@ -1,5 +1,15 @@
 # FASE 2B.2 — Preparación de Supabase
 
+**Actualización 2B.3B (17/11/2026):** el procedimiento vigente de aplicación por
+pasos, detención e historial está en [recuperación](fase-2b3b-recovery-plan.md).
+Sustituye el push único de esta preparación y su reversión todavía conceptual.
+Se reutilizan las comprobaciones Dashboard confirmadas: Data API habilitada,
+`public`/`extensions` expuestos, historial vacío y sin tablas de negocio; Free
+sin backups automáticos/PITR. La versión «última soportada» aún no fija un major.
+Hay cuatro compensaciones específicas y 26 comprobaciones locales nuevas.
+**NO APTO para aplicar remoto** hasta capturar y validar baseline real, versión
+numérica y privilegios administrativos. Ninguna modificación remota autorizada.
+
 17/11/2026. Base funcional: `eceb849`; preparación: `c6e79f4`; asistente con
 entradas visibles: `28acd95`. Cierre de preparación después de la captura local
 confirmada por el usuario. Este informe complementa FASE 2A y sustituye los
@@ -33,9 +43,10 @@ previa de obtener HTTP 200 en OpenAPI. No autoriza migraciones.
   posterior 2B.3A reprodujo «Secret API key required» en la raíz OpenAPI y
   obtuvo HTTP 200 en configuración pública Auth con la clave existente.
   No hay que sustituir la clave publicable ni exigir HTTP 200 en OpenAPI.
-- **No apto todavía para ejecutar DDL**: faltan las comprobaciones remotas de
-  Data API, esquemas expuestos, versión PostgreSQL y estado inicial. El 401
-  explicado no es por sí mismo un bloqueo para aplicar migraciones.
+- **No apto todavía para ejecutar DDL**: Dashboard Data API, esquemas e inicio
+  vacío ya están confirmados manualmente; falta versión numérica e inventario
+  de objetos/permisos para recuperación. Ver 2B.3B. El 401 explicado no es por
+  sí mismo un bloqueo para aplicar migraciones.
 
 La comprobación local sin valores se registra en
 [fase-2b2-local-ready.json](validation/fase-2b2-local-ready.json). No prueba que
@@ -106,12 +117,19 @@ archivos y que su contenido no cambió. No se añadieron ni alteraron migracione
 | 3 — `20261117000300_operations.sql` | Requiere 1+2 y rol `service_role`; RPC, numeración, integridad diferida, trigger Auth, bootstrap, relaciones PostgREST y publicación de 3 tablas si existe `supabase_realtime` |
 | 4 — `20261117000400_reference_checklists.sql` | Requiere tabla de plantillas de 1; carga 35 pasos genéricos, sin cuentas ni registros empresariales |
 
-Cada archivo contiene su propia transacción. **El lote de cuatro no es una
+Cada archivo contiene su propia transacción. En CLI 3.2.0, sus BEGIN/COMMIT
+explícitos hacen que la versión se registre después del COMMIT del archivo;
+una pérdida de conexión puede dejar DDL aplicado sin historial. 2B.3B cubre
+ese caso y exige capturas por paso. **El lote de cuatro no es una
 única transacción:** si falla el tercero, los dos primeros pueden permanecer
 aplicados. No reejecutar migraciones ya confirmadas ni usar scripts SQL raíz,
 `tests/support/auth_stub.sql`, `setup.js` o seeds para resolver un fallo.
 
 ## Procedimiento definitivo — requiere autorización para 2B.3
+
+**Referencia histórica:** para ejecutar o recuperar, prevalece el procedimiento
+2B.3B enlazado arriba. No ejecutar el push de cuatro archivos mostrado aquí sin
+revisar su sustitución por un archivo pendiente y capturas de cada prefijo.
 
 La autorización solicitada cubre conexión/preflight y aplicación de este
 manifiesto únicamente si se superan todos los requisitos. No cubre cambios
@@ -224,6 +242,14 @@ cuentas ni ejecutar bootstrap. No usar `admin_setup.sql` o cuentas demo.
 
 ## Reversión y riesgos
 
+Este diseño inicial se concreta en los cuerpos de `supabase/recovery/`, el
+generador offline `scripts/build_migration_recovery.py` y el plan 2B.3B. Los
+cuerpos no son migraciones ni se ejecutan sueltos. Las ACL de `public`, tablas,
+columnas y helpers se restituyen desde capturas, no desde permisos supuestos.
+El bundle compensa el prefijo completo en orden inverso, restaura las versiones
+propias dentro de esa misma transacción y preserva la tabla/esquema de historial.
+Se rechaza ante drift o datos nuevos. No hay restauración automática en Free.
+
 | Momento | Respuesta prevista |
 |---|---|
 | Antes del primer DDL | Cancelar; no hay esquema nuevo que revertir. Desvincular la CLI local, si se enlazó, no revierte nada en servidor |
@@ -237,10 +263,12 @@ circulares y objetos de negocio en orden inverso. Preservar `auth`, `storage`,
 roles de plataforma y `supabase_realtime` como publicación. La carga 4 no debe
 borrarse ciegamente si alguien modificó las plantillas después.
 
-No hay un down automático aprobado. Eliminar entradas del historial o marcar
+Hay compensaciones preparadas y probadas localmente, pero no un down remoto
+autorizado. Eliminar entradas del historial o marcar
 una versión como reverted **no deshace su SQL**. Una compensación necesita una
 autorización propia, alcance exacto y registro de historial coherente. No se
-generó ni ejecutó un script destructivo de reversión.
+ejecutó ningún script destructivo remoto. Los scripts locales de 2B.3B no
+autorizan por sí mismos su ejecución en Supabase.
 
 ## Verificaciones reales posteriores pendientes
 
@@ -268,12 +296,14 @@ Evidencias: [asistente](validation/fase-2b2-preparation.txt),
 
 ## Decisión pendiente
 
-Preparación local completada; aplicación remota no autorizada. Se solicita
-autorización para iniciar 2B.3 con preflight y aplicación condicionada de las
-cuatro migraciones. La exposición Data API, la versión PostgreSQL y el historial
-remoto son condiciones de parada hasta comprobarlos. El 401 quedó explicado en
-2B.3A y no requiere cambiar credenciales. El bootstrap,
-las cuentas y las pruebas con escrituras requieren autorización adicional.
+Preparación y recuperación local completadas (2B.3B); aplicación remota no
+autorizada. Data API, exposición e historial vacío se aceptan como confirmaciones
+manuales del usuario y no se repiten. **NO APTO todavía para aplicar remoto**:
+pendientes baseline real del catálogo/ACL, versión PostgreSQL numérica y permisos
+del operador/ledger. Su consulta requiere autorización de SQL administrativo de
+lectura, todavía no concedida. El 401 explicado no requiere cambiar credenciales.
+Aplicación, compensación destructiva, bootstrap, cuentas y pruebas remotas con
+escrituras mantienen autorizaciones independientes.
 
 Referencias oficiales: [claves](https://supabase.com/docs/guides/getting-started/api-keys),
 [CLI y opciones de db push](https://supabase.com/docs/reference/cli/supabase-db-push),

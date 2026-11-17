@@ -1,0 +1,1361 @@
+{
+  "phase": "2B.3B",
+  "base_commit": "d48dbfb",
+  "checked_at_utc": "2026-11-17T22:07:52.153313+00:00",
+  "environment": {
+    "postgresql": "PostgreSQL 18.6 (Ubuntu 18.6-0ubuntu0.26.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 15.2.0-16ubuntu1) 15.2.0, 64-bit",
+    "tcp_enabled": false,
+    "auth": "minimal stub; no accounts",
+    "history": "CLI 3.2.0 shape; simulated insert"
+  },
+  "original_migrations": [
+    {
+      "file": "20261117000100_schema.sql",
+      "sha256": "4cc433c7eb91278abf020b82d9e40ddc39052642630db267e0753bf2c4f5fbcd"
+    },
+    {
+      "file": "20261117000200_security.sql",
+      "sha256": "669171a4a000c4dbfeb78ca53e4c58df3b7ba9473c7735ef4d024047d5bf8cf5"
+    },
+    {
+      "file": "20261117000300_operations.sql",
+      "sha256": "f697e130cf736a8b31476a73198b17f314293708263c7b1ec0da3954c44badc8"
+    },
+    {
+      "file": "20261117000400_reference_checklists.sql",
+      "sha256": "2ae7b98b460a040319e0c2007809c1842374e97cb2ee4ac140a8fdfc48b0b145"
+    }
+  ],
+  "tests": [
+    {
+      "test": "failure_after_migration_1",
+      "passed": true,
+      "restored_baseline": true,
+      "reapplication_of_original_four": true,
+      "platform_sentinel_preserved": true
+    },
+    {
+      "test": "failure_inside_migration_1",
+      "passed": true,
+      "failed_file_rolled_back": true
+    },
+    {
+      "test": "commit_without_history_1",
+      "passed": true,
+      "restored_baseline": true
+    },
+    {
+      "test": "failure_after_migration_2",
+      "passed": true,
+      "restored_baseline": true,
+      "reapplication_of_original_four": true,
+      "platform_sentinel_preserved": true
+    },
+    {
+      "test": "failure_inside_migration_2",
+      "passed": true,
+      "failed_file_rolled_back": true
+    },
+    {
+      "test": "commit_without_history_2",
+      "passed": true,
+      "restored_baseline": true
+    },
+    {
+      "test": "failure_after_migration_3",
+      "passed": true,
+      "restored_baseline": true,
+      "reapplication_of_original_four": true,
+      "platform_sentinel_preserved": true
+    },
+    {
+      "test": "failure_inside_migration_3",
+      "passed": true,
+      "failed_file_rolled_back": true
+    },
+    {
+      "test": "commit_without_history_3",
+      "passed": true,
+      "restored_baseline": true
+    },
+    {
+      "test": "failure_after_migration_4",
+      "passed": true,
+      "restored_baseline": true,
+      "reapplication_of_original_four": true,
+      "platform_sentinel_preserved": true
+    },
+    {
+      "test": "failure_inside_migration_4",
+      "passed": true,
+      "failed_file_rolled_back": true
+    },
+    {
+      "test": "commit_without_history_4",
+      "passed": true,
+      "restored_baseline": true
+    },
+    {
+      "test": "compensation_failure_rolls_back_everything",
+      "passed": true
+    },
+    {
+      "test": "foreign_dependency_and_rule_preserved_and_recovery_refused",
+      "passed": true
+    },
+    {
+      "test": "permission_drift_refuses_recovery",
+      "passed": true
+    },
+    {
+      "test": "changed_reference_templates_preserved",
+      "passed": true
+    },
+    {
+      "test": "nonempty_app_table_preserved_and_builder_refused",
+      "passed": true
+    },
+    {
+      "test": "initial_rpc_collision_and_all_tables_publication_rejected",
+      "passed": true
+    },
+    {
+      "test": "foreign_history_preserved_and_recovery_refused",
+      "passed": true
+    },
+    {
+      "test": "four_compensation_bodies_refuse_standalone_execution",
+      "passed": true
+    },
+    {
+      "test": "atomic_test_copy_failure_1",
+      "passed": true,
+      "ddl_and_ledger_rolled_back": true,
+      "native_cli": false,
+      "approved_for_remote": false
+    },
+    {
+      "test": "atomic_test_copy_failure_2",
+      "passed": true,
+      "ddl_and_ledger_rolled_back": true,
+      "native_cli": false,
+      "approved_for_remote": false
+    },
+    {
+      "test": "atomic_test_copy_failure_3",
+      "passed": true,
+      "ddl_and_ledger_rolled_back": true,
+      "native_cli": false,
+      "approved_for_remote": false
+    },
+    {
+      "test": "atomic_test_copy_failure_4",
+      "passed": true,
+      "ddl_and_ledger_rolled_back": true,
+      "native_cli": false,
+      "approved_for_remote": false
+    },
+    {
+      "test": "atomic_test_copy_success",
+      "passed": true,
+      "four_versions": true,
+      "native_cli": false,
+      "approved_for_remote": false
+    },
+    {
+      "test": "offline_generator_private_file_no_overwrite_and_executable_bundle",
+      "passed": true
+    }
+  ],
+  "passed": 26,
+  "remote_sql_executed": false,
+  "remote_mutations_performed": false,
+  "auth_accounts_created": 0,
+  "bootstrap_calls": 0,
+  "prior_72_sql_tests_repeated": false,
+  "prior_19_integration_tests_repeated": false,
+  "limitations": [
+    "No hosted Supabase services or CLI driver execution",
+    "Remote inventory/version/ACL grantors not yet captured",
+    "Atomic copy experiment is not an approved application path"
+  ],
+  "baseline_example": {
+    "roles": {
+      "anon": {
+        "oid": "16384",
+        "rolname": "anon",
+        "rolsuper": false,
+        "rolconfig": null,
+        "rolinherit": true,
+        "rolcanlogin": false,
+        "rolcreatedb": false,
+        "rolbypassrls": false,
+        "rolconnlimit": -1,
+        "rolcreaterole": false,
+        "rolreplication": false
+      },
+      "procont": {
+        "oid": "10",
+        "rolname": "procont",
+        "rolsuper": true,
+        "rolconfig": null,
+        "rolinherit": true,
+        "rolcanlogin": true,
+        "rolcreatedb": true,
+        "rolbypassrls": true,
+        "rolconnlimit": -1,
+        "rolcreaterole": true,
+        "rolreplication": true
+      },
+      "pg_monitor": {
+        "oid": "3373",
+        "rolname": "pg_monitor",
+        "rolsuper": false,
+        "rolconfig": null,
+        "rolinherit": true,
+        "rolcanlogin": false,
+        "rolcreatedb": false,
+        "rolbypassrls": false,
+        "rolconnlimit": -1,
+        "rolcreaterole": false,
+        "rolreplication": false
+      },
+      "pg_maintain": {
+        "oid": "6337",
+        "rolname": "pg_maintain",
+        "rolsuper": false,
+        "rolconfig": null,
+        "rolinherit": true,
+        "rolcanlogin": false,
+        "rolcreatedb": false,
+        "rolbypassrls": false,
+        "rolconnlimit": -1,
+        "rolcreaterole": false,
+        "rolreplication": false
+      },
+      "service_role": {
+        "oid": "16386",
+        "rolname": "service_role",
+        "rolsuper": false,
+        "rolconfig": null,
+        "rolinherit": true,
+        "rolcanlogin": false,
+        "rolcreatedb": false,
+        "rolbypassrls": true,
+        "rolconnlimit": -1,
+        "rolcreaterole": false,
+        "rolreplication": false
+      },
+      "authenticated": {
+        "oid": "16385",
+        "rolname": "authenticated",
+        "rolsuper": false,
+        "rolconfig": null,
+        "rolinherit": true,
+        "rolcanlogin": false,
+        "rolcreatedb": false,
+        "rolbypassrls": false,
+        "rolconnlimit": -1,
+        "rolcreaterole": false,
+        "rolreplication": false
+      },
+      "pg_checkpoint": {
+        "oid": "4544",
+        "rolname": "pg_checkpoint",
+        "rolsuper": false,
+        "rolconfig": null,
+        "rolinherit": true,
+        "rolcanlogin": false,
+        "rolcreatedb": false,
+        "rolbypassrls": false,
+        "rolconnlimit": -1,
+        "rolcreaterole": false,
+        "rolreplication": false
+      },
+      "pg_read_all_data": {
+        "oid": "6181",
+        "rolname": "pg_read_all_data",
+        "rolsuper": false,
+        "rolconfig": null,
+        "rolinherit": true,
+        "rolcanlogin": false,
+        "rolcreatedb": false,
+        "rolbypassrls": false,
+        "rolconnlimit": -1,
+        "rolcreaterole": false,
+        "rolreplication": false
+      },
+      "pg_database_owner": {
+        "oid": "6171",
+        "rolname": "pg_database_owner",
+        "rolsuper": false,
+        "rolconfig": null,
+        "rolinherit": true,
+        "rolcanlogin": false,
+        "rolcreatedb": false,
+        "rolbypassrls": false,
+        "rolconnlimit": -1,
+        "rolcreaterole": false,
+        "rolreplication": false
+      },
+      "pg_read_all_stats": {
+        "oid": "3375",
+        "rolname": "pg_read_all_stats",
+        "rolsuper": false,
+        "rolconfig": null,
+        "rolinherit": true,
+        "rolcanlogin": false,
+        "rolcreatedb": false,
+        "rolbypassrls": false,
+        "rolconnlimit": -1,
+        "rolcreaterole": false,
+        "rolreplication": false
+      },
+      "pg_signal_backend": {
+        "oid": "4200",
+        "rolname": "pg_signal_backend",
+        "rolsuper": false,
+        "rolconfig": null,
+        "rolinherit": true,
+        "rolcanlogin": false,
+        "rolcreatedb": false,
+        "rolbypassrls": false,
+        "rolconnlimit": -1,
+        "rolcreaterole": false,
+        "rolreplication": false
+      },
+      "pg_write_all_data": {
+        "oid": "6182",
+        "rolname": "pg_write_all_data",
+        "rolsuper": false,
+        "rolconfig": null,
+        "rolinherit": true,
+        "rolcanlogin": false,
+        "rolcreatedb": false,
+        "rolbypassrls": false,
+        "rolconnlimit": -1,
+        "rolcreaterole": false,
+        "rolreplication": false
+      },
+      "pg_stat_scan_tables": {
+        "oid": "3377",
+        "rolname": "pg_stat_scan_tables",
+        "rolsuper": false,
+        "rolconfig": null,
+        "rolinherit": true,
+        "rolcanlogin": false,
+        "rolcreatedb": false,
+        "rolbypassrls": false,
+        "rolconnlimit": -1,
+        "rolcreaterole": false,
+        "rolreplication": false
+      },
+      "pg_read_all_settings": {
+        "oid": "3374",
+        "rolname": "pg_read_all_settings",
+        "rolsuper": false,
+        "rolconfig": null,
+        "rolinherit": true,
+        "rolcanlogin": false,
+        "rolcreatedb": false,
+        "rolbypassrls": false,
+        "rolconnlimit": -1,
+        "rolcreaterole": false,
+        "rolreplication": false
+      },
+      "pg_read_server_files": {
+        "oid": "4569",
+        "rolname": "pg_read_server_files",
+        "rolsuper": false,
+        "rolconfig": null,
+        "rolinherit": true,
+        "rolcanlogin": false,
+        "rolcreatedb": false,
+        "rolbypassrls": false,
+        "rolconnlimit": -1,
+        "rolcreaterole": false,
+        "rolreplication": false
+      },
+      "pg_write_server_files": {
+        "oid": "4570",
+        "rolname": "pg_write_server_files",
+        "rolsuper": false,
+        "rolconfig": null,
+        "rolinherit": true,
+        "rolcanlogin": false,
+        "rolcreatedb": false,
+        "rolbypassrls": false,
+        "rolconnlimit": -1,
+        "rolcreaterole": false,
+        "rolreplication": false
+      },
+      "pg_create_subscription": {
+        "oid": "6304",
+        "rolname": "pg_create_subscription",
+        "rolsuper": false,
+        "rolconfig": null,
+        "rolinherit": true,
+        "rolcanlogin": false,
+        "rolcreatedb": false,
+        "rolbypassrls": false,
+        "rolconnlimit": -1,
+        "rolcreaterole": false,
+        "rolreplication": false
+      },
+      "pg_execute_server_program": {
+        "oid": "4571",
+        "rolname": "pg_execute_server_program",
+        "rolsuper": false,
+        "rolconfig": null,
+        "rolinherit": true,
+        "rolcanlogin": false,
+        "rolcreatedb": false,
+        "rolbypassrls": false,
+        "rolconnlimit": -1,
+        "rolcreaterole": false,
+        "rolreplication": false
+      },
+      "pg_signal_autovacuum_worker": {
+        "oid": "6392",
+        "rolname": "pg_signal_autovacuum_worker",
+        "rolsuper": false,
+        "rolconfig": null,
+        "rolinherit": true,
+        "rolcanlogin": false,
+        "rolcreatedb": false,
+        "rolbypassrls": false,
+        "rolconnlimit": -1,
+        "rolcreaterole": false,
+        "rolreplication": false
+      },
+      "pg_use_reserved_connections": {
+        "oid": "4550",
+        "rolname": "pg_use_reserved_connections",
+        "rolsuper": false,
+        "rolconfig": null,
+        "rolinherit": true,
+        "rolcanlogin": false,
+        "rolcreatedb": false,
+        "rolbypassrls": false,
+        "rolconnlimit": -1,
+        "rolcreaterole": false,
+        "rolreplication": false
+      }
+    },
+    "rules": {},
+    "types": {
+      "auth.users": {
+        "acl": null,
+        "oid": "89041",
+        "kind": "c",
+        "owner": "procont",
+        "relation": "89039"
+      },
+      "auth._users": {
+        "acl": null,
+        "oid": "89040",
+        "kind": "b",
+        "owner": "procont",
+        "relation": "0"
+      },
+      "public.platform_guard": {
+        "acl": null,
+        "oid": "89076",
+        "kind": "c",
+        "owner": "procont",
+        "relation": "89074"
+      },
+      "public._platform_guard": {
+        "acl": null,
+        "oid": "89075",
+        "kind": "b",
+        "owner": "procont",
+        "relation": "0"
+      },
+      "storage.platform_guard": {
+        "acl": null,
+        "oid": "89067",
+        "kind": "c",
+        "owner": "procont",
+        "relation": "89065"
+      },
+      "storage._platform_guard": {
+        "acl": null,
+        "oid": "89066",
+        "kind": "b",
+        "owner": "procont",
+        "relation": "0"
+      },
+      "supabase_migrations.schema_migrations": {
+        "acl": null,
+        "oid": "89056",
+        "kind": "c",
+        "owner": "procont",
+        "relation": "89054"
+      },
+      "supabase_migrations._schema_migrations": {
+        "acl": null,
+        "oid": "89055",
+        "kind": "b",
+        "owner": "procont",
+        "relation": "0"
+      }
+    },
+    "format": "procont-recovery-v1",
+    "columns": {
+      "auth.users.id": {
+        "acl": [],
+        "type": "uuid",
+        "number": 1,
+        "default": null,
+        "notnull": true,
+        "identity": "",
+        "generated": ""
+      },
+      "auth.users.email": {
+        "acl": [],
+        "type": "text",
+        "number": 2,
+        "default": null,
+        "notnull": false,
+        "identity": "",
+        "generated": ""
+      },
+      "public.platform_guard.id": {
+        "acl": [],
+        "type": "integer",
+        "number": 1,
+        "default": null,
+        "notnull": true,
+        "identity": "",
+        "generated": ""
+      },
+      "storage.platform_guard.id": {
+        "acl": [],
+        "type": "integer",
+        "number": 1,
+        "default": null,
+        "notnull": true,
+        "identity": "",
+        "generated": ""
+      },
+      "storage.platform_guard.value": {
+        "acl": [],
+        "type": "text",
+        "number": 2,
+        "default": null,
+        "notnull": true,
+        "identity": "",
+        "generated": ""
+      },
+      "auth.users.raw_user_meta_data": {
+        "acl": [],
+        "type": "jsonb",
+        "number": 3,
+        "default": "'{}'::jsonb",
+        "notnull": true,
+        "identity": "",
+        "generated": ""
+      },
+      "supabase_migrations.schema_migrations.name": {
+        "acl": [],
+        "type": "text",
+        "number": 3,
+        "default": null,
+        "notnull": false,
+        "identity": "",
+        "generated": ""
+      },
+      "supabase_migrations.schema_migrations.version": {
+        "acl": [],
+        "type": "text",
+        "number": 1,
+        "default": null,
+        "notnull": true,
+        "identity": "",
+        "generated": ""
+      },
+      "supabase_migrations.schema_migrations.statements": {
+        "acl": [],
+        "type": "text[]",
+        "number": 2,
+        "default": null,
+        "notnull": false,
+        "identity": "",
+        "generated": ""
+      }
+    },
+    "history": "",
+    "indexes": {
+      "auth.users_pkey": {
+        "oid": "89047",
+        "owner": "procont",
+        "valid": true,
+        "definition": "CREATE UNIQUE INDEX users_pkey ON auth.users USING btree (id)"
+      },
+      "public.platform_guard_pkey": {
+        "oid": "89078",
+        "owner": "procont",
+        "valid": true,
+        "definition": "CREATE UNIQUE INDEX platform_guard_pkey ON public.platform_guard USING btree (id)"
+      },
+      "storage.platform_guard_pkey": {
+        "oid": "89072",
+        "owner": "procont",
+        "valid": true,
+        "definition": "CREATE UNIQUE INDEX platform_guard_pkey ON storage.platform_guard USING btree (id)"
+      },
+      "supabase_migrations.schema_migrations_pkey": {
+        "oid": "89060",
+        "owner": "procont",
+        "valid": true,
+        "definition": "CREATE UNIQUE INDEX schema_migrations_pkey ON supabase_migrations.schema_migrations USING btree (version)"
+      }
+    },
+    "schemas": {
+      "auth": {
+        "acl": [
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "CREATE"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "USAGE"
+          },
+          {
+            "grantee": "anon",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "USAGE"
+          },
+          {
+            "grantee": "authenticated",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "USAGE"
+          }
+        ],
+        "oid": "89038",
+        "owner": "procont"
+      },
+      "public": {
+        "acl": [
+          {
+            "grantee": "PUBLIC",
+            "grantor": "pg_database_owner",
+            "grantable": false,
+            "privilege": "CREATE"
+          },
+          {
+            "grantee": "PUBLIC",
+            "grantor": "pg_database_owner",
+            "grantable": false,
+            "privilege": "USAGE"
+          },
+          {
+            "grantee": "pg_database_owner",
+            "grantor": "pg_database_owner",
+            "grantable": false,
+            "privilege": "CREATE"
+          },
+          {
+            "grantee": "pg_database_owner",
+            "grantor": "pg_database_owner",
+            "grantable": false,
+            "privilege": "USAGE"
+          },
+          {
+            "grantee": "anon",
+            "grantor": "pg_database_owner",
+            "grantable": true,
+            "privilege": "CREATE"
+          },
+          {
+            "grantee": "authenticated",
+            "grantor": "pg_database_owner",
+            "grantable": true,
+            "privilege": "CREATE"
+          }
+        ],
+        "oid": "2200",
+        "owner": "pg_database_owner"
+      },
+      "storage": {
+        "acl": [
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "CREATE"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "USAGE"
+          }
+        ],
+        "oid": "89062",
+        "owner": "procont"
+      },
+      "realtime": {
+        "acl": [
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "CREATE"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "USAGE"
+          }
+        ],
+        "oid": "89063",
+        "owner": "procont"
+      },
+      "extensions": {
+        "acl": [
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "CREATE"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "USAGE"
+          }
+        ],
+        "oid": "89064",
+        "owner": "procont"
+      },
+      "supabase_migrations": {
+        "acl": [
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "CREATE"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "USAGE"
+          }
+        ],
+        "oid": "89053",
+        "owner": "procont"
+      }
+    },
+    "operator": "procont",
+    "policies": {},
+    "triggers": {
+      "auth.users.platform_guard": {
+        "oid": "89082",
+        "enabled": "O",
+        "definition": "CREATE TRIGGER platform_guard BEFORE UPDATE ON auth.users FOR EACH ROW EXECUTE FUNCTION auth.platform_guard_trigger()"
+      }
+    },
+    "functions": {
+      "auth.uid()": {
+        "acl": [
+          {
+            "grantee": "PUBLIC",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          },
+          {
+            "grantee": "anon",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          },
+          {
+            "grantee": "authenticated",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          }
+        ],
+        "oid": "89049",
+        "owner": "procont",
+        "definition": "CREATE OR REPLACE FUNCTION auth.uid()\n RETURNS uuid\n LANGUAGE sql\n STABLE\n SET search_path TO ''\nAS $function$\n  SELECT nullif(current_setting('request.jwt.claim.sub',true),'')::uuid;\n$function$\n"
+      },
+      "public.platform_guard_fn()": {
+        "acl": [
+          {
+            "grantee": "PUBLIC",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          },
+          {
+            "grantee": "anon",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          },
+          {
+            "grantee": "authenticated",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          },
+          {
+            "grantee": "service_role",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          }
+        ],
+        "oid": "89080",
+        "owner": "procont",
+        "definition": "CREATE OR REPLACE FUNCTION public.platform_guard_fn()\n RETURNS integer\n LANGUAGE sql\nAS $function$ SELECT 1 $function$\n"
+      },
+      "auth.platform_guard_trigger()": {
+        "acl": [
+          {
+            "grantee": "PUBLIC",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          }
+        ],
+        "oid": "89081",
+        "owner": "procont",
+        "definition": "CREATE OR REPLACE FUNCTION auth.platform_guard_trigger()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$ BEGIN RETURN NEW; END $function$\n"
+      }
+    },
+    "relations": {
+      "auth.users": {
+        "acl": [
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "DELETE"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "INSERT"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "MAINTAIN"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "REFERENCES"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "SELECT"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "TRIGGER"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "TRUNCATE"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "UPDATE"
+          }
+        ],
+        "oid": "89039",
+        "rls": false,
+        "kind": "r",
+        "view": null,
+        "owner": "procont",
+        "options": null,
+        "force_rls": false,
+        "replident": "d"
+      },
+      "public.platform_guard": {
+        "acl": [
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "DELETE"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "INSERT"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "MAINTAIN"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "REFERENCES"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "SELECT"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "TRIGGER"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "TRUNCATE"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "UPDATE"
+          },
+          {
+            "grantee": "anon",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "DELETE"
+          },
+          {
+            "grantee": "anon",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "INSERT"
+          },
+          {
+            "grantee": "anon",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "MAINTAIN"
+          },
+          {
+            "grantee": "anon",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "REFERENCES"
+          },
+          {
+            "grantee": "anon",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "SELECT"
+          },
+          {
+            "grantee": "anon",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "TRIGGER"
+          },
+          {
+            "grantee": "anon",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "TRUNCATE"
+          },
+          {
+            "grantee": "anon",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "UPDATE"
+          },
+          {
+            "grantee": "authenticated",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "DELETE"
+          },
+          {
+            "grantee": "authenticated",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "INSERT"
+          },
+          {
+            "grantee": "authenticated",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "MAINTAIN"
+          },
+          {
+            "grantee": "authenticated",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "REFERENCES"
+          },
+          {
+            "grantee": "authenticated",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "SELECT"
+          },
+          {
+            "grantee": "authenticated",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "TRIGGER"
+          },
+          {
+            "grantee": "authenticated",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "TRUNCATE"
+          },
+          {
+            "grantee": "authenticated",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "UPDATE"
+          }
+        ],
+        "oid": "89074",
+        "rls": false,
+        "kind": "r",
+        "view": null,
+        "owner": "procont",
+        "options": null,
+        "force_rls": false,
+        "replident": "d"
+      },
+      "storage.platform_guard": {
+        "acl": [
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "DELETE"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "INSERT"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "MAINTAIN"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "REFERENCES"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "SELECT"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "TRIGGER"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "TRUNCATE"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "UPDATE"
+          }
+        ],
+        "oid": "89065",
+        "rls": false,
+        "kind": "r",
+        "view": null,
+        "owner": "procont",
+        "options": null,
+        "force_rls": false,
+        "replident": "d"
+      },
+      "supabase_migrations.schema_migrations": {
+        "acl": [
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "DELETE"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "INSERT"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "MAINTAIN"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "REFERENCES"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "SELECT"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "TRIGGER"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "TRUNCATE"
+          },
+          {
+            "grantee": "procont",
+            "grantor": "procont",
+            "grantable": false,
+            "privilege": "UPDATE"
+          }
+        ],
+        "oid": "89054",
+        "rls": false,
+        "kind": "r",
+        "view": null,
+        "owner": "procont",
+        "options": null,
+        "force_rls": false,
+        "replident": "d"
+      }
+    },
+    "extensions": {
+      "plpgsql": {
+        "oid": "13678",
+        "owner": "procont",
+        "schema": "pg_catalog",
+        "version": "1.0"
+      }
+    },
+    "row_counts": {
+      "auth.users": 0
+    },
+    "constraints": {
+      "auth.users.users_pkey": {
+        "oid": "89048",
+        "validated": true,
+        "definition": "PRIMARY KEY (id)"
+      },
+      "public.platform_guard.platform_guard_pkey": {
+        "oid": "89079",
+        "validated": true,
+        "definition": "PRIMARY KEY (id)"
+      },
+      "storage.platform_guard.platform_guard_pkey": {
+        "oid": "89073",
+        "validated": true,
+        "definition": "PRIMARY KEY (id)"
+      },
+      "supabase_migrations.schema_migrations.schema_migrations_pkey": {
+        "oid": "89061",
+        "validated": true,
+        "definition": "PRIMARY KEY (version)"
+      }
+    },
+    "default_acl": {
+      "89050": {
+        "oid": "89050",
+        "defaclacl": [
+          "anon=arwdDxtm/procont",
+          "authenticated=arwdDxtm/procont"
+        ],
+        "defaclrole": "10",
+        "defaclobjtype": "r",
+        "defaclnamespace": "2200"
+      },
+      "89051": {
+        "oid": "89051",
+        "defaclacl": [
+          "anon=X/procont",
+          "authenticated=X/procont",
+          "service_role=X/procont"
+        ],
+        "defaclrole": "10",
+        "defaclobjtype": "f",
+        "defaclnamespace": "2200"
+      },
+      "89084": {
+        "oid": "89084",
+        "defaclacl": [
+          "=X/procont",
+          "procont=X/procont",
+          "service_role=X/procont"
+        ],
+        "defaclrole": "10",
+        "defaclobjtype": "f",
+        "defaclnamespace": "0"
+      }
+    },
+    "database_oid": "89037",
+    "publications": {
+      "supabase_realtime": {
+        "all": false,
+        "oid": "89052",
+        "owner": "procont",
+        "delete": true,
+        "insert": true,
+        "update": true,
+        "truncate": true,
+        "via_root": false
+      }
+    },
+    "role_members": {
+      "3374:3373:10": {
+        "oid": "10308",
+        "member": "3373",
+        "roleid": "3374",
+        "grantor": "10",
+        "set_option": true,
+        "admin_option": false,
+        "inherit_option": true
+      },
+      "3375:3373:10": {
+        "oid": "10309",
+        "member": "3373",
+        "roleid": "3375",
+        "grantor": "10",
+        "set_option": true,
+        "admin_option": false,
+        "inherit_option": true
+      },
+      "3377:3373:10": {
+        "oid": "10310",
+        "member": "3373",
+        "roleid": "3377",
+        "grantor": "10",
+        "set_option": true,
+        "admin_option": false,
+        "inherit_option": true
+      }
+    },
+    "event_triggers": {},
+    "publication_tables": {
+      "supabase_realtime.public.platform_guard": {
+        "filter": null,
+        "columns": [
+          "id"
+        ]
+      }
+    },
+    "server_version_num": "180006",
+    "templates_checksum": null,
+    "publication_schemas": {}
+  },
+  "object_counts_by_prefix": [
+    {
+      "schemas": 6,
+      "relations": 4,
+      "functions": 3,
+      "policies": 0,
+      "triggers": 1,
+      "publication_tables": 1
+    },
+    {
+      "schemas": 7,
+      "relations": 17,
+      "functions": 4,
+      "policies": 0,
+      "triggers": 1,
+      "publication_tables": 1
+    },
+    {
+      "schemas": 7,
+      "relations": 17,
+      "functions": 6,
+      "policies": 20,
+      "triggers": 1,
+      "publication_tables": 1
+    },
+    {
+      "schemas": 7,
+      "relations": 17,
+      "functions": 32,
+      "policies": 20,
+      "triggers": 15,
+      "publication_tables": 4
+    },
+    {
+      "schemas": 7,
+      "relations": 17,
+      "functions": 32,
+      "policies": 20,
+      "triggers": 15,
+      "publication_tables": 4
+    }
+  ]
+}

@@ -1,0 +1,541 @@
+{
+  "1": {
+    "added": {
+      "types": [
+        "app_private._number_counters",
+        "app_private._request_access",
+        "app_private._rpc_calls",
+        "app_private._security_events",
+        "app_private.number_counters",
+        "app_private.request_access",
+        "app_private.rpc_calls",
+        "app_private.security_events",
+        "public._activity_logs",
+        "public._checklist_items",
+        "public._checklist_templates",
+        "public._comments",
+        "public._notifications",
+        "public._project_flows",
+        "public._projects",
+        "public._requests",
+        "public._users",
+        "public.activity_logs",
+        "public.checklist_items",
+        "public.checklist_templates",
+        "public.comments",
+        "public.notifications",
+        "public.project_flows",
+        "public.projects",
+        "public.requests",
+        "public.users"
+      ],
+      "columns": [
+        "app_private.number_counters.last_value",
+        "app_private.number_counters.series",
+        "app_private.number_counters.year",
+        "app_private.request_access.request_id",
+        "app_private.request_access.tracking_token",
+        "app_private.rpc_calls.actor_id",
+        "app_private.rpc_calls.created_at",
+        "app_private.rpc_calls.idempotency_key",
+        "app_private.rpc_calls.operation",
+        "app_private.rpc_calls.payload",
+        "app_private.rpc_calls.result",
+        "app_private.security_events.action",
+        "app_private.security_events.actor_id",
+        "app_private.security_events.created_at",
+        "app_private.security_events.details",
+        "app_private.security_events.id",
+        "app_private.security_events.subject_id",
+        "public.activity_logs.action",
+        "public.activity_logs.created_at",
+        "public.activity_logs.details",
+        "public.activity_logs.id",
+        "public.activity_logs.project_id",
+        "public.activity_logs.user_id",
+        "public.checklist_items.completed",
+        "public.checklist_items.completed_at",
+        "public.checklist_items.created_at",
+        "public.checklist_items.description",
+        "public.checklist_items.id",
+        "public.checklist_items.order_index",
+        "public.checklist_items.phase",
+        "public.checklist_items.project_flow_id",
+        "public.checklist_templates.description",
+        "public.checklist_templates.flow_type",
+        "public.checklist_templates.id",
+        "public.checklist_templates.order_index",
+        "public.checklist_templates.phase",
+        "public.comments.content",
+        "public.comments.created_at",
+        "public.comments.id",
+        "public.comments.project_id",
+        "public.comments.user_id",
+        "public.notifications.created_at",
+        "public.notifications.id",
+        "public.notifications.message",
+        "public.notifications.project_id",
+        "public.notifications.read",
+        "public.notifications.title",
+        "public.notifications.type",
+        "public.notifications.user_id",
+        "public.project_flows.assigned_to",
+        "public.project_flows.created_at",
+        "public.project_flows.current_phase",
+        "public.project_flows.flow_type",
+        "public.project_flows.id",
+        "public.project_flows.progress",
+        "public.project_flows.project_id",
+        "public.project_flows.updated_at",
+        "public.projects.blocked_reason",
+        "public.projects.blocked_since",
+        "public.projects.created_at",
+        "public.projects.description",
+        "public.projects.due_date",
+        "public.projects.id",
+        "public.projects.is_blocked",
+        "public.projects.priority",
+        "public.projects.project_number",
+        "public.projects.project_type",
+        "public.projects.request_id",
+        "public.projects.sla_target_date",
+        "public.projects.start_date",
+        "public.projects.status",
+        "public.projects.title",
+        "public.projects.updated_at",
+        "public.requests.created_at",
+        "public.requests.data_system_involved",
+        "public.requests.description",
+        "public.requests.id",
+        "public.requests.needs_code",
+        "public.requests.number_series",
+        "public.requests.observations",
+        "public.requests.origin",
+        "public.requests.project_id",
+        "public.requests.rejection_reason",
+        "public.requests.request_date",
+        "public.requests.request_number",
+        "public.requests.request_type",
+        "public.requests.requested_date",
+        "public.requests.requester_area",
+        "public.requests.requester_email",
+        "public.requests.requester_name",
+        "public.requests.status",
+        "public.requests.updated_at",
+        "public.users.created_at",
+        "public.users.email",
+        "public.users.full_name",
+        "public.users.id",
+        "public.users.is_active",
+        "public.users.role",
+        "public.users.updated_at"
+      ],
+      "indexes": [
+        "app_private.number_counters_pkey",
+        "app_private.request_access_pkey",
+        "app_private.request_access_tracking_token_key",
+        "app_private.rpc_calls_pkey",
+        "app_private.security_events_pkey",
+        "public.activity_action_idx",
+        "public.activity_logs_pkey",
+        "public.activity_project_idx",
+        "public.activity_user_idx",
+        "public.checklist_flow_phase_idx",
+        "public.checklist_items_pkey",
+        "public.checklist_templates_flow_type_phase_order_index_key",
+        "public.checklist_templates_pkey",
+        "public.comments_pkey",
+        "public.comments_project_idx",
+        "public.comments_user_idx",
+        "public.flows_assigned_idx",
+        "public.notifications_pkey",
+        "public.notifications_project_idx",
+        "public.notifications_user_created_idx",
+        "public.project_flows_pkey",
+        "public.project_flows_project_id_flow_type_key",
+        "public.projects_pkey",
+        "public.projects_project_number_key",
+        "public.projects_request_id_key",
+        "public.projects_sla_idx",
+        "public.projects_status_created_idx",
+        "public.requests_created_idx",
+        "public.requests_pkey",
+        "public.requests_project_id_key",
+        "public.requests_request_number_key",
+        "public.requests_status_created_idx",
+        "public.users_pkey",
+        "public.users_role_active_idx"
+      ],
+      "schemas": [
+        "app_private"
+      ],
+      "functions": [
+        "app_private.valid_phase(flow_type text, phase text)"
+      ],
+      "relations": [
+        "app_private.number_counters",
+        "app_private.request_access",
+        "app_private.rpc_calls",
+        "app_private.security_events",
+        "public.activity_logs",
+        "public.checklist_items",
+        "public.checklist_templates",
+        "public.comments",
+        "public.notifications",
+        "public.project_flows",
+        "public.projects",
+        "public.requests",
+        "public.users"
+      ],
+      "constraints": [
+        "app_private.number_counters.number_counters_last_value_check",
+        "app_private.number_counters.number_counters_pkey",
+        "app_private.number_counters.number_counters_series_check",
+        "app_private.number_counters.number_counters_year_check",
+        "app_private.request_access.request_access_pkey",
+        "app_private.request_access.request_access_request_id_fkey",
+        "app_private.request_access.request_access_tracking_token_key",
+        "app_private.rpc_calls.rpc_calls_pkey",
+        "app_private.security_events.security_events_pkey",
+        "public.activity_logs.activity_logs_action_check",
+        "public.activity_logs.activity_logs_details_check",
+        "public.activity_logs.activity_logs_pkey",
+        "public.activity_logs.activity_logs_project_id_fkey",
+        "public.activity_logs.activity_logs_user_id_fkey",
+        "public.checklist_items.checklist_items_check",
+        "public.checklist_items.checklist_items_description_check",
+        "public.checklist_items.checklist_items_order_index_check",
+        "public.checklist_items.checklist_items_pkey",
+        "public.checklist_items.checklist_items_project_flow_id_fkey",
+        "public.checklist_templates.checklist_templates_check",
+        "public.checklist_templates.checklist_templates_description_check",
+        "public.checklist_templates.checklist_templates_flow_type_check",
+        "public.checklist_templates.checklist_templates_flow_type_phase_order_index_key",
+        "public.checklist_templates.checklist_templates_order_index_check",
+        "public.checklist_templates.checklist_templates_pkey",
+        "public.comments.comments_content_check",
+        "public.comments.comments_pkey",
+        "public.comments.comments_project_id_fkey",
+        "public.comments.comments_user_id_fkey",
+        "public.notifications.notifications_message_check",
+        "public.notifications.notifications_pkey",
+        "public.notifications.notifications_project_id_fkey",
+        "public.notifications.notifications_title_check",
+        "public.notifications.notifications_type_check",
+        "public.notifications.notifications_user_id_fkey",
+        "public.project_flows.project_flows_assigned_to_fkey",
+        "public.project_flows.project_flows_check",
+        "public.project_flows.project_flows_flow_type_check",
+        "public.project_flows.project_flows_pkey",
+        "public.project_flows.project_flows_progress_check",
+        "public.project_flows.project_flows_project_id_fkey",
+        "public.project_flows.project_flows_project_id_flow_type_key",
+        "public.projects.projects_blocked_reason_check",
+        "public.projects.projects_check",
+        "public.projects.projects_description_check",
+        "public.projects.projects_pkey",
+        "public.projects.projects_priority_check",
+        "public.projects.projects_project_number_check",
+        "public.projects.projects_project_number_key",
+        "public.projects.projects_project_type_check",
+        "public.projects.projects_request_id_fkey",
+        "public.projects.projects_request_id_key",
+        "public.projects.projects_status_check",
+        "public.projects.projects_title_check",
+        "public.requests.requests_check",
+        "public.requests.requests_check1",
+        "public.requests.requests_data_system_involved_check",
+        "public.requests.requests_description_check",
+        "public.requests.requests_number_series_check",
+        "public.requests.requests_observations_check",
+        "public.requests.requests_origin_check",
+        "public.requests.requests_pkey",
+        "public.requests.requests_project_id_fkey",
+        "public.requests.requests_project_id_key",
+        "public.requests.requests_rejection_reason_check",
+        "public.requests.requests_request_number_check",
+        "public.requests.requests_request_number_key",
+        "public.requests.requests_request_type_check",
+        "public.requests.requests_requester_area_check",
+        "public.requests.requests_requester_email_check",
+        "public.requests.requests_requester_name_check",
+        "public.requests.requests_status_check",
+        "public.users.users_email_check",
+        "public.users.users_full_name_check",
+        "public.users.users_id_fkey",
+        "public.users.users_pkey",
+        "public.users.users_role_check"
+      ]
+    },
+    "changed": {
+      "schemas": {
+        "public": [
+          "acl"
+        ]
+      }
+    }
+  },
+  "2": {
+    "added": {
+      "policies": [
+        "public.activity_logs.editor_activity",
+        "public.activity_logs.member_read",
+        "public.checklist_items.editor_delete",
+        "public.checklist_items.editor_insert",
+        "public.checklist_items.editor_update",
+        "public.checklist_items.member_read",
+        "public.checklist_templates.admin_templates",
+        "public.checklist_templates.member_read",
+        "public.comments.editor_comment",
+        "public.comments.member_read",
+        "public.notifications.editor_notification",
+        "public.notifications.own_notification_read",
+        "public.notifications.own_notifications",
+        "public.project_flows.editor_update",
+        "public.project_flows.member_read",
+        "public.projects.editor_update",
+        "public.projects.member_read",
+        "public.requests.member_read",
+        "public.users.member_read",
+        "public.users.own_profile"
+      ],
+      "functions": [
+        "app_private.can_read_project(p_id uuid)",
+        "app_private.has_role(allowed text[])"
+      ]
+    },
+    "changed": {
+      "columns": {
+        "public.project_flows.updated_at": [
+          "acl"
+        ],
+        "public.activity_logs.details": [
+          "acl"
+        ],
+        "public.checklist_templates.phase": [
+          "acl"
+        ],
+        "public.checklist_items.order_index": [
+          "acl"
+        ],
+        "public.notifications.type": [
+          "acl"
+        ],
+        "public.checklist_items.description": [
+          "acl"
+        ],
+        "public.checklist_items.completed": [
+          "acl"
+        ],
+        "public.checklist_templates.flow_type": [
+          "acl"
+        ],
+        "public.projects.status": [
+          "acl"
+        ],
+        "public.project_flows.current_phase": [
+          "acl"
+        ],
+        "public.projects.blocked_reason": [
+          "acl"
+        ],
+        "public.comments.project_id": [
+          "acl"
+        ],
+        "public.projects.start_date": [
+          "acl"
+        ],
+        "public.checklist_items.completed_at": [
+          "acl"
+        ],
+        "public.projects.blocked_since": [
+          "acl"
+        ],
+        "public.notifications.user_id": [
+          "acl"
+        ],
+        "public.checklist_items.phase": [
+          "acl"
+        ],
+        "public.activity_logs.project_id": [
+          "acl"
+        ],
+        "public.checklist_templates.description": [
+          "acl"
+        ],
+        "public.checklist_templates.order_index": [
+          "acl"
+        ],
+        "public.projects.sla_target_date": [
+          "acl"
+        ],
+        "public.notifications.message": [
+          "acl"
+        ],
+        "public.users.full_name": [
+          "acl"
+        ],
+        "public.activity_logs.user_id": [
+          "acl"
+        ],
+        "public.project_flows.assigned_to": [
+          "acl"
+        ],
+        "public.projects.is_blocked": [
+          "acl"
+        ],
+        "public.projects.updated_at": [
+          "acl"
+        ],
+        "public.projects.due_date": [
+          "acl"
+        ],
+        "public.projects.title": [
+          "acl"
+        ],
+        "public.comments.content": [
+          "acl"
+        ],
+        "public.projects.description": [
+          "acl"
+        ],
+        "public.projects.priority": [
+          "acl"
+        ],
+        "public.notifications.project_id": [
+          "acl"
+        ],
+        "public.activity_logs.action": [
+          "acl"
+        ],
+        "public.notifications.read": [
+          "acl"
+        ],
+        "public.notifications.title": [
+          "acl"
+        ],
+        "public.project_flows.progress": [
+          "acl"
+        ],
+        "public.checklist_items.project_flow_id": [
+          "acl"
+        ]
+      },
+      "schemas": {
+        "app_private": [
+          "acl"
+        ]
+      },
+      "functions": {
+        "app_private.valid_phase(flow_type text, phase text)": [
+          "acl"
+        ]
+      },
+      "relations": {
+        "public.project_flows": [
+          "acl"
+        ],
+        "public.users": [
+          "acl"
+        ],
+        "public.checklist_templates": [
+          "acl"
+        ],
+        "public.checklist_items": [
+          "acl"
+        ],
+        "public.activity_logs": [
+          "acl"
+        ],
+        "public.requests": [
+          "acl"
+        ],
+        "public.projects": [
+          "acl"
+        ],
+        "public.comments": [
+          "acl"
+        ],
+        "public.notifications": [
+          "acl"
+        ]
+      }
+    }
+  },
+  "3": {
+    "added": {
+      "triggers": [
+        "auth.users.procont_auth_profile_email",
+        "auth.users.procont_auth_profile_insert",
+        "public.checklist_items.validate_checklist",
+        "public.project_flows.flow_project_consistency",
+        "public.project_flows.touch_updated_at",
+        "public.project_flows.validate_assignment",
+        "public.projects.project_flow_consistency",
+        "public.projects.project_number",
+        "public.projects.project_request_consistency",
+        "public.projects.touch_updated_at",
+        "public.requests.request_number",
+        "public.requests.request_project_consistency",
+        "public.requests.touch_updated_at",
+        "public.users.touch_updated_at"
+      ],
+      "functions": [
+        "app_private.add_flows(p_project uuid, p_type text, p_dev uuid, p_admin uuid)",
+        "app_private.assert_payload(p jsonb, allowed text[])",
+        "app_private.bootstrap_superadmin(p_user_id uuid)",
+        "app_private.check_project_flows()",
+        "app_private.check_request_project()",
+        "app_private.next_number(p_series text)",
+        "app_private.project_number()",
+        "app_private.remember(p_operation text, p_key uuid, p_payload jsonb, p_result jsonb)",
+        "app_private.replay(p_operation text, p_key uuid, p_payload jsonb)",
+        "app_private.request_number()",
+        "app_private.require_role(allowed text[])",
+        "app_private.sync_auth_profile()",
+        "app_private.touch_updated_at()",
+        "app_private.validate_assignment()",
+        "app_private.validate_checklist()",
+        "public.admin_update_user(p_user_id uuid, p_role text, p_is_active boolean)",
+        "public.approve_request(p_request_id uuid, p_payload jsonb, p_idempotency_key uuid)",
+        "public.change_project_type(p_project_id uuid, p_project_type text)",
+        "public.create_internal_project(p_payload jsonb, p_idempotency_key uuid)",
+        "public.projects(requests)",
+        "public.purge_project(p_project_id uuid)",
+        "public.reject_request(p_request_id uuid, p_reason text)",
+        "public.requests(projects)",
+        "public.submit_request(p_payload jsonb, p_idempotency_key uuid)",
+        "public.track_request(p_request_number text, p_tracking_token uuid)",
+        "public.update_request_details(p_request_id uuid, p_area text, p_requester_name text)"
+      ],
+      "constraints": [
+        "public.project_flows.flow_project_consistency",
+        "public.projects.project_flow_consistency",
+        "public.projects.project_request_consistency",
+        "public.requests.request_project_consistency"
+      ],
+      "publication_tables": [
+        "supabase_realtime.public.notifications",
+        "supabase_realtime.public.project_flows",
+        "supabase_realtime.public.projects"
+      ]
+    },
+    "changed": {
+      "functions": {
+        "app_private.can_read_project(p_id uuid)": [
+          "acl"
+        ],
+        "app_private.valid_phase(flow_type text, phase text)": [
+          "acl"
+        ],
+        "app_private.has_role(allowed text[])": [
+          "acl"
+        ]
+      }
+    }
+  },
+  "4": {
+    "added": {},
+    "changed": {}
+  }
+}
