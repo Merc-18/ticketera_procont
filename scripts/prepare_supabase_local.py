@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-"""Collect local configuration without echo; optional GET-only Data API check.
+"""Collect visible local configuration; optional GET-only Data API check.
 
 No Management token, CLI login/link, SQL, users, migrations or remote mutations.
 """
 import argparse
 from datetime import datetime, timezone
-import getpass
 import hashlib
 import json
 import os
@@ -14,8 +13,8 @@ import re
 import subprocess
 import sys
 import urllib.error
+import urllib.parse
 import urllib.request
-import warnings
 
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_PROJECT = 'ticketera-procont'
@@ -28,18 +27,60 @@ MIGRATION_FILES = (
 
 
 class PreparationError(Exception):
-    """Messages intentionally contain no supplied values or HTTP response bodies."""
+    """Errors never include credentials or raw HTTP response bodies."""
+
+
+def normalize_input(value):
+    value = value.replace('\r', '').replace('\n', '').strip()
+    quotes = {'"': '"', "'": "'", '“': '”', '‘': '’'}
+    while len(value) >= 2 and value[0] in quotes and value[-1] == quotes[value[0]]:
+        value = value[1:-1].strip()
+    return value
+
+
+def normalize_project_url(value):
+    url = normalize_input(value)
+    try:
+        parsed = urllib.parse.urlsplit(url)
+    except ValueError:
+        raise PreparationError('Dominio incorrecto: usa el dominio canónico del proyecto en supabase.co.') from None
+    if parsed.scheme != 'https':
+        raise PreparationError('Protocolo incorrecto: la Project URL debe comenzar con https://.')
+    try:
+        if parsed.username is not None or parsed.password is not None or parsed.port is not None:
+            raise PreparationError('Dominio incorrecto: no añadas credenciales ni puertos a la Project URL.')
+        host = parsed.hostname or ''
+    except ValueError:
+        raise PreparationError('Dominio incorrecto: la Project URL no admite puertos.') from None
+    suffix = '.supabase.co'
+    if host != 'supabase.co' and not host.endswith(suffix):
+        raise PreparationError('Dominio incorrecto: debe ser <identificador>.supabase.co.')
+    if parsed.path not in ('', '/') or '?' in url or '#' in url:
+        raise PreparationError('Ruta o parámetros adicionales: usa solo la URL base, sin rutas, query ni fragmentos.')
+    ref = host[:-len(suffix)] if host.endswith(suffix) else ''
+    if not re.fullmatch(r'[a-z]{20}', ref):
+        raise PreparationError('Identificador de proyecto incorrecto: debe contener exactamente 20 letras de a-z, sin espacios ni subdominios adicionales.')
+    return f'https://{ref}.supabase.co', ref
 
 
 def validate_values(url, key, confirmed_name):
-    if confirmed_name != EXPECTED_PROJECT:
+    if normalize_input(confirmed_name) != EXPECTED_PROJECT:
         raise PreparationError('El nombre confirmado no coincide con ticketera-procont. No se guardó configuración.')
-    match = re.fullmatch(r'https://([a-z]{20})\.supabase\.co/?', url)
-    if not match:
-        raise PreparationError('Usa la Project URL HTTPS canónica del proyecto independiente, sin rutas ni parámetros.')
-    if not re.fullmatch(r'sb_publishable_[A-Za-z0-9_-]{12,}', key):
+    _normalized_url, ref = normalize_project_url(url)
+    if not re.fullmatch(r'sb_publishable_[A-Za-z0-9_-]{12,}', normalize_input(key)):
         raise PreparationError('Se requiere una Publishable key; no se aceptan claves secretas, JWT ni placeholders.')
-    return match.group(1)
+    return ref
+
+
+def configure_visible_input():
+    # GNU readline keeps a bracketed multiline paste in a single input buffer.
+    # Disable automatic history: the visible key is never added to readline history.
+    try:
+        import readline
+    except ImportError:
+        return
+    readline.set_auto_history(False)
+    readline.parse_and_bind('set enable-bracketed-paste on')
 
 
 def migration_manifest(root=ROOT):
@@ -146,16 +187,17 @@ def main():
     args = parser.parse_args()
     if not sys.stdin.isatty() or not sys.stderr.isatty():
         raise PreparationError('Ejecuta el asistente en una terminal interactiva; nunca mediante pipes o chat.')
-    warnings.simplefilter('error', getpass.GetPassWarning)
+    configure_visible_input()
     manifest = migration_manifest()
     if (ROOT / '.env.local').exists() or (ROOT / '.env.local').is_symlink() or (ROOT / '.supabase-local').exists():
         raise PreparationError('Ya existe configuración local. No se pedirán ni sobrescribirán sus valores.')
-    print('Preparación exclusiva de ticketera-procont. Ningún dato introducido se mostrará en pantalla.')
+    print('Preparación exclusiva de ticketera-procont. Las entradas son visibles; la clave no se volverá a imprimir.')
     print('Comprueba en Dashboard el nombre y la Project URL del proyecto nuevo. No uses el proyecto anterior.')
     print('No se solicita token personal ni contraseña de base de datos. No se ejecuta SQL ni se inicia Vite.')
-    url = getpass.getpass('Project URL del proyecto independiente (entrada oculta): ').strip()
-    key = getpass.getpass('Publishable key del mismo proyecto (entrada oculta): ').strip()
-    confirmed_name = getpass.getpass('Confirma el nombre visto en Dashboard (entrada oculta): ').strip()
+    url, _ref = normalize_project_url(input('Project URL del proyecto independiente: '))
+    print(f'URL normalizada: {url}')
+    key = normalize_input(input('Publishable key del mismo proyecto (sb_publishable_...): '))
+    confirmed_name = normalize_input(input('Confirma el nombre visto en Dashboard: '))
     ref = validate_values(url, key, confirmed_name)
     probe = {'accepted': False, 'http_status': None, 'reason': 'not_requested_offline'}
     if not args.offline:
@@ -172,11 +214,11 @@ def main():
 if __name__ == '__main__':
     try:
         main()
-    except (PreparationError, getpass.GetPassWarning) as error:
+    except PreparationError as error:
         print(str(error), file=sys.stderr)
         sys.exit(1)
     except (KeyboardInterrupt, EOFError):
-        print('\nPreparación cancelada; no se mostraron valores.', file=sys.stderr)
+        print('\nPreparación cancelada.', file=sys.stderr)
         sys.exit(1)
     except OSError:
         print('No se pudo completar la escritura local. Revisa permisos sin mostrar el contenido de los archivos.', file=sys.stderr)
