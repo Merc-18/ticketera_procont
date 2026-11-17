@@ -1,0 +1,2 @@
+# Store text files with LF and use LF in Windows and WSL working trees.
+* text=auto eol=lf

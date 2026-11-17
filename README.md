@@ -106,28 +106,30 @@ src/
 ## Instalación local
 
 ### Requisitos
-- Node.js 18+
+- Node.js 20+ (el lockfile actual de Supabase requiere Node 20 como mínimo)
 - npm 9+
-- Cuenta en [Supabase](https://supabase.com)
+- Para ejecutar la aplicación: un proyecto Supabase independiente de pruebas
 
 ### Pasos
 
 ```bash
-# 1. Clonar el repositorio
-git clone https://github.com/Merc-18/ticketera-controlling.git
-cd ticketera-controlling
+# 1. Usar esta copia independiente en WSL
+cd /home/procont/projects/ticketera-procont
 
-# 2. Instalar dependencias
-npm install
+# 2. Instalar exactamente las dependencias del lockfile
+npm ci
 
-# 3. Configurar variables de entorno
-cp .env.example .env.local
-
-# 4. Ejecutar en desarrollo
-npm run dev
+# 3. Validar TypeScript y generar la compilación de Vite
+npm run build
 ```
 
-La aplicación estará disponible en `http://localhost:5173`.
+La compilación no requiere credenciales ni ejecuta la aplicación. Para iniciar
+`npm run dev`, configurar primero `.env.local` con un backend independiente de
+pruebas; no reutilizar la configuración del proyecto original. La aplicación
+estará disponible en `http://localhost:5173`.
+
+Los resultados del saneamiento y los pendientes están en
+[FASE 1: saneamiento y entorno local](docs/fase-1-saneamiento.md).
 
 ---
 
@@ -140,24 +142,34 @@ VITE_SUPABASE_URL=https://<tu-proyecto>.supabase.co
 VITE_SUPABASE_ANON_KEY=<tu-anon-key>
 ```
 
-Ambos valores se encuentran en el panel de Supabase → Settings → API.
+Usar exclusivamente la URL y la clave pública del proyecto independiente de
+pruebas. Las variables `VITE_*` se incluyen en el frontend: nunca colocar claves
+secretas o `service_role` en ellas. Solo `.env.example` debe estar versionado;
+los demás archivos `.env*` están ignorados. La FASE 1 no crea `.env.local`.
 
 ---
 
 ## Base de datos
 
-El esquema está documentado en los archivos SQL incluidos en el repositorio. Ejecutar en orden desde el SQL Editor de Supabase:
+Los siguientes archivos son scripts históricos, no una cadena completa y
+validada de migraciones. Falta el esquema inicial de las tablas principales y
+la creación del trigger de numeración. No ejecutarlos para preparar esta copia:
+su revisión y corrección corresponde a la FASE 2.
 
 | Archivo | Descripción |
 |---|---|
-| `admin_setup.sql` | Configuración inicial y roles |
+| `admin_setup.sql` | Cambios de usuarios y cuentas demo con contraseñas conocidas |
 | `sla_migration.sql` | Campos y lógica de SLA |
 | `tags_migration.sql` | Sistema de etiquetas |
 | `notifications_migration.sql` | Tabla de notificaciones |
-| `int_number_migration.sql` | Numeración de solicitudes |
+| `int_number_migration.sql` | Columna e índice de numeración de proyectos internos |
 | `migrate_number_format.sql` | Formato de numeración |
 | `rls_fix.sql` | Políticas de Row Level Security |
-| `seed_data.sql` | Datos iniciales de referencia |
+| `seed_data.sql` | Datos demo; elimina registros existentes y desactiva comprobaciones |
+
+No ejecutar `setup.js`: es un generador histórico que sobrescribe archivos de
+la aplicación. Ahora toma la plantilla `.env.example` en lugar de contener
+configuración de acceso heredada. No es parte de la instalación con `npm ci`.
 
 ---
 

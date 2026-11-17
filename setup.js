@@ -131,8 +131,7 @@ export default {
   },
 }`,
 
-  '.env.local': `VITE_SUPABASE_URL=https://qjbxbdwolimraldscbpax.supabase.co
-VITE_SUPABASE_ANON_KEY=sb_publishable_LJd3GGtQcVWWLPKJseEcyw_jf-DwD9_`,
+  '.env.local': fs.readFileSync(path.join(process.cwd(), '.env.example'), 'utf8'),
 
   'index.html': `<!doctype html>
 <html lang="es">
