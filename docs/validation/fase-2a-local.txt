@@ -1,0 +1,16 @@
+Isolation verified: expected /tmp cluster, Unix socket only
+PASS auth_stub.sql
+PASS 20261117000100_schema.sql
+PASS 20261117000200_security.sql
+PASS 20261117000300_operations.sql
+PASS 20261117000400_reference_checklists.sql
+PASS behavior.sql
+PASS 72 SQL assertions
+PASS 12 concurrent REQ submissions, unique numbers 999..1010
+PASS 4 concurrent retries: one INT project and one result
+PASS concurrent approvals: one project, second approval rejected
+PASS 8 concurrent INT projects, unique numbers 999..1006
+PASS concurrent administrative demotions preserve an active superadmin
+PASS 8 TypeScript interfaces and two invoker computed relationships
+SUCCESS: SQL migrations, behavior, security, concurrency and static compatibility
+Disposable test database removed; cluster lifecycle remains with caller

@@ -131,6 +131,11 @@ estará disponible en `http://localhost:5173`.
 Los resultados del saneamiento y los pendientes están en
 [FASE 1: saneamiento y entorno local](docs/fase-1-saneamiento.md).
 
+El esquema nuevo, las políticas y las operaciones transaccionales están en
+[FASE 2A: PostgreSQL y Supabase](docs/fase-2a-supabase.md). La secuencia válida
+está en `supabase/migrations/`; los SQL históricos de la raíz no forman parte
+de ella. Las migraciones todavía no se han aplicado al proyecto remoto.
+
 ---
 
 ## Variables de entorno
