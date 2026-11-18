@@ -78,7 +78,8 @@ cuatro migraciones ni sus bundles para aplicar o revertir esta ampliación.
 `migrations/20261118000200_areas.sql` está **aplicada** (CLI `db push --remote`).
 Próximas migraciones: `db push --remote --dry-run`, captura de solo lectura, `db push --remote --yes`. Ver [áreas](../docs/areas.md).
 
-# Catálogos de tickets preparados
+# Catálogos de tickets activos
 
-`migrations/20261118000300_ticket_catalogs.sql` está preparada y **no aplicada**.
+`migrations/20261118000300_ticket_catalogs.sql` está **aplicada** (CLI `db push --remote`);
+verificación con `recovery/ticket_catalogs_check.sql`.
 Ver [catálogos y clasificación](../docs/ticket-catalogs.md).

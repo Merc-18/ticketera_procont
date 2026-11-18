@@ -1,6 +1,6 @@
 # Ticketera Procont
 
-**Catálogos y clasificación de tickets listos para aplicar:** migración `20261118000300_ticket_catalogs.sql` (proyectos/subproyectos, estudios y códigos, áreas/subáreas de BUSINESS ACCOMPANYING SAC) y validación con código interno. Ver [catálogos](docs/ticket-catalogs.md).
+**Catálogos y clasificación de tickets activos:** migración `20261118000300_ticket_catalogs.sql` aplicada con Supabase CLI (historial 7/7) (proyectos/subproyectos, estudios y códigos, áreas/subáreas de BUSINESS ACCOMPANYING SAC) y validación con código interno. Ver [catálogos](docs/ticket-catalogs.md).
 
 **Catálogo de áreas activo:** migración `20261118000200_areas.sql` aplicada con Supabase CLI (historial 6/6, RLS verificado, catálogo vacío); sección Equipo → Áreas para superadmin. Las próximas migraciones se aplican con `supabase db push --remote`. Ver [áreas](docs/areas.md).
 

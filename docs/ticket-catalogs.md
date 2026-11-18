@@ -1,7 +1,10 @@
-# Catálogos y clasificación de tickets — listo para aplicar
+# Catálogos y clasificación de tickets — activos en Supabase
 
 18/11/2026. Migración nueva [`20261118000300_ticket_catalogs.sql`](../supabase/migrations/20261118000300_ticket_catalogs.sql).
-Las seis migraciones aplicadas no cambian. **No aplicada en Supabase** hasta autorización.
+Las seis migraciones previas no cambian. **Aplicada y verificada** el 18/11/2026 con Supabase CLI:
+historial 7/7, RLS, catálogos cargados (7/8/9/14/5/14). Evidencia:
+[`ticket-catalogs-remote.json`](validation/ticket-catalogs-remote.json); verificación reutilizable
+`supabase/recovery/ticket_catalogs_check.sql`.
 
 ## Catálogos (datos suministrados por Procont Business)
 
@@ -51,8 +54,7 @@ RUC ni códigos); miembros activos leen códigos activos; FKs impiden huérfanos
 [evidencia](validation/ticket-catalogs-local.json)). Build correcto. Sin la migración, el
 formulario conserva el área en texto libre y Catálogos muestra el aviso de migración pendiente.
 
-## Activación (requiere autorización)
+## Pendientes
 
-Con Supabase CLI autenticada: `supabase db push --remote --dry-run` (única pendiente
-`20261118000300_ticket_catalogs.sql`) → captura de solo lectura → `supabase db push --remote --yes`
-→ verificación (historial 7/7, RLS, conteos de catálogo).
+- Confirmar el RUC compartido BUSINESS ACCOMPANYING SAC / SAN ROMAN (observación visible en Catálogos).
+- Primer ticket real: comprobará de punta a punta el envío clasificado y la validación con código.

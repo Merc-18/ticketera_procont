@@ -1,0 +1,67 @@
+{
+  "migration": {
+    "status": "applied_verified",
+    "at_utc": "2026-11-18T18:10:00Z",
+    "project": "ticketera-procont",
+    "project_ref": "xsxdpaiivklqeudgqoqf",
+    "version": "20261118000300",
+    "method": "Supabase CLI 3.2.0 db push --remote (sesión CLI existente; sin contraseña PostgreSQL)",
+    "preflight": {
+      "dry_run_pending": [
+        "20261118000300_ticket_catalogs.sql"
+      ],
+      "structure_equal_to_post_m6_capture": true,
+      "existing_rows": {
+        "areas": 0,
+        "requests": 0,
+        "users": 1
+      },
+      "recovery_capture_before": "privada en .supabase-local"
+    },
+    "post_check": {
+      "ledger_versions": 7,
+      "migration_registered": true,
+      "systems": 7,
+      "subprojects": 8,
+      "studios": 9,
+      "studio_codes": 14,
+      "areas": 5,
+      "subareas": 14,
+      "areas_only_business_accompanying": true,
+      "quipu_once": 1,
+      "shared_ruc_flagged": 2,
+      "rls_enabled": true,
+      "policies": {
+        "areas": 5,
+        "catalog_subsystems": 5,
+        "catalog_systems": 5,
+        "studio_codes": 4,
+        "studios": 5
+      },
+      "delete_granted": false,
+      "triggers": 2,
+      "rpcs": 2,
+      "users": 1,
+      "auth_users": 1,
+      "requests": 0
+    },
+    "api_checks_anon": {
+      "studios id,name": "200 (9)",
+      "studios ruc": "401 42501",
+      "studio_codes": "401 42501",
+      "catalog_systems": "200 (7)",
+      "catalog_subsystems": "200 (8)",
+      "areas form columns": "200 (19)",
+      "areas code": "401 42501",
+      "top-level areas": "200 (5)",
+      "assign_request_studio_code": "401 42501",
+      "insert studio": "401 42501"
+    },
+    "ui_check": "Formulario /request (build local contra Supabase): Estudio y Proyecto desde catálogos; Subproyecto y Área/Subárea condicionales; sin RUC ni códigos; código interno solo en validación",
+    "tickets_created": 0,
+    "users_modified": false,
+    "previous_migrations_modified": false,
+    "credentials_saved": false,
+    "other_projects_touched": false
+  }
+}
