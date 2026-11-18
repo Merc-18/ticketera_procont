@@ -1,6 +1,6 @@
 # Ticketera Procont
 
-**M9 integrada (sin aplicar):** rama `integration/attachments-security` une la compresión de adjuntos de Claude con la seguridad de Codex (`20261118000500_ticket_security.sql`): reserva por token, 4 archivos / 2.500.000 bytes y motivo público de rechazo separado de notas internas. Ver [solicitudes](docs/request-intake.md) y [seguridad](docs/ticket-security.md).
+**M9 activa (historial 9/9):** integrada en `main`; une la compresión de adjuntos de Claude con la seguridad de Codex (`20261118000500_ticket_security.sql`): reserva por token, 4 archivos / 2.500.000 bytes y motivo público de rechazo separado de notas internas. Ver [solicitudes](docs/request-intake.md) y [seguridad](docs/ticket-security.md).
 
 En la rama aislada `codex/ticket-security-guards` están preparadas las
 [correcciones de adjuntos y rechazo público](docs/ticket-security.md), basadas en

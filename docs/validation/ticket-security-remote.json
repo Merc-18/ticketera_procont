@@ -1,0 +1,62 @@
+{
+  "migration": {
+    "status": "applied_verified",
+    "at_utc": "2026-11-18T20:10:00Z",
+    "project": "ticketera-procont",
+    "project_ref": "xsxdpaiivklqeudgqoqf",
+    "version": "20261118000500",
+    "method": "Supabase CLI 3.2.0 db push --remote (sesión CLI existente)",
+    "preflight": {
+      "dry_run_pending": [
+        "20261118000500_ticket_security.sql"
+      ],
+      "ledger_versions_before": 8,
+      "requests_before": 0,
+      "objects_before": 0,
+      "bucket_before": {
+        "public": false,
+        "file_size_limit": 10485760,
+        "allowed_mime_types": 11
+      },
+      "recovery_capture_before": "privada en .supabase-local"
+    },
+    "post_check": {
+      "ledger_versions": 9,
+      "bucket": {
+        "public": false,
+        "file_size_limit": 2500000
+      },
+      "grants_table_rls": true,
+      "grants_table_closed": true,
+      "final_size_trigger_on_storage_objects": true,
+      "storage_policies": [
+        "procont_request_attachments_insert:INSERT",
+        "procont_request_attachments_read:SELECT"
+      ],
+      "anon_reserve_batch": true,
+      "anon_reserve_single": true,
+      "anon_reject_with_notes": false,
+      "authenticated_reject_with_notes": true,
+      "anon_publish_reason": false,
+      "authenticated_publish_reason": true,
+      "anon_private_reject_fn": false,
+      "public_rejection_column": true,
+      "requests": 0,
+      "users": 1,
+      "objects": 0
+    },
+    "api_checks_anon": {
+      "reserve batch fake request/token": "401 42501",
+      "reserve batch 5 files": "400 22023",
+      "reserve single fake token": "401 42501",
+      "reject_request_with_notes": "401 42501",
+      "publish_rejection_reason": "401 42501",
+      "upload without reservation": "403 RLS",
+      "track unknown": "200 null"
+    },
+    "tickets_created": 0,
+    "storage_objects_created": 0,
+    "previous_migrations_modified": false,
+    "credentials_saved": false
+  }
+}

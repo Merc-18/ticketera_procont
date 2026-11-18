@@ -1,6 +1,6 @@
-# Formulario del cliente y validación interna — activos (M9 integrada, pendiente de aplicar)
+# Formulario del cliente y validación interna — activos (con M9)
 
-**Integrado con M9 (rama `integration/attachments-security`, sin aplicar en Supabase):** la
+**M9 integrada en `main` y aplicada en Supabase (historial 9/9):** la
 migración `20261118000500_ticket_security.sql` de Codex añade reserva de adjuntos autorizada
 por token de seguimiento, límites de 4 archivos y 2.500.000 bytes verificados en Storage, y
 separa el motivo público de rechazo de las notas internas. El frontend ya usa ese contrato

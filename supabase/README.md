@@ -88,3 +88,8 @@ Ver [catálogos y clasificación](../docs/ticket-catalogs.md).
 
 `migrations/20261118000400_request_intake.sql` está **aplicada**. Verificación: `recovery/request_intake_check.sql`.
 Ver [solicitudes](../docs/request-intake.md).
+
+# Seguridad de tickets (M9)
+
+`migrations/20261118000500_ticket_security.sql` está **aplicada**. Verificación: `recovery/ticket_security_check.sql`.
+Ver [seguridad de tickets](../docs/ticket-security.md).
