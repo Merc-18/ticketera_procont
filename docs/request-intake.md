@@ -1,5 +1,11 @@
 # Formulario del cliente y validación interna — activos
 
+**Corrección preparada en rama aislada, no integrada ni aplicada:** M9 refuerza
+la subida con una reserva autorizada por token de seguimiento y separa motivo
+público de notas internas. Requiere revisar el adaptador de adjuntos con Claude
+antes de activarla. No modifica los ocho archivos anteriores ni las reglas SLA.
+Véase [seguridad de tickets](ticket-security.md). El resto describe M8 activa.
+
 18/11/2026. Migración [`20261118000400_request_intake.sql`](../supabase/migrations/20261118000400_request_intake.sql)
 aplicada con Supabase CLI (historial 8/8). Las siete anteriores no cambian.
 Evidencia: [local](validation/request-intake-local.json) · [remota](validation/request-intake-remote.json).
