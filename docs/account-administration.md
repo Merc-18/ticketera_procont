@@ -1,4 +1,16 @@
-# Administración de cuentas — preparada, sin activar
+# Administración de cuentas — activa en Supabase
+
+**Estado 18/11/2026:** migración `20261118000100` aplicada y verificada con
+`scripts/apply_account_administration.py` (historial 5/5, RLS y permisos, 0 cuentas)
+y Edge Function `admin-users` desplegada (v1, ACTIVE) en ticketera-procont
+(`xsxdpaiivklqeudgqoqf`). `verify_jwt=false` según el diseño: el handler valida
+el bearer con `getUser`. Pruebas negativas sin cuentas: sin token, token inválido,
+JWT forjado y clave publicable → 401; origen no permitido → 403; RPC administrativas
+por anon → 42501; `bootstrap_superadmin` no expuesta. Evidencia:
+[`account-administration-remote.json`](validation/account-administration-remote.json).
+Pendiente: secretos `PROCONT_ALLOWED_ORIGINS` (hasta entonces el navegador recibe
+`origin_denied`) e invitaciones (callback + SMTP). Los pasos 1–2 de «Activación
+pendiente» quedan completados; el texto siguiente se conserva como diseño.
 
 Base `968eb5c`. Las cuatro migraciones aplicadas y las pantallas de Claude se
 conservan. No se ejecutó SQL remoto, no se crearon cuentas reales ni se desplegó

@@ -1,0 +1,59 @@
+{
+  "migration": {
+    "status": "applied_verified",
+    "at_utc": "2026-11-18T16:07:14.502038+00:00",
+    "project": "ticketera-procont",
+    "version": "20261118000100",
+    "file_sha256": "66f0a0df721c29152bf2a7fe8e4e4a1c269a36f3dacb66e650d0f578a725f16e",
+    "previous_versions_unchanged": true,
+    "recovery_capture_before": true,
+    "post_check": {
+      "migration_registered": true,
+      "ledger_versions": 5,
+      "tables_rls": 2,
+      "tables_closed": true,
+      "rpc_service_role_only": true,
+      "private_functions_closed": true,
+      "admin_update_user_authenticated": true,
+      "auth_users": 0,
+      "app_users": 0,
+      "bootstrap_rows": 0,
+      "job_rows": 0
+    },
+    "credentials_saved": false
+  },
+  "edge_function": {
+    "status": "deployed_verified",
+    "at_utc": "2026-11-18T16:28:41Z",
+    "slug": "admin-users",
+    "version": 1,
+    "function_status": "ACTIVE",
+    "verify_jwt": false,
+    "verify_jwt_reason": "Diseño documentado: el handler valida cada bearer con Auth getUser antes de cualquier RPC o Auth Admin",
+    "deployed_files_sha256": {
+      "supabase/functions/admin-users/index.ts": "a533255a30213c38f5bcc62926eb9464335ee45e2000cb87eae0ee7130732a37",
+      "supabase/functions/_shared/account-admin.mjs": "3bb31e0526b9921d379ca9312ad2f16f730433a6a64f63d0e4a10064d23fc68b"
+    },
+    "cli": "3.2.0 functions deploy --use-api (bundle en servidor, sin Docker)",
+    "secrets_configured": [],
+    "pending_secrets": [
+      "PROCONT_ALLOWED_ORIGINS",
+      "PROCONT_INVITE_REDIRECT_URL"
+    ],
+    "negative_checks": {
+      "GET": "405 method_not_allowed",
+      "POST sin Authorization": "401 authentication_required",
+      "POST bearer inválido": "401 authentication_required",
+      "POST JWT forjado alg=none rol service_role": "401 authentication_required",
+      "POST bearer = clave publicable (anon)": "401 authentication_required",
+      "Origin no permitido (POST/OPTIONS)": "403 origin_denied",
+      "RPC anon admin_account_begin / finish / admin_update_user": "401 42501 permission denied",
+      "RPC anon bootstrap_superadmin": "404 PGRST202 (función privada, no expuesta)"
+    },
+    "accounts_created": 0,
+    "rows_created": 0,
+    "credentials_printed_or_saved": false,
+    "other_projects_touched": false,
+    "frontend_changed": false
+  }
+}

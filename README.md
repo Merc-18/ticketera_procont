@@ -1,5 +1,7 @@
 # Ticketera Procont
 
+**Administración de cuentas activa:** migración `20261118000100` aplicada (5/5) y Edge Function `admin-users` desplegada y verificada contra accesos no autorizados; aún sin cuentas ni superadmin. Ver [administración de cuentas](docs/account-administration.md).
+
 **Aplicación remota verificada:** las versiones `20261117000100`, `20261117000200`, `20261117000300` y `20261117000400` quedaron registradas en ticketera-procont. Se comprobaron las cuatro transiciones con el alcance de recuperación, 13 tablas propias con RLS y 35 pasos genéricos de checklist. No se crearon cuentas ni superadmin. Las compensaciones se generaron solo en privado, sin ejecutarlas. La evidencia vigente está en `docs/validation/continuacion-af3259f-baseline.json`. Los estados NO APTO anteriores de estos informes son antecedentes, superados para este conjunto. Siguiente paso: definir con el propietario las áreas y la provisión inicial de acceso, bajo autorización separada.
 
 Sistema de gestión de tickets y proyectos para un entorno laboral independiente.
