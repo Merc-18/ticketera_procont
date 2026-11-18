@@ -5,7 +5,7 @@ import { toast } from '../../lib/toast'
 import AreasPanel from './AreasPanel'
 
 type Table = Parameters<typeof saveCatalogRow>[0]
-type Section = 'studios' | 'systems' | 'areas'
+type Section = 'studios' | 'systems' | 'areas' | 'types'
 const input = 'px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary'
 const btn = 'px-2.5 py-1 rounded-lg text-xs font-medium transition disabled:opacity-50'
 
@@ -82,7 +82,7 @@ export default function CatalogsPanel() {
     return (
       <div className="space-y-4">
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800">
-          Los catálogos de estudios y proyectos requieren la migración <code>20261118000300_ticket_catalogs</code>, pendiente de aplicar.
+          Los catálogos de estudios y proyectos requieren la migración <code>20261118000300_ticket_catalogs</code> y <code>20261118000400_request_intake</code>, pendientes de aplicar.
         </div>
         <AreasPanel />
       </div>
@@ -94,7 +94,7 @@ export default function CatalogsPanel() {
   return (
     <div className="space-y-5 max-w-4xl">
       <div className="flex gap-1 bg-gray-100 p-1 rounded-lg w-fit">
-        {([['studios', '🏢 Estudios'], ['systems', '🧩 Proyectos'], ['areas', '🏷 Áreas']] as [Section, string][]).map(([k, l]) => (
+        {([['studios', '🏢 Estudios'], ['systems', '🧩 Proyectos'], ['areas', '🏷 Áreas'], ['types', '📝 Tipos de solicitud']] as [Section, string][]).map(([k, l]) => (
           <button key={k} onClick={() => setSection(k)}
             className={`px-4 py-2 rounded-md text-sm font-medium transition ${section === k ? 'bg-white text-primary shadow-sm' : 'text-gray-600 hover:text-gray-900'}`}>{l}</button>
         ))}
@@ -143,6 +143,20 @@ export default function CatalogsPanel() {
               }} />
             </div>
           ))}
+        </>
+      )}
+
+      {section === 'types' && (
+        <>
+          <AddForm placeholder="Nuevo tipo de solicitud" onAdd={async name => {
+            await saveCatalogRow('request_types', { name, sort_order: cat.requestTypes.length + 1 }); await reload()
+          }} />
+          <div className={card}>
+            {cat.requestTypes.map(t => (
+              <Row key={t.id} table="request_types" id={t.id} name={t.name} active={t.is_active} onSaved={reload} />
+            ))}
+          </div>
+          <p className="text-xs text-gray-400">El cliente elige un único tipo principal. Desactivar un tipo lo oculta del formulario sin alterar solicitudes anteriores.</p>
         </>
       )}
 

@@ -5,42 +5,6 @@ import type { PublicTracking } from '../../lib/operations'
 import { errorMessage } from '../../lib/supabase-errors'
 import { peekTrackingReceipt, clearTrackingReceipt } from '../../lib/tracking-handoff'
 
-interface ProjectFlow {
-  flow_type: string
-  current_phase: string
-  progress: number
-}
-
-const PHASE_MESSAGE: Record<string, string> = {
-  backlog:          'Tu solicitud está en cola, próximamente se iniciará',
-  design:           'Tu requerimiento ha iniciado — el equipo está en la etapa de análisis',
-  discovery:        'Tu requerimiento ha iniciado — el equipo está en la etapa de análisis',
-  dev:              'El equipo está trabajando en tu requerimiento',
-  build:            'El equipo está trabajando en tu requerimiento',
-  testing:          'Tu entregable está en etapa de pruebas finales',
-  uat_validation:   'Tu entregable está en etapa de pruebas finales',
-  deploy:           'Tu requerimiento fue completado ✅',
-  deployed:         'Tu requerimiento fue completado ✅',
-  done:             'Tu requerimiento fue completado ✅',
-}
-
-function getOverallMessage(flows: ProjectFlow[]): string | null {
-  if (flows.length === 0) return null
-  // Use the most advanced phase across all flows
-  const order = ['backlog', 'ready_to_start', 'discovery', 'design', 'dev', 'build', 'testing', 'uat_validation', 'deploy', 'deployed', 'done']
-  const sorted = [...flows].sort((a, b) => order.indexOf(b.current_phase) - order.indexOf(a.current_phase))
-  return PHASE_MESSAGE[sorted[0].current_phase] ?? null
-}
-
-const DEV_PHASES = ['backlog', 'design', 'dev', 'testing', 'deploy', 'done']
-const ADM_PHASES = ['backlog', 'ready_to_start', 'discovery', 'build', 'uat_validation', 'deployed']
-
-const PHASE_LABELS: Record<string, string> = {
-  backlog: 'Backlog', design: 'Design', dev: 'Development', testing: 'Testing',
-  deploy: 'Deploy', done: 'Done', ready_to_start: 'Ready to Start',
-  discovery: 'Discovery', build: 'Build', uat_validation: 'UAT/Validation', deployed: 'Deployed',
-}
-
 const CURRENT_PREFIX = `REQ${new Date().getFullYear().toString().slice(2)}-`
 
 export default function RequestTracking() {
@@ -51,9 +15,6 @@ export default function RequestTracking() {
   const [trackingToken, setTrackingToken] = useState(initialReceipt?.tracking_token ?? '')
   const [searchError, setSearchError] = useState<string | null>(null)
   const [request, setRequest] = useState<PublicTracking | null>(null)
-  const [flows, setFlows] = useState<ProjectFlow[]>([])
-  const [slaTargetDate, setSlaTargetDate] = useState<string | null>(null)
-  const [projectStatus, setProjectStatus] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [notFound, setNotFound] = useState(false)
 
@@ -62,9 +23,6 @@ export default function RequestTracking() {
     setLoading(true)
     setNotFound(false)
     setRequest(null)
-    setFlows([])
-    setSlaTargetDate(null)
-    setProjectStatus(null)
     setSearchError(null)
 
     try {
@@ -75,9 +33,6 @@ export default function RequestTracking() {
       const result = await operations.trackRequest(fullNumber, trackingToken)
       if (result) {
         setRequest(result)
-        setFlows(result.flows)
-        setSlaTargetDate(result.sla_target_date)
-        setProjectStatus(result.project_status)
       } else { setNotFound(true) }
     } catch (err) {
       setSearchError(errorMessage(err))
@@ -86,10 +41,7 @@ export default function RequestTracking() {
     }
   }
 
-  // Build timeline steps
-  const isCompleted = projectStatus === 'completed' ||
-    flows.some(f => ['deploy', 'deployed', 'done'].includes(f.current_phase))
-
+  // Línea de tiempo pública: solo pendiente → aprobada / rechazada (sin SLA, fases ni clasificación).
   const timelineSteps = request ? [
     {
       id: 'sent',
@@ -116,26 +68,11 @@ export default function RequestTracking() {
         }
       : {
           id: 'result',
-          label: 'Aprobada y en curso',
+          label: 'Solicitud aprobada — el equipo está trabajando en ella',
           date: null,
           done: request.status === 'approved',
           icon: '✅',
         },
-    ...(request.status === 'approved' ? [{
-      id: 'progress',
-      label: getOverallMessage(flows) ?? 'En desarrollo',
-      date: null,
-      done: isCompleted,
-      active: !isCompleted && flows.length > 0,
-      icon: '🔄',
-    }] : []),
-    ...(request.status === 'approved' ? [{
-      id: 'done',
-      label: 'Entregado',
-      date: null,
-      done: isCompleted,
-      icon: '🎉',
-    }] : []),
   ] : []
 
   return (
@@ -151,7 +88,7 @@ export default function RequestTracking() {
               ← Inicio
             </button>
             <div className="text-center">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">🔍 Rastrear Solicitud</h1>
+              <h1 className="text-3xl font-bold text-brand-700 mb-2">Rastrear Solicitud</h1>
               <p className="text-gray-600">
                 Ingresa el número completo y el token para ver el estado de tu solicitud
               </p>
@@ -252,67 +189,10 @@ export default function RequestTracking() {
                   <p>{new Date(request.created_at).toLocaleDateString('es-PE')}</p>
                 </div>
 
-                {/* Fecha compromiso (sla_target_date) */}
-                {slaTargetDate && (() => {
-                  const today = new Date().toISOString().slice(0, 10)
-                  const diff = Math.ceil((new Date(slaTargetDate).getTime() - new Date(today).getTime()) / 86400000)
-                  const isCompleted = flows.some(f => ['deploy', 'deployed', 'done'].includes(f.current_phase))
-                  const isOverdue = diff < 0 && !isCompleted
-                  return (
-                    <div className={`rounded-lg px-4 py-3 border ${isOverdue ? 'bg-red-50 border-red-200' : 'bg-green-50 border-green-200'}`}>
-                      <p className={`text-xs font-semibold mb-1 ${isOverdue ? 'text-red-600' : 'text-green-600'}`}>
-                        {isOverdue ? '⚠️ Fecha compromiso' : '🎯 Fecha compromiso de entrega'}
-                      </p>
-                      <p className={`font-bold text-lg ${isOverdue ? 'text-red-900' : 'text-green-900'}`}>
-                        {new Date(slaTargetDate + 'T12:00:00').toLocaleDateString('es-PE', {
-                          weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-                        })}
-                      </p>
-                      {isOverdue && (
-                        <p className="text-xs text-red-500 mt-1">
-                          El plazo estimado ha vencido. El equipo está gestionando la entrega.
-                        </p>
-                      )}
-                      {!isOverdue && diff <= 2 && (
-                        <p className="text-xs text-green-600 mt-1">Entrega muy próxima.</p>
-                      )}
-                    </div>
-                  )
-                })()}
-
-                {/* Progreso de fases */}
-                {flows.length > 0 && (
-                  <div className="space-y-4">
-                    {flows.map(flow => {
-                      const phases = flow.flow_type === 'development' ? DEV_PHASES : ADM_PHASES
-                      const currentIdx = phases.indexOf(flow.current_phase)
-                      return (
-                        <div key={flow.flow_type}>
-                          <div className="flex items-center justify-between mb-2">
-                            <p className="text-sm font-medium text-gray-700">
-                              {flow.flow_type === 'development' ? '💻 Desarrollo' : '📋 Administrativo'}
-                            </p>
-                            <span className="text-sm font-bold text-primary">{flow.progress}%</span>
-                          </div>
-                          <div className="flex items-center gap-0.5">
-                            {phases.map((phase, idx) => {
-                              const done = idx < currentIdx
-                              const active = idx === currentIdx
-                              return (
-                                <div key={phase} className="flex-1 flex flex-col items-center gap-1">
-                                  <div className={`h-2 w-full rounded-full ${done ? 'bg-primary' : active ? 'bg-brand-300' : 'bg-gray-200'}`} />
-                                  {active && (
-                                    <span className="text-[9px] text-primary font-semibold leading-none text-center">
-                                      {PHASE_LABELS[phase]}
-                                    </span>
-                                  )}
-                                </div>
-                              )
-                            })}
-                          </div>
-                        </div>
-                      )
-                    })}
+                {request.title && (
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Título</p>
+                    <p className="font-medium">{request.title}</p>
                   </div>
                 )}
 

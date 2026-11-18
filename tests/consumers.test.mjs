@@ -92,8 +92,9 @@ test('approval delegates side effects and sends SLA fields with stable retry inp
   assert.equal(client.calls.length, 1)
   assert.equal(client.calls[0].name, 'approve_request')
   assert.equal(client.calls[0].args.p_request_id, requestId)
-  assert.equal(typeof client.calls[0].args.p_payload.sla_formal_days, 'number')
-  assert.match(client.calls[0].args.p_payload.sla_target_date, /^\d{4}-\d{2}-\d{2}$/)
+  // Sin SLA heredado: pendiente de configuración para Procont.
+  assert.equal(client.calls[0].args.p_payload.sla_formal_days, null)
+  assert.equal(client.calls[0].args.p_payload.sla_target_date, null)
   assert.equal(client.calls[0].args.p_payload.assigned_admin, null)
 })
 
@@ -128,7 +129,7 @@ test('project type change uses its dedicated RPC', async () => {
 
 test('tracking validates number and token without table access, including counters above 999', async () => {
   const state = { request_number: receipt.request_number, status: 'approved', created_at: '2026-11-17T00:00:00Z',
-    flows: [], project_status: 'active', sla_target_date: null, rejection_reason: null }
+    title: 'Título ficticio', rejection_reason: null }
   const client = rpcClient(() => ({ data: state, error: null }))
   const api = createOperations(client)
   assert.deepEqual(await api.trackRequest(' req26-1000 ', token), state)

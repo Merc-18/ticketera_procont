@@ -1,7 +1,6 @@
 import type { Project, Request, User } from '../types/database.types.ts'
 import type { RpcAttempt } from './rpc-attempt.ts'
 import { requireData, requireSuccess } from './supabase-errors.ts'
-import { calcSlaFormalDays, calcTargetDate } from './sla-config.ts'
 
 export interface RpcClient {
   rpc(name: string, args: Record<string, unknown>): PromiseLike<{ data: any; error: unknown }>
@@ -11,14 +10,22 @@ export interface SubmissionReceipt { id: string; request_number: string; trackin
 export interface RequestClassification {
   studio_id: string; system_id: string; subsystem_id?: string | null; area_id?: string | null; subarea_id?: string | null
 }
+/** Seguimiento público: solo estado; nunca SLA, fases ni clasificación interna. */
 export interface PublicTracking {
   request_number: string
   status: Request['status']
   created_at: string
+  title: string | null
   rejection_reason: string | null
-  project_status: Project['status'] | null
-  sla_target_date: string | null
-  flows: { flow_type: string; current_phase: string; progress: number }[]
+}
+/** Datos que envía el cliente (formulario público definitivo). */
+export interface ClientRequestInput {
+  requester_name: string; studio_id: string; system_id: string; request_type_id: string
+  title: string; description: string; urgent_requested: boolean
+}
+/** Clasificación interna fijada por el validador. */
+export interface InternalClassification {
+  studio_code_id: string; subsystem_id?: string | null; area_id?: string | null; subarea_id?: string | null
 }
 export type InternalProjectInput = Pick<Project, 'title' | 'description' | 'project_type' | 'priority'> & {
   start_date?: string; due_date?: string; area?: string; requester_name?: string
@@ -61,6 +68,21 @@ export function createOperations(client: RpcClient) {
         return receipt
       })
     },
+    async submitClientRequest(data: ClientRequestInput, attempt: RpcAttempt) {
+      const payload = { requester_name: data.requester_name.trim(), studio_id: data.studio_id, system_id: data.system_id,
+        request_type_id: data.request_type_id, title: data.title.trim(), description: data.description.trim(),
+        urgent_requested: data.urgent_requested }
+      return attempt.run('submit_client_request', { p_payload: payload }, async args => {
+        const receipt = await value<SubmissionReceipt>('submit_client_request', args)
+        if (!uuidPattern.test(receipt.id) || !uuidPattern.test(receipt.tracking_token) || !/^REQ\d{2}-\d{3,}$/.test(receipt.request_number)) {
+          throw new Error('No se recibió una constancia válida. Reintenta sin cambiar los datos de la solicitud.')
+        }
+        return receipt
+      })
+    },
+    classifyRequest: (id: string, c: InternalClassification) => command('classify_request', { p_request_id: id,
+      p_classification: { studio_code_id: c.studio_code_id, subsystem_id: c.subsystem_id || null,
+        area_id: c.area_id || null, subarea_id: c.subarea_id || null } }),
     async createInternalProject(data: InternalProjectInput, attempt: RpcAttempt) {
       const payload = { title: data.title.trim(), description: data.description.trim(), project_type: data.project_type,
         priority: data.priority, start_date: nullable(data.start_date), due_date: nullable(data.due_date),
@@ -72,11 +94,11 @@ export function createOperations(client: RpcClient) {
       })
     },
     async approveRequest(request: Request, data: ApprovalInput, attempt: RpcAttempt) {
-      const days = calcSlaFormalDays(request.request_type, request.needs_code)
+      // Sin plazos ni fórmulas SLA heredados: el SLA de Procont está pendiente de configuración.
       const payload = { project_type: data.project_type, priority: data.priority,
-        title: data.title?.trim() || (request.requester_area ? `${request.request_type} - ${request.requester_area}` : request.request_type),
+        title: data.title?.trim() || request.title || request.request_type,
         start_date: nullable(data.start_date), due_date: nullable(data.due_date),
-        sla_target_date: calcTargetDate(days, data.priority, attempt.startedAt), sla_formal_days: days,
+        sla_target_date: null, sla_formal_days: null,
         assigned_dev: nullable(data.assigned_dev), assigned_admin: nullable(data.assigned_admin) }
       return attempt.run('approve_request', { p_request_id: request.id, p_payload: payload }, async args => {
         const project = await value<Project>('approve_request', args)
@@ -103,7 +125,7 @@ export function createOperations(client: RpcClient) {
       requireSuccess(result)
       if (result.data === null) return null
       const data = result.data as PublicTracking
-      if (!['pending', 'approved', 'rejected'].includes(data.status) || !Array.isArray(data.flows) || !data.created_at) {
+      if (!['pending', 'approved', 'rejected'].includes(data.status) || !data.created_at) {
         throw new Error('El seguimiento no devolvió un estado válido. Intenta nuevamente.')
       }
       return data

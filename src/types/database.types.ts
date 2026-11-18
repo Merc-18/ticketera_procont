@@ -36,6 +36,9 @@ export interface Request {
   studio_code_id?: string | null;
   classified_by?: string | null;
   classified_at?: string | null;
+  request_type_id?: string | null;
+  title?: string | null;
+  urgent_requested?: boolean;
 }
 
 export interface Project {

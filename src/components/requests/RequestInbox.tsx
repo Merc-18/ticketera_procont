@@ -1,20 +1,14 @@
-import { useState, useRef } from 'react'
-import { createRpcAttempt } from '../../lib/rpc-attempt'
-import { errorMessage } from '../../lib/supabase-errors'
+import { useState } from 'react'
 import { useRequests } from '../../hooks/useRequests'
 import { useUsers } from '../../hooks/useUsers'
 import { useAuth } from '../../hooks/useAuth'
 import type { Request } from '../../types/database.types'
-import { calcSlaFormalDays, calcTargetDate } from '../../lib/sla-config'
-import { toast } from '../../lib/toast'
 import PlannerImportModal from './PlannerImportModal'
 import { useCatalogs } from '../../hooks/useCatalogs'
-import { operations } from '../../lib/api'
+import RequestValidationModal from './RequestValidationModal'
 
-const isUrgent = (r: Request) => !!r.observations?.startsWith('🔴 URGENTE')
+const isUrgent = (r: Request) => !!r.urgent_requested || !!r.observations?.startsWith('🔴 URGENTE')
 
-const cleanObservations = (obs: string) =>
-  obs.replace(/^🔴 URGENTE\.?\s*/i, '').trim()
 
 function TypeChips({ request }: { request: Request }) {
   const types = request.needs_code
@@ -37,134 +31,35 @@ function TypeChips({ request }: { request: Request }) {
 }
 
 type InboxTab = 'pending' | 'approved' | 'rejected'
+type Mode = 'view' | 'approve' | 'reject'
 
 export default function RequestInbox() {
   const { requests, loading, error, reload, approveRequest, rejectRequest } = useRequests({ loadInbox: true })
-  // Catálogos para mostrar la clasificación y elegir el código interno del estudio al validar.
+  // Catálogos para mostrar estudio y clasificar al validar (código interno solo en la validación).
   const catalogs = useCatalogs('member')
-  const [studioCodeId, setStudioCodeId] = useState('')
   const nameOf = (list: { id: string; name: string }[], id?: string | null) => (id ? list.find(x => x.id === id)?.name : undefined)
-  // Conceptos independientes: estudio, proyecto, subproyecto, área, subárea y código interno.
-  const classificationOf = (r: Request) => r.studio_id ? {
-    studio: nameOf(catalogs.studios, r.studio_id) ?? '—',
-    project: nameOf(catalogs.systems, r.system_id) ?? '—',
-    subproject: nameOf(catalogs.subsystems, r.subsystem_id) ?? '—',
-    area: nameOf(catalogs.areas, r.area_id) ?? '—',
-    subarea: nameOf(catalogs.areas, r.subarea_id) ?? '—',
-    code: catalogs.codes.find(c => c.id === r.studio_code_id)?.code ?? null,
-  } : null
   const [studioFilter, setStudioFilter] = useState('all')
   /** Línea secundaria de la lista: estudio y área por separado (el área solo si existe). */
   const meta = (r: Request) => (
     <p className="text-sm text-gray-600 flex flex-wrap gap-x-3">
       {r.studio_id && <span>🏢 {nameOf(catalogs.studios, r.studio_id) ?? '—'}</span>}
+      {r.system_id && <span>🧩 {nameOf(catalogs.systems, r.system_id) ?? '—'}</span>}
       {r.requester_area && <span>📍 {r.requester_area}</span>}
     </p>
   )
-  /** Antes de aceptar o rechazar un ticket clasificado, fija el código interno del estudio. */
-  const ensureStudioCode = async (r: Request) => {
-    if (!r.studio_id || r.studio_code_id === studioCodeId) return
-    if (!studioCodeId) throw new Error('Selecciona el código interno del estudio.')
-    await operations.assignStudioCode(r.id, studioCodeId)
-  }
-  const codeSelect = (r: Request) => r.studio_id ? (
-    <div className="mb-4">
-      <label className="block text-sm font-medium text-gray-700 mb-1">
-        Código interno del estudio <span className="text-red-500">*</span>
-      </label>
-      <p className="text-xs text-gray-500 mb-1.5">Estudio: {classificationOf(r)?.studio}</p>
-      <select value={studioCodeId} onChange={e => setStudioCodeId(e.target.value)}
-        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary outline-none bg-white">
-        <option value="">Selecciona un código</option>
-        {catalogs.codes.filter(c => c.studio_id === r.studio_id).map(c => <option key={c.id} value={c.id}>{c.code}</option>)}
-      </select>
-    </div>
-  ) : null
-  const { assignableUsers: activeUsers } = useUsers()
-  const approvalAttempt = useRef(createRpcAttempt())
+  const { assignableUsers } = useUsers()
   const { user: currentUser } = useAuth()
   const canManage = currentUser?.role === 'superadmin' || currentUser?.role === 'admin'
   const [activeTab, setActiveTab] = useState<InboxTab>('pending')
-  const [selectedRequest, setSelectedRequest] = useState<Request | null>(null)
-  const [showRejectModal, setShowRejectModal] = useState(false)
-  const [showApproveModal, setShowApproveModal] = useState(false)
-  const [rejectionReason, setRejectionReason] = useState('')
-  const [actionLoading, setActionLoading] = useState(false)
+  const [selected, setSelected] = useState<{ request: Request; mode: Mode } | null>(null)
   const [showImportModal, setShowImportModal] = useState(false)
-  const [sameUser, setSameUser] = useState(false)
-  const [approveData, setApproveData] = useState({
-    project_type: 'development' as 'development' | 'administrative' | 'dual',
-    priority: 'medium' as 'low' | 'medium' | 'high' | 'urgent',
-    title: '',
-    start_date: '',
-    due_date: '',
-    assigned_dev: '',
-    assigned_admin: '',
-  })
+  const open = (request: Request, mode: Mode) => setSelected({ request, mode })
 
   const visibleRequests  = studioFilter === 'all' ? requests
     : requests.filter(r => studioFilter === 'none' ? !r.studio_id : r.studio_id === studioFilter)
   const pendingRequests  = visibleRequests.filter(r => r.status === 'pending')
   const approvedRequests = visibleRequests.filter(r => r.status === 'approved')
   const rejectedRequests = visibleRequests.filter(r => r.status === 'rejected')
-
-  const openApproveModal = (request: Request) => {
-    approvalAttempt.current = createRpcAttempt()
-    const urgent = isUrgent(request)
-    const firstType = request.request_type.split(',')[0].trim()
-    setSelectedRequest(request)
-    setStudioCodeId(request.studio_code_id ?? '')
-    setApproveData(d => ({
-      ...d,
-      title: request.requester_area ? `${firstType} - ${request.requester_area}` : firstType,
-      project_type: request.needs_code ? 'development' : 'administrative',
-      priority: urgent ? 'urgent' : 'medium',
-      due_date: request.requested_date ? request.requested_date.slice(0, 10) : '',
-    }))
-    setShowApproveModal(true)
-  }
-
-  const handleApprove = async () => {
-    if (!selectedRequest) return
-    setActionLoading(true)
-    try {
-      await ensureStudioCode(selectedRequest)
-      await approveRequest(selectedRequest.id, {
-        ...approveData,
-        start_date: approveData.start_date || undefined,
-        due_date: approveData.due_date || undefined,
-        assigned_dev:   approveData.assigned_dev   || undefined,
-        assigned_admin: sameUser
-          ? (approveData.assigned_dev || undefined)
-          : (approveData.assigned_admin || undefined),
-      }, approvalAttempt.current)
-      setShowApproveModal(false)
-      setSelectedRequest(null)
-      setSameUser(false)
-      toast.success('Solicitud aprobada y proyecto creado')
-    } catch (err) {
-      toast.error(errorMessage(err))
-    } finally {
-      setActionLoading(false)
-    }
-  }
-
-  const handleReject = async () => {
-    if (!selectedRequest || !rejectionReason.trim()) return
-    setActionLoading(true)
-    try {
-      await ensureStudioCode(selectedRequest)
-      await rejectRequest(selectedRequest.id, rejectionReason)
-      setShowRejectModal(false)
-      setRejectionReason('')
-      setSelectedRequest(null)
-      toast.success('Solicitud rechazada')
-    } catch (err) {
-      toast.error(errorMessage(err))
-    } finally {
-      setActionLoading(false)
-    }
-  }
 
   const statusColors = {
     pending:  'bg-yellow-100 text-yellow-800 border-yellow-200',
@@ -255,7 +150,7 @@ export default function RequestInbox() {
                 <div
                   key={request.id}
                   className={`bg-white border rounded-lg p-4 hover:shadow-md transition cursor-pointer ${urgent ? 'border-red-300' : ''}`}
-                  onClick={() => setSelectedRequest(request)}
+                  onClick={() => open(request, 'view')}
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div>
@@ -267,7 +162,8 @@ export default function RequestInbox() {
                           </span>
                         )}
                       </div>
-                      <p className="font-semibold text-gray-900">{request.requester_name}</p>
+                      <p className="font-semibold text-gray-900">{request.title || request.requester_name}</p>
+                      {request.title && <p className="text-xs text-gray-500">{request.requester_name}</p>}
                       {meta(request)}
                     </div>
                     <span className={`px-3 py-1 rounded-full text-xs font-medium border ${statusColors.pending}`}>
@@ -279,15 +175,13 @@ export default function RequestInbox() {
                   {canManage && (
                     <div className="mt-3 flex gap-2">
                       <button
-                        onClick={(e) => { e.stopPropagation(); openApproveModal(request) }}
-                        disabled={actionLoading}
+                        onClick={(e) => { e.stopPropagation(); open(request, 'approve') }}
                         className="px-4 py-2 bg-green-500 text-white rounded-lg text-sm font-medium hover:bg-green-600 transition disabled:opacity-50"
                       >
                         ✓ Aprobar
                       </button>
                       <button
-                        onClick={(e) => { e.stopPropagation(); setSelectedRequest(request); setStudioCodeId(request.studio_code_id ?? ''); setShowRejectModal(true) }}
-                        disabled={actionLoading}
+                        onClick={(e) => { e.stopPropagation(); open(request, 'reject') }}
                         className="px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition disabled:opacity-50"
                       >
                         ✕ Rechazar
@@ -314,7 +208,7 @@ export default function RequestInbox() {
                 <div
                   key={request.id}
                   className={`bg-white border rounded-lg p-4 hover:shadow-md transition cursor-pointer ${projectDeleted ? 'border-gray-200 opacity-75' : 'border-green-100'}`}
-                  onClick={() => setSelectedRequest(request)}
+                  onClick={() => open(request, 'view')}
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div>
@@ -331,7 +225,8 @@ export default function RequestInbox() {
                           </span>
                         )}
                       </div>
-                      <p className="font-semibold text-gray-900">{request.requester_name}</p>
+                      <p className="font-semibold text-gray-900">{request.title || request.requester_name}</p>
+                      {request.title && <p className="text-xs text-gray-500">{request.requester_name}</p>}
                       {meta(request)}
                     </div>
                     <span className={`px-3 py-1 rounded-full text-xs font-medium border ${statusColors.approved}`}>
@@ -342,9 +237,6 @@ export default function RequestInbox() {
                   <p className="text-sm text-gray-600 line-clamp-2">{request.description}</p>
                   <p className="text-xs text-gray-400 mt-2">
                     Recibido: {new Date(request.created_at).toLocaleDateString('es-PE')}
-                    {request.requested_date && (
-                      <span> · SLA: {new Date(request.requested_date + 'T12:00:00').toLocaleDateString('es-PE')}</span>
-                    )}
                   </p>
                 </div>
               )
@@ -363,12 +255,13 @@ export default function RequestInbox() {
               <div
                 key={request.id}
                 className="bg-white border border-red-100 rounded-lg p-4 hover:shadow-md transition cursor-pointer"
-                onClick={() => setSelectedRequest(request)}
+                onClick={() => open(request, 'view')}
               >
                 <div className="flex items-start justify-between mb-3">
                   <div>
                     <p className="font-mono font-bold text-primary">{request.request_number}</p>
-                    <p className="font-semibold text-gray-900">{request.requester_name}</p>
+                    <p className="font-semibold text-gray-900">{request.title || request.requester_name}</p>
+                      {request.title && <p className="text-xs text-gray-500">{request.requester_name}</p>}
                     {meta(request)}
                   </div>
                   <span className={`px-3 py-1 rounded-full text-xs font-medium border ${statusColors.rejected}`}>
@@ -392,393 +285,23 @@ export default function RequestInbox() {
         )}
       </div>
 
-      {/* Request Detail Modal */}
-      {selectedRequest && !showRejectModal && !showApproveModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6">
-            <div className="flex items-start justify-between mb-4">
-              <h2 className="text-xl font-bold text-gray-900">Detalle de Solicitud</h2>
-              <button onClick={() => setSelectedRequest(null)} className="text-gray-400 hover:text-gray-600">✕</button>
-            </div>
-
-            {isUrgent(selectedRequest) && (
-              <div className="bg-red-50 border border-red-300 rounded-lg px-4 py-3 mb-4 flex items-center gap-2">
-                <span className="text-red-600 font-bold text-sm">🔴 Solicitud marcada como URGENTE</span>
-                <span className="text-red-500 text-xs">— El equipo se contactará directamente para coordinar</span>
-              </div>
-            )}
-
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-gray-600">Número</p>
-                  <p className="font-mono font-bold text-primary">{selectedRequest.request_number}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">Estado</p>
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium border ${statusColors[selectedRequest.status]}`}>
-                    {selectedRequest.status === 'pending' && 'Pendiente'}
-                    {selectedRequest.status === 'approved' && 'Aprobado'}
-                    {selectedRequest.status === 'rejected' && 'Rechazado'}
-                  </span>
-                </div>
-              </div>
-
-              <div>
-                <p className="text-sm text-gray-600">Solicitante</p>
-                <p className="font-medium">{selectedRequest.requester_name}</p>
-                {selectedRequest.requester_email && (
-                  <p className="text-sm text-gray-600">{selectedRequest.requester_email}</p>
-                )}
-              </div>
-
-              {classificationOf(selectedRequest) ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-gray-50 border rounded-lg p-3">
-                  {([['Estudio', 'studio'], ['Proyecto', 'project'], ['Subproyecto', 'subproject'],
-                     ['Área', 'area'], ['Subárea', 'subarea']] as const).map(([label, key]) => (
-                    <div key={key}><p className="text-xs text-gray-500">{label}</p>
-                      <p className="text-sm font-medium">{classificationOf(selectedRequest)![key]}</p></div>
-                  ))}
-                  <div><p className="text-xs text-gray-500">Código interno</p>
-                    <p className="text-sm font-medium font-mono">{classificationOf(selectedRequest)!.code ?? 'Pendiente de validación'}</p></div>
-                </div>
-              ) : (
-                <div>
-                  <p className="text-sm text-gray-600">Área</p>
-                  <p className="font-medium">{selectedRequest.requester_area || '—'}</p>
-                </div>
-              )}
-
-              <div>
-                <p className="text-sm text-gray-600 mb-1">
-                  {selectedRequest.needs_code ? 'Producto(s) Requerido(s)' : 'Tipo de Requerimiento'}
-                </p>
-                <TypeChips request={selectedRequest} />
-              </div>
-
-              <div>
-                <p className="text-sm text-gray-600">Origen</p>
-                <p className="font-medium">{selectedRequest.origin}</p>
-              </div>
-
-              {selectedRequest.data_system_involved && (
-                <div>
-                  <p className="text-sm text-gray-600">Sistema Involucrado</p>
-                  <p className="font-medium">{selectedRequest.data_system_involved}</p>
-                </div>
-              )}
-
-              <div>
-                <p className="text-sm text-gray-600">Descripción</p>
-                <p className="text-gray-900">{selectedRequest.description}</p>
-              </div>
-
-              {selectedRequest.observations && cleanObservations(selectedRequest.observations) && (
-                <div>
-                  <p className="text-sm text-gray-600">Observaciones</p>
-                  <p className="text-gray-900">{cleanObservations(selectedRequest.observations)}</p>
-                </div>
-              )}
-
-              <div>
-                <span className={`px-2 py-1 rounded text-xs font-medium ${selectedRequest.needs_code ? 'bg-brand-100 text-brand-700' : 'bg-gray-100 text-gray-600'}`}>
-                  {selectedRequest.needs_code ? '💻 Requiere código' : '📋 No requiere código'}
-                </span>
-              </div>
-
-              {selectedRequest.requested_date && (
-                <div className="bg-brand-50 border border-brand-200 rounded-lg px-4 py-3">
-                  <p className="text-xs text-brand-600 font-medium mb-0.5">⏱ Fecha Estimada de Entrega (SLA)</p>
-                  <p className="font-semibold text-brand-900">
-                    {new Date(selectedRequest.requested_date + 'T12:00:00').toLocaleDateString('es-PE', {
-                      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-                    })}
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {selectedRequest.status === 'pending' && canManage && (
-              <div className="mt-6 flex gap-3">
-                <button
-                  onClick={() => openApproveModal(selectedRequest)}
-                  disabled={actionLoading}
-                  className="flex-1 bg-green-500 text-white py-3 rounded-lg font-semibold hover:bg-green-600 transition disabled:opacity-50"
-                >
-                  ✓ Aprobar
-                </button>
-                <button
-                  onClick={() => { setStudioCodeId(selectedRequest.studio_code_id ?? ''); setShowRejectModal(true) }}
-                  disabled={actionLoading}
-                  className="flex-1 bg-red-500 text-white py-3 rounded-lg font-semibold hover:bg-red-600 transition disabled:opacity-50"
-                >
-                  ✕ Rechazar
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Reject Modal */}
-      {showRejectModal && selectedRequest && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Rechazar Solicitud</h2>
-            <p className="text-gray-600 mb-4">
-              Solicitud: <span className="font-mono font-bold text-primary">{selectedRequest.request_number}</span>
-            </p>
-            {codeSelect(selectedRequest)}
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Razón del Rechazo <span className="text-red-500">*</span>
-              </label>
-              <textarea
-                value={rejectionReason}
-                onChange={(e) => setRejectionReason(e.target.value)}
-                rows={4}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none resize-none"
-                placeholder="Explica por qué se rechaza esta solicitud..."
-              />
-            </div>
-            <div className="flex gap-3">
-              <button
-                onClick={() => { setShowRejectModal(false); setRejectionReason('') }}
-                className="flex-1 bg-gray-100 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-200 transition"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleReject}
-                disabled={!rejectionReason.trim() || actionLoading || (!!selectedRequest.studio_id && !studioCodeId)}
-                className="flex-1 bg-red-500 text-white py-3 rounded-lg font-semibold hover:bg-red-600 transition disabled:opacity-50"
-              >
-                {actionLoading ? 'Rechazando...' : 'Confirmar Rechazo'}
-              </button>
-            </div>
-          </div>
-        </div>
+      {selected && (
+        <RequestValidationModal
+          key={selected.request.id}
+          request={selected.request}
+          initialMode={selected.mode}
+          canManage={canManage}
+          catalogs={catalogs}
+          users={assignableUsers}
+          onApprove={async (id, data, attempt) => { await approveRequest(id, data, attempt) }}
+          onReject={rejectRequest}
+          onClose={() => { setSelected(null); void reload() }}
+        />
       )}
 
       {/* Planner Import Modal */}
       {showImportModal && (
         <PlannerImportModal onClose={() => { setShowImportModal(false) }} />
-      )}
-
-      {/* Approve Modal */}
-      {showApproveModal && selectedRequest && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-gray-900">✅ Aprobar y Crear Proyecto</h2>
-              <button onClick={() => setShowApproveModal(false)} className="text-gray-400 hover:text-gray-600 text-xl">✕</button>
-            </div>
-
-            {/* Info solicitud */}
-            <div className={`border rounded-lg px-4 py-3 mb-5 text-sm ${isUrgent(selectedRequest) ? 'bg-red-50 border-red-200' : 'bg-brand-50 border-brand-200'}`}>
-              <p className={`font-medium mb-1.5 ${isUrgent(selectedRequest) ? 'text-red-900' : 'text-brand-900'}`}>
-                {selectedRequest.request_number} · {selectedRequest.requester_name}
-                {isUrgent(selectedRequest) && <span className="ml-2 text-xs font-bold text-red-600">🔴 URGENTE</span>}
-              </p>
-              <TypeChips request={selectedRequest} />
-              <span className={`text-xs mt-1.5 inline-block ${isUrgent(selectedRequest) ? 'text-red-600' : 'text-brand-600'}`}>
-                {selectedRequest.requester_area}
-              </span>
-            </div>
-
-            {codeSelect(selectedRequest)}
-            <div className="space-y-4 mb-6">
-              {/* Título */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Título del Proyecto <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={approveData.title}
-                  onChange={e => setApproveData(d => ({ ...d, title: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="Nombre del proyecto"
-                />
-              </div>
-
-              {/* Tipo + Prioridad */}
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Tipo <span className="text-red-500">*</span></label>
-                  <select
-                    value={approveData.project_type}
-                    onChange={e => setApproveData(d => ({ ...d, project_type: e.target.value as any }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary"
-                  >
-                    <option value="development">💻 Development</option>
-                    <option value="administrative">📋 Administrative</option>
-                    <option value="dual">🔄 Dual Flow</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Prioridad <span className="text-red-500">*</span></label>
-                  <select
-                    value={approveData.priority}
-                    onChange={e => setApproveData(d => ({ ...d, priority: e.target.value as any }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary"
-                  >
-                    <option value="low">🟢 Baja</option>
-                    <option value="medium">🟡 Media</option>
-                    <option value="high">🟠 Alta</option>
-                    <option value="urgent">🔴 Urgente</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Fechas */}
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Fecha de Inicio</label>
-                  <input
-                    type="date"
-                    value={approveData.start_date}
-                    onChange={e => setApproveData(d => ({ ...d, start_date: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Fecha de Vencimiento
-                    {selectedRequest.requested_date && (
-                      <span className="text-xs text-brand-500 ml-1">(del SLA)</span>
-                    )}
-                  </label>
-                  <input
-                    type="date"
-                    value={approveData.due_date}
-                    onChange={e => setApproveData(d => ({ ...d, due_date: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-              </div>
-
-              {/* Asignación */}
-              {activeUsers.length > 0 && (
-                <div className="border-t pt-4 space-y-3">
-                  <p className="text-sm font-semibold text-gray-700">👤 Asignación de responsables</p>
-
-                  {(approveData.project_type === 'development' || approveData.project_type === 'dual') && (
-                    <div>
-                      <label className="block text-xs font-medium text-gray-500 mb-1">
-                        {approveData.project_type === 'dual' ? '💻 Responsable Development' : '👤 Responsable'}
-                      </label>
-                      <select
-                        value={approveData.assigned_dev}
-                        onChange={e => setApproveData(d => ({ ...d, assigned_dev: e.target.value }))}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary bg-white"
-                      >
-                        <option value="">— Sin asignar —</option>
-                        {activeUsers.map(u => (
-                          <option key={u.id} value={u.id}>{u.full_name} ({u.role})</option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
-
-                  {approveData.project_type === 'dual' && (
-                    <>
-                      <label className="flex items-center gap-2 cursor-pointer select-none">
-                        <input
-                          type="checkbox"
-                          checked={sameUser}
-                          onChange={e => setSameUser(e.target.checked)}
-                          className="w-4 h-4 accent-primary"
-                        />
-                        <span className="text-xs text-gray-600">Usar el mismo responsable para ambos flujos</span>
-                      </label>
-
-                      {!sameUser && (
-                        <div>
-                          <label className="block text-xs font-medium text-gray-500 mb-1">📋 Responsable Administrative</label>
-                          <select
-                            value={approveData.assigned_admin}
-                            onChange={e => setApproveData(d => ({ ...d, assigned_admin: e.target.value }))}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary bg-white"
-                          >
-                            <option value="">— Sin asignar —</option>
-                            {activeUsers.map(u => (
-                              <option key={u.id} value={u.id}>{u.full_name} ({u.role})</option>
-                            ))}
-                          </select>
-                        </div>
-                      )}
-
-                      {sameUser && approveData.assigned_dev && (
-                        <p className="text-xs text-brand-600 bg-brand-50 rounded px-3 py-2">
-                          Ambos flujos asignados a: <strong>{activeUsers.find(u => u.id === approveData.assigned_dev)?.full_name}</strong>
-                        </p>
-                      )}
-                    </>
-                  )}
-
-                  {approveData.project_type === 'administrative' && (
-                    <div>
-                      <label className="block text-xs font-medium text-gray-500 mb-1">👤 Responsable</label>
-                      <select
-                        value={approveData.assigned_admin}
-                        onChange={e => setApproveData(d => ({ ...d, assigned_admin: e.target.value }))}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary bg-white"
-                      >
-                        <option value="">— Sin asignar —</option>
-                        {activeUsers.map(u => (
-                          <option key={u.id} value={u.id}>{u.full_name} ({u.role})</option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {/* SLA Preview */}
-            {(() => {
-              const slaFormalDays = calcSlaFormalDays(selectedRequest.request_type, selectedRequest.needs_code)
-              const slaFormalDate = calcTargetDate(slaFormalDays, 'medium') // medium = × 1.00 = SLA formal
-              const targetDate    = calcTargetDate(slaFormalDays, approveData.priority)
-              const fmt = (d: string) => new Date(d + 'T12:00:00').toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: 'numeric' })
-              return approveData.priority === 'low' ? (
-                <div className="mb-4 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm">
-                  <p className="font-medium text-gray-600 mb-0.5">SLA</p>
-                  <p className="text-gray-500 text-xs">Prioridad baja — sin SLA asignado (backlog)</p>
-                </div>
-              ) : (
-                <div className="mb-4 bg-brand-50 border border-brand-200 rounded-lg px-4 py-3 text-sm space-y-1">
-                  <p className="font-medium text-brand-800 mb-1">SLA calculado</p>
-                  <div className="flex justify-between text-xs text-brand-700">
-                    <span>SLA formal ({slaFormalDays}d hábiles)</span>
-                    <span className="font-medium">{slaFormalDate ? fmt(slaFormalDate) : '—'}</span>
-                  </div>
-                  <div className="flex justify-between text-xs text-brand-600 border-t border-brand-100 pt-1 mt-1">
-                    <span>Target interno ({approveData.priority})</span>
-                    <span className="font-bold text-brand-900">{targetDate ? fmt(targetDate) : '—'}</span>
-                  </div>
-                </div>
-              )
-            })()}
-
-            <div className="flex gap-3">
-              <button
-                onClick={() => setShowApproveModal(false)}
-                className="flex-1 bg-gray-100 text-gray-700 py-2.5 rounded-lg font-semibold hover:bg-gray-200 transition text-sm"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleApprove}
-                disabled={actionLoading || !approveData.title.trim() || (!!selectedRequest.studio_id && !studioCodeId)}
-                className="flex-1 bg-green-500 text-white py-2.5 rounded-lg font-semibold hover:bg-green-600 transition disabled:opacity-50 text-sm"
-              >
-                {actionLoading ? 'Creando proyecto...' : '✅ Aprobar y crear proyecto'}
-              </button>
-            </div>
-          </div>
-        </div>
       )}
     </div>
   )

@@ -25,6 +25,9 @@ Catálogos; no bloquea la implementación ni se fusionó o corrigió.
 
 ## Flujo
 
+> **Actualizado por 20261118000400:** el cliente ya no elige subproyecto ni área; la
+> clasificación se hace al validar. Ver [solicitudes](request-intake.md).
+
 - **Crear ticket** (formulario público): Estudio (nombres únicos, sin RUC ni códigos) →
   Proyecto → Subproyecto (si existe/obligatorio) → Área y Subárea solo si el estudio tiene
   áreas (hoy, BUSINESS ACCOMPANYING SAC: **área obligatoria, subárea opcional**). Otros

@@ -1,5 +1,7 @@
 # Ticketera Procont
 
+**Formulario del cliente y validación interna activos:** migración `20261118000400_request_intake.sql` aplicada (historial 8/8). Tipos de solicitud administrables, adjuntos privados, clasificación al validar y SLA «Pendiente de configuración» (sin plazos heredados). Ver [solicitudes](docs/request-intake.md).
+
 **Catálogos y clasificación de tickets activos:** migración `20261118000300_ticket_catalogs.sql` aplicada con Supabase CLI (historial 7/7) (proyectos/subproyectos, estudios y códigos, áreas/subáreas de BUSINESS ACCOMPANYING SAC) y validación con código interno. Ver [catálogos](docs/ticket-catalogs.md).
 
 **Catálogo de áreas activo:** migración `20261118000200_areas.sql` aplicada con Supabase CLI (historial 6/6, RLS verificado, catálogo vacío); sección Equipo → Áreas para superadmin. Las próximas migraciones se aplican con `supabase db push --remote`. Ver [áreas](docs/areas.md).

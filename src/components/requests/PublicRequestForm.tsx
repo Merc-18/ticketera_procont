@@ -1,187 +1,87 @@
-import { useState, useRef } from 'react'
+import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useRequests } from '../../hooks/useRequests'
+import { operations } from '../../lib/api'
 import { createRpcAttempt } from '../../lib/rpc-attempt'
 import { errorMessage } from '../../lib/supabase-errors'
 import { handoffTracking } from '../../lib/tracking-handoff'
 import type { SubmissionReceipt } from '../../lib/operations'
-import AreaInput from '../ui/AreaInput'
 import { useCatalogs } from '../../hooks/useCatalogs'
-import ClassificationFields, { EMPTY_CLASSIFICATION } from './ClassificationFields'
+import { ATTACHMENT_ACCEPT, MAX_ATTACHMENTS, uploadRequestAttachments, validateAttachments } from '../../lib/attachments'
 import BrandLogo from '../ui/BrandLogo'
 import { BRAND } from '../../theme/brand'
 
-const ORIGINS = ['Cliente', 'Externo', 'Interno', 'Regulatorio', 'Otro']
-const SYSTEMS = [
-  'BD (Access, Sql)', 'Excel', 'Power Apps',
-  'Power Automate', 'Power BI', 'Sharepoint', 'Otro',
-]
+const EMPTY = { requester_name: '', studio_id: '', system_id: '', request_type_id: '', title: '', description: '' }
+const field = 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none bg-white'
 
-const ADMIN_TYPES = [
-  'Acceso / Permiso',
-  'Automatización',
-  'Capacitación',
-  'Mejora de proceso',
-  'Reporte',
-  'Otro',
-]
-
-const CODE_TYPES: { label: string; sla: number }[] = [
-  { label: 'Extracción de datos (PDF / Excel / Web)',       sla: 3 },
-  { label: 'Generación de documentos (PDF / Word / Excel)', sla: 3 },
-  { label: 'Consolidación y transformación de datos',       sla: 5 },
-  { label: 'Comparación y validación',                      sla: 4 },
-  { label: 'Reporte / Informe',                             sla: 5 },
-  { label: 'Dashboard / Visualización (Streamlit)',         sla: 4 },
-  { label: 'Automatización con IA',                         sla: 7 },
-  { label: 'Organización y gestión de archivos',            sla: 2 },
-  { label: 'Bug / Corrección',                              sla: 2 },
-  { label: 'Utilidad interna / Herramienta propia',         sla: 6 },
-  { label: 'Otro',                                          sla: 5 },
-]
-
-function calcSLA(selected: string[]): number {
-  if (selected.length === 0) return 0
-  const slas = selected.map(t => CODE_TYPES.find(c => c.label === t)?.sla ?? 5)
-  return Math.max(...slas) + (selected.length - 1) * 2
-}
-
-// El conteo empieza desde el día laboral siguiente al envío
-function addWorkingDays(days: number, start: Date): string {
-  const d = new Date(start)
-  // Avanzar al primer día laboral posterior (el día de envío no cuenta)
-  do { d.setDate(d.getDate() + 1) } while (d.getDay() === 0 || d.getDay() === 6)
-  // Luego sumar los días laborales restantes (days - 1, ya usamos 1 arriba)
-  let added = 1
-  while (added < days) {
-    d.setDate(d.getDate() + 1)
-    if (d.getDay() !== 0 && d.getDay() !== 6) added++
-  }
-  return d.toISOString().slice(0, 10)
-}
-
-const EMPTY_FORM = {
-  requester_name: '',
-  requester_email: '',
-  requester_area: '',
-  request_type: '',
-  origin: 'Interno' as const,
-  data_system_involved: '',
-  description: '',
-  observations: '',
-}
-
+/**
+ * Formulario público definitivo (aprobado 18/11/2026). El cliente no ve correo, subproyecto,
+ * área, RUC, códigos, responsables, prioridad, SLA ni plazos.
+ */
 export default function PublicRequestForm() {
   const navigate = useNavigate()
-  const { createRequest } = useRequests()
-  const attempt = useRef(createRpcAttempt())
-  const [receipt, setReceipt] = useState<SubmissionReceipt | null>(null)
-  const [loading, setLoading]           = useState(false)
-  const [success, setSuccess]           = useState(false)
-  const [requestNumber, setRequestNumber] = useState('')
-
-  const [needsCode, setNeedsCode]             = useState<boolean | null>(null)
-  const [selectedTypes, setSelectedTypes]     = useState<string[]>([])
-  const [isUrgent, setIsUrgent]               = useState(false)
-  const [formData, setFormData]               = useState(EMPTY_FORM)
   const catalogs = useCatalogs('public')
-  // Con catálogos disponibles (migración 20261118000300) se clasifica por estudio/proyecto/área;
-  // si no, se conserva el campo de área en texto libre.
-  const classified = catalogs.available && catalogs.studios.length > 0 && catalogs.systems.length > 0
-  const [classification, setClassification] = useState(EMPTY_CLASSIFICATION)
+  const attempt = useRef(createRpcAttempt())
+  const [form, setForm] = useState(EMPTY)
+  const [urgent, setUrgent] = useState(false)
+  const [files, setFiles] = useState<File[]>([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [receipt, setReceipt] = useState<SubmissionReceipt | null>(null)
+  const [failedFiles, setFailedFiles] = useState<string[]>([])
 
-  const calculatedSLA = calcSLA(selectedTypes)
-  const urgentSLA     = Math.ceil(calculatedSLA / 2)
-  const displaySLA    = isUrgent ? urgentSLA : calculatedSLA
-  const heaviest      = selectedTypes.reduce<{ label: string; sla: number } | null>(
-    (best, t) => {
-      const found = CODE_TYPES.find(c => c.label === t)
-      if (!found) return best
-      return !best || found.sla > best.sla ? found : best
-    }, null
-  )
-
-  const toggleType = (label: string) => {
-    setSelectedTypes(prev =>
-      prev.includes(label) ? prev.filter(t => t !== label) : [...prev, label]
-    )
-  }
-
-  const reset = () => {
-    setNeedsCode(null)
-    setSelectedTypes([])
-    setIsUrgent(false)
-    setFormData(EMPTY_FORM)
-    setClassification(EMPTY_CLASSIFICATION)
-  }
+  const set = (patch: Partial<typeof EMPTY>) => setForm(f => ({ ...f, ...patch }))
+  // Nombres de estudio únicos (sin RUC ni códigos internos).
+  const studios = Array.from(new Map(catalogs.studios.map(s => [s.name.toLowerCase(), s])).values())
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (needsCode && selectedTypes.length === 0) {
-      alert('Selecciona al menos un tipo de requerimiento.')
-      return
-    }
-    setLoading(true)
+    const fileError = validateAttachments(files)
+    if (fileError) { setError(fileError); return }
+    setLoading(true); setError(null)
     try {
-      const today       = attempt.current.startedAt.toISOString().slice(0, 10)
-      const requestType = needsCode ? selectedTypes.join(', ') : formData.request_type
-      const observations = [
-        isUrgent ? '🔴 URGENTE — requiere coordinación directa con el equipo.' : '',
-        formData.observations,
-      ].filter(Boolean).join(' ')
-
-      const requested_date = needsCode ? addWorkingDays(displaySLA, attempt.current.startedAt) : ''
-
-      const result = await createRequest({
-        ...formData,
-        request_type: requestType,
-        needs_code: needsCode!,
-        request_date: today,
-        requested_date,
-        observations,
-      }, attempt.current, classified ? classification : undefined)
-
+      const result = await operations.submitClientRequest({ ...form, urgent_requested: urgent }, attempt.current)
+      const failed = files.length ? await uploadRequestAttachments(result.id, files) : []
+      setFailedFiles(failed)
       setReceipt(result)
-      setRequestNumber(result.request_number)
-      setSuccess(true)
-      reset()
+      setForm(EMPTY); setUrgent(false); setFiles([])
     } catch (err) {
-      alert(errorMessage(err))
+      setError(errorMessage(err))
     } finally {
       setLoading(false)
     }
   }
 
-  /* ── Pantalla de éxito ── */
-  if (success) {
+  /* ── Confirmación: número REQ y token privado ── */
+  if (receipt) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-brand-700 via-brand-800 to-brand-950 flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl p-8 text-center">
+        <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl p-8 text-center border-t-4 border-accent-400">
           <div className="text-6xl mb-4">✅</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">¡Solicitud Creada!</h2>
-          <p className="text-gray-600 mb-6">Tu solicitud ha sido registrada exitosamente</p>
+          <h2 className="text-2xl font-bold text-brand-700 mb-2">¡Solicitud enviada!</h2>
+          <p className="text-gray-600 mb-6">Tu solicitud fue registrada y será revisada por el {BRAND.teamLabel}.</p>
           <div className="bg-brand-50 border-2 border-brand-200 rounded-lg p-4 mb-6">
             <p className="text-sm text-gray-600 mb-2">Número de seguimiento:</p>
-            <p className="text-3xl font-bold text-primary">{requestNumber}</p>
+            <p className="text-3xl font-bold text-primary">{receipt.request_number}</p>
           </div>
-          <p className="text-sm text-gray-500 mb-6">
-            Guarda el número y este token para consultar tu solicitud. El token solo se entrega en esta confirmación; no lo compartas.
+          {failedFiles.length > 0 && (
+            <p className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4">
+              No se pudieron adjuntar: {failedFiles.join(', ')}. La solicitud sí quedó registrada.
+            </p>
+          )}
+          <p className="text-sm text-gray-500 mb-4">
+            Guarda el número y este token para consultar tu solicitud. El token solo se muestra ahora; no lo compartas.
           </p>
           <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">
             <p className="text-sm text-gray-600 mb-2">Token de seguimiento:</p>
-            <code className="break-all select-all">{receipt?.tracking_token}</code>
+            <code className="break-all select-all">{receipt.tracking_token}</code>
           </div>
           <div className="space-y-3">
-            <button
-              onClick={() => { attempt.current = createRpcAttempt(); setReceipt(null); setSuccess(false) }}
-              className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-brand-700 transition"
-            >
+            <button onClick={() => { attempt.current = createRpcAttempt(); setReceipt(null) }}
+              className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-brand-700 transition">
               Crear otra solicitud
             </button>
-            <button
-              onClick={() => { if (receipt) handoffTracking(receipt); navigate('/tracking') }}
-              className="w-full bg-gray-100 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-200 transition"
-            >
+            <button onClick={() => { handoffTracking(receipt); navigate('/tracking') }}
+              className="w-full bg-gray-100 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-200 transition">
               Rastrear mi solicitud
             </button>
           </div>
@@ -190,313 +90,105 @@ export default function PublicRequestForm() {
     )
   }
 
-  /* ── Formulario ── */
+  const label = (text: string, required = true) => (
+    <label className="block text-sm font-medium text-gray-700 mb-2">
+      {text} {required && <span className="text-red-500">*</span>}
+    </label>
+  )
+  const section = 'font-semibold text-brand-700 border-b pb-2'
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-700 via-brand-800 to-brand-950 py-12 px-4">
       <div className="max-w-3xl mx-auto">
-        <div className="bg-white rounded-2xl shadow-2xl p-8">
-
-          {/* Header */}
+        <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8">
           <div className="mb-8">
-            <button
-              type="button"
-              onClick={() => navigate('/portal')}
-              className="flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 transition mb-4"
-            >
-              ← Inicio
-            </button>
+            <button type="button" onClick={() => navigate('/portal')}
+              className="flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 transition mb-4">← Inicio</button>
             <div className="text-center">
               <BrandLogo size={48} showName={false} className="justify-center mb-4" />
               <h1 className="text-3xl font-bold text-brand-700 mb-2">Nueva Solicitud</h1>
               <div className="mx-auto mb-3 h-1 w-16 rounded-full bg-accent-400" aria-hidden="true" />
-              <p className="text-gray-600">
-                Completa el formulario para crear una solicitud al {BRAND.teamLabel}
-              </p>
+              <p className="text-gray-600">Completa el formulario para enviar una solicitud al {BRAND.teamLabel}</p>
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-8">
-
-            {/* ── Información del Solicitante ── */}
-            <section className="space-y-4">
-              <h3 className="font-semibold text-gray-900 border-b pb-2">Información del Solicitante</h3>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Nombre Completo <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text" required
-                  value={formData.requester_name}
-                  onChange={e => setFormData({ ...formData, requester_name: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
-                  placeholder="Juan Pérez"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                <input
-                  type="email"
-                  value={formData.requester_email}
-                  onChange={e => setFormData({ ...formData, requester_email: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
-                  placeholder="juan.perez@empresa.com"
-                />
-              </div>
-
-              {catalogs.loading ? (
-                <p className="text-sm text-gray-400">Cargando catálogos...</p>
-              ) : classified ? (
-                <ClassificationFields
-                  value={classification}
-                  onChange={setClassification}
-                  studios={catalogs.studios}
-                  systems={catalogs.systems}
-                  subsystems={catalogs.subsystems}
-                  areas={catalogs.areas}
-                  selectClassName="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none bg-white"
-                />
-              ) : (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Área <span className="text-red-500">*</span>
-                </label>
-                <AreaInput
-                  required
-                  value={formData.requester_area}
-                  onChange={v => setFormData({ ...formData, requester_area: v })}
-                  placeholder="Escribe tu área"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
-                />
-              </div>
-              )}
-            </section>
-
-            {/* ── Información de la Solicitud ── */}
-            <section className="space-y-6">
-              <h3 className="font-semibold text-gray-900 border-b pb-2">Información de la Solicitud</h3>
-
-              {/* ¿Necesita código? */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
-                  ¿Esta solicitud requiere desarrollo o código? <span className="text-red-500">*</span>
-                </label>
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    type="button"
-                    onClick={() => { setNeedsCode(false); setSelectedTypes([]) }}
-                    className={`py-4 rounded-xl border-2 text-sm font-semibold transition flex flex-col items-center gap-1 ${
-                      needsCode === false
-                        ? 'border-green-500 bg-green-50 text-green-800'
-                        : 'border-gray-200 text-gray-600 hover:border-gray-300'
-                    }`}
-                  >
-                    <span className="text-2xl">📋</span>
-                    No requiere código
-                    <span className="text-xs font-normal text-gray-400">Proceso, acceso, reporte simple</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => { setNeedsCode(true); setFormData(f => ({ ...f, request_type: '' })) }}
-                    className={`py-4 rounded-xl border-2 text-sm font-semibold transition flex flex-col items-center gap-1 ${
-                      needsCode === true
-                        ? 'border-brand-500 bg-brand-50 text-brand-800'
-                        : 'border-gray-200 text-gray-600 hover:border-gray-300'
-                    }`}
-                  >
-                    <span className="text-2xl">💻</span>
-                    Sí requiere código
-                    <span className="text-xs font-normal text-gray-400">Automatización, dashboard, herramienta</span>
-                  </button>
+          {catalogs.loading ? (
+            <p className="text-center text-gray-400 py-8">Cargando formulario...</p>
+          ) : !catalogs.available ? (
+            <p role="alert" className="text-center text-red-700 py-8">El formulario no está disponible en este momento. Intenta más tarde.</p>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-8">
+              <section className="space-y-4">
+                <h3 className={section}>Datos del solicitante</h3>
+                <div>
+                  {label('Nombre')}
+                  <input required maxLength={200} value={form.requester_name} placeholder="Nombre y apellido"
+                    onChange={e => set({ requester_name: e.target.value })} className={field} />
                 </div>
-              </div>
+              </section>
 
-              {/* Contenido condicional */}
-              {needsCode !== null && (
-                <div className="space-y-5 animate-fadeIn">
-
-                  {/* Tipo de requerimiento */}
-                  {needsCode === false ? (
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Tipo de Requerimiento <span className="text-red-500">*</span>
-                      </label>
-                      <select
-                        required
-                        value={formData.request_type}
-                        onChange={e => setFormData({ ...formData, request_type: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
-                      >
-                        <option value="">Selecciona un tipo</option>
-                        {ADMIN_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
-                      </select>
-                    </div>
-                  ) : (
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        ¿Cuál es el producto final que recibirás? <span className="text-red-500">*</span>
-                      </label>
-                      <p className="text-xs text-gray-400 mb-3">Selecciona uno o más según lo que necesitas entregar</p>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        {CODE_TYPES.map(ct => {
-                          const checked = selectedTypes.includes(ct.label)
-                          return (
-                            <button
-                              key={ct.label}
-                              type="button"
-                              onClick={() => toggleType(ct.label)}
-                              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg border text-left text-sm transition ${
-                                checked
-                                  ? 'border-brand-500 bg-brand-50 text-brand-900'
-                                  : 'border-gray-200 text-gray-700 hover:border-gray-300 hover:bg-gray-50'
-                              }`}
-                            >
-                              <span className={`w-4 h-4 rounded border-2 flex-shrink-0 flex items-center justify-center ${
-                                checked ? 'bg-brand-500 border-brand-500' : 'border-gray-300'
-                              }`}>
-                                {checked && <span className="text-white text-[10px] font-bold">✓</span>}
-                              </span>
-                              <span className="flex-1">{ct.label}</span>
-                              <span className="text-xs text-gray-400 flex-shrink-0">{ct.sla}d</span>
-                            </button>
-                          )
-                        })}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Origen */}
+              <section className="space-y-4">
+                <h3 className={section}>¿Dónde ocurre el problema o requerimiento?</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Origen <span className="text-red-500">*</span>
-                    </label>
-                    <select
-                      required
-                      value={formData.origin}
-                      onChange={e => setFormData({ ...formData, origin: e.target.value as any })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
-                    >
-                      {ORIGINS.map(o => <option key={o} value={o}>{o}</option>)}
+                    {label('Estudio')}
+                    <select required value={form.studio_id} onChange={e => set({ studio_id: e.target.value })} className={field}>
+                      <option value="">Selecciona un estudio</option>
+                      {studios.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                     </select>
                   </div>
-
-                  {/* Datos / Sistema */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Datos / Sistema Involucrado
-                    </label>
-                    <select
-                      value={formData.data_system_involved}
-                      onChange={e => setFormData({ ...formData, data_system_involved: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
-                    >
-                      <option value="">Selecciona un sistema</option>
-                      {SYSTEMS.map(s => <option key={s} value={s}>{s}</option>)}
+                    {label('Proyecto / Sistema')}
+                    <select required value={form.system_id} onChange={e => set({ system_id: e.target.value })} className={field}>
+                      <option value="">Selecciona un proyecto</option>
+                      {catalogs.systems.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                     </select>
                   </div>
-
-                  {/* Descripción */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Descripción <span className="text-red-500">*</span>
-                    </label>
-                    <textarea
-                      required rows={4}
-                      value={formData.description}
-                      onChange={e => setFormData({ ...formData, description: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none resize-none"
-                      placeholder="Describe detalladamente tu solicitud..."
-                    />
-                  </div>
-
-                  {/* Observaciones */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Observaciones</label>
-                    <textarea
-                      rows={2}
-                      value={formData.observations}
-                      onChange={e => setFormData({ ...formData, observations: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none resize-none"
-                      placeholder="Información adicional (opcional)"
-                    />
-                  </div>
-
-                  {/* Prioridad / Urgencia */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-3">Prioridad</label>
-                    <div className="grid grid-cols-2 gap-3">
-                      <button
-                        type="button"
-                        onClick={() => setIsUrgent(false)}
-                        className={`py-3 rounded-xl border-2 text-sm font-semibold transition flex items-center justify-center gap-2 ${
-                          !isUrgent
-                            ? 'border-gray-400 bg-gray-50 text-gray-800'
-                            : 'border-gray-200 text-gray-500 hover:border-gray-300'
-                        }`}
-                      >
-                        ⏱ Normal
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setIsUrgent(true)}
-                        className={`py-3 rounded-xl border-2 text-sm font-semibold transition flex items-center justify-center gap-2 ${
-                          isUrgent
-                            ? 'border-red-500 bg-red-50 text-red-800'
-                            : 'border-gray-200 text-gray-500 hover:border-gray-300'
-                        }`}
-                      >
-                        🔴 Urgente
-                      </button>
-                    </div>
-                    {isUrgent && (
-                      <p className="mt-2 text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
-                        ⚠️ Al marcar urgente el equipo se contactará contigo directamente para coordinar la atención. El SLA puede acortarse según disponibilidad.
-                      </p>
-                    )}
-                  </div>
-
-                  {/* SLA Panel — solo si necesita código y hay tipos seleccionados */}
-                  {needsCode && selectedTypes.length > 0 && (
-                    <div className={`border rounded-xl p-5 space-y-3 ${isUrgent ? 'bg-red-50 border-red-200' : 'bg-brand-50 border-brand-200'}`}>
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className={`text-sm font-semibold ${isUrgent ? 'text-red-900' : 'text-brand-900'}`}>⏱ SLA Estimado</p>
-                          {heaviest && (
-                            <p className={`text-xs mt-0.5 ${isUrgent ? 'text-red-600' : 'text-brand-600'}`}>
-                              Tipo más complejo: <strong>{heaviest.label}</strong> ({heaviest.sla} días hábiles)
-                              {selectedTypes.length > 1 && ` + ${(selectedTypes.length - 1) * 2} días por requerimientos adicionales`}
-                              {isUrgent && ` → reducido a la mitad por urgencia`}
-                            </p>
-                          )}
-                        </div>
-                        <div className="text-right">
-                          <span className={`text-4xl font-bold ${isUrgent ? 'text-red-700' : 'text-brand-700'}`}>{displaySLA}</span>
-                          <span className={`text-sm font-semibold ml-1 ${isUrgent ? 'text-red-600' : 'text-brand-600'}`}>días hábiles</span>
-                        </div>
-                      </div>
-                      <p className={`text-xs ${isUrgent ? 'text-red-500' : 'text-brand-500'}`}>
-                        * El plazo comienza a correr a partir del <strong>siguiente día hábil</strong> tras el envío de la solicitud. Los días hábiles excluyen sábados y domingos.
-                        <br />Fecha estimada de entrega: <strong>{new Date(addWorkingDays(displaySLA, attempt.current.startedAt) + 'T00:00:00').toLocaleDateString('es-PE', { day: '2-digit', month: 'long', year: 'numeric' })}</strong>
-                      </p>
-                    </div>
-                  )}
-
                 </div>
-              )}
-            </section>
+              </section>
 
-            {/* Botón enviar */}
-            {needsCode !== null && (
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-brand-700 disabled:opacity-50 disabled:cursor-not-allowed transition text-lg"
-              >
-                {loading ? 'Enviando...' : 'Enviar Solicitud'}
+              <section className="space-y-4">
+                <h3 className={section}>¿Qué necesitas?</h3>
+                <div>
+                  {label('Tipo de solicitud')}
+                  <select required value={form.request_type_id} onChange={e => set({ request_type_id: e.target.value })} className={field}>
+                    <option value="">Selecciona el tipo principal</option>
+                    {catalogs.requestTypes.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+                  </select>
+                </div>
+                <div>
+                  {label('Título del requerimiento')}
+                  <input required maxLength={300} value={form.title} placeholder="Resumen breve"
+                    onChange={e => set({ title: e.target.value })} className={field} />
+                </div>
+                <div>
+                  {label('Descripción detallada')}
+                  <textarea required rows={6} maxLength={20000} value={form.description}
+                    placeholder="Describe qué ocurre o qué necesitas, pasos para reproducirlo y el resultado esperado"
+                    onChange={e => set({ description: e.target.value })} className={`${field} resize-y`} />
+                </div>
+                <div>
+                  {label('Adjuntar capturas o documentos', false)}
+                  <input type="file" multiple accept={ATTACHMENT_ACCEPT}
+                    onChange={e => setFiles(Array.from(e.target.files ?? []))}
+                    className="block w-full text-sm text-gray-600 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-brand-50 file:text-brand-700 file:font-medium hover:file:bg-brand-100" />
+                  <p className="text-xs text-gray-400 mt-1">Hasta {MAX_ATTACHMENTS} archivos de 10 MB (imágenes, PDF, Office, texto).</p>
+                  {files.length > 0 && <p className="text-xs text-gray-600 mt-1">{files.map(f => f.name).join(', ')}</p>}
+                </div>
+                <label className="flex items-center gap-3 p-4 rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-50">
+                  <input type="checkbox" checked={urgent} onChange={e => setUrgent(e.target.checked)} className="h-4 w-4 accent-red-600" />
+                  <span className="text-sm font-medium text-gray-800">Solicito atención urgente</span>
+                </label>
+              </section>
+
+              {error && <p role="alert" className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">{error}</p>}
+
+              <button type="submit" disabled={loading}
+                className="w-full bg-accent-400 hover:bg-accent-300 text-gray-900 py-3.5 rounded-lg font-bold transition disabled:opacity-50">
+                {loading ? 'Enviando...' : 'Enviar solicitud'}
               </button>
-            )}
-          </form>
+            </form>
+          )}
         </div>
       </div>
     </div>

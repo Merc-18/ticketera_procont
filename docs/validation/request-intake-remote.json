@@ -1,0 +1,62 @@
+{
+  "migration": {
+    "status": "applied_verified",
+    "at_utc": "2026-11-18T19:40:00Z",
+    "project": "ticketera-procont",
+    "project_ref": "xsxdpaiivklqeudgqoqf",
+    "version": "20261118000400",
+    "method": "Supabase CLI 3.2.0 db push --remote (sesión CLI existente)",
+    "preflight": {
+      "dry_run_pending": [
+        "20261118000400_request_intake.sql"
+      ],
+      "destructive_statements": false,
+      "ledger_versions_before": 7,
+      "requests_before": 0,
+      "bucket_existed": false,
+      "recovery_capture_before": "privada en .supabase-local"
+    },
+    "post_check": {
+      "ledger_versions": 8,
+      "request_types": 9,
+      "rls": true,
+      "policies_request_types": 5,
+      "policies_request_events": 1,
+      "bucket": {
+        "public": false,
+        "file_size_limit": 10485760
+      },
+      "storage_policies": [
+        "procont_request_attachments_insert:INSERT",
+        "procont_request_attachments_read:SELECT"
+      ],
+      "triggers_requests": [
+        "guard_request_classification",
+        "log_request_event",
+        "request_number",
+        "request_project_consistency",
+        "touch_updated_at"
+      ],
+      "anon_submit_client": true,
+      "anon_submit_legacy": false,
+      "anon_classify": false,
+      "authenticated_classify": true
+    },
+    "api_checks_anon": {
+      "request_types": "200 (9)",
+      "submit_client_request invalid": "400 22023 (sin registro)",
+      "submit_request": "401 42501",
+      "classify_request": "401 42501",
+      "request_events": "401 42501",
+      "track_request unknown": "200 null",
+      "upload to unknown request": "403 RLS",
+      "list attachments": "200 []"
+    },
+    "ui_check": "/request contra Supabase: solo campos aprobados; sin correo, subproyecto, área, RUC, códigos, prioridad ni SLA",
+    "tickets_created": 0,
+    "storage_objects_created": 0,
+    "users_modified": false,
+    "previous_migrations_modified": false,
+    "credentials_saved": false
+  }
+}

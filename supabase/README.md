@@ -83,3 +83,8 @@ Próximas migraciones: `db push --remote --dry-run`, captura de solo lectura, `d
 `migrations/20261118000300_ticket_catalogs.sql` está **aplicada** (CLI `db push --remote`);
 verificación con `recovery/ticket_catalogs_check.sql`.
 Ver [catálogos y clasificación](../docs/ticket-catalogs.md).
+
+# Formulario del cliente y validación
+
+`migrations/20261118000400_request_intake.sql` está **aplicada**. Verificación: `recovery/request_intake_check.sql`.
+Ver [solicitudes](../docs/request-intake.md).

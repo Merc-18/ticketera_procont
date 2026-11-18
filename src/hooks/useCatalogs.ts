@@ -6,12 +6,13 @@ export interface CatalogSystem { id: string; name: string; requires_subproject: 
 export interface CatalogSubsystem { id: string; system_id: string; name: string; is_active: boolean }
 export interface Studio { id: string; name: string; is_active: boolean; ruc?: string | null; review_note?: string | null }
 export interface StudioCode { id: string; studio_id: string; code: string; is_active: boolean }
+export interface RequestType { id: string; name: string; sort_order: number; is_active: boolean }
 export interface CatalogArea { id: string; name: string; is_active: boolean; parent_id: string | null; studio_id: string | null; code?: string | null }
 
 type Scope = 'public' | 'member' | 'admin'
 
 /**
- * Catálogos de clasificación de tickets (migración 20261118000300).
+ * Catálogos de clasificación de tickets (migraciones 20261118000300 y 20261118000400).
  * - public: solo columnas permitidas a anon (sin RUC ni códigos internos).
  * - member: incluye códigos internos de estudio activos (validación de tickets).
  * - admin: superadmin, incluye inactivos y RUC (RLS lo restringe en Supabase).
@@ -23,6 +24,7 @@ export function useCatalogs(scope: Scope = 'public') {
   const [studios, setStudios] = useState<Studio[]>([])
   const [codes, setCodes] = useState<StudioCode[]>([])
   const [areas, setAreas] = useState<CatalogArea[]>([])
+  const [requestTypes, setRequestTypes] = useState<RequestType[]>([])
   const [loading, setLoading] = useState(true)
   const [available, setAvailable] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -37,6 +39,7 @@ export function useCatalogs(scope: Scope = 'public') {
       scope === 'public' ? Promise.resolve({ data: [], error: null })
         : active(supabase.from('studio_codes').select('id,studio_id,code,is_active').order('code')),
       active(supabase.from('areas').select(scope === 'public' ? 'id,name,is_active,parent_id,studio_id' : 'id,name,is_active,parent_id,studio_id,code').order('name')),
+      active(supabase.from('request_types').select('id,name,sort_order,is_active').order('sort_order').order('name')),
     ])
     const failed = results.find(r => r.error)
     if (failed) {
@@ -47,17 +50,18 @@ export function useCatalogs(scope: Scope = 'public') {
       setStudios((results[2].data ?? []) as unknown as Studio[])
       setCodes((results[3].data ?? []) as StudioCode[])
       setAreas((results[4].data ?? []) as unknown as CatalogArea[])
+      setRequestTypes((results[5].data ?? []) as RequestType[])
       setAvailable(true); setError(null)
     }
     setLoading(false)
   }, [scope])
   useEffect(() => { void reload() }, [reload])
 
-  return { systems, subsystems, studios, codes, areas, loading, available, error, reload }
+  return { systems, subsystems, studios, codes, areas, requestTypes, loading, available, error, reload }
 }
 
 /** Escritura de catálogos (solo superadmin; RLS rechaza otros roles). Sin borrado. */
-export async function saveCatalogRow(table: 'catalog_systems' | 'catalog_subsystems' | 'studios' | 'studio_codes' | 'areas',
+export async function saveCatalogRow(table: 'catalog_systems' | 'catalog_subsystems' | 'studios' | 'studio_codes' | 'areas' | 'request_types',
   values: Record<string, unknown>, id?: string) {
   const query = id
     ? supabase.from(table).update(values).eq('id', id).select('id')
