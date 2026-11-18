@@ -67,7 +67,7 @@ export function createOperations(client: RpcClient) {
       })
     },
     async submitClientRequest(data: ClientRequestInput, attempt: RpcAttempt) {
-      const payload = { requester_name: data.requester_name.trim(), studio_id: data.studio_id, system_id: data.system_id,
+      const payload = { requester_name: data.requester_name, studio_id: data.studio_id, system_id: data.system_id,
         request_type_id: data.request_type_id, title: data.title.trim(), description: data.description.trim(),
         urgent_requested: data.urgent_requested }
       return attempt.run('submit_client_request', { p_payload: payload }, async args => {
@@ -84,7 +84,7 @@ export function createOperations(client: RpcClient) {
     async createInternalProject(data: InternalProjectInput, attempt: RpcAttempt) {
       const payload = { title: data.title.trim(), description: data.description.trim(), project_type: data.project_type,
         priority: data.priority, start_date: nullable(data.start_date), due_date: nullable(data.due_date),
-        sla_target_date: nullable(data.due_date), area: nullable(data.area), requester_name: nullable(data.requester_name) }
+        sla_target_date: null, area: nullable(data.area), requester_name: nullable(data.requester_name) }
       return attempt.run('create_internal_project', { p_payload: payload }, async args => {
         const project = await value<Project>('create_internal_project', args)
         if (!uuidPattern.test(project.id) || !project.request_id) throw new Error('No se confirmó el proyecto. Reintenta con los mismos datos.')
