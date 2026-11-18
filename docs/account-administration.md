@@ -1,6 +1,6 @@
 # Administración de cuentas — activa en Supabase
 
-**Estado 18/11/2026:** migración `20261118000100` aplicada y verificada con
+**Estado 18/11/2026:** primer superadmin: ver [procedimiento Dashboard](#primer-superadministrador--procedimiento-recomendado-dashboard).  migración `20261118000100` aplicada y verificada con
 `scripts/apply_account_administration.py` (historial 5/5, RLS y permisos, 0 cuentas)
 y Edge Function `admin-users` desplegada (v1, ACTIVE) en ticketera-procont
 (`xsxdpaiivklqeudgqoqf`). `verify_jwt=false` según el diseño: el handler valida
@@ -80,7 +80,33 @@ Requiere autorización posterior; ninguna de estas operaciones se ejecutó:
    esa integración queda para autorización posterior, sin diseñarla aquí. Sin
    redirect explícito la operación de invitación se rechaza, sin enviar correo.
 
-## Primer superadministrador — solo entorno confiable
+## Primer superadministrador — procedimiento recomendado (Dashboard)
+
+Sin contraseñas en terminal ni claves privilegiadas. Proyecto **ticketera-procont**
+(`xsxdpaiivklqeudgqoqf`); no usar otro proyecto de la organización.
+
+1. **Authentication → Users**: comprobar que la lista está vacía. **Add user →
+   Create new user** con el correo aprobado y una contraseña nueva, marcando
+   **Auto Confirm User**. No crear ningún otro usuario.
+2. **SQL Editor → New query**: pegar y ejecutar
+   [`supabase/bootstrap/superadmin_dashboard.sql`](../supabase/bootstrap/superadmin_dashboard.sql).
+   La última tabla debe mostrar `superadmin_ok = true`, `bootstrap_bloqueado = true`,
+   `usuarios_auth = 1` y `superadmins_activos = 1`.
+
+Seguridad: el bloque es atómico y solo acepta exactamente un usuario Auth, con
+ese correo y confirmado. La función privada `app_private.bootstrap_superadmin`
+(solo ejecutable por el propietario de la base, no por API ni navegador) rechaza
+cualquier ejecución si ya hay perfiles o si el bootstrap se usó alguna vez; la
+marca es permanente. Ningún otro usuario Auth recibe perfil ni rol por este medio.
+El esquema no tiene nombre de usuario independiente: el acceso es por correo
+(`milton.rios` queda como requisito pendiente).
+
+Un intento anterior con `bootstrap_superadmin.py --execute` terminó en «Credenciales
+inválidas»: es una validación local previa a cualquier conexión (entrada oculta
+vacía —p. ej. Ctrl+V no pega en la terminal—, clave publicable, contraseña < 12
+caracteres o confirmación distinta). No se creó nada en Supabase.
+
+## Primer superadministrador — alternativa por script (entorno confiable)
 
 El comando por defecto muestra el plan **sin red ni creación de cuentas**:
 
