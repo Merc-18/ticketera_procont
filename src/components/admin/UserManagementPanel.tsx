@@ -14,7 +14,7 @@ type RoleFilter = 'all' | 'superadmin' | 'admin' | 'developer' | 'viewer' | 'ina
 const ROLE_BADGE: Record<string, string> = {
   superadmin: 'bg-yellow-100 text-yellow-800 border-yellow-300',
   admin:      'bg-red-100 text-red-800 border-red-200',
-  developer:  'bg-blue-100 text-blue-800 border-blue-200',
+  developer:  'bg-brand-100 text-brand-800 border-brand-200',
   viewer:     'bg-gray-100 text-gray-700 border-gray-200',
 }
 
@@ -135,10 +135,10 @@ export default function UserManagementPanel() {
       {/* Stats cards */}
       <div className="grid grid-cols-2 sm:grid-cols-6 gap-3">
         {[
-          { label: 'Total Activos', value: stats.total,      color: 'border-blue-500',    icon: '👥', show: true },
+          { label: 'Total Activos', value: stats.total,      color: 'border-brand-500',    icon: '👥', show: true },
           { label: 'Superadmins',   value: stats.superadmin, color: 'border-yellow-500',  icon: '⭐', show: isSuperAdmin },
           { label: 'Admins',        value: stats.admin,      color: 'border-red-500',     icon: '🔑', show: true },
-          { label: 'Usuarios',      value: stats.developer,  color: 'border-blue-400',    icon: '💻', show: true },
+          { label: 'Usuarios',      value: stats.developer,  color: 'border-brand-400',    icon: '💻', show: true },
           { label: 'Viewers',       value: stats.viewer,     color: 'border-gray-400',    icon: '👁️', show: true },
           { label: 'Inactivos',     value: stats.inactive,   color: 'border-orange-400',  icon: '🔒', show: true },
         ].filter(s => s.show).map(s => (
@@ -180,7 +180,7 @@ export default function UserManagementPanel() {
           />
           <button
             disabled title="La provisión de cuentas requiere el backend Auth"
-            className="px-4 py-1.5 bg-primary text-white rounded-lg text-sm font-medium hover:bg-blue-600 transition flex items-center gap-1.5 shadow-sm"
+            className="px-4 py-1.5 bg-primary text-white rounded-lg text-sm font-medium hover:bg-brand-700 transition flex items-center gap-1.5 shadow-sm"
           >
             ➕ Nuevo Usuario
           </button>
@@ -253,7 +253,7 @@ export default function UserManagementPanel() {
                         <div className="flex items-center justify-end gap-2">
                           <button
                             onClick={() => { setEditing(u); setShowModal(true) }}
-                            className="px-3 py-1 bg-blue-50 text-blue-700 rounded-lg text-xs font-medium hover:bg-blue-100 transition"
+                            className="px-3 py-1 bg-brand-50 text-brand-700 rounded-lg text-xs font-medium hover:bg-brand-100 transition"
                           >
                             ✏️ Editar
                           </button>

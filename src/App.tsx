@@ -15,6 +15,7 @@ import WorkloadView from './components/admin/WorkloadView'
 
 import PapeleraView from './components/admin/PapeleraView'
 import NotificationBell from './components/notifications/NotificationBell'
+import BrandLogo from './components/ui/BrandLogo'
 import { usePendingCount } from './hooks/usePendingCount'
 import { useSlaWarnings } from './hooks/useSlaWarnings'
 import { errorMessage } from './lib/supabase-errors'
@@ -32,8 +33,8 @@ function AdminClock() {
   }, [])
   return (
     <div className="text-right hidden sm:block">
-      <p className="text-sm font-mono font-semibold text-gray-800">{time}</p>
-      <p className="text-xs text-gray-400 whitespace-nowrap">Lima GMT-5</p>
+      <p className="text-sm font-mono font-semibold text-white">{time}</p>
+      <p className="text-xs text-white/60 whitespace-nowrap">Lima GMT-5</p>
     </div>
   )
 }
@@ -50,104 +51,83 @@ function Dashboard() {
   useSlaWarnings()
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-slate-50">
       {/* Header */}
-      <nav className="bg-white shadow-sm border-b sticky top-0 z-10">
-        <div className="max-w-[1600px] mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-primary flex items-center gap-2">
-              🎯 Ticketera Controlling
-            </h1>
-            
-            <div className="flex items-center gap-6">
-              {/* Tab Selector */}
-              <div className="flex gap-2 bg-gray-100 p-1 rounded-lg">
+      <header className="sticky top-0 z-10 shadow-md">
+        {/* Barra corporativa */}
+        <div className="bg-brand-700 border-b-4 border-accent-400">
+          <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
+            <BrandLogo tone="light" size={40} />
+
+            <div className="flex items-center gap-3 sm:gap-4">
+              {/* Reloj + Campana */}
+              {canSeeEquipo && <AdminClock />}
+              <NotificationBell
+                buttonClassName="text-white/80 hover:text-accent-300 hover:bg-white/10"
+                onProjectClick={(projectId) => {
+                  setCurrentTab('boards')
+                  setOpenProjectId(projectId)
+                }}
+              />
+
+              {/* User Info */}
+              <div className="text-right hidden md:block">
+                <p className="font-semibold text-white leading-tight">{user?.full_name}</p>
+                <p className="text-xs text-accent-300 capitalize">{user?.role}</p>
+              </div>
+              <button
+                onClick={() => { void signOut().catch(err => toast.error(errorMessage(err))) }}
+                className="px-3 sm:px-4 py-2 bg-white/10 text-white border border-white/30 rounded-lg hover:bg-white/20 transition text-sm font-medium whitespace-nowrap"
+              >
+                Cerrar Sesión
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Navegación */}
+        <nav className="bg-white border-b border-gray-200" aria-label="Secciones">
+          <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap gap-1 bg-gray-100 p-1 rounded-lg">
+              {([
+                ['dashboard', '📈 Dashboard'],
+                ['boards', '📊 Boards'],
+                ['requests', '📬 Requests'],
+                ...(canSeeEquipo ? [['equipo', '👥 Equipo']] : []),
+              ] as [typeof currentTab, string][]).map(([tab, label]) => (
                 <button
-                  onClick={() => setCurrentTab('dashboard')}
-                  className={`px-4 py-2 rounded-md font-medium text-sm transition ${
-                    currentTab === 'dashboard'
-                      ? 'bg-white text-primary shadow-sm'
-                      : 'text-gray-600 hover:text-gray-900'
+                  key={tab}
+                  onClick={() => setCurrentTab(tab)}
+                  aria-current={currentTab === tab ? 'page' : undefined}
+                  className={`px-3 sm:px-4 py-2 rounded-md font-medium text-sm transition flex items-center gap-1.5 ${
+                    currentTab === tab
+                      ? 'bg-brand-700 text-white shadow-sm'
+                      : 'text-gray-600 hover:text-brand-700 hover:bg-white'
                   }`}
                 >
-                  📈 Dashboard
-                </button>
-                <button
-                  onClick={() => setCurrentTab('boards')}
-                  className={`px-4 py-2 rounded-md font-medium text-sm transition ${
-                    currentTab === 'boards'
-                      ? 'bg-white text-primary shadow-sm'
-                      : 'text-gray-600 hover:text-gray-900'
-                  }`}
-                >
-                  📊 Boards
-                </button>
-                <button
-                  onClick={() => setCurrentTab('requests')}
-                  className={`px-4 py-2 rounded-md font-medium text-sm transition flex items-center gap-1.5 ${
-                    currentTab === 'requests'
-                      ? 'bg-white text-primary shadow-sm'
-                      : 'text-gray-600 hover:text-gray-900'
-                  }`}
-                >
-                  📬 Requests
-                  {pendingCount > 0 && (
+                  {label}
+                  {tab === 'requests' && pendingCount > 0 && (
                     <span className="min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 leading-none">
                       {pendingCount > 9 ? '9+' : pendingCount}
                     </span>
                   )}
                 </button>
-                {canSeeEquipo && (
-                  <button
-                    onClick={() => setCurrentTab('equipo')}
-                    className={`px-4 py-2 rounded-md font-medium text-sm transition ${
-                      currentTab === 'equipo'
-                        ? 'bg-white text-primary shadow-sm'
-                        : 'text-gray-600 hover:text-gray-900'
-                    }`}
-                  >
-                    👥 Equipo
-                  </button>
-                )}
-              </div>
-
-              {/* Board Selector (solo si está en boards) */}
-              {currentTab === 'boards' && (
-                <BoardSelector 
-                  currentBoard={currentBoard}
-                  onChange={setCurrentBoard}
-                />
-              )}
-              
-              {/* Reloj + Campana */}
-              <div className="flex items-center gap-2">
-                {canSeeEquipo && <AdminClock />}
-                <NotificationBell onProjectClick={(projectId) => {
-                  setCurrentTab('boards')
-                  setOpenProjectId(projectId)
-                }} />
-              </div>
-
-              {/* User Info */}
-              <div className="flex items-center gap-4">
-                <div className="text-right">
-                  <p className="font-medium text-gray-900">{user?.full_name}</p>
-                  <p className="text-sm text-gray-500 capitalize">{user?.role}</p>
-                </div>
-                <button
-                  onClick={() => { void signOut().catch(err => toast.error(errorMessage(err))) }}
-                  className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition text-sm font-medium"
-                >
-                  Cerrar Sesión
-                </button>
-              </div>
+              ))}
             </div>
+
+            {/* Board Selector (solo si está en boards) */}
+            {currentTab === 'boards' && (
+              <BoardSelector
+                currentBoard={currentBoard}
+                onChange={setCurrentBoard}
+              />
+            )}
           </div>
-        </div>
-      </nav>
+        </nav>
+      </header>
 
       {/* Main Content */}
-      <div className="max-w-[1600px] mx-auto px-6 py-6">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-6">
         {currentTab === 'dashboard' && <DashboardView />}
 
         {currentTab === 'boards' && (
@@ -161,7 +141,7 @@ function Dashboard() {
         {currentTab === 'requests' && (
           <>
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">
+              <h2 className="text-2xl font-bold text-brand-700">
                 📬 Inbox de Solicitudes
               </h2>
               <p className="text-gray-600 text-sm mt-1">
@@ -175,7 +155,7 @@ function Dashboard() {
         {currentTab === 'equipo' && canSeeEquipo && (
           <>
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">👥 Equipo</h2>
+              <h2 className="text-2xl font-bold text-brand-700">👥 Equipo</h2>
               <p className="text-gray-600 text-sm mt-1">
                 Gestión de usuarios y carga de trabajo del equipo
               </p>

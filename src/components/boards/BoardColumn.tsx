@@ -38,7 +38,7 @@ export default function BoardColumn({ phase, projects, onProjectClick, users = [
             ref={provided.innerRef}
             {...provided.droppableProps}
             className={`bg-gray-50 rounded-b-lg p-3 min-h-[500px] ${
-              snapshot.isDraggingOver ? 'bg-blue-50 ring-2 ring-primary' : ''
+              snapshot.isDraggingOver ? 'bg-brand-50 ring-2 ring-primary' : ''
             }`}
           >
             {projects.map((item, index) => (

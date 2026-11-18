@@ -139,7 +139,7 @@ export default function RequestTracking() {
   ] : []
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary to-info py-12 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-brand-700 via-brand-800 to-brand-950 py-12 px-4">
       <div className="max-w-2xl mx-auto">
         <div className="bg-white rounded-2xl shadow-2xl p-8">
           {/* Header */}
@@ -176,7 +176,7 @@ export default function RequestTracking() {
               <button
                 type="submit"
                 disabled={loading || !requestNumber || !trackingToken}
-                className="px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                className="px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-brand-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
                 {loading ? 'Buscando...' : 'Buscar'}
               </button>
@@ -211,7 +211,7 @@ export default function RequestTracking() {
                       : step.done
                         ? 'bg-primary border-primary'
                         : (step as any).active
-                          ? 'bg-blue-300 border-blue-400 animate-pulse'
+                          ? 'bg-brand-300 border-brand-400 animate-pulse'
                           : 'bg-white border-gray-300'
                     const lineColor = step.done ? 'bg-primary' : 'bg-gray-200'
                     return (
@@ -224,7 +224,7 @@ export default function RequestTracking() {
                           <p className={`text-sm font-medium leading-snug ${
                             (step as any).error ? 'text-red-700' :
                             step.done ? 'text-gray-900' :
-                            (step as any).active ? 'text-blue-700' :
+                            (step as any).active ? 'text-brand-700' :
                             'text-gray-400'
                           }`}>
                             <span className="mr-1.5">{step.icon}</span>
@@ -300,7 +300,7 @@ export default function RequestTracking() {
                               const active = idx === currentIdx
                               return (
                                 <div key={phase} className="flex-1 flex flex-col items-center gap-1">
-                                  <div className={`h-2 w-full rounded-full ${done ? 'bg-primary' : active ? 'bg-blue-300' : 'bg-gray-200'}`} />
+                                  <div className={`h-2 w-full rounded-full ${done ? 'bg-primary' : active ? 'bg-brand-300' : 'bg-gray-200'}`} />
                                   {active && (
                                     <span className="text-[9px] text-primary font-semibold leading-none text-center">
                                       {PHASE_LABELS[phase]}
@@ -334,7 +334,7 @@ export default function RequestTracking() {
                 </button>
                 <button
                   onClick={() => window.location.href = '/request'}
-                  className="flex-1 bg-primary text-white py-3 rounded-lg font-semibold hover:bg-blue-600 transition"
+                  className="flex-1 bg-primary text-white py-3 rounded-lg font-semibold hover:bg-brand-700 transition"
                 >
                   Nueva solicitud
                 </button>

@@ -9,7 +9,8 @@ import { useAuth } from '../../hooks/useAuth'
 import { canEdit } from '../../lib/access'
 import { errorMessage } from '../../lib/supabase-errors'
 import { toast } from '../../lib/toast'
-import { getAvatarColor, getInitials, AREA_COLORS, PHASE_LABELS, AREAS as ALL_AREAS } from '../../lib/constants'
+import { getAvatarColor, getInitials, AREA_COLORS, PHASE_LABELS } from '../../lib/constants'
+import AreaInput from '../ui/AreaInput'
 
 interface Props {
   project: Project & { requests?: { requester_area: string; requester_name: string; request_type: string } | null }
@@ -28,7 +29,6 @@ const PRIORITY_OPTIONS = [
   { value: 'urgent', label: 'Urgente', color: 'bg-red-100 text-red-800 border-red-200' },
 ]
 
-const KNOWN_AREAS = ALL_AREAS
 
 export default function ProjectModal({ project, flows, onClose, onUpdate, onDelete, updateProject, updateFlowDetails }: Props) {
   const { assignableUsers: activeUsers } = useUsers()
@@ -223,17 +223,12 @@ export default function ProjectModal({ project, flows, onClose, onUpdate, onDele
               {editMode ? (
                 <div className="flex items-center gap-1.5">
                   <span className="text-xs text-gray-500">📍</span>
-                  <select
+                  <AreaInput
                     value={editData.requester_area}
-                    onChange={e => setEditData(prev => ({ ...prev, requester_area: e.target.value }))}
-                    className="px-2 py-0.5 rounded-full text-xs font-medium border border-gray-300 bg-white outline-none focus:ring-2 focus:ring-primary cursor-pointer"
-                  >
-                    <option value="">— Sin área —</option>
-                    {KNOWN_AREAS.map(a => <option key={a} value={a}>{a}</option>)}
-                    {editData.requester_area && !KNOWN_AREAS.includes(editData.requester_area) && (
-                      <option value={editData.requester_area}>{editData.requester_area}</option>
-                    )}
-                  </select>
+                    onChange={v => setEditData(prev => ({ ...prev, requester_area: v }))}
+                    placeholder="Sin área"
+                    className="w-40 px-2 py-0.5 rounded-full text-xs font-medium border border-gray-300 bg-white outline-none focus:ring-2 focus:ring-primary"
+                  />
                 </div>
               ) : area ? (
                 <span className={`px-3 py-1 rounded-full text-xs font-medium border ${areaColor}`}>
@@ -411,7 +406,7 @@ export default function ProjectModal({ project, flows, onClose, onUpdate, onDele
                           onClick={() => setEditData(prev => ({ ...prev, priority: opt.value as Project['priority'] }))}
                           className={`px-3 py-1.5 rounded-full text-xs font-medium border transition ${
                             editData.priority === opt.value
-                              ? opt.color + ' ring-2 ring-offset-1 ring-blue-400'
+                              ? opt.color + ' ring-2 ring-offset-1 ring-brand-400'
                               : 'bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200'
                           }`}
                         >
@@ -425,7 +420,7 @@ export default function ProjectModal({ project, flows, onClose, onUpdate, onDele
                     <h3 className="font-semibold text-gray-900 mb-2 text-sm">Tipo de Flujo</h3>
                     <div className="flex gap-2 flex-wrap">
                       {[
-                        { value: 'development',    label: '💻 Desarrollo',    color: 'bg-blue-100 text-blue-800 border-blue-200' },
+                        { value: 'development',    label: '💻 Desarrollo',    color: 'bg-brand-100 text-brand-800 border-brand-200' },
                         { value: 'administrative', label: '📋 Administrativo', color: 'bg-purple-100 text-purple-800 border-purple-200' },
                         { value: 'dual',           label: '🔀 Ambos (Dual)',    color: 'bg-indigo-100 text-indigo-800 border-indigo-200' },
                       ].map(opt => (
@@ -434,7 +429,7 @@ export default function ProjectModal({ project, flows, onClose, onUpdate, onDele
                           onClick={() => setEditData(prev => ({ ...prev, project_type: opt.value as Project['project_type'] }))}
                           className={`px-3 py-1.5 rounded-full text-xs font-medium border transition ${
                             editData.project_type === opt.value
-                              ? opt.color + ' ring-2 ring-offset-1 ring-blue-400 font-bold'
+                              ? opt.color + ' ring-2 ring-offset-1 ring-brand-400 font-bold'
                               : 'bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200'
                           }`}
                         >
@@ -584,7 +579,7 @@ export default function ProjectModal({ project, flows, onClose, onUpdate, onDele
                             <button
                               onClick={() => handleSaveFlow(flow.id)}
                               disabled={savingFlow === flow.id}
-                              className="px-3 py-1.5 bg-primary text-white rounded-lg text-xs font-semibold hover:bg-blue-600 disabled:opacity-50 transition"
+                              className="px-3 py-1.5 bg-primary text-white rounded-lg text-xs font-semibold hover:bg-brand-700 disabled:opacity-50 transition"
                             >
                               {savingFlow === flow.id ? 'Guardando...' : '✓ Guardar cambios'}
                             </button>
@@ -684,7 +679,7 @@ export default function ProjectModal({ project, flows, onClose, onUpdate, onDele
                 <button
                   onClick={handleSaveEdit}
                   disabled={!editable || saving || !editData.title.trim()}
-                  className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-blue-600 disabled:opacity-50"
+                  className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-brand-700 disabled:opacity-50"
                 >
                   {saving ? 'Guardando...' : 'Guardar cambios'}
                 </button>
@@ -693,7 +688,7 @@ export default function ProjectModal({ project, flows, onClose, onUpdate, onDele
               <>
                 <button
                   onClick={() => setEditMode(true)} disabled={!editable}
-                  className="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-200 transition"
+                  className="px-4 py-2 bg-brand-100 text-brand-700 rounded-lg text-sm font-medium hover:bg-brand-200 transition"
                 >
                   ✏️ Editar
                 </button>

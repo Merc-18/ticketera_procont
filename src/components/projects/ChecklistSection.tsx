@@ -89,7 +89,7 @@ export default function ChecklistSection({ flow, onProgressUpdate }: Props) {
       {totalItems > 0 && (
         <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
           <span>{completedItems} de {totalItems} completados</span>
-          <span className="font-semibold text-blue-600">
+          <span className="font-semibold text-brand-600">
             {totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0}%
           </span>
         </div>
@@ -106,25 +106,25 @@ export default function ChecklistSection({ flow, onProgressUpdate }: Props) {
           <div
             key={phase}
             className={`border rounded-lg overflow-hidden ${
-              isCurrentPhase ? 'border-blue-300' : allDone ? 'border-green-200' : 'border-gray-200'
+              isCurrentPhase ? 'border-brand-300' : allDone ? 'border-green-200' : 'border-gray-200'
             }`}
           >
             <button
               onClick={() => setExpandedPhase(isExpanded ? null : phase)}
               className={`w-full px-3 py-2 flex items-center justify-between text-sm font-medium transition ${
                 isCurrentPhase
-                  ? 'bg-blue-50 text-blue-800 hover:bg-blue-100'
+                  ? 'bg-brand-50 text-brand-800 hover:bg-brand-100'
                   : allDone
                   ? 'bg-green-50 text-green-800 hover:bg-green-100'
                   : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
               }`}
             >
               <div className="flex items-center gap-2">
-                {isCurrentPhase && <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />}
+                {isCurrentPhase && <span className="w-2 h-2 bg-brand-500 rounded-full animate-pulse" />}
                 {allDone && !isCurrentPhase && <span className="text-green-500">✓</span>}
                 <span>{PHASE_LABELS[phase]}</span>
                 {isCurrentPhase && (
-                  <span className="text-xs bg-blue-200 text-blue-700 px-1.5 py-0.5 rounded font-normal">
+                  <span className="text-xs bg-brand-200 text-brand-700 px-1.5 py-0.5 rounded font-normal">
                     Fase actual
                   </span>
                 )}
@@ -157,7 +157,7 @@ export default function ChecklistSection({ flow, onProgressUpdate }: Props) {
                               ref={provided.innerRef}
                               {...provided.draggableProps}
                               className={`flex items-start gap-2.5 group py-0.5 rounded ${
-                                snapshot.isDragging ? 'bg-blue-50 shadow-sm' : ''
+                                snapshot.isDragging ? 'bg-brand-50 shadow-sm' : ''
                               } ${saving === item.id ? 'opacity-50' : ''}`}
                             >
                               <span
@@ -172,7 +172,7 @@ export default function ChecklistSection({ flow, onProgressUpdate }: Props) {
                                 checked={item.completed}
                                 disabled={!editable || !!saving}
                                 onChange={() => handleToggle(item.id, !item.completed)}
-                                className="mt-0.5 w-4 h-4 text-blue-600 border-gray-300 rounded cursor-pointer flex-shrink-0"
+                                className="mt-0.5 w-4 h-4 text-brand-600 border-gray-300 rounded cursor-pointer flex-shrink-0"
                               />
                               <span
                                 className={`text-sm leading-snug flex-1 ${
@@ -205,12 +205,12 @@ export default function ChecklistSection({ flow, onProgressUpdate }: Props) {
                     onChange={e => setNewItemText(prev => ({ ...prev, [phase]: e.target.value }))}
                     onKeyDown={e => e.key === 'Enter' && handleAdd(phase)}
                     placeholder="Agregar item..."
-                    className="flex-1 text-xs px-2 py-1.5 border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-400"
+                    className="flex-1 text-xs px-2 py-1.5 border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-brand-400"
                   />
                   <button
                     onClick={() => handleAdd(phase)}
                     disabled={!editable || !!saving || !newItemText[phase]?.trim()}
-                    className="text-xs px-2.5 py-1.5 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                    className="text-xs px-2.5 py-1.5 bg-brand-100 text-brand-700 rounded hover:bg-brand-200 disabled:opacity-40 disabled:cursor-not-allowed transition"
                   >
                     + Agregar
                   </button>

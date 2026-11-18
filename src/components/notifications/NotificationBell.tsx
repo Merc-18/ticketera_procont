@@ -22,9 +22,11 @@ function timeAgo(dateStr: string): string {
 
 interface Props {
   onProjectClick?: (projectId: string) => void
+  /** Clases del botón (por defecto, para fondos claros). */
+  buttonClassName?: string
 }
 
-export default function NotificationBell({ onProjectClick }: Props) {
+export default function NotificationBell({ onProjectClick, buttonClassName = 'text-gray-500 hover:text-gray-700 hover:bg-gray-100' }: Props) {
   const { error, notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications()
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
@@ -44,7 +46,7 @@ export default function NotificationBell({ onProjectClick }: Props) {
       <button
         onClick={() => setOpen(v => !v)}
         title="Notificaciones"
-        className="relative p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition"
+        className={`relative p-2 rounded-lg transition ${buttonClassName}`}
       >
         <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -97,7 +99,7 @@ export default function NotificationBell({ onProjectClick }: Props) {
                     setOpen(false)
                     if (n.project_id && onProjectClick) onProjectClick(n.project_id)
                   }}
-                  className={`w-full text-left px-4 py-3 hover:bg-gray-50 transition flex items-start gap-3 ${!n.read ? 'bg-blue-50/50' : ''} ${n.project_id ? 'cursor-pointer' : ''}`}
+                  className={`w-full text-left px-4 py-3 hover:bg-gray-50 transition flex items-start gap-3 ${!n.read ? 'bg-brand-50/50' : ''} ${n.project_id ? 'cursor-pointer' : ''}`}
                 >
                   <span className="text-lg shrink-0 mt-0.5">{TYPE_ICON[n.type] ?? '📝'}</span>
                   <div className="flex-1 min-w-0">
@@ -110,7 +112,7 @@ export default function NotificationBell({ onProjectClick }: Props) {
                     <p className="text-xs text-gray-400 mt-1">{timeAgo(n.created_at)}</p>
                   </div>
                   {!n.read && (
-                    <span className="w-2 h-2 bg-blue-500 rounded-full shrink-0 mt-1.5 flex-shrink-0" />
+                    <span className="w-2 h-2 bg-brand-500 rounded-full shrink-0 mt-1.5 flex-shrink-0" />
                   )}
                 </button>
               ))

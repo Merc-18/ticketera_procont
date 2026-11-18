@@ -11,9 +11,10 @@ checklists, tableros, comentarios, notificaciones y seguimiento de SLA.
 La revisión organizacional está en
 [FASE 2B.3C: adaptación a Procont](docs/fase-2b3c-adaptacion-procont.md).
 Las cuatro migraciones no contienen áreas, cuentas ni datos empresariales de
-Gilat. El frontend aún conserva catálogos, textos y parámetros SLA heredados:
-están inventariados y pendientes de adaptación; no constituyen la configuración
-aprobada de Procont. No se modificó el frontend en esta fase.
+Gilat. El frontend ya usa la identidad visual de Procont Business y no contiene
+el catálogo de áreas ni los textos heredados; los parámetros SLA heredados siguen
+pendientes de definición. Paleta y cambios en
+[Frontend: identidad Procont](docs/frontend-identidad-procont.md).
 
 ---
 
@@ -72,7 +73,7 @@ aprobada de Procont. No se modificó el frontend en esta fase.
 |---|---|
 | Frontend | React 18 + TypeScript 5 |
 | Build | Vite 5 |
-| Estilos | Tailwind CSS 3 |
+| Estilos | Tailwind CSS 3 (paleta corporativa en `src/theme/brand.ts`) |
 | Routing | React Router DOM 6 |
 | Backend / DB | Supabase (PostgreSQL + Auth + Realtime) |
 | Drag & Drop | @hello-pangea/dnd |
@@ -96,9 +97,10 @@ src/
 │   ├── requests/       # Formulario público, tracking, bandeja
 │   ├── notifications/  # Centro de notificaciones
 │   ├── layout/         # Estructura de página
-│   └── ui/             # Toast y componentes compartidos
+│   └── ui/             # Toast, logotipo, campo de área y componentes compartidos
 ├── hooks/              # Custom hooks (useProjects, useAuth, useRequests…)
 ├── lib/                # Supabase client, constantes, SLA config, utilidades
+├── theme/              # brand.ts: paleta y textos corporativos (fuente única)
 ├── types/              # Interfaces TypeScript generadas desde Supabase
 └── App.tsx             # Enrutamiento principal
 ```

@@ -130,7 +130,7 @@ export default function PapeleraView() {
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <button
                     onClick={() => setConfirmRestore(p.id)}
-                    className="px-3 py-1.5 bg-blue-50 text-blue-700 border border-blue-200 rounded-lg text-xs font-medium hover:bg-blue-100 transition"
+                    className="px-3 py-1.5 bg-brand-50 text-brand-700 border border-brand-200 rounded-lg text-xs font-medium hover:bg-brand-100 transition"
                   >
                     ↩ Restaurar
                   </button>
@@ -166,7 +166,7 @@ export default function PapeleraView() {
               <button
                 onClick={() => restore(confirmRestore)}
                 disabled={restoring}
-                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition text-sm disabled:opacity-50"
+                className="flex-1 px-4 py-2 bg-brand-600 text-white rounded-lg font-medium hover:bg-brand-700 transition text-sm disabled:opacity-50"
               >
                 {restoring ? 'Restaurando...' : 'Sí, restaurar'}
               </button>

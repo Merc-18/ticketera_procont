@@ -115,7 +115,7 @@ export default function RoadmapView({ projects, onProjectClick, loading }: Props
                   {isPast    && <span className="text-[10px] bg-gray-200 text-gray-500 px-1.5 py-0.5 rounded-full font-medium">Pasado</span>}
                 </div>
                 <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-                  qProjects.length === 0 ? 'bg-gray-100 text-gray-400' : 'bg-blue-100 text-blue-700'
+                  qProjects.length === 0 ? 'bg-gray-100 text-gray-400' : 'bg-brand-100 text-brand-700'
                 }`}>
                   {qProjects.length}
                 </span>

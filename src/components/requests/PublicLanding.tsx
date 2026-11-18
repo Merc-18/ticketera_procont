@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
+import BrandLogo from '../ui/BrandLogo'
+import { BRAND } from '../../theme/brand'
 
 function LoginModal({ onClose }: { onClose: () => void }) {
   const [email, setEmail]       = useState('')
@@ -76,13 +78,13 @@ function LoginModal({ onClose }: { onClose: () => void }) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-primary text-white py-2.5 rounded-lg font-semibold hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm"
+            className="w-full bg-primary text-white py-2.5 rounded-lg font-semibold hover:bg-brand-700 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm"
           >
             {loading ? 'Ingresando...' : 'Ingresar al sistema'}
           </button>
         </form>
 
-        <p className="text-center text-xs text-gray-400 mt-4">Solo para el equipo de Controlling</p>
+        <p className="text-center text-xs text-gray-400 mt-4">Solo para el {BRAND.teamLabel}</p>
       </div>
     </div>
   )
@@ -93,16 +95,14 @@ export default function PublicLanding() {
   const [showLogin, setShowLogin] = useState(false)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary to-info flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-brand-700 via-brand-800 to-brand-950 flex flex-col">
 
       {/* Navbar */}
-      <nav className="w-full px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="text-2xl font-bold text-white">🎯 Ticketera Controlling</span>
-        </div>
+      <nav className="w-full px-4 sm:px-6 py-4 flex items-center justify-between gap-4 border-b border-white/10">
+        <BrandLogo tone="light" size={44} />
         <button
           onClick={() => setShowLogin(true)}
-          className="flex items-center gap-2 bg-white/15 hover:bg-white/25 text-white border border-white/30 px-4 py-2 rounded-lg text-sm font-semibold transition backdrop-blur-sm"
+          className="shrink-0 flex items-center gap-2 bg-accent-400 hover:bg-accent-300 text-gray-900 px-4 py-2 rounded-lg text-sm font-bold transition shadow-sm"
         >
           🔐 Iniciar sesión
         </button>
@@ -112,7 +112,9 @@ export default function PublicLanding() {
       <div className="flex-1 flex flex-col items-center justify-center px-4 py-8">
         <div className="w-full max-w-2xl">
           <div className="text-center mb-10">
-            <p className="text-blue-100 text-lg">¿Qué deseas hacer?</p>
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-3">Mesa de solicitudes</h1>
+            <div className="mx-auto mb-4 h-1 w-16 rounded-full bg-accent-400" aria-hidden="true" />
+            <p className="text-brand-100 text-lg">¿Qué deseas hacer?</p>
           </div>
 
           {/* Cards */}
@@ -120,14 +122,14 @@ export default function PublicLanding() {
             {/* Nueva Solicitud */}
             <button
               onClick={() => navigate('/request')}
-              className="bg-white rounded-2xl p-8 text-left shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-200 group"
+              className="bg-white rounded-2xl p-8 text-left shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-200 group border-b-4 border-transparent hover:border-accent-400"
             >
               <div className="text-5xl mb-4">📝</div>
               <h2 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">
                 Nueva Solicitud
               </h2>
               <p className="text-gray-500 text-sm leading-relaxed">
-                Completa el formulario para enviar una solicitud al equipo de Controlling.
+                Completa el formulario para enviar una solicitud al {BRAND.teamLabel}.
               </p>
               <div className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary">
                 Ir al formulario
@@ -138,7 +140,7 @@ export default function PublicLanding() {
             {/* Rastrear Solicitud */}
             <button
               onClick={() => navigate('/tracking')}
-              className="bg-white rounded-2xl p-8 text-left shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-200 group"
+              className="bg-white rounded-2xl p-8 text-left shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-200 group border-b-4 border-transparent hover:border-accent-400"
             >
               <div className="text-5xl mb-4">🔍</div>
               <h2 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">
@@ -154,8 +156,8 @@ export default function PublicLanding() {
             </button>
           </div>
 
-          <p className="text-center text-blue-200 text-xs mt-10">
-            Equipo Controlling
+          <p className="text-center text-brand-200 text-xs mt-10">
+            © {new Date().getFullYear()} {BRAND.company}
           </p>
         </div>
       </div>

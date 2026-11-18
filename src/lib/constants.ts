@@ -1,7 +1,7 @@
 // ─── Shared UI constants ──────────────────────────────────────────────────────
 
 export const AVATAR_COLORS = [
-  'bg-blue-500', 'bg-purple-500', 'bg-green-500',
+  'bg-brand-500', 'bg-purple-500', 'bg-green-500',
   'bg-orange-500', 'bg-pink-500', 'bg-teal-500', 'bg-indigo-500',
 ]
 
@@ -30,7 +30,7 @@ export const PRIORITY_LABEL: Record<string, string> = {
 
 /** Solid bar color for Gantt timeline */
 export const PRIORITY_BAR: Record<string, string> = {
-  urgent: 'bg-red-500', high: 'bg-orange-400', medium: 'bg-blue-500', low: 'bg-green-500',
+  urgent: 'bg-red-500', high: 'bg-orange-400', medium: 'bg-brand-500', low: 'bg-green-500',
 }
 
 /** Small dot color for Roadmap cards */
@@ -38,18 +38,13 @@ export const PRIORITY_DOT: Record<string, string> = {
   urgent: 'bg-red-500', high: 'bg-orange-500', medium: 'bg-yellow-400', low: 'bg-green-500',
 }
 
-/** Area badge — includes border-color class */
-export const AREA_COLORS: Record<string, string> = {
-  SAQ:         'bg-blue-100 text-blue-800 border-blue-200',
-  DDC:         'bg-purple-100 text-purple-800 border-purple-200',
-  QA:          'bg-teal-100 text-teal-800 border-teal-200',
-  ATC:         'bg-orange-100 text-orange-800 border-orange-200',
-  AASS:        'bg-pink-100 text-pink-800 border-pink-200',
-  PMO:         'bg-cyan-100 text-cyan-800 border-cyan-200',
-  OC:          'bg-lime-100 text-lime-800 border-lime-200',
-  Controlling: 'bg-violet-100 text-violet-800 border-violet-200',
-  GERE:        'bg-rose-100 text-rose-800 border-rose-200',
-}
+/**
+ * Area badge — includes border-color class.
+ * Catálogo de áreas de Procont Business pendiente de definición por el
+ * propietario: no se precargan áreas ni colores. Las áreas sin entrada usan
+ * el estilo neutro de respaldo en los consumidores.
+ */
+export const AREA_COLORS: Record<string, string> = {}
 
 export const PHASE_LABELS: Record<string, string> = {
   backlog:        'Backlog',
@@ -65,5 +60,10 @@ export const PHASE_LABELS: Record<string, string> = {
   deployed:       'Deployed',
 }
 
-export const AREAS = ['AASS', 'ATC', 'Controlling', 'DDC', 'GERE', 'OC', 'PMO', 'QA', 'SAQ']
+/**
+ * Catálogo de áreas sugeridas (vacío hasta que Procont Business lo defina).
+ * Los formularios aceptan texto libre mediante <AreaInput>; añadir aquí los
+ * nombres oficiales los ofrecerá como sugerencias sin cambiar la lógica.
+ */
+export const AREAS: readonly string[] = []
 

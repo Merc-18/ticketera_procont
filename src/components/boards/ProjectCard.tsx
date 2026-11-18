@@ -78,7 +78,7 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
     <div
       onClick={onClick}
       className={`relative bg-white rounded-lg shadow-sm border p-3.5 mb-3 hover:shadow-md transition-shadow cursor-pointer group/card ${
-        selected ? 'border-blue-400 ring-1 ring-blue-200' : 'border-gray-200'
+        selected ? 'border-brand-400 ring-1 ring-brand-200' : 'border-gray-200'
       }`}
     >
       {onSelect && (
@@ -86,7 +86,7 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
           className={`absolute top-2 right-2 z-10 transition-opacity ${selected ? 'opacity-100' : 'opacity-0 group-hover/card:opacity-100'}`}
           onClick={e => { e.stopPropagation(); onSelect(project.id) }}
         >
-          <input type="checkbox" checked={selected ?? false} readOnly className="w-4 h-4 cursor-pointer accent-blue-600" />
+          <input type="checkbox" checked={selected ?? false} readOnly className="w-4 h-4 cursor-pointer accent-brand-600" />
         </div>
       )}
       {/* Título + blocked */}
@@ -170,7 +170,7 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
               <button
                 onClick={e => { e.stopPropagation(); setShowAssign(v => !v) }}
                 title="Asignar responsable"
-                className="w-5 h-5 rounded-full bg-gray-100 hover:bg-blue-100 text-gray-400 hover:text-blue-600 flex items-center justify-center text-[10px] font-bold transition"
+                className="w-5 h-5 rounded-full bg-gray-100 hover:bg-brand-100 text-gray-400 hover:text-brand-600 flex items-center justify-center text-[10px] font-bold transition"
               >
                 {assignedUsers.length > 0 ? '✎' : '+'}
               </button>
@@ -187,8 +187,8 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
                     <button
                       key={u.id}
                       onClick={() => { onAssign(flow.id, u.id); setShowAssign(false) }}
-                      className={`w-full text-left px-3 py-1.5 text-xs text-gray-800 hover:bg-blue-50 flex items-center gap-2 transition ${
-                        flow.assigned_to === u.id ? 'bg-blue-50 text-blue-700 font-medium' : ''
+                      className={`w-full text-left px-3 py-1.5 text-xs text-gray-800 hover:bg-brand-50 flex items-center gap-2 transition ${
+                        flow.assigned_to === u.id ? 'bg-brand-50 text-brand-700 font-medium' : ''
                       }`}
                     >
                       <div className={`w-5 h-5 rounded-full ${getAvatarColor(u.full_name)} flex items-center justify-center text-white text-[9px] font-bold shrink-0`}>

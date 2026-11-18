@@ -24,7 +24,7 @@ function TypeChips({ request }: { request: Request }) {
         <span
           key={t}
           className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-            request.needs_code ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'
+            request.needs_code ? 'bg-brand-100 text-brand-700' : 'bg-gray-100 text-gray-600'
           }`}
         >
           {t}
@@ -409,15 +409,15 @@ export default function RequestInbox() {
               )}
 
               <div>
-                <span className={`px-2 py-1 rounded text-xs font-medium ${selectedRequest.needs_code ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}`}>
+                <span className={`px-2 py-1 rounded text-xs font-medium ${selectedRequest.needs_code ? 'bg-brand-100 text-brand-700' : 'bg-gray-100 text-gray-600'}`}>
                   {selectedRequest.needs_code ? '💻 Requiere código' : '📋 No requiere código'}
                 </span>
               </div>
 
               {selectedRequest.requested_date && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3">
-                  <p className="text-xs text-blue-600 font-medium mb-0.5">⏱ Fecha Estimada de Entrega (SLA)</p>
-                  <p className="font-semibold text-blue-900">
+                <div className="bg-brand-50 border border-brand-200 rounded-lg px-4 py-3">
+                  <p className="text-xs text-brand-600 font-medium mb-0.5">⏱ Fecha Estimada de Entrega (SLA)</p>
+                  <p className="font-semibold text-brand-900">
                     {new Date(selectedRequest.requested_date + 'T12:00:00').toLocaleDateString('es-PE', {
                       weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
                     })}
@@ -502,13 +502,13 @@ export default function RequestInbox() {
             </div>
 
             {/* Info solicitud */}
-            <div className={`border rounded-lg px-4 py-3 mb-5 text-sm ${isUrgent(selectedRequest) ? 'bg-red-50 border-red-200' : 'bg-blue-50 border-blue-200'}`}>
-              <p className={`font-medium mb-1.5 ${isUrgent(selectedRequest) ? 'text-red-900' : 'text-blue-900'}`}>
+            <div className={`border rounded-lg px-4 py-3 mb-5 text-sm ${isUrgent(selectedRequest) ? 'bg-red-50 border-red-200' : 'bg-brand-50 border-brand-200'}`}>
+              <p className={`font-medium mb-1.5 ${isUrgent(selectedRequest) ? 'text-red-900' : 'text-brand-900'}`}>
                 {selectedRequest.request_number} · {selectedRequest.requester_name}
                 {isUrgent(selectedRequest) && <span className="ml-2 text-xs font-bold text-red-600">🔴 URGENTE</span>}
               </p>
               <TypeChips request={selectedRequest} />
-              <span className={`text-xs mt-1.5 inline-block ${isUrgent(selectedRequest) ? 'text-red-600' : 'text-blue-600'}`}>
+              <span className={`text-xs mt-1.5 inline-block ${isUrgent(selectedRequest) ? 'text-red-600' : 'text-brand-600'}`}>
                 {selectedRequest.requester_area}
               </span>
             </div>
@@ -572,7 +572,7 @@ export default function RequestInbox() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Fecha de Vencimiento
                     {selectedRequest.requested_date && (
-                      <span className="text-xs text-blue-500 ml-1">(del SLA)</span>
+                      <span className="text-xs text-brand-500 ml-1">(del SLA)</span>
                     )}
                   </label>
                   <input
@@ -636,7 +636,7 @@ export default function RequestInbox() {
                       )}
 
                       {sameUser && approveData.assigned_dev && (
-                        <p className="text-xs text-blue-600 bg-blue-50 rounded px-3 py-2">
+                        <p className="text-xs text-brand-600 bg-brand-50 rounded px-3 py-2">
                           Ambos flujos asignados a: <strong>{activeUsers.find(u => u.id === approveData.assigned_dev)?.full_name}</strong>
                         </p>
                       )}
@@ -674,15 +674,15 @@ export default function RequestInbox() {
                   <p className="text-gray-500 text-xs">Prioridad baja — sin SLA asignado (backlog)</p>
                 </div>
               ) : (
-                <div className="mb-4 bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 text-sm space-y-1">
-                  <p className="font-medium text-blue-800 mb-1">SLA calculado</p>
-                  <div className="flex justify-between text-xs text-blue-700">
+                <div className="mb-4 bg-brand-50 border border-brand-200 rounded-lg px-4 py-3 text-sm space-y-1">
+                  <p className="font-medium text-brand-800 mb-1">SLA calculado</p>
+                  <div className="flex justify-between text-xs text-brand-700">
                     <span>SLA formal ({slaFormalDays}d hábiles)</span>
                     <span className="font-medium">{slaFormalDate ? fmt(slaFormalDate) : '—'}</span>
                   </div>
-                  <div className="flex justify-between text-xs text-blue-600 border-t border-blue-100 pt-1 mt-1">
+                  <div className="flex justify-between text-xs text-brand-600 border-t border-brand-100 pt-1 mt-1">
                     <span>Target interno ({approveData.priority})</span>
-                    <span className="font-bold text-blue-900">{targetDate ? fmt(targetDate) : '—'}</span>
+                    <span className="font-bold text-brand-900">{targetDate ? fmt(targetDate) : '—'}</span>
                   </div>
                 </div>
               )

@@ -21,7 +21,7 @@ function renderContent(text: string) {
   const parts = text.split(/(@\w+)/g)
   return parts.map((part, i) =>
     /^@\w+$/.test(part)
-      ? <span key={i} className="text-blue-600 font-semibold">{part}</span>
+      ? <span key={i} className="text-brand-600 font-semibold">{part}</span>
       : <span key={i}>{part}</span>
   )
 }
@@ -171,7 +171,7 @@ export default function CommentsSection({ projectId }: Props) {
                   key={u.id}
                   type="button"
                   onMouseDown={e => { e.preventDefault(); handleMentionSelect(u.full_name) }}
-                  className="w-full text-left px-3 py-1.5 text-sm text-gray-800 hover:bg-blue-50 transition"
+                  className="w-full text-left px-3 py-1.5 text-sm text-gray-800 hover:bg-brand-50 transition"
                 >
                   @{u.full_name.split(' ')[0]}
                   <span className="text-xs text-gray-400 ml-1">{u.full_name.split(' ').slice(1).join(' ')}</span>
@@ -185,7 +185,7 @@ export default function CommentsSection({ projectId }: Props) {
           <button
             type="submit"
             disabled={!newComment.trim() || submitting}
-            className="px-6 py-2 bg-primary text-white rounded-lg font-medium hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
+            className="px-6 py-2 bg-primary text-white rounded-lg font-medium hover:bg-brand-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
           >
             {submitting ? 'Enviando...' : 'Comentar'}
           </button>

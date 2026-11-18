@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react'
 import { createRpcAttempt, type RpcAttempt } from '../../lib/rpc-attempt'
-import { AREAS } from '../../lib/constants'
+import AreaInput from '../ui/AreaInput'
 
 interface Props {
   boardType: 'development' | 'administrative'
@@ -159,14 +159,12 @@ export default function NewProjectModal({ boardType, onClose, onCreate }: Props)
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-semibold text-gray-600 mb-1.5">Área</label>
-              <select
+              <AreaInput
                 value={area}
-                onChange={e => setArea(e.target.value)}
+                onChange={setArea}
+                placeholder="Sin área"
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              >
-                <option value="">— Sin área —</option>
-                {AREAS.map(a => <option key={a} value={a}>{a}</option>)}
-              </select>
+              />
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-600 mb-1.5">

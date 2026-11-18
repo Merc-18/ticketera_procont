@@ -28,7 +28,7 @@ interface Props {
 const PHASES = {
   development: [
     { id: 'backlog', title: '📋 Backlog', color: 'bg-gray-600' },
-    { id: 'design', title: '📝 Design', color: 'bg-blue-600' },
+    { id: 'design', title: '📝 Design', color: 'bg-brand-600' },
     { id: 'dev', title: '💻 Development', color: 'bg-purple-600' },
     { id: 'testing', title: '🧪 Testing', color: 'bg-yellow-600' },
     { id: 'deploy', title: '🚀 Deploy', color: 'bg-green-600' },
@@ -36,7 +36,7 @@ const PHASES = {
   ],
   administrative: [
     { id: 'backlog', title: '📋 Backlog', color: 'bg-gray-600' },
-    { id: 'ready_to_start', title: '🎯 Ready to Start', color: 'bg-blue-600' },
+    { id: 'ready_to_start', title: '🎯 Ready to Start', color: 'bg-brand-600' },
     { id: 'discovery', title: '🔍 Discovery', color: 'bg-indigo-600' },
     { id: 'design', title: '📝 Design', color: 'bg-purple-600' },
     { id: 'build', title: '🔨 Build', color: 'bg-orange-600' },
@@ -46,7 +46,7 @@ const PHASES = {
 }
 
 const STATUS_OPTIONS = [
-  { value: 'active',    label: '🟢 Activos',     activeClass: 'bg-blue-600 text-white' },
+  { value: 'active',    label: '🟢 Activos',     activeClass: 'bg-brand-600 text-white' },
   { value: 'completed', label: '✅ Completados',  activeClass: 'bg-green-600 text-white' },
   { value: 'archived',  label: '📦 Archivados',   activeClass: 'bg-gray-600 text-white' },
 ] as const
@@ -269,7 +269,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
               onChange={e => setPriorityFilter(e.target.value)}
               className={`px-3 py-1.5 rounded-full text-sm font-medium border transition cursor-pointer outline-none ${
                 priorityFilter !== 'all'
-                  ? 'border-blue-400 bg-blue-50 text-blue-700'
+                  ? 'border-brand-400 bg-brand-50 text-brand-700'
                   : 'border-gray-200 bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
             >
@@ -283,7 +283,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
               onChange={e => setAreaFilter(e.target.value)}
               className={`px-3 py-1.5 rounded-full text-sm font-medium border transition cursor-pointer outline-none ${
                 areaFilter !== 'all'
-                  ? 'border-blue-400 bg-blue-50 text-blue-700'
+                  ? 'border-brand-400 bg-brand-50 text-brand-700'
                   : 'border-gray-200 bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
             >

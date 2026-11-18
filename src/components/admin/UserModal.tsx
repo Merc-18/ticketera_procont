@@ -15,7 +15,7 @@ interface Props {
 const ALL_ROLES: { value: RoleOption; label: string; desc: string; color: string }[] = [
   { value: 'superadmin', label: 'Superadmin', desc: 'Control total del sistema, único que puede gestionar admins', color: 'bg-yellow-100 text-yellow-800 border-yellow-300' },
   { value: 'admin',      label: 'Admin',      desc: 'Gestión de proyectos, solicitudes y usuarios',                 color: 'bg-red-100 text-red-800 border-red-200' },
-  { value: 'developer',  label: 'Usuario',    desc: 'Gestión de proyectos, actualizar fases y progreso',            color: 'bg-blue-100 text-blue-800 border-blue-200' },
+  { value: 'developer',  label: 'Usuario',    desc: 'Gestión de proyectos, actualizar fases y progreso',            color: 'bg-brand-100 text-brand-800 border-brand-200' },
   { value: 'viewer',     label: 'Viewer',     desc: 'Solo lectura: puede ver proyectos y dashboard',                color: 'bg-gray-100 text-gray-700 border-gray-200' },
 ]
 
@@ -125,7 +125,7 @@ export default function UserModal({ user, currentUserRole, currentUserId, onClos
                 <label
                   key={r.value}
                   className={`flex items-start gap-3 p-3 rounded-lg border-2 cursor-pointer transition ${
-                    role === r.value ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-gray-300'
+                    role === r.value ? 'border-primary bg-brand-50' : 'border-gray-200 hover:border-gray-300'
                   }`}
                 >
                   <input
@@ -193,7 +193,7 @@ export default function UserModal({ user, currentUserRole, currentUserId, onClos
             <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition">
               Cancelar
             </button>
-            <button type="submit" disabled={saving} className="px-5 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-blue-600 disabled:opacity-50 transition">
+            <button type="submit" disabled={saving} className="px-5 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-brand-700 disabled:opacity-50 transition">
               {saving ? 'Guardando...' : isEdit ? 'Guardar cambios' : 'Crear usuario'}
             </button>
           </div>

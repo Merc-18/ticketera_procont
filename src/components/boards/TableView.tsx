@@ -145,7 +145,7 @@ export default function TableView({ projects, boardType, onProjectClick, loading
                 <tr
                   key={project.id}
                   onClick={() => onProjectClick({ project, flow })}
-                  className="hover:bg-blue-50 cursor-pointer transition-colors"
+                  className="hover:bg-brand-50 cursor-pointer transition-colors"
                 >
                   {/* Título */}
                   <td className="px-4 py-3 max-w-[220px]">

@@ -5,8 +5,10 @@ import { createRpcAttempt } from '../../lib/rpc-attempt'
 import { errorMessage } from '../../lib/supabase-errors'
 import { handoffTracking } from '../../lib/tracking-handoff'
 import type { SubmissionReceipt } from '../../lib/operations'
+import AreaInput from '../ui/AreaInput'
+import BrandLogo from '../ui/BrandLogo'
+import { BRAND } from '../../theme/brand'
 
-const AREAS   = ['AASS', 'ATC', 'DDC', 'GERE', 'QA', 'SAQ']
 const ORIGINS = ['Cliente', 'Externo', 'Interno', 'Regulatorio', 'Otro']
 const SYSTEMS = [
   'BD (Access, Sql)', 'Excel', 'Power Apps',
@@ -145,12 +147,12 @@ export default function PublicRequestForm() {
   /* ── Pantalla de éxito ── */
   if (success) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary to-info flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-brand-700 via-brand-800 to-brand-950 flex items-center justify-center p-4">
         <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl p-8 text-center">
           <div className="text-6xl mb-4">✅</div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">¡Solicitud Creada!</h2>
           <p className="text-gray-600 mb-6">Tu solicitud ha sido registrada exitosamente</p>
-          <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4 mb-6">
+          <div className="bg-brand-50 border-2 border-brand-200 rounded-lg p-4 mb-6">
             <p className="text-sm text-gray-600 mb-2">Número de seguimiento:</p>
             <p className="text-3xl font-bold text-primary">{requestNumber}</p>
           </div>
@@ -164,7 +166,7 @@ export default function PublicRequestForm() {
           <div className="space-y-3">
             <button
               onClick={() => { attempt.current = createRpcAttempt(); setReceipt(null); setSuccess(false) }}
-              className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-blue-600 transition"
+              className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-brand-700 transition"
             >
               Crear otra solicitud
             </button>
@@ -182,7 +184,7 @@ export default function PublicRequestForm() {
 
   /* ── Formulario ── */
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary to-info py-12 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-brand-700 via-brand-800 to-brand-950 py-12 px-4">
       <div className="max-w-3xl mx-auto">
         <div className="bg-white rounded-2xl shadow-2xl p-8">
 
@@ -196,9 +198,11 @@ export default function PublicRequestForm() {
               ← Inicio
             </button>
             <div className="text-center">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">📝 Nueva Solicitud</h1>
+              <BrandLogo size={48} showName={false} className="justify-center mb-4" />
+              <h1 className="text-3xl font-bold text-brand-700 mb-2">Nueva Solicitud</h1>
+              <div className="mx-auto mb-3 h-1 w-16 rounded-full bg-accent-400" aria-hidden="true" />
               <p className="text-gray-600">
-                Completa el formulario para crear una solicitud al equipo de Controlling
+                Completa el formulario para crear una solicitud al {BRAND.teamLabel}
               </p>
             </div>
           </div>
@@ -237,15 +241,13 @@ export default function PublicRequestForm() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Área <span className="text-red-500">*</span>
                 </label>
-                <select
+                <AreaInput
                   required
                   value={formData.requester_area}
-                  onChange={e => setFormData({ ...formData, requester_area: e.target.value })}
+                  onChange={v => setFormData({ ...formData, requester_area: v })}
+                  placeholder="Escribe tu área"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
-                >
-                  <option value="">Selecciona un área</option>
-                  {AREAS.map(a => <option key={a} value={a}>{a}</option>)}
-                </select>
+                />
               </div>
             </section>
 
@@ -277,7 +279,7 @@ export default function PublicRequestForm() {
                     onClick={() => { setNeedsCode(true); setFormData(f => ({ ...f, request_type: '' })) }}
                     className={`py-4 rounded-xl border-2 text-sm font-semibold transition flex flex-col items-center gap-1 ${
                       needsCode === true
-                        ? 'border-blue-500 bg-blue-50 text-blue-800'
+                        ? 'border-brand-500 bg-brand-50 text-brand-800'
                         : 'border-gray-200 text-gray-600 hover:border-gray-300'
                     }`}
                   >
@@ -324,12 +326,12 @@ export default function PublicRequestForm() {
                               onClick={() => toggleType(ct.label)}
                               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg border text-left text-sm transition ${
                                 checked
-                                  ? 'border-blue-500 bg-blue-50 text-blue-900'
+                                  ? 'border-brand-500 bg-brand-50 text-brand-900'
                                   : 'border-gray-200 text-gray-700 hover:border-gray-300 hover:bg-gray-50'
                               }`}
                             >
                               <span className={`w-4 h-4 rounded border-2 flex-shrink-0 flex items-center justify-center ${
-                                checked ? 'bg-blue-500 border-blue-500' : 'border-gray-300'
+                                checked ? 'bg-brand-500 border-brand-500' : 'border-gray-300'
                               }`}>
                                 {checked && <span className="text-white text-[10px] font-bold">✓</span>}
                               </span>
@@ -434,12 +436,12 @@ export default function PublicRequestForm() {
 
                   {/* SLA Panel — solo si necesita código y hay tipos seleccionados */}
                   {needsCode && selectedTypes.length > 0 && (
-                    <div className={`border rounded-xl p-5 space-y-3 ${isUrgent ? 'bg-red-50 border-red-200' : 'bg-blue-50 border-blue-200'}`}>
+                    <div className={`border rounded-xl p-5 space-y-3 ${isUrgent ? 'bg-red-50 border-red-200' : 'bg-brand-50 border-brand-200'}`}>
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className={`text-sm font-semibold ${isUrgent ? 'text-red-900' : 'text-blue-900'}`}>⏱ SLA Estimado</p>
+                          <p className={`text-sm font-semibold ${isUrgent ? 'text-red-900' : 'text-brand-900'}`}>⏱ SLA Estimado</p>
                           {heaviest && (
-                            <p className={`text-xs mt-0.5 ${isUrgent ? 'text-red-600' : 'text-blue-600'}`}>
+                            <p className={`text-xs mt-0.5 ${isUrgent ? 'text-red-600' : 'text-brand-600'}`}>
                               Tipo más complejo: <strong>{heaviest.label}</strong> ({heaviest.sla} días hábiles)
                               {selectedTypes.length > 1 && ` + ${(selectedTypes.length - 1) * 2} días por requerimientos adicionales`}
                               {isUrgent && ` → reducido a la mitad por urgencia`}
@@ -447,11 +449,11 @@ export default function PublicRequestForm() {
                           )}
                         </div>
                         <div className="text-right">
-                          <span className={`text-4xl font-bold ${isUrgent ? 'text-red-700' : 'text-blue-700'}`}>{displaySLA}</span>
-                          <span className={`text-sm font-semibold ml-1 ${isUrgent ? 'text-red-600' : 'text-blue-600'}`}>días hábiles</span>
+                          <span className={`text-4xl font-bold ${isUrgent ? 'text-red-700' : 'text-brand-700'}`}>{displaySLA}</span>
+                          <span className={`text-sm font-semibold ml-1 ${isUrgent ? 'text-red-600' : 'text-brand-600'}`}>días hábiles</span>
                         </div>
                       </div>
-                      <p className={`text-xs ${isUrgent ? 'text-red-500' : 'text-blue-500'}`}>
+                      <p className={`text-xs ${isUrgent ? 'text-red-500' : 'text-brand-500'}`}>
                         * El plazo comienza a correr a partir del <strong>siguiente día hábil</strong> tras el envío de la solicitud. Los días hábiles excluyen sábados y domingos.
                         <br />Fecha estimada de entrega: <strong>{new Date(addWorkingDays(displaySLA, attempt.current.startedAt) + 'T00:00:00').toLocaleDateString('es-PE', { day: '2-digit', month: 'long', year: 'numeric' })}</strong>
                       </p>
@@ -467,7 +469,7 @@ export default function PublicRequestForm() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition text-lg"
+                className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-brand-700 disabled:opacity-50 disabled:cursor-not-allowed transition text-lg"
               >
                 {loading ? 'Enviando...' : 'Enviar Solicitud'}
               </button>

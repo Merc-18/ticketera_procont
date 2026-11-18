@@ -4,6 +4,7 @@ import { useRequests } from '../../hooks/useRequests'
 import { createRpcAttempt, type RpcAttempt } from '../../lib/rpc-attempt'
 import { errorMessage } from '../../lib/supabase-errors'
 import { toast } from '../../lib/toast'
+import AreaInput from '../ui/AreaInput'
 
 interface PlannerRow {
   'Task Name'?: string
@@ -80,6 +81,8 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
   const [done, setDone] = useState(false)
   const [imported, setImported] = useState(0)
   const [step, setStep] = useState<'upload' | 'preview'>('upload')
+  // Área asignada a las solicitudes importadas: la indica el operador (sin valor por defecto organizacional)
+  const [importArea, setImportArea] = useState('')
 
   const handleFile = (file: File) => {
     const reader = new FileReader()
@@ -146,7 +149,8 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
 
   const handleImport = async () => {
     const toImport = rows.map((row, index) => ({ row, index })).filter(item => selected.has(item.index))
-    if (toImport.length === 0) return
+    const area = importArea.trim()
+    if (toImport.length === 0 || !area) return
     setImporting(true)
 
     let count = 0
@@ -159,7 +163,7 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
         await createRequest({
           requester_name:       row.requester_name,
           requester_email:      '',
-          requester_area:       'DDC',
+          requester_area:       area,
           request_type:         row.bucket || 'Otro',
           origin:               'Interno',
           data_system_involved: '',
@@ -201,7 +205,7 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
           </p>
           <button
             onClick={onClose}
-            className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-blue-600 transition"
+            className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-brand-700 transition"
           >
             Cerrar
           </button>
@@ -293,7 +297,7 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
                     <tr
                       key={i}
                       onClick={() => toggleRow(i)}
-                      className={`cursor-pointer transition ${selected.has(i) ? 'bg-blue-50' : 'hover:bg-gray-50'}`}
+                      className={`cursor-pointer transition ${selected.has(i) ? 'bg-brand-50' : 'hover:bg-gray-50'}`}
                     >
                       <td className="px-4 py-2.5 text-center">
                         <input
@@ -322,7 +326,7 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
                         {row.completed ? (
                           <span className="px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-xs">Completado</span>
                         ) : row.progress > 0 ? (
-                          <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-xs">{row.progress}%</span>
+                          <span className="px-2 py-0.5 bg-brand-100 text-brand-700 rounded-full text-xs">{row.progress}%</span>
                         ) : (
                           <span className="px-2 py-0.5 bg-gray-100 text-gray-500 rounded-full text-xs">Pendiente</span>
                         )}
@@ -334,10 +338,17 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
             </div>
 
             {/* Footer */}
-            <div className="px-6 py-4 border-t bg-gray-50 flex items-center justify-between shrink-0">
-              <p className="text-xs text-gray-500">
-                Todas las solicitudes se importarán con prioridad <strong>🟢 Baja</strong> y área <strong>DDC</strong>
-              </p>
+            <div className="px-6 py-4 border-t bg-gray-50 flex flex-wrap items-center justify-between gap-3 shrink-0">
+              <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500">
+                <span>Se importarán con prioridad <strong>🟢 Baja</strong> y área</span>
+                <AreaInput
+                  required
+                  value={importArea}
+                  onChange={setImportArea}
+                  placeholder="Área (obligatoria)"
+                  className="w-44 px-2 py-1 border border-gray-300 rounded-md text-xs text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
               <div className="flex gap-3">
                 <button
                   onClick={onClose}
@@ -347,8 +358,8 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
                 </button>
                 <button
                   onClick={handleImport}
-                  disabled={selected.size === 0 || importing}
-                  className="px-5 py-2 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-blue-600 transition disabled:opacity-50 flex items-center gap-2"
+                  disabled={selected.size === 0 || importing || !importArea.trim()}
+                  className="px-5 py-2 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-brand-700 transition disabled:opacity-50 flex items-center gap-2"
                 >
                   {importing ? (
                     <>

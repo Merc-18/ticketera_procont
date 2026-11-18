@@ -179,7 +179,7 @@ export default function GanttView({ projects, boardType, onProjectClick, loading
                 <div
                   key={project.id}
                   onClick={() => onProjectClick({ project, flow })}
-                  className="flex items-center hover:bg-blue-50 cursor-pointer transition-colors group"
+                  className="flex items-center hover:bg-brand-50 cursor-pointer transition-colors group"
                   style={{ height: 44 }}
                 >
                   {/* Project name */}
@@ -188,7 +188,7 @@ export default function GanttView({ projects, boardType, onProjectClick, loading
                     className="shrink-0 px-4 flex items-center gap-2 border-r"
                   >
                     {project.is_blocked && <span className="text-red-500 text-xs shrink-0">🚫</span>}
-                    <span className="text-xs font-medium text-gray-800 truncate group-hover:text-blue-700">
+                    <span className="text-xs font-medium text-gray-800 truncate group-hover:text-brand-700">
                       {PRIORITY_LABEL[project.priority]} {project.title}
                     </span>
                   </div>

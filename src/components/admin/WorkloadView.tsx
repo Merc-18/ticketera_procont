@@ -169,7 +169,7 @@ export default function WorkloadView() {
 
       {/* Stats rápidas */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="bg-white rounded-xl border-l-4 border-blue-500 p-4 shadow-sm">
+        <div className="bg-white rounded-xl border-l-4 border-brand-500 p-4 shadow-sm">
           <p className="text-2xl font-bold text-gray-900">{totalAssigned}</p>
           <p className="text-xs text-gray-500">Personas con proyectos</p>
         </div>
@@ -249,7 +249,7 @@ function UserCard({
   const displayName = user.full_name
 
   const ROLE_BADGE: Record<string, string> = {
-    admin: 'bg-red-100 text-red-700', developer: 'bg-blue-100 text-blue-700', viewer: 'bg-gray-100 text-gray-500',
+    admin: 'bg-red-100 text-red-700', developer: 'bg-brand-100 text-brand-700', viewer: 'bg-gray-100 text-gray-500',
   }
 
   return (

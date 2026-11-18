@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
+import { BRAND } from '../../theme/brand'
 
 export default function LoginForm() {
   const [email, setEmail] = useState('')
@@ -27,16 +28,15 @@ export default function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary to-info px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-700 via-brand-800 to-brand-950 px-4">
       <div className="max-w-md w-full">
         {/* Card */}
-        <div className="bg-white rounded-2xl shadow-2xl p-8">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 border-t-4 border-accent-400">
           {/* Logo/Título */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              🎯 Ticketera Controlling
-            </h1>
-            <p className="text-gray-600">Sistema de Gestión</p>
+            <img src={BRAND.logoSrc} alt={`Logotipo de ${BRAND.company}`} className="w-16 h-16 rounded-xl mx-auto mb-4" />
+            <h1 className="text-3xl font-bold text-brand-700 mb-1">{BRAND.appName}</h1>
+            <p className="text-gray-600">{BRAND.tagline}</p>
           </div>
 
           {/* Formulario */}
@@ -86,7 +86,7 @@ export default function LoginForm() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition duration-200"
+              className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-brand-700 disabled:opacity-50 disabled:cursor-not-allowed transition duration-200"
             >
               {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
             </button>
@@ -94,7 +94,7 @@ export default function LoginForm() {
 
           {/* Footer */}
           <div className="mt-6 text-center text-sm text-gray-500">
-            <p>Usuarios del equipo de Controlling</p>
+            <p>Acceso exclusivo para usuarios del {BRAND.teamLabel}</p>
           </div>
         </div>
       </div>

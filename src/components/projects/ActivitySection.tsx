@@ -101,7 +101,7 @@ export default function ActivitySection({ projectId }: Props) {
 
               {/* Duración en fase anterior */}
               {log.action === 'phase_changed' && d?.duration_ms && (
-                <p className="text-xs text-blue-500 mt-0.5">
+                <p className="text-xs text-brand-500 mt-0.5">
                   Tiempo en {PHASE_LABELS[d.from] ?? d.from}: <span className="font-medium">{formatDuration(d.duration_ms)}</span>
                 </p>
               )}
@@ -154,7 +154,7 @@ export default function ActivitySection({ projectId }: Props) {
                     </p>
                   )}
                   <p className="text-xs text-gray-500">
-                    Asignado a: <span className="font-medium text-blue-700">{userName(d?.to)}</span>
+                    Asignado a: <span className="font-medium text-brand-700">{userName(d?.to)}</span>
                     {d?.flow_type && (
                       <span className="text-gray-400 ml-1">({d.flow_type === 'development' ? '💻' : '📋'})</span>
                     )}

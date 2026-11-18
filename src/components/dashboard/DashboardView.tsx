@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useDashboardData, type DashboardStats } from '../../hooks/useDashboardData'
 import { toast } from '../../lib/toast'
@@ -235,6 +235,10 @@ export default function DashboardView() {
   const [typeFilter, setTypeFilter] = useState<string | null>(null)
   const [exporting, setExporting] = useState<'completed' | 'active' | null>(null)
   const { stats, loading, reload } = useDashboardData(period, areaFilter, typeFilter)
+  // Opciones del filtro: catálogo centralizado + áreas presentes en los datos
+  const seenAreas = useRef(new Set<string>())
+  Object.keys(stats?.byArea ?? {}).forEach(a => seenAreas.current.add(a))
+  const areaOptions = Array.from(new Set([...AREAS, ...seenAreas.current, ...(areaFilter ? [areaFilter] : [])])).sort()
 
   const handleExportCompleted = async () => {
     setExporting('completed')
@@ -269,7 +273,7 @@ export default function DashboardView() {
   ]
 
   const typeItems = [
-    { label: '💻 Development',    value: stats.byType.development,   color: 'bg-blue-500' },
+    { label: '💻 Development',    value: stats.byType.development,   color: 'bg-brand-500' },
     { label: '📋 Administrative', value: stats.byType.administrative, color: 'bg-purple-500' },
     { label: '🔀 Dual',           value: stats.byType.dual,          color: 'bg-indigo-400' },
   ]
@@ -277,7 +281,7 @@ export default function DashboardView() {
   const areaItems = Object.entries(stats.byArea)
     .sort((a, b) => b[1] - a[1])
     .map(([label, value], i) => {
-      const colors = ['bg-blue-500', 'bg-purple-500', 'bg-teal-500', 'bg-orange-500', 'bg-pink-500']
+      const colors = ['bg-brand-500', 'bg-purple-500', 'bg-teal-500', 'bg-orange-500', 'bg-pink-500']
       return { label, value, color: colors[i % colors.length] }
     })
 
@@ -334,11 +338,11 @@ export default function DashboardView() {
             value={areaFilter ?? ''}
             onChange={e => setAreaFilter(e.target.value || null)}
             className={`px-3 py-2 border rounded-lg text-sm outline-none transition cursor-pointer ${
-              areaFilter ? 'border-blue-400 bg-blue-50 text-blue-700' : 'border-gray-200 bg-white text-gray-600'
+              areaFilter ? 'border-brand-400 bg-brand-50 text-brand-700' : 'border-gray-200 bg-white text-gray-600'
             }`}
           >
             <option value="">Todas las áreas</option>
-            {AREAS.map(area => (
+            {areaOptions.map(area => (
               <option key={area} value={area}>{area}</option>
             ))}
           </select>
@@ -346,7 +350,7 @@ export default function DashboardView() {
           <button
             onClick={handleExportActive}
             disabled={exporting !== null}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition shadow-sm disabled:opacity-50"
+            className="px-4 py-2 bg-brand-600 text-white rounded-lg text-sm font-medium hover:bg-brand-700 transition shadow-sm disabled:opacity-50"
           >
             {exporting === 'active' ? '⏳ Exportando...' : '⬇ Activos CSV'}
           </button>
@@ -368,7 +372,7 @@ export default function DashboardView() {
 
       {/* Stat Cards — proyectos (siempre todo el tiempo) */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        <StatCard label="Total"       value={stats.total}             icon="📊" color="border-blue-500" />
+        <StatCard label="Total"       value={stats.total}             icon="📊" color="border-brand-500" />
         <StatCard label="Activos"     value={stats.byStatus.active}   icon="🟢" color="border-green-500" />
         <StatCard label="Completados" value={stats.byStatus.completed} icon="✅" color="border-emerald-500" />
         <StatCard label="Archivados"  value={stats.byStatus.archived}  icon="📦" color="border-gray-400" />
@@ -397,7 +401,7 @@ export default function DashboardView() {
             </div>
           </div>
         </div>
-        <StatCard label="Cycle Time promedio" value={cycleLabel} icon="🔄" color="border-blue-400" />
+        <StatCard label="Cycle Time promedio" value={cycleLabel} icon="🔄" color="border-brand-400" />
         <StatCard label="Lead Time promedio"  value={leadLabel}  icon="📦" color="border-purple-400" />
       </div>
 
