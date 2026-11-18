@@ -31,3 +31,8 @@ enabled = true
 enabled = true
 site_url = "http://localhost:5173"
 additional_redirect_urls = ["http://localhost:5173"]
+
+# Prepared only. Handler validates the bearer with Auth getUser and DB role RPCs.
+# No bootstrap endpoint. Allows current asymmetric JWTs with explicit validation.
+[functions.admin-users]
+verify_jwt = false

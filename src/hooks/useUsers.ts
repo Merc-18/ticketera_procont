@@ -1,16 +1,18 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { supabase } from '../lib/supabase'
 import { operations } from '../lib/api'
 import { errorMessage, requireData } from '../lib/supabase-errors'
 import { useAuth } from './useAuth'
 import { canEdit, canManageProfile } from '../lib/access'
 import type { User } from '../types/database.types'
+import { administerAccount } from '../lib/account-admin'
 
 export function useUsers() {
   const { user: actor } = useAuth()
   const [users, setUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const accountAttempt = useRef<{ fingerprint: string; requestId: string }>()
   const loadUsers = useCallback(async () => {
     if (!actor?.is_active) { setUsers([]); setLoading(false); return }
     setLoading(true)
@@ -24,8 +26,21 @@ export function useUsers() {
   }, [actor?.id, actor?.is_active])
   useEffect(() => { void loadUsers() }, [loadUsers])
 
-  const createUser = async (_data: { email: string; password: string; full_name: string; role: User['role'] }): Promise<{ sessionLost: boolean }> => {
-    throw new Error('La creación de cuentas requiere el backend de administración Auth. No está habilitada desde este navegador.')
+  const createUser = async (data: { email: string; password: string; full_name: string; role: User['role'] }): Promise<{ sessionLost: boolean }> => {
+    if (data.password.length < 12 || data.password.length > 128) throw new Error('La contraseña debe tener entre 12 y 128 caracteres.')
+    if (!data.full_name.trim() || data.full_name.trim().length > 200 ||
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email.trim()) || data.email.trim().length > 320) {
+      throw new Error('Revisa el nombre y el correo de la cuenta.')
+    }
+    const fingerprint = JSON.stringify([data.email.trim().toLowerCase(), data.full_name.trim(), data.role])
+    if (accountAttempt.current && accountAttempt.current.fingerprint !== fingerprint) {
+      throw new Error('Hay un alta pendiente de revisión. Confirma su resultado antes de crear otra cuenta.')
+    }
+    accountAttempt.current ??= { fingerprint, requestId: crypto.randomUUID() }
+    await administerAccount({ ...data, action: 'create', request_id: accountAttempt.current.requestId })
+    accountAttempt.current = undefined
+    await loadUsers()
+    return { sessionLost: false }
   }
   const deleteUser = async (_id: string) => {
     throw new Error('La eliminación de cuentas requiere el backend de administración Auth. Utiliza la desactivación.')

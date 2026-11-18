@@ -63,3 +63,10 @@ vigente, con sus condiciones remotas pendientes. El inventario organizacional y
 las decisiones pendientes están en
 [FASE 2B.3C](../docs/fase-2b3c-adaptacion-procont.md). Esta revisión no autoriza
 migraciones, cuentas ni bootstrap.
+# Administración de cuentas pendiente de activación
+
+La migración `20261118000100_account_administration.sql` y la función
+`functions/admin-users` están preparadas, **no aplicadas ni desplegadas**. Las
+cuatro migraciones iniciales permanecen intactas. Operación y bootstrap privado:
+[procedimiento](../docs/account-administration.md). No usar los ejecutores de
+cuatro migraciones ni sus bundles para aplicar o revertir esta ampliación.

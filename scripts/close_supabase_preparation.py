@@ -31,7 +31,7 @@ def main():
     parser.add_argument('--check', action='store_true')
     parser.add_argument('--message', default='feat: preparar conexión CLI y baseline de Supabase')
     args = parser.parse_args()
-    entries = [entry for entry in git('status', '--porcelain=v1', '-z').split(b'\0') if entry]
+    entries = [entry for entry in git('status', '--porcelain=v1', '--untracked-files=all', '-z').split(b'\0') if entry]
     changed = set()
     for entry in entries:
         if b'R' in entry[:2] or b'C' in entry[:2]:
