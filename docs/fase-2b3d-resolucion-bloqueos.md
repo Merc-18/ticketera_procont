@@ -1,5 +1,48 @@
 # FASE 2B.3D — Resolución de bloqueos de inventario Supabase
 
+**Aplicación remota verificada:** las versiones `20261117000100`, `20261117000200`, `20261117000300` y `20261117000400` quedaron registradas en ticketera-procont. Se comprobaron las cuatro transiciones con el alcance de recuperación, 13 tablas propias con RLS y 35 pasos genéricos de checklist. No se crearon cuentas ni superadmin. Las compensaciones se generaron solo en privado, sin ejecutarlas. La evidencia vigente está en `docs/validation/continuacion-af3259f-baseline.json`. Los estados NO APTO anteriores de estos informes son antecedentes, superados para este conjunto. Siguiente paso: definir con el propietario las áreas y la provisión inicial de acceso, bajo autorización separada.
+
+**Conexión nativa completada y baseline verificado:** archivos privados modo 600,
+hashes y destino coincidentes, PostgreSQL 17.12, postgres/postgres, historial
+capturado ausente y ninguna cuenta. El validador de recuperación pasó sin nuevas
+capturas ni suites. La aplicación está autorizada, pero requiere otra entrada
+oculta de contraseña porque no se guardó. El
+[comando preparado](conexion-cli-baseline.md) solo aplica los cuatro archivos
+tras comprobar estado y plan remoto; verifica cada transición y prepara el
+commit desde Ubuntu normal. No se ejecutaron migraciones en esta preparación.
+
+**Diagnóstico posterior de CLI:** los errores previos se ocultaban bajo un
+mensaje genérico. Se reprodujo un fallo de confianza TLS (CA del sistema,
+código 19), corregido aportando el bundle público oficial de CLI 3.2.0 y
+manteniendo `verify-full`. Con esa CA, cadena y hostname validaron sin
+autenticación ni SQL. Se añadió clasificación saneada por etapa; la lectura
+API alternativa no acreditó la identidad requerida y se detuvo antes del
+baseline. No hubo nuevas capturas de inventario, cuentas, permisos concedidos
+ni migraciones. Véase el [diagnóstico vigente](conexion-cli-baseline.md).
+
+**Continuación con enlace existente:** ref/nombre/endpoint local verificados
+sin repetir inventarios ni listados remotos. El usuario reportó las cuatro
+versiones pendientes. Falta la entrada segura de contraseña PostgreSQL para la
+ruta nativa con `--remote=<URL>`; el token Management API disponible no prueba
+una sesión de migración y no se usará para crear roles temporales. El
+[comando vigente](conexion-cli-baseline.md) reutiliza el enlace. Baseline y
+permisos efectivos todavía no capturados; ninguna migración aplicada por el
+agente. Las autorizaciones condicionales de aplicación se conservan.
+
+**Actualización 18/11/2026:** exportación importada (3382 filas) y recibo cotejado
+sin ejecutar otra vez el importador. Se prepara la conexión nativa de CLI con
+entrada oculta y primer baseline read-only en la [guía vigente](conexion-cli-baseline.md).
+La prohibición de nuevas lecturas del 17/11 citada debajo quedó sustituida para
+este alcance por la instrucción nueva. No ejecutar el preflight v2: se reutiliza
+el archivo importado. CLI real y baseline siguen pendientes de la entrada segura.
+
+**Continuación desde `af3259f`:** esta fase está cerrada. El usuario pidió no
+ejecutar otra consulta SQL ni repetir el inventario. Reutilizar el adjunto
+existente `Texto pegado(2).txt` siguiendo la
+[preparación local del baseline](conexion-cli-baseline.md). La lectura CLI queda
+pendiente; no ejecutar el preflight v2 preparado abajo. El recibo offline no
+constituye `procont-recovery-v1` ni cambia el NO APTO remoto.
+
 17/11/2026. Base: `11b2c15`, con la consulta de catálogos/documentación preparada
 en la sesión anterior todavía sin commit. Se integra esa entrega sin descartarla.
 Alcance: cambios locales, fuentes oficiales públicas y pruebas nuevas aisladas.

@@ -1,0 +1,316 @@
+{
+  "format": "procont-baseline-preparation-v1",
+  "base_commit": "af3259f",
+  "prepared_at_utc": "2026-11-17T23:59:18.864956+00:00",
+  "migrations": [
+    {
+      "file": "20261117000100_schema.sql",
+      "sha256": "4cc433c7eb91278abf020b82d9e40ddc39052642630db267e0753bf2c4f5fbcd"
+    },
+    {
+      "file": "20261117000200_security.sql",
+      "sha256": "669171a4a000c4dbfeb78ca53e4c58df3b7ba9473c7735ef4d024047d5bf8cf5"
+    },
+    {
+      "file": "20261117000300_operations.sql",
+      "sha256": "06b2bf5b0d5275c1e3d95b1848983c4242610f45d28a611fca256e3e696d206a"
+    },
+    {
+      "file": "20261117000400_reference_checklists.sql",
+      "sha256": "2ae7b98b460a040319e0c2007809c1842374e97cb2ee4ac140a8fdfc48b0b145"
+    }
+  ],
+  "recovery_sha256": {
+    "supabase/recovery/compensate_01.sql": "0e433e4079be8eb2f2ed7dc8d5efce0b96cbbed55d7beec866a139d7b2f1f4b0",
+    "supabase/recovery/compensate_02.sql": "90a07f689ff0235388b578b51c3dc2bdefd1eeef45cf62a211fa11eae75cb3ec",
+    "supabase/recovery/compensate_03.sql": "d38aad498041666bb837fe77a516375862a49906d7aaf42ead78abd0ba26d9ac",
+    "supabase/recovery/compensate_04.sql": "07f6dd6c01df984824fa79ee360712bd710e10cb4f71cb3e43b4aeb07842c4ec",
+    "supabase/recovery/inventory.sql": "c8bd96229d4233f723938c146dd2c693db94d04e63717a1554a8a329a4cc6d0c",
+    "supabase/recovery/scope.json": "028f4c4ed8a171c968c0361217d17657847b24828ca078c35950eaec94888217"
+  },
+  "catalog_export_present": false,
+  "operational_recovery_baseline_present": false,
+  "runtime_cli_identity_verified": false,
+  "remote_sql_executed": false,
+  "verdict": "NO APTO",
+  "note": "Preparation manifest only; not a remote snapshot or procont-recovery-v1 baseline",
+  "existing_export_source": "ChatGPT attachment Texto pegado(2).txt; local path not confirmed by user",
+  "full_export_imported": false,
+  "new_offline_importer_tests": {
+    "passed": 6,
+    "command": "PYTHONDONTWRITEBYTECODE=1 python3 tests/test_inventory_import.py -v",
+    "fixtures": "synthetic catalog metadata; not a hosted inventory"
+  },
+  "previous_tests_repeated": false,
+  "local_or_remote_sql_executed": false,
+  "database_process_started": false,
+  "cli_login_link_query_push_repair_executed": false,
+  "users_created": 0,
+  "frontend_changed": false,
+  "remote_mutations": false,
+  "git_head": "af3259f",
+  "local_cli_link_file_present": false,
+  "private_directory_mode": "0o700",
+  "private_preparation_mode": "0o600",
+  "migration_manifest_matches_2b3d": true,
+  "recovery_and_frontend_unchanged": true,
+  "verdict_reason": [
+    "Actual CLI identity remains unobserved",
+    "Existing catalog export is not operational recovery format and is not yet available locally"
+  ],
+  "user_current_constraint": "No additional SQL queries and no repeated inventory",
+  "local_markdown_links_valid": true,
+  "artifacts_sha256": {
+    "README.md": "d102e35ba41d3740e7b9eff69d93f6cdb2accec145e3a301e4120ddd55649aff",
+    "docs/conexion-cli-baseline.md": "19034f24375b5968ed94d3223655f04ed6a0d0f39833fe33a3d729e06ebb73f3",
+    "docs/fase-2b2-preparacion.md": "6b0a79391a4bc70d926cc03a118daecc802ced6fd376ad56a3a1bd8f890b7587",
+    "docs/fase-2b3-catalog-preflight.md": "06824d8346fe696765d8224a1f6f5c1f7c724100085f8504bb53c52586a1b323",
+    "docs/fase-2b3b-recovery-plan.md": "31892a9ddb599b6692e60358f9c619eb20f87615d3170d514bfcc5d8a17cd43e",
+    "docs/fase-2b3d-resolucion-bloqueos.md": "36b84ba0a120f31c358d1d3c3d0b66605cc630fd4ee84e572b3a6e065d4b1cb4",
+    "scripts/import_supabase_inventory.py": "3d9f9cb9222b894e01ea7329f2c88285c8d636901bee02db6335e4401ef2496f",
+    "tests/test_inventory_import.py": "c11b655785ccdeefcbda09d9852b0435030b5da086db1f047614b459245d489b"
+  },
+  "continuation_2026_11_18": {
+    "updated_at_utc": "2026-11-18T14:19:38.704399+00:00",
+    "source_export_present": true,
+    "source_receipt_present": true,
+    "source_receipt_hash_matches": true,
+    "imported_metadata_rows": 3382,
+    "importer_reexecuted": false,
+    "cli_version": "3.2.0",
+    "cli_local_startup_verified": true,
+    "cli_settings": "SUPABASE_HOME within ignored .supabase-local; telemetry disabled; HOME unchanged",
+    "native_route": "explicit passwordless --db-url; credential through child PGPASSWORD from secure terminal input",
+    "remote_connection_verified": false,
+    "operational_baseline_captured": false,
+    "new_offline_connection_wrapper_tests_passed": 5,
+    "new_test_command": "PYTHONDONTWRITEBYTECODE=1 python3 tests/test_cli_connection.py -v",
+    "previous_test_suites_repeated": false,
+    "remote_sql_executed": false,
+    "preflight_inventory_reexecuted": false,
+    "migrations_applied": false,
+    "users_created": 0,
+    "required_intervention": "Run python3 scripts/connect_supabase_cli.py in local interactive terminal; never send credentials to chat",
+    "commit_created": false,
+    "commit_limitation": ".git read-only in current environment",
+    "verdict": "NO APTO until actual CLI identity and operational baseline are validated",
+    "artifacts_sha256": {
+      "README.md": "41d97a8e9c4e04f6589e1cc3a7b21e113e0ef5e52b7aeea1332cff2c8eff7be9",
+      "docs/conexion-cli-baseline.md": "db411633499d9b4e06c69e01c1120f9e92b1a5d9acd98501cd6ffd288a0f896d",
+      "docs/fase-2b2-preparacion.md": "c70a31067bd79328699a5217784dfe709e39f526c72114e8b59efa34e5aadb60",
+      "docs/fase-2b3b-recovery-plan.md": "b39466d4f5d96748836e83d86c108d083971a142951c002abe0fcff629d31e0e",
+      "docs/fase-2b3d-resolucion-bloqueos.md": "a97270a2d4acb667824102f80e2cd9d55f60f4cd00b231b2309c6b921abf0ce7",
+      "scripts/connect_supabase_cli.py": "d17752e87a87b2093332ae5a374a34d5042e890011f56aff84884d06f3a2d780",
+      "supabase/recovery/connection_check.sql": "6af5ae62e875ea47ea69d757e7c74a7c9405402d820d6d7432a0fa78e9c1febf",
+      "tests/test_cli_connection.py": "3a02e18fcb50958a397a20a7b248905b8ef84628a44ebaadfd105db3582916cc"
+    }
+  },
+  "linked_cli_continuation": {
+    "updated_at_utc": "2026-11-18T14:39:33.612400+00:00",
+    "linked_project_matches_pinned_target": true,
+    "saved_session_pooler_port": 5432,
+    "saved_pooler_password_present": false,
+    "management_access_token_file_present": true,
+    "database_password_env_present": false,
+    "pgpass_present": false,
+    "user_reported_pending_versions": [
+      "20261117000100",
+      "20261117000200",
+      "20261117000300",
+      "20261117000400"
+    ],
+    "migration_list_reexecuted": false,
+    "login_link_reexecuted": false,
+    "catalog_preflight_reexecuted": false,
+    "previous_suites_reexecuted": false,
+    "native_identity_observed": false,
+    "operational_baseline_captured": false,
+    "remote_sql_executed": false,
+    "migrations_applied_by_agent": false,
+    "roles_created_by_agent": 0,
+    "new_local_check": "only test_saved_link_reuses_only_pinned_endpoint passed; previous suite not rerun",
+    "prepare_only_with_saved_link": "passed; no DB connection or SQL",
+    "blocking_condition": "PostgreSQL password requires secure input in local terminal",
+    "required_action": "python3 scripts/connect_supabase_cli.py --use-saved-link",
+    "credentials_saved_by_agent": false,
+    "cli_query_route": "--remote=<passwordless pinned session URL>; native database driver",
+    "local_commit_created": false,
+    "local_commit_limitation": ".git read-only in agent sandbox",
+    "ubuntu_closeout_script": "scripts/close_supabase_preparation.py",
+    "verdict": "NO APTO until actual native connection privileges and operational baseline validate",
+    "artifacts_sha256": {
+      "README.md": "1fc5148f999c5dd9ed830d88361dcb5501e015c8ab06ae1bd191a6ad14639d25",
+      "docs/conexion-cli-baseline.md": "3ccf06b789f517814b2fb5e9edba6775a4bf711e3cd3fc07847d7bbba8e5dc77",
+      "docs/fase-2b2-preparacion.md": "8cca40359555c3e0243fc6677dafd6cb79b8d802ba2e274c6f8a50877dab0f71",
+      "docs/fase-2b3b-recovery-plan.md": "0e54f0280f8fc4d0afede95a5295a77dd6691c1166756c4771010336890becc9",
+      "docs/fase-2b3d-resolucion-bloqueos.md": "2791ef25da7e5f869a42e291884959ff8ef06baa3244422bde458d07de39d9f5",
+      "scripts/connect_supabase_cli.py": "deed3d43d2ada2be84880875a34a5fabcc1233af1dfebb1eccbcef58d629405d",
+      "scripts/close_supabase_preparation.py": "8a4c07f4eacee39f9292824ddc3cd55829504b38cfbc5c76b9513fd6eb472deb",
+      "tests/test_cli_connection.py": "4d309522a492a0a53bf29538b7ce3b229a64410ecc8570d952568570fe79ab81"
+    }
+  },
+  "connection_failure_diagnosis": {
+    "updated_at_utc": "2026-11-18T14:56:51.361557+00:00",
+    "reported_failed_attempts": 2,
+    "historical_raw_stderr_available": false,
+    "historical_exact_error_recoverable": false,
+    "failure_boundary": "before cli-identity.json; baseline query not reached",
+    "identified_tls_configuration_defect": "explicit verify-full bypassed CLI automatic CA bundle without supplying a root CA",
+    "tls_only_probes": [
+      {
+        "trust": "system CA",
+        "result": "certificate verification failed",
+        "verify_code": 19,
+        "authentication_sent": false,
+        "sql_sent": false
+      },
+      {
+        "trust": "official CLI v3.2.0 bundle",
+        "result": "certificate chain and hostname verified",
+        "authentication_sent": false,
+        "sql_sent": false
+      }
+    ],
+    "public_ca_file": "supabase/recovery/cli-root-ca.pem",
+    "public_ca_sha256": "50a69ecbd3fe8efbb341d1148db9d672be0ce0397be679bf9c9b19de5fcdb139",
+    "ca_sources": [
+      "https://raw.githubusercontent.com/supabase/cli/v3.2.0/apps/cli/src/command-internal/supabase-ca-templates/staging-ca-2021.ts",
+      "https://raw.githubusercontent.com/supabase/cli/v3.2.0/apps/cli/src/command-internal/supabase-ca-templates/prod-ca-2021.ts",
+      "https://raw.githubusercontent.com/supabase/cli/v3.2.0/apps/cli/src/command-internal/supabase-ca-templates/prod-ca-2025.ts"
+    ],
+    "native_tls_policy": "verify-full with explicit PGSSLROOTCERT; no downgrade",
+    "api_alternative": {
+      "readonly_identity_queries": 1,
+      "result": "required postgres/postgres identity not satisfied",
+      "actual_identity_values_retained": false,
+      "baseline_query_executed": false,
+      "alternative_shipped": false
+    },
+    "diagnostics": {
+      "stages": [
+        "cli_version",
+        "connection_check_native",
+        "inventory_native"
+      ],
+      "fixed_categories": [
+        "tls",
+        "endpoint",
+        "password",
+        "api_auth",
+        "connection",
+        "cli_execution",
+        "sql_permissions",
+        "sql",
+        "unclassified"
+      ],
+      "raw_output_saved": false,
+      "credentials_saved": false,
+      "automatic_retries": false
+    },
+    "new_retained_offline_diagnostic_checks_passed": 4,
+    "previous_suites_repeated": false,
+    "catalog_preflight_or_importer_repeated": false,
+    "operational_baseline_captured": false,
+    "native_database_authentication_verified": false,
+    "remote_mutations": false,
+    "migrations_applied": false,
+    "users_created": 0,
+    "command": "python3 scripts/connect_supabase_cli.py --use-saved-link",
+    "artifacts_sha256": {
+      "README.md": "e705f195ab69c2b54a8fea9e00d18435725db3aa6c8177f1252529cc85ba3785",
+      "docs/conexion-cli-baseline.md": "70cc459eb8a98fe30fc6c9839137513195177073d1a1530f9e489a37152ff84e",
+      "docs/fase-2b2-preparacion.md": "ea02c9428320c1b50672544400173684f7ff3761565d4427c77a20983c9605ed",
+      "docs/fase-2b3b-recovery-plan.md": "64c6296fb7e2e62d6bc62483736e3ebd19409c54b7e98f4ef0641139695ab923",
+      "docs/fase-2b3d-resolucion-bloqueos.md": "e992968ce636eb4088e6ecbce77acf56ef1588546f794783c496daea9bd7cbe0",
+      "scripts/connect_supabase_cli.py": "c2ce2c3b5df9ab9f43ef7bde89432ac2eac674bb0701797689b4ac08ed0772f6",
+      "scripts/close_supabase_preparation.py": "517b83131892a55fb883b1543f7cf45dfa2fbdeca5e42c7bca2a86cc0ff294f9",
+      "tests/test_cli_connection.py": "a3ba3315c7dceca0acc36a32f55c705bff951caa666ead1ccbfb16c3dcdda229",
+      "supabase/recovery/cli-root-ca.pem": "50a69ecbd3fe8efbb341d1148db9d672be0ce0397be679bf9c9b19de5fcdb139"
+    }
+  },
+  "authorized_application_preparation": {
+    "at_utc": "2026-11-18T15:08:47.777582+00:00",
+    "baseline_integrity_verified": true,
+    "baseline_validator_passed": true,
+    "native_identity_file_verified": true,
+    "native_identity": "postgres/postgres",
+    "pinned_target_and_route_match": true,
+    "postgresql_server_version_num": 170012,
+    "approved_migration_hashes_match": true,
+    "captured_baseline_ledger_present": false,
+    "captured_baseline_auth_count_zero": true,
+    "public_acl_grantors_recoverable": true,
+    "remote_pending_versions_checked_in_this_turn": false,
+    "native_database_password_available_in_agent_process": false,
+    "migrations_applied_in_this_turn": false,
+    "users_created": 0,
+    "previous_suites_repeated": false,
+    "baseline_recaptured": false,
+    "new_offline_runner_safeguards_passed": 4,
+    "command": "python3 /home/procont/projects/ticketera-procont/scripts/apply_supabase_migrations.py",
+    "runtime_gates": [
+      "live state equals existing baseline",
+      "exactly four pending files",
+      "single pending migration per private prefix workdir",
+      "native CLI history exact prefix and statements checksum",
+      "strict recovery transition and offline bundle after each step"
+    ],
+    "automatic_retries": false,
+    "automatic_compensation_or_repair": false,
+    "password_saved": false,
+    "git_commit_created_by_agent": false,
+    "commit_closeout": "same terminal command runs local closeout only after all four migrations verify",
+    "push_merge_deploy": false,
+    "artifacts_sha256": {
+      "README.md": "2a7c6795e36bf80b6bd862682917dca60c37f2fa5af39fb2c683bab2aba0feaa",
+      "docs/conexion-cli-baseline.md": "fbdf494c1c780af3425f51538b89acc794a33cfd92bf0991e4d05327333d6720",
+      "docs/fase-2b2-preparacion.md": "26f06d66d368b48a9f3d67b256fe71e26d0b0b819200035b94f06be7f99281f0",
+      "docs/fase-2b3b-recovery-plan.md": "59f4850c54d34ccb07cebd185af5e8e94b3d13af5d913565cc20421e2dab109d",
+      "docs/fase-2b3d-resolucion-bloqueos.md": "bcb910fb7da74c0ae39a9096ac35060279d42eefb19c2f011918a6820539c075",
+      "scripts/apply_supabase_migrations.py": "ffc145fe452cb69d541e50c4995d98ae7510367c19d808d161f09c872bd5a99e",
+      "scripts/close_supabase_preparation.py": "39bde168a0399d3b8d255348634d9dad798213944b301aadc5262ae1a3e97795",
+      "tests/test_migration_application.py": "6a57574c0b2d6e61155569803a070e864c5d4be25800c5a104c832db19160319"
+    }
+  },
+  "remote_application": {
+    "status": "applied_verified",
+    "at_utc": "2026-11-18T15:27:10.354034+00:00",
+    "versions": [
+      "20261117000100",
+      "20261117000200",
+      "20261117000300",
+      "20261117000400"
+    ],
+    "migration_files_sha256": [
+      {
+        "file": "20261117000100_schema.sql",
+        "sha256": "4cc433c7eb91278abf020b82d9e40ddc39052642630db267e0753bf2c4f5fbcd"
+      },
+      {
+        "file": "20261117000200_security.sql",
+        "sha256": "669171a4a000c4dbfeb78ca53e4c58df3b7ba9473c7735ef4d024047d5bf8cf5"
+      },
+      {
+        "file": "20261117000300_operations.sql",
+        "sha256": "06b2bf5b0d5275c1e3d95b1848983c4242610f45d28a611fca256e3e696d206a"
+      },
+      {
+        "file": "20261117000400_reference_checklists.sql",
+        "sha256": "2ae7b98b460a040319e0c2007809c1842374e97cb2ee4ac140a8fdfc48b0b145"
+      }
+    ],
+    "remote_history_verified": true,
+    "all_four_transitions_validated": true,
+    "compensation_bundles_prepared_offline": true,
+    "application_tables": 13,
+    "application_tables_rls_enabled": true,
+    "reference_checklist_rows": 35,
+    "auth_accounts_created": 0,
+    "business_rows_created": 0,
+    "managed_event_triggers_preserved": true,
+    "previous_suites_repeated": false,
+    "frontend_changed": false,
+    "credentials_saved": false,
+    "push_merge_deploy_executed": false
+  }
+}

@@ -1,5 +1,7 @@
 # Ticketera Procont
 
+**Aplicación remota verificada:** las versiones `20261117000100`, `20261117000200`, `20261117000300` y `20261117000400` quedaron registradas en ticketera-procont. Se comprobaron las cuatro transiciones con el alcance de recuperación, 13 tablas propias con RLS y 35 pasos genéricos de checklist. No se crearon cuentas ni superadmin. Las compensaciones se generaron solo en privado, sin ejecutarlas. La evidencia vigente está en `docs/validation/continuacion-af3259f-baseline.json`. Los estados NO APTO anteriores de estos informes son antecedentes, superados para este conjunto. Siguiente paso: definir con el propietario las áreas y la provisión inicial de acceso, bajo autorización separada.
+
 Sistema de gestión de tickets y proyectos para un entorno laboral independiente.
 Reutiliza la arquitectura y las funcionalidades de la ticketera original; las
 áreas, personas y políticas de Procont se definirán con el propietario del proyecto.
@@ -175,16 +177,42 @@ pasaron sin cuentas ni suites anteriores. La conexión CLI real y permisos
 pendientes mantienen el **NO APTO remoto**. Los seis event triggers administrados
 se conservan; no se conceden privilegios ni se modificó Supabase.
 
+**Estado posterior:** conexión nativa y baseline privado completados por el
+usuario; integridad, identidad y hashes comprobados localmente. La aplicación
+remota sigue pendiente: la contraseña anterior no se guardó. El
+[procedimiento vigente](docs/conexion-cli-baseline.md) proporciona el comando
+`python3 scripts/apply_supabase_migrations.py`, que solicita entrada oculta,
+comprueba el estado remoto y aplica solo las cuatro migraciones por pasos si
+todos los controles pasan. Verifica resultados y cierra Git local sin publicar.
+
 La revisión 2B.3C conserva las cuatro migraciones y la recuperación 2B.3B sin
 cambios. El área se almacena como texto sin lista empresarial en SQL; todavía
 no existe un catálogo administrable de áreas. Su definición y la adaptación de
 los selectores/importador del frontend se decidirán posteriormente, sin importar
 áreas ni usuarios de la organización original.
 
-El siguiente diagnóstico manual está preparado en
-[preflight de catálogos](docs/fase-2b3-catalog-preflight.md), con una sola consulta
-SQL de lectura de metadatos. Todavía no se ejecutó; no lee cuentas, registros de
-negocio ni credenciales y no reemplaza el baseline de recuperación.
+El [preflight de catálogos](docs/fase-2b3-catalog-preflight.md) ya fue ejecutado
+por el usuario. No repetir ese inventario. La
+[continuación desde af3259f](docs/conexion-cli-baseline.md) explica cómo descargar
+la exportación existente de ChatGPT y copiarla a una carpeta privada ignorada
+por Git. El importador offline valida su estructura y genera un recibo; ese
+catálogo no reemplaza el baseline operativo. La identidad CLI real y dicho
+baseline siguen pendientes: **NO APTO para aplicar las migraciones**. La
+exportación ya se importó (3382 filas; hash del recibo confirmado). El 18/11 se
+autorizó avanzar con conexión, baseline y aplicación condicionada de los cuatro
+archivos. El enlace CLI ya fue confirmado y las cuatro versiones siguen sin
+aplicar según `migration list` reportado por el usuario; no se repite esa lectura.
+Ejecutar en la terminal local
+`python3 scripts/connect_supabase_cli.py --use-saved-link`
+para reutilizar el endpoint guardado, introducir solo la contraseña oculta y
+obtener identidad/primer baseline, según la guía. Ese comando no aplica migraciones ni guarda la
+contraseña. Se conservan todos los cambios locales.
+
+Se corrigió un fallo de confianza TLS del comando: ahora `verify-full` utiliza
+la CA oficial de CLI 3.2.0 y los errores distinguen etapa y categoría sin mostrar
+secretos. La cadena y el hostname se verificaron sin autenticación ni SQL.
+El [diagnóstico vigente](docs/conexion-cli-baseline.md) explica la corrección y
+por qué la lectura mediante Management API no sustituye la identidad nativa.
 
 ---
 

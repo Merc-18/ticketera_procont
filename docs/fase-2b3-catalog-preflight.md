@@ -1,5 +1,9 @@
 # Preflight de catálogos — consulta manual de solo lectura
 
+**Instrucción vigente desde `af3259f`: NO repetir este inventario ni ejecutar
+otra consulta SQL.** El adjunto completo existente `Texto pegado(2).txt` se
+recuperará desde ChatGPT; véase [copia e importación offline](conexion-cli-baseline.md).
+
 **Continuación 2B.3D:** el usuario ejecutó este inventario y comunicó PostgreSQL
 17.12 y los bloqueos. Los resultados recibidos y las correcciones están en
 [resolución de bloqueos](fase-2b3d-resolucion-bloqueos.md). El SQL v1 se conserva
@@ -7,16 +11,17 @@ como el artefacto histórico ejecutado por el usuario; los checks de propiedad
 Auth y ledger ausente ya no son los requisitos vigentes. El seguimiento v2 está
 preparado aparte y no se ejecutó. No confundir SQL Editor con conexión CLI.
 
-Base confirmada: `11b2c15`, FASE 2B.3C cerrada. Esta entrega prepara un archivo;
-**la consulta no fue ejecutada**, ni localmente ni en Supabase. No hay resultados
-remotos nuevos, ni autorización para modificar Supabase o aplicar migraciones.
+Base original: `11b2c15`, FASE 2B.3C cerrada. El agente preparó la consulta sin
+ejecutarla; el usuario la ejecutó posteriormente en Supabase y comunicó los
+resultados descritos en 2B.3D. No hay nuevas lecturas ni autorización para
+modificar Supabase o aplicar migraciones en esta continuación.
 
-## Archivo y ejecución manual
+## Archivo y ejecución original (ya realizada; no repetir)
 
-Abrir [fase-2b3-catalog-preflight.sql](validation/fase-2b3-catalog-preflight.sql),
-copiar su contenido completo al SQL Editor del proyecto `ticketera-procont` ya
-confirmado y ejecutarlo manualmente. Es **una única sentencia WITH…SELECT**;
-no añadir otro inventario, comandos de sesión, login, SQL histórico o migraciones.
+El archivo ejecutado fue
+[fase-2b3-catalog-preflight.sql](validation/fase-2b3-catalog-preflight.sql),
+en el SQL Editor del proyecto `ticketera-procont`. Es **una única sentencia
+WITH…SELECT**; se conserva como evidencia histórica, sin volver a ejecutarla.
 No requiere claves, contraseñas, tokens ni una conexión CLI.
 
 Desactivar o ampliar el límite de resultados del editor y exportar todas las

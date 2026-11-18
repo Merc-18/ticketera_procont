@@ -1,5 +1,44 @@
 # FASE 2B.2 — Preparación de Supabase
 
+**Aplicación remota verificada:** las versiones `20261117000100`, `20261117000200`, `20261117000300` y `20261117000400` quedaron registradas en ticketera-procont. Se comprobaron las cuatro transiciones con el alcance de recuperación, 13 tablas propias con RLS y 35 pasos genéricos de checklist. No se crearon cuentas ni superadmin. Las compensaciones se generaron solo en privado, sin ejecutarlas. La evidencia vigente está en `docs/validation/continuacion-af3259f-baseline.json`. Los estados NO APTO anteriores de estos informes son antecedentes, superados para este conjunto. Siguiente paso: definir con el propietario las áreas y la provisión inicial de acceso, bajo autorización separada.
+
+**Estado posterior a la conexión correcta:** baseline nativo, identidad, destino
+y hashes verificados offline. El estado capturado cumple el validador de
+recuperación; aún no se aplicaron migraciones por el agente. La contraseña no
+está persistida y se solicita solo mediante entrada oculta al ejecutar el
+[comando de aplicación autorizado](conexion-cli-baseline.md). Este incluye
+comprobación remota previa, planes exactos por paso, verificación y cierre Git
+local. Los NO APTO de entregas anteriores son históricos; la decisión de cada
+paso se toma con el estado real al ejecutar, sin forzar ningún requisito.
+
+**Diagnóstico posterior de conexión:** se reprodujo un rechazo TLS por CA del
+sistema (código 19); la CA oficial de CLI 3.2.0 validó cadena y hostname sin
+autenticación ni SQL. El comando mantiene `verify-full` con CA explícita y
+diagnóstico saneado por etapa/categoría. La alternativa API de solo lectura
+no cumplió la identidad requerida y se detuvo antes del baseline. Véase la
+[corrección vigente](conexion-cli-baseline.md); no se aplicaron migraciones.
+
+**Enlace CLI confirmado por el usuario y cotejado localmente:** no repetir
+login/link/list. El endpoint guardado sirve para la ruta nativa
+`--remote=<URL sin contraseña>`. La única entrada pendiente es la contraseña
+PostgreSQL oculta en la terminal mediante el comando de la
+[guía vigente](conexion-cli-baseline.md); no se guardará. No utilizar el token
+de acceso para acuñar un rol temporal. Baseline y aplicación siguen pendientes.
+
+**Actualización 18/11/2026:** inventario importado y cotejado, CLI 3.2.0 operativa
+con directorio privado y telemetría desactivada. Continuar exclusivamente con el
+[comando de entrada segura](conexion-cli-baseline.md) para identidad y primer
+baseline ahora autorizados. No usar login/link ni los comandos remotos históricos
+de abajo como prueba. No se repiten preflight ni suites anteriores. Faltan la
+entrada de contraseña en terminal, la conexión real y la validación de `0.json`.
+
+**Instrucción vigente desde `af3259f`:** no repetir el inventario ni ejecutar
+otra consulta SQL. El inventario v1 ya fue ejecutado por el usuario; copiar su
+adjunto existente e importar offline según
+[conexión CLI y baseline](conexion-cli-baseline.md). No ejecutar los comandos
+remotos históricos de este informe. Siguen pendientes la identidad CLI real
+y el baseline operativo; la preparación de un recibo local no los confirma.
+
 **Procedimiento vigente 2B.3D:** [resolución de bloqueos](fase-2b3d-resolucion-bloqueos.md).
 PostgreSQL 17.12 fue reportado por el usuario; la CLI prevé rol efectivo postgres,
 sin conexión real confirmada. M3 revisada no instala triggers en Auth. El ledger

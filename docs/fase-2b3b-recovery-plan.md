@@ -1,5 +1,41 @@
 # FASE 2B.3B — Recuperación de las cuatro migraciones
 
+**Aplicación remota verificada:** las versiones `20261117000100`, `20261117000200`, `20261117000300` y `20261117000400` quedaron registradas en ticketera-procont. Se comprobaron las cuatro transiciones con el alcance de recuperación, 13 tablas propias con RLS y 35 pasos genéricos de checklist. No se crearon cuentas ni superadmin. Las compensaciones se generaron solo en privado, sin ejecutarlas. La evidencia vigente está en `docs/validation/continuacion-af3259f-baseline.json`. Los estados NO APTO anteriores de estos informes son antecedentes, superados para este conjunto. Siguiente paso: definir con el propietario las áreas y la provisión inicial de acceso, bajo autorización separada.
+
+**Aplicación autorizada, preparación vigente:** `0.json` nativo ya existe y su
+integridad fue comprobada offline junto con identidad y cuatro hashes. El
+validador acepta el baseline; el estado capturado tiene historial ausente y
+cero cuentas. La contraseña no se guardó. El
+[comando de aplicación](conexion-cli-baseline.md) verifica la coincidencia remota
+antes de DDL, dry-run exacto, un archivo por paso, transición/historial/bundle
+por prefijo y parada ante error. Todavía no se ejecutó ese comando contra el
+destino. No repetir el preflight ni suites; se conserva la autorización explícita
+para esos cuatro archivos y el cierre local desde Ubuntu normal.
+
+**Corrección del acceso al baseline:** CA oficial explícita para `verify-full`;
+negociación TLS verificada sin autenticar ni ejecutar SQL. El comando nativo
+conserva los validadores de recuperación y aporta diagnóstico seguro. Una lectura
+API de identidad no cumplió el par requerido y no llegó a ejecutar la captura.
+El baseline operativo sigue pendiente, sin repetir inventarios ni suites y sin
+modificaciones remotas. Procedimiento en la [guía vigente](conexion-cli-baseline.md).
+
+**Enlace CLI ya existente:** se comprobó su coincidencia con el destino fijado.
+El usuario reportó las cuatro versiones locales sin aplicar; no se repitió
+`migration list`. Falta la contraseña DB en el entorno, sin `.pgpass`; no se usa
+el token de acceso para crear un login temporal. El comando de la
+[guía vigente](conexion-cli-baseline.md) reutiliza el enlace con `--remote=<URL>`
+y solicita solo entrada oculta local. El baseline sigue pendiente; no se aplicó
+ninguna migración ni se capturó otro inventario.
+
+**Actualización 18/11/2026:** exportación de preflight ya importada, 3382 filas
+y hash confirmado. La instrucción nueva autoriza conexión y primer baseline
+operativo, y aplicación de los cuatro archivos solo si se cumplen las condiciones.
+La [guía de conexión vigente](conexion-cli-baseline.md) prepara entrada oculta en
+terminal y captura inicial read-only con el validador existente. No se repite el
+inventario de preflight ni las pruebas anteriores; no hay todavía conexión real
+ni baseline capturado por el agente. Las restricciones de lecturas del 17/11 que
+aparecen debajo son antecedentes históricos, superados para este alcance.
+
 **Revisión vigente 2B.3D:** [resolución de bloqueos](fase-2b3d-resolucion-bloqueos.md)
 retira los triggers propios de Auth y la edición SQL directa del ledger. La CLI
 lo inicializa al primer push; la compensación conserva sus filas y emite un
@@ -7,12 +43,14 @@ repair-plan separado para CLI. Véase el nuevo manifiesto y las siete pruebas
 del operador sin propiedad Auth. Las 26 pruebas de este informe son históricas,
 no una reejecución con la migración 3 revisada.
 
-**Siguiente lectura manual preparada desde `11b2c15`:** usar primero el
-[preflight de catálogos](fase-2b3-catalog-preflight.md), aún no ejecutado. El
-usuario pidió únicamente metadatos, sin cuentas, negocio ni credenciales. El
+**Continuación desde `af3259f`:** el usuario ya ejecutó el
+[preflight de catálogos](fase-2b3-catalog-preflight.md) y pide no repetirlo ni
+ejecutar otra consulta SQL. Recuperar el archivo existente de ChatGPT según la
+[preparación local](conexion-cli-baseline.md). Su recibo offline conserva la
+evidencia sin convertirla en baseline operativo. El
 `inventory.sql` descrito abajo tiene un alcance mayor (conteos, historial y
 definiciones/configuración) y **no debe ejecutarse para esta solicitud**. La
-consulta nueva no es `0.json` ni sustituye el formato del generador. Este plan,
+exportación histórica no es `0.json` ni sustituye el formato del generador. Este plan,
 sus requisitos y compensaciones siguen sin autorización de ejecución remota.
 
 17/11/2026. Base: `d48dbfb`. Trabajo exclusivamente local. La autorización de
