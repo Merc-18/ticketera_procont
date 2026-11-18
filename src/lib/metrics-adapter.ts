@@ -30,6 +30,10 @@ export interface TimeAverages {
   avg_lead_time_days: number | null
   cycle_sample_size?: number
   lead_sample_size?: number
+  /** Terminados excluidos de ambos promedios (sin inicio registrado o cronología inválida). */
+  excluded_count?: number
+  /** 'paired_complete': ambos promedios sobre la misma cohorte de tickets. */
+  cohort?: 'paired_complete'
 }
 
 export type MetricResult<T> =
@@ -53,6 +57,11 @@ export function isTimeAverages(v: any): v is TimeAverages {
   return !!v && count(v.completed_count) && days(v.avg_cycle_time_days) && days(v.avg_lead_time_days)
     && (v.cycle_sample_size === undefined || count(v.cycle_sample_size))
     && (v.lead_sample_size === undefined || count(v.lead_sample_size))
+    && (v.excluded_count === undefined || count(v.excluded_count))
+    && (v.cohort === undefined || (v.cohort === 'paired_complete' && v.cycle_sample_size === v.lead_sample_size))
+    // Con cohorte común, el promedio de Lead (solicitud → fin) nunca puede ser menor que el de Cycle.
+    && (v.cohort !== 'paired_complete' || v.avg_cycle_time_days === null || v.avg_lead_time_days === null
+        || v.avg_lead_time_days + 1e-9 >= v.avg_cycle_time_days)
 }
 
 const notPublished = (error: any) => ['PGRST202', '42883'].includes(String(error?.code ?? ''))

@@ -52,6 +52,15 @@ test('time averages accept server sample sizes', async () => {
   assert.equal((await createMetricsAdapter(client({ data: { ...data, cycle_sample_size: -1 }, error: null })).timeAverages({ periodDays: null, studioId: null })).state, 'error')
 })
 
+test('paired cohort: equal sample sizes and Lead >= Cycle, otherwise rejected', async () => {
+  const ok = { completed_count: 3, avg_cycle_time_days: 4.5, avg_lead_time_days: 6.5, cycle_sample_size: 2, lead_sample_size: 2, excluded_count: 1, cohort: 'paired_complete' }
+  const run = data => createMetricsAdapter(client({ data, error: null })).timeAverages({ periodDays: null, studioId: null })
+  assert.equal((await run(ok)).state, 'ready')
+  assert.equal((await run({ ...ok, avg_lead_time_days: 4 })).state, 'error')          // Lead < Cycle: engañoso
+  assert.equal((await run({ ...ok, lead_sample_size: 3 })).state, 'error')            // cohortes distintas
+  assert.equal((await run({ ...ok, avg_cycle_time_days: null, avg_lead_time_days: null, cycle_sample_size: 0, lead_sample_size: 0 })).state, 'ready')
+})
+
 test('other server errors and network failures → error state', async () => {
   assert.equal((await createMetricsAdapter(client({ data: null, error: { code: '42501' } })).monthlyUrgency('2026-11')).state, 'error')
   const throwing = { rpc: async () => { throw new Error('network') } }

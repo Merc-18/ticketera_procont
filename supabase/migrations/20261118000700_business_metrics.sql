@@ -281,11 +281,18 @@ BEGIN
   IF p_period_days IS NOT NULL AND p_period_days <= 0 THEN
     RAISE EXCEPTION 'El período debe ser positivo o null' USING ERRCODE='22023';
   END IF;
+  -- Cohorte comparable: ambos promedios sobre los MISMOS tickets terminados con Cycle y Lead válidos
+  -- (metric_status = 'complete'), de modo que el promedio de Lead nunca queda por debajo del de Cycle
+  -- por mezclar poblaciones. Los terminados sin inicio registrado o con cronología inválida se
+  -- informan aparte (excluded_count) y no entran en ninguno de los dos promedios.
   SELECT jsonb_build_object(
     'completed_count', count(*),
-    'avg_cycle_time_days', avg(cycle_time_seconds) / 86400::numeric,
-    'avg_lead_time_days', avg(lead_time_seconds) / 86400::numeric,
-    'cycle_sample_size', count(cycle_time_seconds), 'lead_sample_size', count(lead_time_seconds)
+    'avg_cycle_time_days', avg(cycle_time_seconds) FILTER (WHERE metric_status = 'complete') / 86400::numeric,
+    'avg_lead_time_days', avg(lead_time_seconds) FILTER (WHERE metric_status = 'complete') / 86400::numeric,
+    'cycle_sample_size', count(*) FILTER (WHERE metric_status = 'complete'),
+    'lead_sample_size', count(*) FILTER (WHERE metric_status = 'complete'),
+    'excluded_count', count(*) FILTER (WHERE metric_status <> 'complete'),
+    'cohort', 'paired_complete'
   ) INTO result FROM app_private.ticket_performance(p_studio_id)
   WHERE general_status = 'done'
     AND (p_period_days IS NULL OR completed_at >= current_timestamp - make_interval(days => p_period_days));

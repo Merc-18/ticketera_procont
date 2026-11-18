@@ -228,7 +228,7 @@ export default function DashboardView() {
     if (averages === null) return 'Cargando…'
     if (averages.state === 'pending_contract') return 'Pendiente de integración'
     if (averages.state === 'error') return 'No disponible'
-    const v = averages.data.completed_count > 0 ? pick(averages.data) : null
+    const v = averages.data.completed_count > 0 && averages.data.cycle_sample_size !== 0 ? pick(averages.data) : null
     if (v === null) return 'Sin datos suficientes'
     return v < 1 ? `${Math.max(1, Math.round(v * 24))}h` : `${v.toFixed(1).replace('.0', '')}d`
   }
@@ -343,6 +343,12 @@ export default function DashboardView() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <StatCard label="Cycle Time promedio" value={cycleLabel} icon="🔄" color="border-brand-400" />
         <StatCard label="Lead Time promedio"  value={leadLabel}  icon="📦" color="border-purple-400" />
+        {averages?.state === 'ready' && averages.data.completed_count > 0 && (
+          <p className="sm:col-span-2 text-xs text-gray-400 -mt-2">
+            Ambos promedios sobre los mismos {averages.data.cycle_sample_size ?? averages.data.completed_count} trabajos terminados
+            {averages.data.excluded_count ? ` · ${averages.data.excluded_count} terminado(s) excluido(s) por no tener inicio o cronología válida` : ''}.
+          </p>
+        )}
       </div>
 
       {/* Charts — distribución */}

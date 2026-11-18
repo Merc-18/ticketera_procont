@@ -1,0 +1,17 @@
+{
+  "at_utc": "2026-11-18T21:50:29.690239+00:00",
+  "postgresql": "17.12 (Ubuntu 17.12-1.pgdg24.04+1)",
+  "migration": "20261118000700_business_metrics.sql",
+  "checks": [
+    "per ticket: Backlog wait, simultaneous flows, blocking and reopening; Lead >= Cycle",
+    "averages use the same paired cohort (Lead-only ticket excluded): Cycle 4.5d, Lead 6.5d",
+    "documented: mixing cohorts would have averaged Lead over 3 tickets (5.0d) vs Cycle over 2 (4.5d)",
+    "no finished tickets: averages null (UI «Sin datos suficientes»)",
+    "anon cannot read averages"
+  ],
+  "passed": 5,
+  "socket_only": true,
+  "server_stopped": true,
+  "synthetic_data_only": true,
+  "remote_sql_executed": false
+}
