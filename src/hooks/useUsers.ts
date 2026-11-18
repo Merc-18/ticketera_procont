@@ -5,7 +5,7 @@ import { errorMessage, requireData } from '../lib/supabase-errors'
 import { useAuth } from './useAuth'
 import { canEdit, canManageProfile } from '../lib/access'
 import type { User } from '../types/database.types'
-import { administerAccount } from '../lib/account-admin'
+import { administerAccount, AccountAdminError } from '../lib/account-admin'
 
 export function useUsers() {
   const { user: actor } = useAuth()
@@ -37,7 +37,14 @@ export function useUsers() {
       throw new Error('Hay un alta pendiente de revisión. Confirma su resultado antes de crear otra cuenta.')
     }
     accountAttempt.current ??= { fingerprint, requestId: crypto.randomUUID() }
-    await administerAccount({ ...data, action: 'create', request_id: accountAttempt.current.requestId })
+    try {
+      await administerAccount({ ...data, email: data.email.trim(), full_name: data.full_name.trim(),
+        action: 'create', request_id: accountAttempt.current.requestId })
+    } catch (err) {
+      // Solo se libera el identificador si el backend rechazó antes de reservar el alta.
+      if (err instanceof AccountAdminError && err.noJobCreated) accountAttempt.current = undefined
+      throw err
+    }
     accountAttempt.current = undefined
     await loadUsers()
     return { sessionLost: false }

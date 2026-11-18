@@ -55,5 +55,33 @@
     "credentials_printed_or_saved": false,
     "other_projects_touched": false,
     "frontend_changed": false
+  },
+  "panel_enablement": {
+    "at_utc": "2026-11-18T17:05:00Z",
+    "secret_set": {
+      "PROCONT_ALLOWED_ORIGINS": "http://localhost:5173"
+    },
+    "cors_preflight": {
+      "http://localhost:5173": "204 + Access-Control-Allow-Origin exacto",
+      "http://localhost:5174": "403",
+      "https://evil.example": "403"
+    },
+    "post_without_token_from_allowed_origin": "401 authentication_required",
+    "server_state_read_only": {
+      "auth_users": 1,
+      "app_users": 1,
+      "active_superadmins": 1,
+      "bootstrap_used": 1,
+      "profile_linked_to_auth": 1,
+      "jobs": 0,
+      "rls_users": true
+    },
+    "frontend_fixes": [
+      "Botón Nuevo Usuario habilitado (abría nada; estaba deshabilitado)",
+      "Validación de contraseña 12–128 alineada con el backend",
+      "Aviso obsoleto de cierre de sesión sustituido",
+      "Errores del endpoint traducidos por código; el request_id solo se libera si el rechazo fue previo a la reserva"
+    ],
+    "accounts_created": 0
   }
 }

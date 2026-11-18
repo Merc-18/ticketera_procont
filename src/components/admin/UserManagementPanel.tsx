@@ -179,7 +179,7 @@ export default function UserManagementPanel() {
             className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary w-52"
           />
           <button
-            disabled title="La provisión de cuentas requiere el backend Auth"
+            onClick={() => { setEditing(null); setShowModal(true) }}
             className="px-4 py-1.5 bg-primary text-white rounded-lg text-sm font-medium hover:bg-brand-700 transition flex items-center gap-1.5 shadow-sm"
           >
             ➕ Nuevo Usuario

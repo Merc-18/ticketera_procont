@@ -42,7 +42,7 @@ export default function UserModal({ user, currentUserRole, currentUserId, onClos
     e.preventDefault()
     if (!fullName.trim()) { setError('El nombre es requerido'); return }
     if (!isEdit && !email.trim()) { setError('El email es requerido'); return }
-    if (!isEdit && password.length < 6) { setError('La contraseña debe tener al menos 6 caracteres'); return }
+    if (!isEdit && (password.length < 12 || password.length > 128)) { setError('La contraseña debe tener entre 12 y 128 caracteres'); return }
 
     setSaving(true)
     setError(null)
@@ -111,7 +111,9 @@ export default function UserModal({ user, currentUserRole, currentUserId, onClos
                 type="password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                placeholder="Mínimo 6 caracteres"
+                placeholder="Entre 12 y 128 caracteres"
+                autoComplete="new-password"
+                maxLength={128}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
@@ -183,8 +185,8 @@ export default function UserModal({ user, currentUserRole, currentUserId, onClos
           {/* Aviso creación */}
           {!isEdit && (
             <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-xs text-amber-700">
-              <strong>Nota:</strong> Si la confirmación de email está desactivada en Supabase, tu sesión
-              se cerrará automáticamente al crear el usuario. Vuelve a iniciar sesión con tu cuenta.
+              <strong>Nota:</strong> la cuenta se crea con el correo confirmado y queda activa con el rol
+              elegido. Verifica la identidad de la persona y entrégale la contraseña por un canal aprobado.
             </div>
           )}
 

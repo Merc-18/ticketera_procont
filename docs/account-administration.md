@@ -8,8 +8,12 @@ el bearer con `getUser`. Pruebas negativas sin cuentas: sin token, token inváli
 JWT forjado y clave publicable → 401; origen no permitido → 403; RPC administrativas
 por anon → 42501; `bootstrap_superadmin` no expuesta. Evidencia:
 [`account-administration-remote.json`](validation/account-administration-remote.json).
-Pendiente: secretos `PROCONT_ALLOWED_ORIGINS` (hasta entonces el navegador recibe
-`origin_denied`) e invitaciones (callback + SMTP). Los pasos 1–2 de «Activación
+**Panel habilitado:** `PROCONT_ALLOWED_ORIGINS=http://localhost:5173` (solo ese origen;
+otros → 403). En **Equipo → Usuarios** un admin/superadmin puede crear cuentas
+(contraseña 12–128, correo confirmado, perfil activo), editar rol/estado y desactivar.
+El borrado sigue deshabilitado por diseño. Al desplegar el frontend, añadir su origen
+HTTPS separado por comas: `supabase secrets set PROCONT_ALLOWED_ORIGINS=http://localhost:5173,https://<dominio>`.
+Pendiente: invitaciones (callback + SMTP). Los pasos 1–2 de «Activación
 pendiente» quedan completados; el texto siguiente se conserva como diseño.
 
 Base `968eb5c`. Las cuatro migraciones aplicadas y las pantallas de Claude se
