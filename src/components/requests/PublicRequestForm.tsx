@@ -6,6 +6,8 @@ import { errorMessage } from '../../lib/supabase-errors'
 import { handoffTracking } from '../../lib/tracking-handoff'
 import type { SubmissionReceipt } from '../../lib/operations'
 import AreaInput from '../ui/AreaInput'
+import { useCatalogs } from '../../hooks/useCatalogs'
+import ClassificationFields, { EMPTY_CLASSIFICATION } from './ClassificationFields'
 import BrandLogo from '../ui/BrandLogo'
 import { BRAND } from '../../theme/brand'
 
@@ -82,6 +84,11 @@ export default function PublicRequestForm() {
   const [selectedTypes, setSelectedTypes]     = useState<string[]>([])
   const [isUrgent, setIsUrgent]               = useState(false)
   const [formData, setFormData]               = useState(EMPTY_FORM)
+  const catalogs = useCatalogs('public')
+  // Con catálogos disponibles (migración 20261118000300) se clasifica por estudio/proyecto/área;
+  // si no, se conserva el campo de área en texto libre.
+  const classified = catalogs.available && catalogs.studios.length > 0 && catalogs.systems.length > 0
+  const [classification, setClassification] = useState(EMPTY_CLASSIFICATION)
 
   const calculatedSLA = calcSLA(selectedTypes)
   const urgentSLA     = Math.ceil(calculatedSLA / 2)
@@ -105,6 +112,7 @@ export default function PublicRequestForm() {
     setSelectedTypes([])
     setIsUrgent(false)
     setFormData(EMPTY_FORM)
+    setClassification(EMPTY_CLASSIFICATION)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -131,7 +139,7 @@ export default function PublicRequestForm() {
         request_date: today,
         requested_date,
         observations,
-      }, attempt.current)
+      }, attempt.current, classified ? classification : undefined)
 
       setReceipt(result)
       setRequestNumber(result.request_number)
@@ -237,6 +245,19 @@ export default function PublicRequestForm() {
                 />
               </div>
 
+              {catalogs.loading ? (
+                <p className="text-sm text-gray-400">Cargando catálogos...</p>
+              ) : classified ? (
+                <ClassificationFields
+                  value={classification}
+                  onChange={setClassification}
+                  studios={catalogs.studios}
+                  systems={catalogs.systems}
+                  subsystems={catalogs.subsystems}
+                  areas={catalogs.areas}
+                  selectClassName="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none bg-white"
+                />
+              ) : (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Área <span className="text-red-500">*</span>
@@ -249,6 +270,7 @@ export default function PublicRequestForm() {
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
                 />
               </div>
+              )}
             </section>
 
             {/* ── Información de la Solicitud ── */}

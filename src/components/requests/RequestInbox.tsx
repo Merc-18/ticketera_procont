@@ -8,6 +8,8 @@ import type { Request } from '../../types/database.types'
 import { calcSlaFormalDays, calcTargetDate } from '../../lib/sla-config'
 import { toast } from '../../lib/toast'
 import PlannerImportModal from './PlannerImportModal'
+import { useCatalogs } from '../../hooks/useCatalogs'
+import { operations } from '../../lib/api'
 
 const isUrgent = (r: Request) => !!r.observations?.startsWith('🔴 URGENTE')
 
@@ -38,6 +40,35 @@ type InboxTab = 'pending' | 'approved' | 'rejected'
 
 export default function RequestInbox() {
   const { requests, loading, error, reload, approveRequest, rejectRequest } = useRequests({ loadInbox: true })
+  // Catálogos para mostrar la clasificación y elegir el código interno del estudio al validar.
+  const catalogs = useCatalogs('member')
+  const [studioCodeId, setStudioCodeId] = useState('')
+  const nameOf = (list: { id: string; name: string }[], id?: string | null) => (id ? list.find(x => x.id === id)?.name : undefined)
+  const classificationOf = (r: Request) => r.studio_id ? {
+    studio: nameOf(catalogs.studios, r.studio_id) ?? '—',
+    project: [nameOf(catalogs.systems, r.system_id), nameOf(catalogs.subsystems, r.subsystem_id)].filter(Boolean).join(' / ') || '—',
+    area: [nameOf(catalogs.areas, r.area_id), nameOf(catalogs.areas, r.subarea_id)].filter(Boolean).join(' / ') || null,
+    code: catalogs.codes.find(c => c.id === r.studio_code_id)?.code ?? null,
+  } : null
+  /** Antes de aceptar o rechazar un ticket clasificado, fija el código interno del estudio. */
+  const ensureStudioCode = async (r: Request) => {
+    if (!r.studio_id || r.studio_code_id === studioCodeId) return
+    if (!studioCodeId) throw new Error('Selecciona el código interno del estudio.')
+    await operations.assignStudioCode(r.id, studioCodeId)
+  }
+  const codeSelect = (r: Request) => r.studio_id ? (
+    <div className="mb-4">
+      <label className="block text-sm font-medium text-gray-700 mb-1">
+        Código interno del estudio <span className="text-red-500">*</span>
+      </label>
+      <p className="text-xs text-gray-500 mb-1.5">Estudio: {classificationOf(r)?.studio}</p>
+      <select value={studioCodeId} onChange={e => setStudioCodeId(e.target.value)}
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary outline-none bg-white">
+        <option value="">Selecciona un código</option>
+        {catalogs.codes.filter(c => c.studio_id === r.studio_id).map(c => <option key={c.id} value={c.id}>{c.code}</option>)}
+      </select>
+    </div>
+  ) : null
   const { assignableUsers: activeUsers } = useUsers()
   const approvalAttempt = useRef(createRpcAttempt())
   const { user: currentUser } = useAuth()
@@ -69,6 +100,7 @@ export default function RequestInbox() {
     const urgent = isUrgent(request)
     const firstType = request.request_type.split(',')[0].trim()
     setSelectedRequest(request)
+    setStudioCodeId(request.studio_code_id ?? '')
     setApproveData(d => ({
       ...d,
       title: `${firstType} - ${request.requester_area}`,
@@ -83,6 +115,7 @@ export default function RequestInbox() {
     if (!selectedRequest) return
     setActionLoading(true)
     try {
+      await ensureStudioCode(selectedRequest)
       await approveRequest(selectedRequest.id, {
         ...approveData,
         start_date: approveData.start_date || undefined,
@@ -107,6 +140,7 @@ export default function RequestInbox() {
     if (!selectedRequest || !rejectionReason.trim()) return
     setActionLoading(true)
     try {
+      await ensureStudioCode(selectedRequest)
       await rejectRequest(selectedRequest.id, rejectionReason)
       setShowRejectModal(false)
       setRejectionReason('')
@@ -226,7 +260,7 @@ export default function RequestInbox() {
                         ✓ Aprobar
                       </button>
                       <button
-                        onClick={(e) => { e.stopPropagation(); setSelectedRequest(request); setShowRejectModal(true) }}
+                        onClick={(e) => { e.stopPropagation(); setSelectedRequest(request); setStudioCodeId(request.studio_code_id ?? ''); setShowRejectModal(true) }}
                         disabled={actionLoading}
                         className="px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition disabled:opacity-50"
                       >
@@ -377,6 +411,14 @@ export default function RequestInbox() {
                 <p className="font-medium">{selectedRequest.requester_area}</p>
               </div>
 
+              {classificationOf(selectedRequest) && (
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-gray-50 border rounded-lg p-3">
+                  <div><p className="text-xs text-gray-500">Estudio</p><p className="text-sm font-medium">{classificationOf(selectedRequest)!.studio}</p></div>
+                  <div><p className="text-xs text-gray-500">Proyecto</p><p className="text-sm font-medium">{classificationOf(selectedRequest)!.project}</p></div>
+                  <div><p className="text-xs text-gray-500">Código interno</p><p className="text-sm font-medium font-mono">{classificationOf(selectedRequest)!.code ?? 'Pendiente'}</p></div>
+                </div>
+              )}
+
               <div>
                 <p className="text-sm text-gray-600 mb-1">
                   {selectedRequest.needs_code ? 'Producto(s) Requerido(s)' : 'Tipo de Requerimiento'}
@@ -436,7 +478,7 @@ export default function RequestInbox() {
                   ✓ Aprobar
                 </button>
                 <button
-                  onClick={() => setShowRejectModal(true)}
+                  onClick={() => { setStudioCodeId(selectedRequest.studio_code_id ?? ''); setShowRejectModal(true) }}
                   disabled={actionLoading}
                   className="flex-1 bg-red-500 text-white py-3 rounded-lg font-semibold hover:bg-red-600 transition disabled:opacity-50"
                 >
@@ -456,6 +498,7 @@ export default function RequestInbox() {
             <p className="text-gray-600 mb-4">
               Solicitud: <span className="font-mono font-bold text-primary">{selectedRequest.request_number}</span>
             </p>
+            {codeSelect(selectedRequest)}
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Razón del Rechazo <span className="text-red-500">*</span>
@@ -477,7 +520,7 @@ export default function RequestInbox() {
               </button>
               <button
                 onClick={handleReject}
-                disabled={!rejectionReason.trim() || actionLoading}
+                disabled={!rejectionReason.trim() || actionLoading || (!!selectedRequest.studio_id && !studioCodeId)}
                 className="flex-1 bg-red-500 text-white py-3 rounded-lg font-semibold hover:bg-red-600 transition disabled:opacity-50"
               >
                 {actionLoading ? 'Rechazando...' : 'Confirmar Rechazo'}
@@ -513,6 +556,7 @@ export default function RequestInbox() {
               </span>
             </div>
 
+            {codeSelect(selectedRequest)}
             <div className="space-y-4 mb-6">
               {/* Título */}
               <div>
@@ -697,7 +741,7 @@ export default function RequestInbox() {
               </button>
               <button
                 onClick={handleApprove}
-                disabled={actionLoading || !approveData.title.trim()}
+                disabled={actionLoading || !approveData.title.trim() || (!!selectedRequest.studio_id && !studioCodeId)}
                 className="flex-1 bg-green-500 text-white py-2.5 rounded-lg font-semibold hover:bg-green-600 transition disabled:opacity-50 text-sm"
               >
                 {actionLoading ? 'Creando proyecto...' : '✅ Aprobar y crear proyecto'}

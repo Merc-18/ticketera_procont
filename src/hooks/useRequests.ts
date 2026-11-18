@@ -3,7 +3,7 @@ import { supabase } from '../lib/supabase'
 import { operations } from '../lib/api'
 import { errorMessage, requireData } from '../lib/supabase-errors'
 import type { Request } from '../types/database.types'
-import type { ApprovalInput } from '../lib/operations'
+import type { ApprovalInput, RequestClassification } from '../lib/operations'
 import type { RpcAttempt } from '../lib/rpc-attempt'
 
 export function useRequests({ loadInbox = false } = {}) {
@@ -28,7 +28,8 @@ export function useRequests({ loadInbox = false } = {}) {
 
   useEffect(() => { void loadRequests() }, [loadInbox])
 
-  const createRequest = (data: Partial<Request>, attempt: RpcAttempt) => operations.submitRequest(data, attempt)
+  const createRequest = (data: Partial<Request>, attempt: RpcAttempt, classification?: RequestClassification) =>
+    operations.submitRequest(data, attempt, classification)
   const approveRequest = async (id: string, data: ApprovalInput, attempt: RpcAttempt) => {
     const request = requests.find(item => item.id === id) ?? requireData(
       await supabase.from('requests').select('*').eq('id', id).single(), 'Solicitud') as Request

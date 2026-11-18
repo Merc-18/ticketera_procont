@@ -7,6 +7,10 @@ export interface RpcClient {
   rpc(name: string, args: Record<string, unknown>): PromiseLike<{ data: any; error: unknown }>
 }
 export interface SubmissionReceipt { id: string; request_number: string; tracking_token: string }
+/** Clasificación del ticket por catálogos (estudio, proyecto/subproyecto, área/subárea). */
+export interface RequestClassification {
+  studio_id: string; system_id: string; subsystem_id?: string | null; area_id?: string | null; subarea_id?: string | null
+}
 export interface PublicTracking {
   request_number: string
   status: Request['status']
@@ -34,7 +38,7 @@ export function createOperations(client: RpcClient) {
     requireSuccess(await client.rpc(name, args))
   }
   return {
-    async submitRequest(data: Partial<Request>, attempt: RpcAttempt) {
+    async submitRequest(data: Partial<Request>, attempt: RpcAttempt, classification?: RequestClassification) {
       const payload = {
         requester_name: data.requester_name?.trim(), requester_email: nullable(data.requester_email),
         requester_area: data.requester_area?.trim(), request_type: data.request_type,
@@ -42,8 +46,15 @@ export function createOperations(client: RpcClient) {
         description: data.description?.trim(), observations: data.observations,
         request_date: nullable(data.request_date), requested_date: nullable(data.requested_date), needs_code: data.needs_code,
       }
-      return attempt.run('submit_request', { p_payload: payload }, async args => {
-        const receipt = await value<SubmissionReceipt>('submit_request', args)
+      const rpc = classification ? 'submit_classified_request' : 'submit_request'
+      const args = classification
+        ? { p_payload: { ...payload, requester_area: undefined }, p_classification: {
+            studio_id: classification.studio_id, system_id: classification.system_id,
+            subsystem_id: classification.subsystem_id || null, area_id: classification.area_id || null,
+            subarea_id: classification.subarea_id || null } }
+        : { p_payload: payload }
+      return attempt.run(rpc, args, async args => {
+        const receipt = await value<SubmissionReceipt>(rpc, args)
         if (!uuidPattern.test(receipt.id) || !uuidPattern.test(receipt.tracking_token) || !/^REQ\d{2}-\d{3,}$/.test(receipt.request_number)) {
           throw new Error('No se recibió una constancia válida. Reintenta sin cambiar los datos de la solicitud.')
         }
@@ -74,6 +85,7 @@ export function createOperations(client: RpcClient) {
       })
     },
     rejectRequest: (id: string, reason: string) => command('reject_request', { p_request_id: id, p_reason: reason.trim() }),
+    assignStudioCode: (id: string, codeId: string) => command('assign_request_studio_code', { p_request_id: id, p_studio_code_id: codeId }),
     changeProjectType: (id: string, type: Project['project_type']) => value<Project | Project[]>('change_project_type', { p_project_id: id, p_project_type: type }),
     updateRequestDetails: (id: string, area: string, name: string) => command('update_request_details', {
       p_request_id: id, p_area: nullable(area), p_requester_name: name.trim(),

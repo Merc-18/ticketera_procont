@@ -21,9 +21,14 @@ export function useAreas({ onlyActive = true }: { onlyActive?: boolean } = {}) {
 
   const reload = useCallback(async () => {
     setLoading(true)
-    let query = supabase.from('areas').select('id,name,is_active').order('name')
-    if (onlyActive) query = query.eq('is_active', true)
-    const { data, error: err } = await query
+    const build = (topLevelOnly: boolean) => {
+      let query = supabase.from('areas').select('id,name,is_active').order('name')
+      if (onlyActive) query = query.eq('is_active', true)
+      // Con la jerarquía (migración 20261118000300) solo se listan áreas principales.
+      return topLevelOnly ? query.is('parent_id', null) : query
+    }
+    let { data, error: err } = await build(true)
+    if (err) ({ data, error: err } = await build(false))  // jerarquía aún no aplicada
     if (err) { setAreas([]); setAvailable(false); setError(errorMessage(err)) }
     else { setAreas((data ?? []) as Area[]); setAvailable(true); setError(null) }
     setLoading(false)

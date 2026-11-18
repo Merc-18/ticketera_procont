@@ -1,5 +1,7 @@
 # Ticketera Procont
 
+**Catálogos y clasificación de tickets preparados (sin aplicar):** migración `20261118000300_ticket_catalogs.sql` (proyectos/subproyectos, estudios y códigos, áreas/subáreas de BUSINESS ACCOMPANYING SAC) y validación con código interno. Ver [catálogos](docs/ticket-catalogs.md).
+
 **Catálogo de áreas activo:** migración `20261118000200_areas.sql` aplicada con Supabase CLI (historial 6/6, RLS verificado, catálogo vacío); sección Equipo → Áreas para superadmin. Las próximas migraciones se aplican con `supabase db push --remote`. Ver [áreas](docs/areas.md).
 
 **Administración de cuentas activa:** migración `20261118000100` aplicada (5/5) y Edge Function `admin-users` desplegada y verificada contra accesos no autorizados; Superadmin inicial creado; administración de usuarios habilitada en el panel para `http://localhost:5173`. El primer superadmin se creó desde Dashboard con `supabase/bootstrap/superadmin_dashboard.sql` (ver [administración de cuentas](docs/account-administration.md)).

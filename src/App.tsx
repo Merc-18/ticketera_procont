@@ -14,7 +14,7 @@ import UserManagementPanel from './components/admin/UserManagementPanel'
 import WorkloadView from './components/admin/WorkloadView'
 
 import PapeleraView from './components/admin/PapeleraView'
-import AreasPanel from './components/admin/AreasPanel'
+import CatalogsPanel from './components/admin/CatalogsPanel'
 import NotificationBell from './components/notifications/NotificationBell'
 import BrandLogo from './components/ui/BrandLogo'
 import { usePendingCount } from './hooks/usePendingCount'
@@ -210,7 +210,7 @@ function Dashboard() {
                       : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
-                  🏷 Áreas
+                  🗂 Catálogos
                 </button>
               )}
             </div>
@@ -219,7 +219,7 @@ function Dashboard() {
             {adminSubTab === 'usuarios' && <UserManagementPanel />}
 
             {adminSubTab === 'papelera' && <PapeleraView />}
-            {adminSubTab === 'areas' && isSuperAdmin && <AreasPanel />}
+            {adminSubTab === 'areas' && isSuperAdmin && <CatalogsPanel />}
           </>
         )}
       </div>

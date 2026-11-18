@@ -28,6 +28,14 @@ export interface Request {
   rejection_reason?: string | null;
   project_id?: string;
   updated_at: string;
+  studio_id?: string | null;
+  system_id?: string | null;
+  subsystem_id?: string | null;
+  area_id?: string | null;
+  subarea_id?: string | null;
+  studio_code_id?: string | null;
+  classified_by?: string | null;
+  classified_at?: string | null;
 }
 
 export interface Project {
