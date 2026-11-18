@@ -1,5 +1,7 @@
 # Ticketera Procont
 
+**Trazabilidad activa (historial 10/10):** estados generales Recibida → En revisión → En backlog → En proceso → Terminado (alternativos: Bloqueado, Rechazada), sincronizados con el tablero en el servidor; seguimiento público solo con el número REQ. Ver [trazabilidad](docs/request-tracking.md).
+
 **M9 activa (historial 9/9):** integrada en `main`; une la compresión de adjuntos de Claude con la seguridad de Codex (`20261118000500_ticket_security.sql`): reserva por token, 4 archivos / 2.500.000 bytes y motivo público de rechazo separado de notas internas. Ver [solicitudes](docs/request-intake.md) y [seguridad](docs/ticket-security.md).
 
 En la rama aislada `codex/ticket-security-guards` están preparadas las

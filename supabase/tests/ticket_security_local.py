@@ -64,7 +64,8 @@ try:
       ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
       GRANT USAGE ON SCHEMA storage TO anon,authenticated;
       GRANT SELECT,INSERT,UPDATE,DELETE ON storage.objects TO anon,authenticated;""")
-    migrations=sorted((ROOT/'supabase/migrations').glob('*.sql'))
+    # Contrato de M9: cadena M1–M9 (migraciones posteriores se prueban en sus propias suites).
+    migrations=[p for p in sorted((ROOT/'supabase/migrations').glob('*.sql')) if p.name<='20261118000500_ticket_security.sql']
     for path in migrations[:-1]: sql(path.read_text(),owner)
     assert len(migrations)==9 and migrations[-1].name=='20261118000500_ticket_security.sql'
     studio=q('SELECT studio_id FROM public.studio_codes WHERE is_active ORDER BY code LIMIT 1',owner)

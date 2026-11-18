@@ -1,6 +1,7 @@
 import type { Project, Request, User } from '../types/database.types.ts'
 import type { RpcAttempt } from './rpc-attempt.ts'
 import { requireData, requireSuccess } from './supabase-errors.ts'
+import { isGeneralStatus, type GeneralStatus } from './request-status.ts'
 
 export interface RpcClient {
   rpc(name: string, args: Record<string, unknown>): PromiseLike<{ data: any; error: unknown }>
@@ -10,13 +11,10 @@ export interface SubmissionReceipt { id: string; request_number: string; trackin
 export interface RequestClassification {
   studio_id: string; system_id: string; subsystem_id?: string | null; area_id?: string | null; subarea_id?: string | null
 }
-/** Seguimiento público: solo estado; nunca SLA, fases ni clasificación interna. */
+/** Seguimiento público (migración 20261118000600): solo número REQ y estado general. */
 export interface PublicTracking {
   request_number: string
-  status: Request['status']
-  created_at: string
-  title: string | null
-  rejection_reason: string | null
+  status: GeneralStatus
 }
 /** Datos que envía el cliente (formulario público definitivo). */
 export interface ClientRequestInput {
@@ -119,19 +117,19 @@ export function createOperations(client: RpcClient) {
       p_user_id: id, p_role: role, p_is_active: active,
     }),
     purgeProject: (id: string) => command('purge_project', { p_project_id: id }),
-    async trackRequest(number: string, token: string): Promise<PublicTracking | null> {
+    /** Seguimiento público solo con el número REQ (sin token). Respuesta mínima y con límite de frecuencia. */
+    async trackRequest(number: string): Promise<PublicTracking | null> {
       const normalized = number.trim().toUpperCase()
-      if (!/^(REQ|INT)\d{2}-\d{3,}$/.test(normalized) || !uuidPattern.test(token.trim())) {
-        throw new Error('Ingresa el número completo de solicitud y un token de seguimiento válido.')
-      }
-      const result = await client.rpc('track_request', { p_request_number: normalized, p_tracking_token: token.trim() })
+      if (!/^REQ\d{2}-\d{3,}$/.test(normalized)) throw new Error('Ingresa el número completo de solicitud, por ejemplo REQ26-001.')
+      const result = await client.rpc('track_request_status', { p_request_number: normalized })
       requireSuccess(result)
       if (result.data === null) return null
+      if (result.data?.rate_limited) throw new Error('Demasiadas consultas seguidas. Espera un minuto e inténtalo de nuevo.')
       const data = result.data as PublicTracking
-      if (!['pending', 'approved', 'rejected'].includes(data.status) || !data.created_at) {
-        throw new Error('El seguimiento no devolvió un estado válido. Intenta nuevamente.')
-      }
-      return data
+      if (!isGeneralStatus(data.status)) throw new Error('El seguimiento no devolvió un estado válido. Intenta nuevamente.')
+      return { request_number: data.request_number, status: data.status }
     },
+    /** Inicio de revisión por el validador (idempotente): estado general «En revisión». */
+    startRequestReview: (id: string) => command('start_request_review', { p_request_id: id }),
   }
 }

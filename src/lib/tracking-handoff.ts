@@ -1,7 +1,5 @@
-import type { SubmissionReceipt } from './operations'
-
-// Volatile handoff inside the SPA. No tokens in URLs, history state or storage.
-let pending: SubmissionReceipt | null = null
-export function handoffTracking(receipt: SubmissionReceipt) { pending = receipt }
-export function peekTrackingReceipt() { return pending }
-export function clearTrackingReceipt() { pending = null }
+// Traspaso volátil dentro de la SPA: solo el número REQ (el token técnico nunca se muestra ni se traspasa).
+let pending: string | null = null
+export function handoffTracking(requestNumber: string) { pending = requestNumber }
+export function peekTrackingNumber() { return pending }
+export function clearTrackingNumber() { pending = null }

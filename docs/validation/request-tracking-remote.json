@@ -1,0 +1,50 @@
+{
+  "migration": {
+    "status": "applied_verified",
+    "at_utc": "2026-11-18T21:20:00Z",
+    "project": "ticketera-procont",
+    "project_ref": "xsxdpaiivklqeudgqoqf",
+    "version": "20261118000600",
+    "method": "Supabase CLI 3.2.0 db push --remote",
+    "preflight": {
+      "dry_run_pending": [
+        "20261118000600_request_tracking.sql"
+      ],
+      "ledger_versions_before": 9,
+      "requests_before": 1,
+      "destructive": "solo DROP/ADD del CHECK de request_events (ampliado)",
+      "recovery_capture_before": "privada en .supabase-local"
+    },
+    "post_check": {
+      "ledger_versions": 10,
+      "triggers": [
+        "requests.sync_request_status",
+        "request_events.sync_review_status",
+        "project_flows.sync_flow_phase",
+        "projects.sync_project_block"
+      ],
+      "action_check_extended": true,
+      "hits_table_closed": true,
+      "anon_track_status": true,
+      "anon_start_review": false,
+      "authenticated_start_review": true,
+      "baseline_events": 1,
+      "statuses": {
+        "REQ26-001": "received"
+      }
+    },
+    "api_checks_anon": {
+      "REQ26-001": "200 {request_number,status:received}",
+      "lowercase/espacios": "200 normalizado",
+      "REQ26-999": "200 null",
+      "formato inválido": "200 null",
+      "start_request_review": "401 42501",
+      "11.ª consulta/minuto mismo cliente": "200 {rate_limited:true}",
+      "bucket por IP detectado (no unknown)": true
+    },
+    "ui_check": "/tracking (build local contra Supabase): REQ26-001 → «Solicitud recibida»; sin token ni datos internos",
+    "tickets_modified": 0,
+    "tickets_created": 0,
+    "credentials_saved": false
+  }
+}

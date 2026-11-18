@@ -96,19 +96,15 @@ export default function PublicRequestForm() {
               </button>
             </div>
           )}
-          <p className="text-sm text-gray-500 mb-4">
-            Guarda el número y este token para consultar tu solicitud. El token solo se muestra ahora; no lo compartas.
+          <p className="text-sm text-gray-500 mb-6">
+            Guarda este número: con él puedes consultar el estado de tu solicitud en «Rastrear solicitud».
           </p>
-          <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">
-            <p className="text-sm text-gray-600 mb-2">Token de seguimiento:</p>
-            <code className="break-all select-all">{receipt.tracking_token}</code>
-          </div>
           <div className="space-y-3">
             <button onClick={() => { attempt.current = createRpcAttempt(); setReceipt(null); setPendingDelivery([]); setDeliveryError(null) }}
               className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-brand-700 transition">
               Crear otra solicitud
             </button>
-            <button onClick={() => { handoffTracking(receipt); navigate('/tracking') }}
+            <button onClick={() => { handoffTracking(receipt.request_number); navigate('/tracking') }}
               className="w-full bg-gray-100 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-200 transition">
               Rastrear mi solicitud
             </button>

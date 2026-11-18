@@ -6,6 +6,7 @@ import { createRpcAttempt } from '../../lib/rpc-attempt'
 import { errorMessage } from '../../lib/supabase-errors'
 import { listRequestAttachments } from '../../lib/attachments'
 import { toast } from '../../lib/toast'
+import RequestTimeline from './RequestTimeline'
 
 type Catalogs = ReturnType<typeof useCatalogs>
 type Mode = 'view' | 'approve' | 'reject'
@@ -50,6 +51,11 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
   const attempt = useRef(createRpcAttempt())
 
   useEffect(() => { void listRequestAttachments(r.id).then(setFiles) }, [r.id])
+  // Abrir una solicitud pendiente como validador inicia la etapa «En revisión» (idempotente en el servidor).
+  const [timelineKey, setTimelineKey] = useState(0)
+  useEffect(() => {
+    if (pending && canManage) void operations.startRequestReview(r.id).then(() => setTimelineKey(k => k + 1)).catch(() => {})
+  }, [r.id, pending, canManage])
 
   const name = (list: { id: string; name: string }[], id?: string | null) => (id ? list.find(x => x.id === id)?.name : undefined)
   const classified = !!r.studio_id
@@ -269,6 +275,8 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
           ) : (
             <p className="text-sm text-gray-500">Pendiente de validación por un administrador.</p>
           )}
+
+          <RequestTimeline requestId={r.id} projectId={r.project_id} catalogs={catalogs} refreshKey={timelineKey} />
         </div>
       </div>
     </div>

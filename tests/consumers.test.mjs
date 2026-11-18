@@ -127,18 +127,19 @@ test('project type change uses its dedicated RPC', async () => {
   assert.deepEqual(client.calls[0], { name: 'change_project_type', args: { p_project_id: projectId, p_project_type: 'administrative' } })
 })
 
-test('tracking validates number and token without table access, including counters above 999', async () => {
-  const state = { request_number: receipt.request_number, status: 'approved', created_at: '2026-11-17T00:00:00Z',
-    title: 'Título ficticio', rejection_reason: null }
-  const client = rpcClient(() => ({ data: state, error: null }))
+test('public tracking uses only the REQ number and returns number + general status, including counters above 999', async () => {
+  const state = { request_number: 'REQ26-1000', status: 'in_progress' }
+  const client = rpcClient(() => ({ data: { ...state, extra: 'ignored' }, error: null }))
   const api = createOperations(client)
-  assert.deepEqual(await api.trackRequest(' req26-1000 ', token), state)
-  assert.deepEqual(client.calls[0], { name: 'track_request', args: { p_request_number: 'REQ26-1000', p_tracking_token: token } })
-  await assert.rejects(api.trackRequest('REQ26-1000', ''), /token/)
-  await assert.rejects(api.trackRequest('1000', token), /número completo/)
+  assert.deepEqual(await api.trackRequest(' req26-1000 '), state)
+  assert.deepEqual(client.calls[0], { name: 'track_request_status', args: { p_request_number: 'REQ26-1000' } })
+  await assert.rejects(api.trackRequest('1000'), /número completo/)
+  await assert.rejects(api.trackRequest('INT26-001'), /número completo/)
   assert.equal(client.calls.length, 1)
-  assert.equal(await createOperations(rpcClient(() => ({ data: null, error: null }))).trackRequest('REQ25-001', token), null)
-  await assert.rejects(createOperations(rpcClient(() => ({ data: null, error: { code: 'PGRST202' } }))).trackRequest('REQ26-001', token), /migraciones/)
+  assert.equal(await createOperations(rpcClient(() => ({ data: null, error: null }))).trackRequest('REQ25-001'), null)
+  await assert.rejects(createOperations(rpcClient(() => ({ data: { rate_limited: true }, error: null }))).trackRequest('REQ26-001'), /Demasiadas/)
+  await assert.rejects(createOperations(rpcClient(() => ({ data: { request_number: 'REQ26-001', status: 'pending' }, error: null }))).trackRequest('REQ26-001'), /estado válido/)
+  await assert.rejects(createOperations(rpcClient(() => ({ data: null, error: { code: 'PGRST202' } }))).trackRequest('REQ26-001'), /migraciones/)
 })
 
 test('SDK transport contract uses the expected RPC URL and serialized arguments, without network', async () => {

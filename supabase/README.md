@@ -93,3 +93,7 @@ Ver [solicitudes](../docs/request-intake.md).
 
 `migrations/20261118000500_ticket_security.sql` está **aplicada**. Verificación: `recovery/ticket_security_check.sql`.
 Ver [seguridad de tickets](../docs/ticket-security.md).
+
+# Trazabilidad (M10)
+
+`migrations/20261118000600_request_tracking.sql` está **aplicada**. Verificación: `recovery/request_tracking_check.sql`.

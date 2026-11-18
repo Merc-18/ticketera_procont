@@ -59,7 +59,8 @@ try:
       ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
       GRANT USAGE ON SCHEMA storage TO anon,authenticated;
       GRANT SELECT,INSERT ON storage.objects TO anon,authenticated;""")
-    migrations=sorted((ROOT/'supabase/migrations').glob('*.sql'))
+    # Contrato de M9: cadena M1–M9 (migraciones posteriores se prueban en sus propias suites).
+    migrations=[p for p in sorted((ROOT/'supabase/migrations').glob('*.sql')) if p.name<='20261118000500_ticket_security.sql']
     for path in migrations[:-1]:sql(path.read_text(),owner)
     studio=q('SELECT studio_id FROM studio_codes ORDER BY code LIMIT 1',owner)
     system=q("SELECT id FROM catalog_systems WHERE name='Otros'",owner)

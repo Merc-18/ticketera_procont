@@ -14,7 +14,8 @@ Evidencia: [local](validation/request-intake-local.json) · [remota](validation/
 ## Cliente (`/request`)
 
 Nombre · Estudio · Proyecto / Sistema · Tipo de solicitud (uno) · Título · Descripción ·
-adjuntos · «Solicito atención urgente».
+adjuntos · «Solicito atención urgente». Seguimiento solo con el número REQ: ver
+[trazabilidad](request-tracking.md) (el token ya no se muestra; queda como credencial de adjuntos).
 No ve correo, subproyecto, área, RUC, códigos, responsables, prioridad, SLA ni la antigua
 división código/administrativo. RPC `submit_client_request`; recibe número REQ y token.
 Seguimiento (`/tracking`): solo número, estado, fecha, título y motivo de rechazo
