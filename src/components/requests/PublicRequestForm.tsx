@@ -6,7 +6,9 @@ import { errorMessage } from '../../lib/supabase-errors'
 import { handoffTracking } from '../../lib/tracking-handoff'
 import type { SubmissionReceipt } from '../../lib/operations'
 import { useCatalogs } from '../../hooks/useCatalogs'
-import { ATTACHMENT_ACCEPT, MAX_ATTACHMENTS, uploadRequestAttachments, validateAttachments } from '../../lib/attachments'
+import { uploadRequestAttachments } from '../../lib/attachments'
+import type { PreparationResult } from '../../lib/attachment-prep'
+import AttachmentPicker from './AttachmentPicker'
 import BrandLogo from '../ui/BrandLogo'
 import { BRAND } from '../../theme/brand'
 
@@ -23,7 +25,9 @@ export default function PublicRequestForm() {
   const attempt = useRef(createRpcAttempt())
   const [form, setForm] = useState(EMPTY)
   const [urgent, setUrgent] = useState(false)
-  const [files, setFiles] = useState<File[]>([])
+  // Adjuntos ya preparados (comprimidos si hacía falta) ANTES de enviar; null = procesando.
+  const [prepared, setPrepared] = useState<PreparationResult | null>({ items: [], totalBytes: 0, originalBytes: 0, ok: true, error: null })
+  const [pickerKey, setPickerKey] = useState(0)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [receipt, setReceipt] = useState<SubmissionReceipt | null>(null)
@@ -35,15 +39,16 @@ export default function PublicRequestForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const fileError = validateAttachments(files)
-    if (fileError) { setError(fileError); return }
+    if (!prepared) { setError('Espera a que terminen de prepararse los adjuntos.'); return }
+    if (!prepared.ok) { setError(prepared.error); return }
     setLoading(true); setError(null)
     try {
       const result = await operations.submitClientRequest({ ...form, urgent_requested: urgent }, attempt.current)
-      const failed = files.length ? await uploadRequestAttachments(result.id, files) : []
+      const ready = prepared.items.map(i => i.file)
+      const failed = ready.length ? await uploadRequestAttachments(result.id, ready) : []
       setFailedFiles(failed)
       setReceipt(result)
-      setForm(EMPTY); setUrgent(false); setFiles([])
+      setForm(EMPTY); setUrgent(false); setPickerKey(k => k + 1)
     } catch (err) {
       setError(errorMessage(err))
     } finally {
@@ -169,11 +174,7 @@ export default function PublicRequestForm() {
                 </div>
                 <div>
                   {label('Adjuntar capturas o documentos', false)}
-                  <input type="file" multiple accept={ATTACHMENT_ACCEPT}
-                    onChange={e => setFiles(Array.from(e.target.files ?? []))}
-                    className="block w-full text-sm text-gray-600 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-brand-50 file:text-brand-700 file:font-medium hover:file:bg-brand-100" />
-                  <p className="text-xs text-gray-400 mt-1">Hasta {MAX_ATTACHMENTS} archivos de 10 MB (imágenes, PDF, Office, texto).</p>
-                  {files.length > 0 && <p className="text-xs text-gray-600 mt-1">{files.map(f => f.name).join(', ')}</p>}
+                  <AttachmentPicker onChange={setPrepared} resetKey={pickerKey} />
                 </div>
                 <label className="flex items-center gap-3 p-4 rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-50">
                   <input type="checkbox" checked={urgent} onChange={e => setUrgent(e.target.checked)} className="h-4 w-4 accent-red-600" />
@@ -183,7 +184,7 @@ export default function PublicRequestForm() {
 
               {error && <p role="alert" className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">{error}</p>}
 
-              <button type="submit" disabled={loading}
+              <button type="submit" disabled={loading || !prepared || !prepared.ok}
                 className="w-full bg-accent-400 hover:bg-accent-300 text-gray-900 py-3.5 rounded-lg font-bold transition disabled:opacity-50">
                 {loading ? 'Enviando...' : 'Enviar solicitud'}
               </button>

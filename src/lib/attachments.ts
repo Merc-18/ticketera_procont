@@ -2,20 +2,16 @@ import { supabase } from './supabase'
 
 /** Evidencias de solicitudes: bucket privado `request-attachments`, carpeta = id de la solicitud. */
 export const ATTACHMENT_BUCKET = 'request-attachments'
-export const MAX_ATTACHMENTS = 5
-export const MAX_ATTACHMENT_BYTES = 10 * 1024 * 1024
 export const ATTACHMENT_ACCEPT = '.png,.jpg,.jpeg,.webp,.gif,.pdf,.txt,.csv,.xlsx,.xls,.docx,.doc'
-
-export function validateAttachments(files: File[]): string | null {
-  if (files.length > MAX_ATTACHMENTS) return `Puedes adjuntar hasta ${MAX_ATTACHMENTS} archivos.`
-  const big = files.find(f => f.size > MAX_ATTACHMENT_BYTES)
-  return big ? `«${big.name}» supera el límite de 10 MB.` : null
-}
+// Límites y compresión: ver attachment-prep.ts (máx. 4 archivos, total ≤ 2.500.000 bytes).
 
 const safeName = (name: string) =>
   name.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9._-]+/g, '_').slice(-120) || 'archivo'
 
-/** Sube las evidencias del cliente tras crear la solicitud. Devuelve los nombres que fallaron. */
+/**
+ * Sube evidencias YA preparadas (comprimidas si correspondía) por prepareAttachments().
+ * Devuelve los nombres que fallaron.
+ */
 export async function uploadRequestAttachments(requestId: string, files: File[]): Promise<string[]> {
   const failed: string[] = []
   for (const [i, file] of files.entries()) {

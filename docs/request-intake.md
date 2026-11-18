@@ -7,7 +7,7 @@ Evidencia: [local](validation/request-intake-local.json) · [remota](validation/
 ## Cliente (`/request`)
 
 Nombre · Estudio · Proyecto / Sistema · Tipo de solicitud (uno) · Título · Descripción ·
-adjuntos (hasta 5, 10 MB, imágenes/PDF/Office/texto) · «Solicito atención urgente».
+adjuntos · «Solicito atención urgente».
 No ve correo, subproyecto, área, RUC, códigos, responsables, prioridad, SLA ni la antigua
 división código/administrativo. RPC `submit_client_request`; recibe número REQ y token.
 Seguimiento (`/tracking`): solo número, estado, fecha, título y motivo de rechazo
@@ -16,6 +16,29 @@ Seguimiento (`/tracking`): solo número, estado, fecha, título y motivo de rech
 Tipos (catálogo `request_types`, editable en Equipo → Catálogos → Tipos de solicitud):
 Error / Incidencia, Nueva funcionalidad, Mejora, Soporte técnico, Acceso / Permisos,
 Reporte / Extracción, Integración / Automatización, Capacitación / Consulta, Otros.
+
+## Adjuntos: compresión en el navegador
+
+Reglas aprobadas: **máximo 4 archivos** y **total ≤ 2.500.000 bytes**. `AttachmentPicker`
+muestra cada archivo, su tamaño original y final, y el total frente al límite; permite quitar
+archivos antes de enviar. Si el total supera el límite, `prepareAttachments`
+(`src/lib/attachment-prep.ts`) recomprime **solo imágenes** PNG/JPEG/WebP/BMP con Canvas → WebP
+(JPEG si no hay WebP), conservando la proporción. Avanza por niveles de menor a mayor pérdida
+(calidad 0,90 → 0,65; lado mayor nunca por debajo de 1600 px para mantener legibles las
+capturas) y se detiene en el primero que cumple. PDF, Word, Excel, texto y GIF no se modifican.
+Si ni así cabe, muestra un mensaje claro y bloquea el envío.
+
+**Integración con el backend de Codex (rama `codex/ticket-security-guards`, 9.ª migración
+pendiente):** la preparación ocurre antes de cualquier llamada al servidor; el formulario solo
+envía cuando `prepared.ok`. `attachmentManifest(items)` entrega nombre, tamaño y tipo finales
+para un contrato de reserva previo a la subida; `uploadRequestAttachments` recibe los archivos
+ya preparados. Hoy se sube tras crear la solicitud con la política de Storage de la migración 8
+(que todavía admite 5 archivos y 10 MB por archivo); el límite 4 / 2,5 MB lo aplica el frontend
+hasta que el backend lo haga cumplir.
+
+Pruebas: `tests/attachment-prep.test.mjs` (8, lógica con compresor simulado) y prueba real en
+Chromium headless: 3 capturas PNG 2880×1800 + PDF (8,15 MB) → 2,26 MB en 0,7 s, WebP
+2560×1600, texto de 13 px legible, PDF intacto.
 
 ## Validador (Requests → solicitud)
 
