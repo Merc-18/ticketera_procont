@@ -12,10 +12,8 @@ import RequesterUrgencySummary from '../metrics/RequesterUrgencySummary'
 type Catalogs = ReturnType<typeof useCatalogs>
 type Mode = 'view' | 'approve' | 'reject'
 type Priority = 'low' | 'medium' | 'high' | 'urgent'
-type BoardType = 'development' | 'administrative' | 'dual'
 
 const PRIORITIES: [Priority, string][] = [['low', 'Baja'], ['medium', 'Media'], ['high', 'Alta'], ['urgent', 'Urgente']]
-const BOARDS: [BoardType, string][] = [['development', '💻 Desarrollo'], ['administrative', '📋 Administrativo'], ['dual', '🔀 Ambos']]
 const input = 'w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary outline-none bg-white'
 
 interface Props {
@@ -24,7 +22,7 @@ interface Props {
   canManage: boolean
   catalogs: Catalogs
   users: User[]
-  onApprove: (id: string, data: { title: string; project_type: BoardType; priority: Priority; assigned_dev?: string; assigned_admin?: string },
+  onApprove: (id: string, data: { title: string; priority: Priority; assigned_dev: string },
     attempt: ReturnType<typeof createRpcAttempt>) => Promise<void>
   onReject: (id: string, publicReason: string, internalNotes?: string) => Promise<void>
   onClose: () => void
@@ -44,7 +42,6 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
   const [subarea, setSubarea] = useState(r.subarea_id ?? '')
   const [responsible, setResponsible] = useState('')
   const [priority, setPriority] = useState<Priority>(r.urgent_requested ? 'urgent' : 'medium')
-  const [board, setBoard] = useState<BoardType>('development')
   const [reason, setReason] = useState('')          // motivo público (lo ve el cliente)
   const [internalNotes, setInternalNotes] = useState('') // notas internas (no se publican)
   const [busy, setBusy] = useState(false)
@@ -87,8 +84,7 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
           area_id: area || null, subarea_id: subarea || null })
       }
       if (mode === 'approve') {
-        await onApprove(r.id, { title: r.title || r.request_type, project_type: board, priority,
-          assigned_dev: responsible, assigned_admin: responsible }, attempt.current)
+        await onApprove(r.id, { title: r.title || r.request_type, priority, assigned_dev: responsible }, attempt.current)
         toast.success('Solicitud aceptada y trabajo creado en el tablero')
       } else {
         await onReject(r.id, reason, internalNotes)
@@ -226,7 +222,7 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
               {mode === 'approve' ? (
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div>
-                    <label className="block text-xs font-medium text-gray-600 mb-1">Responsable *</label>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">Responsable principal *</label>
                     <select value={responsible} onChange={e => setResponsible(e.target.value)} className={input}>
                       <option value="">Selecciona</option>
                       {users.map(u => <option key={u.id} value={u.id}>{u.full_name}</option>)}
@@ -240,10 +236,8 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-gray-600 mb-1">Tablero *</label>
-                    <select value={board} onChange={e => setBoard(e.target.value as BoardType)} className={input}>
-                      {BOARDS.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
-                    </select>
+                    <p className="block text-xs font-medium text-gray-600 mb-1">Tablero</p>
+                    <p className="px-3 py-2 text-sm text-gray-700 bg-gray-50 border rounded-lg">💻 Development · inicia en Backlog</p>
                   </div>
                   <div className="sm:col-span-3 bg-gray-50 border border-dashed rounded-lg px-3 py-2 text-xs text-gray-600">
                     <strong>SLA interno:</strong> Pendiente de configuración. Los plazos de Procont aún no están definidos; no se asigna fecha.

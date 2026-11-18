@@ -15,6 +15,9 @@ import { errorMessage } from '../../lib/supabase-errors'
 import type { ProjectFlow } from '../../types/database.types'
 import { useAreas } from '../../hooks/useAreas'
 import { useCatalogs } from '../../hooks/useCatalogs'
+import { board } from '../../lib/api'
+import { needsPendingConfirmation, type BoardTicket, type Phase } from '../../lib/board'
+import { DoneConfirmDialog } from '../projects/BoardDialogs'
 
 
 type BoardType = 'development' | 'administrative'
@@ -27,14 +30,18 @@ interface Props {
 }
 
 const PHASES = {
+  // Flujo único definitivo (M12). Se permiten saltos y retrocesos; Done solo al llegar a esa columna.
   development: [
     { id: 'backlog', title: '📋 Backlog', color: 'bg-gray-600' },
+    { id: 'analysis', title: '🔎 Analysis', color: 'bg-sky-700' },
     { id: 'design', title: '📝 Design', color: 'bg-brand-600' },
     { id: 'dev', title: '💻 Development', color: 'bg-purple-600' },
+    { id: 'code_review', title: '👀 Code Review', color: 'bg-indigo-600' },
     { id: 'testing', title: '🧪 Testing', color: 'bg-yellow-600' },
     { id: 'deploy', title: '🚀 Deploy', color: 'bg-green-600' },
     { id: 'done', title: '✅ Done', color: 'bg-emerald-700' },
   ],
+  // Solo proyectos históricos (no se crean nuevos Administrative/Dual).
   administrative: [
     { id: 'backlog', title: '📋 Backlog', color: 'bg-gray-600' },
     { id: 'ready_to_start', title: '🎯 Ready to Start', color: 'bg-brand-600' },
@@ -68,7 +75,7 @@ const VIEW_MODES: { value: ViewMode; label: string; icon: string }[] = [
 ]
 
 export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }: Props) {
-  const { projects, loading, error, hasMore, loadMore, statusFilter, setStatusFilter, updateProjectFlow, updateProject, updateFlowDetails, createProject, deleteProject, reload, bulkUpdateProjects } = useProjects()
+  const { projects, loading, error, hasMore, loadMore, statusFilter, setStatusFilter, moveFlow, assignFlow, updateProject, createProject, reload, bulkUpdate } = useProjects()
   const { activeUsers } = useUsers()
   const { user: currentUser } = useAuth()
   const role = currentUser?.role ?? 'viewer'
@@ -77,6 +84,9 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
   const [selectedProject, setSelectedProject] = useState<{ project: any; flow: ProjectFlow } | null>(null)
   const [showNewModal, setShowNewModal] = useState(false)
   const [selectedIds, setSelectedIds] = useState<string[]>([])
+  // Cierre por arrastre con tareas pendientes: requiere confirmación explícita.
+  const [pendingClose, setPendingClose] = useState<{ ticket: BoardTicket; flowId: string; title: string } | null>(null)
+  const [closing, setClosing] = useState(false)
   const [priorityFilter, setPriorityFilter] = useState(() => localStorage.getItem('kanban_priorityFilter') || 'all')
   const [areaFilter, setAreaFilter]         = useState(() => localStorage.getItem('kanban_areaFilter') || 'all')
   const [studioFilter, setStudioFilter]     = useState(() => localStorage.getItem('kanban_studioFilter') || 'all')
@@ -171,13 +181,38 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
 
   const handleDragEnd = async (result: DropResult) => {
     if (!canEdit) return
-    const { destination, draggableId } = result
-    if (!destination) return
+    const { destination, source, draggableId } = result
+    if (!destination || destination.droppableId === source.droppableId) return
+    const item = projects.flatMap(p => ((p as any).project_flows as ProjectFlow[] ?? []).map(f => ({ p, f }))).find(x => x.f.id === draggableId)
+    if (!item) return
+    if (item.p.is_blocked) { toast.error('El ticket está bloqueado: desbloquéalo antes de cambiar de fase.'); return }
+    const target = destination.droppableId as Phase
     try {
-      await updateProjectFlow(draggableId, destination.droppableId)
+      if (target === 'done' || target === 'deployed') {
+        // Snapshot del servidor: si cerrar deja tareas pendientes, se pide confirmación.
+        const ticket = await board.getTicket(item.p.id)
+        if (needsPendingConfirmation(ticket, draggableId, target)) { setPendingClose({ ticket, flowId: draggableId, title: item.p.title }); return }
+      }
+      await moveFlow(item.p.id, draggableId, target)
     } catch (error) {
       toast.error(errorMessage(error))
     }
+  }
+
+  const confirmClose = async () => {
+    if (!pendingClose) return
+    setClosing(true)
+    const { ticket, flowId } = pendingClose
+    const target = ticket.flows.find(f => f.id === flowId)?.flow_type === 'administrative' ? 'deployed' : 'done'
+    try {
+      await moveFlow(ticket.project_id, flowId, target, { confirmPending: true, pendingFingerprint: ticket.pending_fingerprint })
+      toast.success('Ticket terminado (Done)')
+      setPendingClose(null)
+    } catch (error) {
+      toast.error(errorMessage(error))
+      // La lista pudo cambiar: volver a mostrar la vigente.
+      try { const fresh = await board.getTicket(ticket.project_id); setPendingClose(p => p && { ...p, ticket: fresh }) } catch { setPendingClose(null) }
+    } finally { setClosing(false) }
   }
 
   const hasFilters = priorityFilter !== 'all' || areaFilter !== 'all' || studioFilter !== 'all' || (canManage ? userFilter !== 'all' : myProjectsOnly) || searchQuery.trim() !== ''
@@ -203,7 +238,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
         </div>
         <div className="flex gap-4 overflow-x-auto pb-4">
           {phases.map((phase, ci) => (
-            <div key={phase.id} className="flex-shrink-0 w-80">
+            <div key={phase.id} className="flex-shrink-0 w-72">
               <div className={`rounded-t-lg p-3 ${phase.color} opacity-50`}>
                 <div className="h-4 w-28 bg-white/40 rounded" />
               </div>
@@ -230,7 +265,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
     )
   }
 
-  const boardTitle = boardType === 'development' ? '💻 Board Development' : '📋 Board Administrative'
+  const boardTitle = boardType === 'development' ? '💻 Board Development' : '📋 Administrative (histórico)'
 
   return (
     <>
@@ -238,7 +273,11 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
       <div className="flex flex-wrap items-center gap-x-4 gap-y-3 mb-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">{boardTitle}</h2>
-          <p className="text-gray-500 text-xs mt-0.5">Arrastra y suelta los proyectos entre las columnas</p>
+          <p className="text-gray-500 text-xs mt-0.5">
+            {boardType === 'development'
+              ? 'Arrastra los tickets entre fases (se pueden saltar fases). Terminado solo al llegar a Done.'
+              : 'Proyectos anteriores al flujo único Development. Se conservan con sus datos e historial.'}
+          </p>
         </div>
         <input
           type="text"
@@ -366,7 +405,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
         )}
 
         {/* Nuevo proyecto + View mode toggle (derecha) */}
-        {canManage && (
+        {canManage && boardType === 'development' && (
           <button
             onClick={() => setShowNewModal(true)}
             className="ml-auto px-3 py-1.5 rounded-lg text-sm font-semibold bg-primary text-white hover:bg-primary/90 transition flex items-center gap-1.5"
@@ -446,7 +485,8 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
                 projects={getProjectsByPhase(phase.id)}
                 onProjectClick={setSelectedProject}
                 users={activeUsers}
-                onAssign={(flowId, userId) => { void updateFlowDetails(flowId, { assigned_to: userId }).catch(err => toast.error(errorMessage(err))) }}
+                onAssign={(projectId, flowId, userId) => { void assignFlow(projectId, flowId, userId).then(() => toast.success('Responsable actualizado')).catch(err => toast.error(errorMessage(err))) }}
+                canManage={canManage}
                 selectedIds={canEdit ? selectedIds : []}
                 onSelect={canEdit ? (id => setSelectedIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id])) : undefined}
               />
@@ -479,18 +519,20 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
 
       {/* ── BULK ACTION BAR ── */}
       {canEdit && selectedIds.length > 0 && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-white border border-gray-200 shadow-2xl rounded-2xl px-5 py-3 flex items-center gap-4 min-w-max">
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-white border border-gray-200 shadow-2xl rounded-2xl px-4 py-3 flex flex-wrap items-center justify-center gap-3 w-max max-w-[calc(100vw-2rem)]">
           <span className="text-sm font-semibold text-gray-700">
             {selectedIds.length} seleccionado{selectedIds.length !== 1 ? 's' : ''}
           </span>
+          {selectedIds.length > 100 && <span className="text-xs text-red-600">Máximo 100 por operación</span>}
           <div className="h-5 w-px bg-gray-200" />
           <select
+            disabled={selectedIds.length > 100}
             defaultValue=""
             onChange={async e => {
               const val = e.target.value
               if (!val) return
               try {
-                await bulkUpdateProjects(selectedIds, { priority: val as any })
+                await bulkUpdate(selectedIds, 'set_priority', { priority: val as any })
                 setSelectedIds([])
                 toast.success(`Prioridad actualizada en ${selectedIds.length} proyecto${selectedIds.length !== 1 ? 's' : ''}`)
               } catch (err) { toast.error(errorMessage(err)) }
@@ -504,10 +546,12 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
             <option value="low">🟢 Baja</option>
           </select>
           <button
+            disabled={selectedIds.length > 100}
             onClick={async () => {
               const count = selectedIds.length
+              if (!confirm(`¿Archivar ${count} ticket(s)? Se conserva su historial y pueden restaurarse.`)) return
               try {
-                await bulkUpdateProjects(selectedIds, { status: 'archived' as any })
+                await bulkUpdate(selectedIds, 'archive', {})
                 setSelectedIds([])
                 toast.success(`${count} proyecto${count !== 1 ? 's' : ''} archivado${count !== 1 ? 's' : ''}`)
               } catch (err) { toast.error(errorMessage(err)) }
@@ -532,16 +576,18 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
           flows={(selectedProject.project as any).project_flows || []}
           onClose={() => setSelectedProject(null)}
           onUpdate={reload}
-          onDelete={async (id) => { await deleteProject(id); setSelectedProject(null) }}
           updateProject={updateProject}
-          updateFlowDetails={updateFlowDetails}
         />
+      )}
+
+      {pendingClose && (
+        <DoneConfirmDialog key={pendingClose.ticket.pending_fingerprint} title={pendingClose.title} pending={pendingClose.ticket.pending_items}
+          busy={closing} onCancel={() => setPendingClose(null)} onConfirm={() => { void confirmClose() }} />
       )}
 
       {/* New Project Modal */}
       {showNewModal && (
         <NewProjectModal
-          boardType={boardType}
           onClose={() => setShowNewModal(false)}
           onCreate={createProject}
         />

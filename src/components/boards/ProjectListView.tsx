@@ -1,5 +1,6 @@
 import type { Project, ProjectFlow } from '../../types/database.types'
 import { PRIORITY_COLORS, AREA_COLORS, PHASE_LABELS } from '../../lib/constants'
+import { checklistCount, phasePosition } from '../../lib/board'
 
 interface ProjectWithRelations extends Project {
   project_flows?: ProjectFlow[]
@@ -93,18 +94,10 @@ export default function ProjectListView({ projects, boardType, onProjectClick, s
                 </span>
               </div>
 
-              {/* Progreso */}
-              <div>
-                <div className="flex justify-between text-xs text-gray-500 mb-1">
-                  <span>Progreso</span>
-                  <span className="font-semibold text-gray-700">{flow.progress}%</span>
-                </div>
-                <div className="w-full bg-gray-100 rounded-full h-1.5">
-                  <div
-                    className={`h-1.5 rounded-full ${status === 'completed' ? 'bg-green-500' : 'bg-gray-400'}`}
-                    style={{ width: `${flow.progress}%` }}
-                  />
-                </div>
+              {/* Posición de fase y checklist (conteos; % oficial en el detalle) */}
+              <div className="flex justify-between text-xs text-gray-500">
+                <span>Fase {phasePosition(flow.flow_type, flow.current_phase).label}</span>
+                <span>{(({ done, total }) => total ? `Checklist ${done}/${total}` : 'Sin tareas')(checklistCount(flow as any))}</span>
               </div>
 
               {/* Fecha */}

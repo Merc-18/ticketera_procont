@@ -25,12 +25,12 @@ export interface ClientRequestInput {
 export interface InternalClassification {
   studio_code_id: string; subsystem_id?: string | null; area_id?: string | null; subarea_id?: string | null
 }
-export type InternalProjectInput = Pick<Project, 'title' | 'description' | 'project_type' | 'priority'> & {
-  start_date?: string; due_date?: string; area?: string; requester_name?: string
+/** Proyectos nuevos (M12): solo Development, con responsable principal obligatorio y sin SLA. */
+export type InternalProjectInput = Pick<Project, 'title' | 'description' | 'priority'> & {
+  assigned_dev: string; start_date?: string; due_date?: string; area?: string; requester_name?: string
 }
 export interface ApprovalInput {
-  project_type: Project['project_type']; priority: Project['priority']; title?: string
-  start_date?: string; due_date?: string; assigned_dev?: string; assigned_admin?: string
+  priority: Project['priority']; assigned_dev: string; title?: string; start_date?: string; due_date?: string
 }
 const nullable = (value: string | undefined | null) => value?.trim() || null
 const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -82,9 +82,11 @@ export function createOperations(client: RpcClient) {
       p_classification: { studio_code_id: c.studio_code_id, subsystem_id: c.subsystem_id || null,
         area_id: c.area_id || null, subarea_id: c.subarea_id || null } }),
     async createInternalProject(data: InternalProjectInput, attempt: RpcAttempt) {
-      const payload = { title: data.title.trim(), description: data.description.trim(), project_type: data.project_type,
+      if (!uuidPattern.test(data.assigned_dev ?? '')) throw new Error('Selecciona el responsable principal.')
+      const payload = { title: data.title.trim(), description: data.description.trim(), project_type: 'development',
         priority: data.priority, start_date: nullable(data.start_date), due_date: nullable(data.due_date),
-        sla_target_date: null, area: nullable(data.area), requester_name: nullable(data.requester_name) }
+        sla_target_date: null, area: nullable(data.area), requester_name: nullable(data.requester_name),
+        assigned_dev: data.assigned_dev }
       return attempt.run('create_internal_project', { p_payload: payload }, async args => {
         const project = await value<Project>('create_internal_project', args)
         if (!uuidPattern.test(project.id) || !project.request_id) throw new Error('No se confirmó el proyecto. Reintenta con los mismos datos.')
@@ -93,11 +95,12 @@ export function createOperations(client: RpcClient) {
     },
     async approveRequest(request: Request, data: ApprovalInput, attempt: RpcAttempt) {
       // Sin plazos ni fórmulas SLA heredados: el SLA de Procont está pendiente de configuración.
-      const payload = { project_type: data.project_type, priority: data.priority,
+      // Flujo único Development con un responsable principal (M12); assigned_admin no crea otro flujo.
+      if (!uuidPattern.test(data.assigned_dev ?? '')) throw new Error('Selecciona el responsable principal.')
+      const payload = { project_type: 'development', priority: data.priority,
         title: data.title?.trim() || request.title || request.request_type,
         start_date: nullable(data.start_date), due_date: nullable(data.due_date),
-        sla_target_date: null, sla_formal_days: null,
-        assigned_dev: nullable(data.assigned_dev), assigned_admin: nullable(data.assigned_admin) }
+        sla_target_date: null, sla_formal_days: null, assigned_dev: data.assigned_dev, assigned_admin: null }
       return attempt.run('approve_request', { p_request_id: request.id, p_payload: payload }, async args => {
         const project = await value<Project>('approve_request', args)
         if (!uuidPattern.test(project.id) || project.request_id !== request.id) throw new Error('No se confirmó la aprobación. Actualiza la bandeja.')
@@ -109,14 +112,12 @@ export function createOperations(client: RpcClient) {
       ? command('reject_request_with_notes', { p_request_id: id, p_public_reason: publicReason.trim(), p_internal_notes: internalNotes.trim() })
       : command('reject_request', { p_request_id: id, p_reason: publicReason.trim() }),
     assignStudioCode: (id: string, codeId: string) => command('assign_request_studio_code', { p_request_id: id, p_studio_code_id: codeId }),
-    changeProjectType: (id: string, type: Project['project_type']) => value<Project | Project[]>('change_project_type', { p_project_id: id, p_project_type: type }),
     updateRequestDetails: (id: string, area: string, name: string) => command('update_request_details', {
       p_request_id: id, p_area: nullable(area), p_requester_name: name.trim(),
     }),
     adminUpdateUser: (id: string, role: User['role'], active: boolean) => command('admin_update_user', {
       p_user_id: id, p_role: role, p_is_active: active,
     }),
-    purgeProject: (id: string) => command('purge_project', { p_project_id: id }),
     /** Seguimiento público solo con el número REQ (sin token). Respuesta mínima y con límite de frecuencia. */
     async trackRequest(number: string): Promise<PublicTracking | null> {
       const normalized = number.trim().toUpperCase()

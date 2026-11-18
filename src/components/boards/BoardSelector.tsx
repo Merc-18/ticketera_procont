@@ -24,7 +24,7 @@ export default function BoardSelector({ currentBoard, onChange }: Props) {
             : 'text-gray-600 hover:text-gray-900'
         }`}
       >
-        📋 Administrative
+        📋 Histórico Admin.
       </button>
     </div>
   )

@@ -168,6 +168,13 @@ node --test tests/board-operations-client.test.mjs
 74 comprobaciones nuevas PostgreSQL 17.12, 6 del adaptador y validación TypeScript del
 contrato nuevo. No se ejecutaron las suites anteriores. Servidores aislados detenidos.
 
+## Integración del frontend (Claude)
+
+Integrado en `integration/board-operations` sobre este commit: todas las pantallas del tablero usan
+estas RPC y se retiraron las escrituras directas, `activity_logs` desde el navegador y el botón
+Completar. Detalle, pruebas (26 flujos del frontend sobre M1–M12) y pasos de activación en
+[board-ui.md](board-ui.md).
+
 ## Disponibilidad del commit aislado
 
 Además de la copia Git, se exporta `.supabase-local/exports/board-operations.bundle` en el

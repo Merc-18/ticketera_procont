@@ -1,20 +1,13 @@
 import { useState, useRef } from 'react'
 import { createRpcAttempt, type RpcAttempt } from '../../lib/rpc-attempt'
+import type { InternalProjectInput } from '../../lib/operations'
+import { useUsers } from '../../hooks/useUsers'
 import AreaInput from '../ui/AreaInput'
 
+/** Proyecto interno nuevo: siempre Development (inicia en Backlog) con responsable principal obligatorio. */
 interface Props {
-  boardType: 'development' | 'administrative'
   onClose: () => void
-  onCreate: (data: {
-    title: string
-    description: string
-    project_type: 'development' | 'administrative' | 'dual'
-    priority: 'low' | 'medium' | 'high' | 'urgent'
-    start_date?: string
-    due_date?: string
-    area?: string
-    requester_name?: string
-  }, attempt: RpcAttempt) => Promise<void>
+  onCreate: (data: InternalProjectInput, attempt: RpcAttempt) => Promise<void>
 }
 
 const PRIORITY_OPTS = [
@@ -24,17 +17,12 @@ const PRIORITY_OPTS = [
   { value: 'urgent', label: '🔴 Urgente' },
 ] as const
 
-const TYPE_OPTS = [
-  { value: 'development',    label: '💻 Desarrollo' },
-  { value: 'administrative', label: '📋 Administrativo' },
-  { value: 'dual',           label: '🔄 Dual' },
-] as const
-
-export default function NewProjectModal({ boardType, onClose, onCreate }: Props) {
+export default function NewProjectModal({ onClose, onCreate }: Props) {
+  const { assignableUsers } = useUsers()
   const attempt = useRef(createRpcAttempt())
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-  const [projectType, setProjectType] = useState<'development' | 'administrative' | 'dual'>(boardType)
+  const [assignee, setAssignee] = useState('')
   const [priority, setPriority] = useState<'low' | 'medium' | 'high' | 'urgent'>('medium')
   const [startDate, setStartDate] = useState('')
   const [dueDate, setDueDate] = useState('')
@@ -44,14 +32,14 @@ export default function NewProjectModal({ boardType, onClose, onCreate }: Props)
   const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = async () => {
-    if (!title.trim() || !description.trim()) return
+    if (!title.trim() || !description.trim() || !assignee) return
     setSaving(true)
     setError(null)
     try {
       await onCreate({
         title,
         description,
-        project_type: projectType,
+        assigned_dev: assignee,
         priority,
         start_date: startDate || undefined,
         due_date: dueDate || undefined,
@@ -71,7 +59,10 @@ export default function NewProjectModal({ boardType, onClose, onCreate }: Props)
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b">
-          <h2 className="text-lg font-bold text-gray-900">➕ Nuevo Proyecto</h2>
+          <div>
+            <h2 className="text-lg font-bold text-gray-900">➕ Nuevo Proyecto</h2>
+            <p className="text-xs text-gray-500">Board Development · inicia en Backlog</p>
+          </div>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl leading-none">✕</button>
         </div>
 
@@ -106,17 +97,19 @@ export default function NewProjectModal({ boardType, onClose, onCreate }: Props)
           </div>
 
           {/* Tipo + Prioridad */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-gray-600 mb-1.5">Tipo de proyecto</label>
+              <label className="block text-xs font-semibold text-gray-600 mb-1.5" htmlFor="np-assignee">
+                Responsable principal <span className="text-red-500">*</span>
+              </label>
               <select
-                value={projectType}
-                onChange={e => setProjectType(e.target.value as any)}
+                id="np-assignee"
+                value={assignee}
+                onChange={e => setAssignee(e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               >
-                {TYPE_OPTS.map(o => (
-                  <option key={o.value} value={o.value}>{o.label}</option>
-                ))}
+                <option value="">Selecciona…</option>
+                {assignableUsers.map(u => <option key={u.id} value={u.id}>{u.full_name} ({u.role})</option>)}
               </select>
             </div>
             <div>
@@ -134,7 +127,7 @@ export default function NewProjectModal({ boardType, onClose, onCreate }: Props)
           </div>
 
           {/* Fechas */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-semibold text-gray-600 mb-1.5">Fecha de inicio</label>
               <input
@@ -145,7 +138,7 @@ export default function NewProjectModal({ boardType, onClose, onCreate }: Props)
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-600 mb-1.5">Fecha límite</label>
+              <label className="block text-xs font-semibold text-gray-600 mb-1.5">Fecha objetivo <span className="text-gray-400 font-normal">(opcional)</span></label>
               <input
                 type="date"
                 value={dueDate}
@@ -156,7 +149,7 @@ export default function NewProjectModal({ boardType, onClose, onCreate }: Props)
           </div>
 
           {/* Área + Solicitante */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-semibold text-gray-600 mb-1.5">Área</label>
               <AreaInput
@@ -195,7 +188,7 @@ export default function NewProjectModal({ boardType, onClose, onCreate }: Props)
           </button>
           <button
             onClick={handleSubmit}
-            disabled={!title.trim() || !description.trim() || saving}
+            disabled={!title.trim() || !description.trim() || !assignee || saving}
             className="px-5 py-2 rounded-lg text-sm font-semibold bg-primary text-white hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition"
           >
             {saving ? 'Creando...' : '✓ Crear proyecto'}

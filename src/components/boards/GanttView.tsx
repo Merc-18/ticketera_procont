@@ -1,5 +1,5 @@
 import type { Project, ProjectFlow } from '../../types/database.types'
-import { PRIORITY_BAR } from '../../lib/constants'
+import { PRIORITY_BAR, PHASE_LABELS } from '../../lib/constants'
 
 interface ProjectWithRelations extends Project {
   project_flows?: ProjectFlow[]
@@ -35,15 +35,14 @@ const MONTH_NAMES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Se
 
 function exportGanttCSV(items: Array<{ project: ProjectWithRelations; flow: ProjectFlow }>) {
   const PRIORITY_ES: Record<string, string> = { urgent: 'Urgente', high: 'Alta', medium: 'Media', low: 'Baja' }
-  const headers = ['Título', 'Prioridad', 'Área', 'Inicio', 'Vencimiento', 'Progreso', 'Fase']
+  const headers = ['Título', 'Prioridad', 'Área', 'Inicio', 'Fecha objetivo', 'Fase']
   const rows = items.map(({ project, flow }) => [
     project.title,
     PRIORITY_ES[project.priority] ?? project.priority,
     project.requests?.requester_area ?? '',
     project.start_date ?? project.created_at?.slice(0, 10) ?? '',
     project.due_date ?? '',
-    `${flow.progress}%`,
-    flow.current_phase,
+    PHASE_LABELS[flow.current_phase] ?? flow.current_phase,
   ])
   const csv = [headers, ...rows]
     .map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(','))
@@ -214,10 +213,10 @@ export default function GanttView({ projects, boardType, onProjectClick, loading
                     <div
                       className={`absolute h-6 rounded-md ${barColor} ${isOverdue ? 'ring-2 ring-red-400 ring-offset-1' : ''} opacity-80 hover:opacity-100 transition-opacity flex items-center px-2 overflow-hidden`}
                       style={{ left: `${leftPct}%`, width: `${widthPct}%`, minWidth: 8 }}
-                      title={`${project.title}\nInicio: ${start.toLocaleDateString('es-PE')}\nFin: ${end.toLocaleDateString('es-PE')}\nProgreso: ${flow.progress}%`}
+                      title={`${project.title}\nInicio: ${start.toLocaleDateString('es-PE')}\nFin: ${end.toLocaleDateString('es-PE')}\nFase: ${PHASE_LABELS[flow.current_phase] ?? flow.current_phase}`}
                     >
                       <span className="text-white text-xs font-medium truncate hidden sm:block">
-                        {flow.progress}%
+                        {PHASE_LABELS[flow.current_phase] ?? flow.current_phase}
                       </span>
                     </div>
                   </div>

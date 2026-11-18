@@ -11,14 +11,16 @@ interface Props {
   projects: Array<{ project: Project; flow: ProjectFlow }>
   onProjectClick: (item: { project: Project; flow: ProjectFlow }) => void
   users?: User[]
-  onAssign?: (flowId: string, userId: string) => void
+  onAssign?: (projectId: string, flowId: string, userId: string) => void
+  /** admin/superadmin: pueden reasignar también tickets bloqueados. */
+  canManage?: boolean
   selectedIds?: string[]
   onSelect?: (projectId: string) => void
 }
 
-export default function BoardColumn({ phase, projects, onProjectClick, users = [], onAssign, selectedIds, onSelect }: Props) {
+export default function BoardColumn({ phase, projects, onProjectClick, users = [], onAssign, canManage, selectedIds, onSelect }: Props) {
   return (
-    <div className="flex-shrink-0 w-80">
+    <div className="flex-shrink-0 w-72">
       {/* Column Header */}
       <div className={`rounded-t-lg p-3 ${phase.color}`}>
         <div className="flex items-center justify-between">
@@ -46,6 +48,7 @@ export default function BoardColumn({ phase, projects, onProjectClick, users = [
                 key={item.flow.id}
                 draggableId={item.flow.id}
                 index={index}
+                isDragDisabled={item.project.is_blocked}
               >
                 {(provided, snapshot) => (
                   <div
@@ -59,7 +62,7 @@ export default function BoardColumn({ phase, projects, onProjectClick, users = [
                       flow={item.flow}
                       onClick={() => onProjectClick(item)}
                       users={users}
-                      onAssign={onAssign}
+                      onAssign={onAssign && (!item.project.is_blocked || canManage) ? (flowId, userId) => onAssign(item.project.id, flowId, userId) : undefined}
                       selected={selectedIds?.includes(item.project.id)}
                       onSelect={onSelect}
                     />
@@ -72,7 +75,7 @@ export default function BoardColumn({ phase, projects, onProjectClick, users = [
             {/* Empty state */}
             {projects.length === 0 && (
               <div className="text-center text-gray-400 text-sm py-8">
-                Sin proyectos
+                Sin tickets
               </div>
             )}
           </div>

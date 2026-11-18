@@ -7,6 +7,7 @@ import { useCatalogs } from '../../hooks/useCatalogs'
 import { useAuth } from '../../hooks/useAuth'
 import { metrics } from '../../lib/api'
 import type { MetricResult, TimeAverages } from '../../lib/metrics-adapter'
+import { averageLabel } from '../../lib/metrics-adapter'
 import UrgencyStatsPanel from '../metrics/UrgencyStatsPanel'
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -224,16 +225,8 @@ export default function DashboardView() {
       return { label, value, color: colors[i % colors.length] }
     })
 
-  const timeLabel = (pick: (t: TimeAverages) => number | null) => {
-    if (averages === null) return 'Cargando…'
-    if (averages.state === 'pending_contract') return 'Pendiente de integración'
-    if (averages.state === 'error') return 'No disponible'
-    const v = averages.data.completed_count > 0 && averages.data.cycle_sample_size !== 0 ? pick(averages.data) : null
-    if (v === null) return 'Sin datos suficientes'
-    return v < 1 ? `${Math.max(1, Math.round(v * 24))}h` : `${v.toFixed(1).replace('.0', '')}d`
-  }
-  const cycleLabel = timeLabel(t => t.avg_cycle_time_days)
-  const leadLabel  = timeLabel(t => t.avg_lead_time_days)
+  const cycleLabel = averageLabel(averages, t => t.avg_cycle_time_days)
+  const leadLabel  = averageLabel(averages, t => t.avg_lead_time_days)
 
   return (
     <div className="space-y-6">

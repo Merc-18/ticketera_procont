@@ -4,18 +4,27 @@ import type { useCatalogs } from '../../hooks/useCatalogs'
 import { GENERAL_STATUS, isGeneralStatus, limaDateTime, type GeneralStatus } from '../../lib/request-status'
 import { PHASE_LABELS } from '../../lib/constants'
 
-interface Entry { key: string; at: string; actor: string | null; source: 'ticket' | 'proyecto'; title: string; detail?: string; status?: GeneralStatus }
+interface Entry { key: string; at: string; actor: string | null; source: 'ticket' | 'proyecto'; title: string; detail?: string; status?: GeneralStatus; tone?: 'block' | 'done' | 'reopen' }
 type Catalogs = ReturnType<typeof useCatalogs>
 
 const ACTION: Record<string, string> = {
   submitted: 'Solicitud recibida', review_started: 'Revisión iniciada', classified: 'Clasificación registrada',
   approved: 'Aprobada y trabajo creado', rejected: 'Rechazada', requester_corrected: 'Datos del solicitante corregidos',
   phase_changed: 'Cambio de fase', blocked: 'Bloqueado', unblocked: 'Desbloqueado',
+  // Operaciones del tablero (M12, auditoría del servidor)
+  block_reason_changed: 'Motivo de bloqueo corregido', assigned: 'Responsable asignado', reassigned: 'Responsable reasignado',
+  unassigned: 'Responsable retirado', priority_changed: 'Prioridad cambiada', checklist_added: 'Tarea agregada al checklist',
+  checklist_updated: 'Tarea del checklist actualizada', checklist_deleted: 'Tarea eliminada del checklist',
+  completed: 'Ticket terminado (Done)', reopened: 'Ticket reabierto', archived: 'Archivado', restored: 'Restaurado',
+  bulk_updated: 'Operación masiva', evidence_reserved: 'Evidencia reservada', evidence_uploaded: 'Evidencia subida',
   // activity_logs (historial del proyecto)
-  created: 'Proyecto creado', sla_started: 'SLA iniciado', phase_change: 'Cambio de fase (tablero)', priority_changed: 'Prioridad cambiada',
-  edited: 'Proyecto editado', due_date_changed: 'Fecha de entrega cambiada', sla_completed: 'Trabajo completado',
-  assigned: 'Responsable asignado', comment: 'Comentario',
+  created: 'Proyecto creado', sla_started: 'SLA iniciado (histórico)', phase_change: 'Cambio de fase (tablero)',
+  edited: 'Proyecto editado', due_date_changed: 'Fecha de entrega cambiada', sla_completed: 'Trabajo completado (histórico)',
+  comment: 'Comentario', comment_added: 'Comentario agregado', status_changed: 'Estado del proyecto cambiado', project_deleted: 'Proyecto eliminado', project_restored: 'Proyecto restaurado',
 }
+const PRIORITY: Record<string, string> = { low: 'Baja', medium: 'Media', high: 'Alta', urgent: 'Urgente' }
+const ROLE: Record<string, string> = { superadmin: 'superadmin', admin: 'admin', developer: 'developer', viewer: 'viewer' }
+const phase = (p?: string) => (p ? PHASE_LABELS[p] ?? p : '—')
 const FLOW: Record<string, string> = { development: 'Desarrollo', administrative: 'Administrativo' }
 
 /**
@@ -46,7 +55,10 @@ export default function RequestTimeline({ requestId, projectId, catalogs, refres
     let last: GeneralStatus | null = null
     for (const e of ev.data ?? []) {
       const d = (e.details ?? {}) as Record<string, any>
-      const actor = e.actor_id ? who.get(e.actor_id) ?? 'Usuario interno' : null
+      // Nombre y rol del actor al momento de actuar (snapshot del servidor); si no, el perfil actual.
+      const actorName = d.actor_name ?? (e.actor_id ? who.get(e.actor_id) ?? 'Usuario interno' : null)
+      const actor = actorName && d.actor_role ? `${actorName} (${ROLE[d.actor_role] ?? d.actor_role})` : actorName
+      const person = (id?: string | null) => (id ? who.get(id) ?? 'Usuario no disponible' : 'Sin responsable')
       if (e.action === 'status_changed') {
         if (isGeneralStatus(d.to)) {
           last = d.to
@@ -60,16 +72,43 @@ export default function RequestTimeline({ requestId, projectId, catalogs, refres
         nameOf(catalogs.subsystems, d.subsystem_id) && `Subproyecto ${nameOf(catalogs.subsystems, d.subsystem_id)}`,
         nameOf(catalogs.areas, d.area_id) && `Área ${nameOf(catalogs.areas, d.area_id)}`,
         nameOf(catalogs.areas, d.subarea_id) && `Subárea ${nameOf(catalogs.areas, d.subarea_id)}`].filter(Boolean).join(' · ')
-      if (e.action === 'phase_changed') detail = `${FLOW[d.flow_type] ?? d.flow_type}: ${PHASE_LABELS[d.from] ?? d.from} → ${PHASE_LABELS[d.to] ?? d.to}`
+      if (e.action === 'phase_changed') detail = `${d.flow_type ? `${FLOW[d.flow_type] ?? d.flow_type}: ` : ''}${phase(d.from)} → ${phase(d.to)}`
       if (e.action === 'blocked') detail = `Motivo: ${d.reason || '—'}`
       if (e.action === 'unblocked') detail = `Motivo previo: ${d.reason || '—'}${d.blocked_since ? ` · Bloqueado desde ${limaDateTime(d.blocked_since)}` : ''}`
+      if (e.action === 'block_reason_changed') detail = `Antes: ${d.previous_reason || '—'} → Ahora: ${d.reason || '—'}`
       if (e.action === 'rejected') detail = d.rejection_reason ? `Nota interna: ${d.rejection_reason}` : undefined
-      list.push({ key: `e${e.id}`, at: e.created_at, actor, source: 'ticket', title: ACTION[e.action] ?? e.action, detail })
+      if (['assigned', 'reassigned', 'unassigned'].includes(e.action)) detail = `${person(d.previous_assignee)} → ${person(d.new_assignee)}`
+      if (e.action === 'priority_changed') detail = `${d.from ? PRIORITY[d.from] ?? d.from : 'Inicial'} → ${PRIORITY[d.to] ?? d.to}`
+      if (e.action.startsWith('checklist_')) {
+        const prev = d.previous ?? {}, next = d.new ?? {}
+        const item = next.description ?? prev.description ?? ''
+        detail = e.action === 'checklist_updated' && prev.completed !== next.completed
+          ? `«${item}» · ${next.completed ? 'marcada como completada' : 'marcada como pendiente'}`
+          : e.action === 'checklist_updated' && prev.description !== next.description
+            ? `«${prev.description}» → «${next.description}»`
+            : `«${item}»${next.phase || prev.phase ? ` · fase ${phase(next.phase ?? prev.phase)}` : ''}`
+      }
+      if (e.action === 'completed') {
+        const pend = Array.isArray(d.pending_items) ? d.pending_items : []
+        detail = `${phase(d.from_phase)} → ${phase(d.to_phase)}` + (d.pending_confirmed
+          ? ` · Confirmado con ${pend.length} tarea(s) pendiente(s): ${pend.map((i: any) => i.description).join('; ')}` : ' · Sin tareas pendientes')
+      }
+      if (e.action === 'reopened') detail = `${phase(d.from_phase)} → ${phase(d.to_phase)} · Motivo: ${d.reason || '—'}`
+      if (e.action === 'archived' || e.action === 'restored') detail = d.from_status && d.to_status ? `${d.from_status} → ${d.to_status}` : undefined
+      if (e.action === 'bulk_updated') detail = d.action === 'set_priority' ? 'Cambio masivo de prioridad' : d.action === 'archive' ? 'Archivado masivo' : d.action
+      if (e.action.startsWith('evidence_')) detail = `${d.file_name ?? ''}${d.size_bytes != null ? ` · ${Math.round(Number(d.size_bytes) / 1024)} KB` : ''}`
+      const tone = e.action === 'blocked' || e.action === 'block_reason_changed' ? 'block' : e.action === 'completed' ? 'done' : e.action === 'reopened' ? 'reopen' : undefined
+      list.push({ key: `e${e.id}`, at: e.created_at, actor, source: 'ticket', title: ACTION[e.action] ?? e.action, detail, tone })
     }
     for (const l of logs.data ?? []) {
-      if (['blocked', 'unblocked'].includes(l.action)) continue   // ya registrados en el servidor (request_events)
+      // Registro anterior del proyecto (solo lectura). Bloqueos ya constan en request_events.
+      if (['blocked', 'unblocked'].includes(l.action)) continue
       const d = (l.details ?? {}) as Record<string, any>
-      const detail = l.action === 'priority_changed' ? `${d.from} → ${d.to}` : l.action === 'due_date_changed' ? `${d.from ?? '—'} → ${d.to ?? '—'}` : undefined
+      const detail = l.action === 'priority_changed' ? `${PRIORITY[d.from] ?? d.from} → ${PRIORITY[d.to] ?? d.to}`
+        : l.action === 'due_date_changed' ? `${d.from ?? '—'} → ${d.to ?? '—'}`
+        : ['phase_changed', 'phase_change'].includes(l.action) ? `${phase(d.from)} → ${phase(d.to)}`
+        : ['assigned', 'reassigned'].includes(l.action) ? `${d.from ? who.get(d.from) ?? '—' : 'Sin responsable'} → ${d.to ? who.get(d.to) ?? '—' : '—'}`
+        : l.action === 'status_changed' ? `${d.from ?? '—'} → ${d.to ?? '—'}` : undefined
       list.push({ key: `a${l.id}`, at: l.created_at, actor: l.user_id ? who.get(l.user_id) ?? 'Usuario interno' : null,
         source: 'proyecto', title: ACTION[l.action] ?? l.action, detail })
     }
@@ -82,20 +121,21 @@ export default function RequestTimeline({ requestId, projectId, catalogs, refres
   return (
     <section className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h3 className="text-sm font-semibold text-brand-700 uppercase tracking-wide">Trazabilidad</h3>
+        <h3 className="text-sm font-semibold text-brand-700 uppercase tracking-wide">Historial inmutable</h3>
         {current && <span className={`px-3 py-1 rounded-full border text-xs font-semibold ${GENERAL_STATUS[current].tone}`}>
           {GENERAL_STATUS[current].icon} {GENERAL_STATUS[current].label}</span>}
       </div>
+      <p className="text-[11px] text-gray-400">Registro generado por el servidor; no admite edición ni borrado. Horas de Perú (Lima).</p>
       <p className="text-[11px] text-gray-400 font-mono break-all">ID interno: {requestId}</p>
       {error && <p className="text-sm text-red-700">{error}</p>}
       {entries === null ? <p className="text-sm text-gray-400">Cargando…</p> : entries.length === 0 ? <p className="text-sm text-gray-400">Sin eventos registrados.</p> : (
         <ol className="border-l-2 border-brand-100 ml-2 space-y-3">
           {entries.map(e => (
             <li key={e.key} className="pl-4 relative">
-              <span className={`absolute -left-[7px] top-1.5 w-3 h-3 rounded-full ${e.status ? 'bg-accent-400' : e.source === 'proyecto' ? 'bg-gray-300' : 'bg-brand-600'}`} />
+              <span className={`absolute -left-[7px] top-1.5 w-3 h-3 rounded-full ${e.tone === 'block' ? 'bg-red-500' : e.tone === 'done' ? 'bg-emerald-600' : e.tone === 'reopen' ? 'bg-orange-500' : e.status ? 'bg-accent-400' : e.source === 'proyecto' ? 'bg-gray-300' : 'bg-brand-600'}`} />
               <p className="text-sm font-medium text-gray-900">{e.title}
-                {e.source === 'proyecto' && <span className="ml-2 text-[10px] uppercase text-gray-400">proyecto</span>}</p>
-              {e.detail && <p className="text-xs text-gray-600">{e.detail}</p>}
+                {e.source === 'proyecto' && <span className="ml-2 text-[10px] uppercase text-gray-400">registro anterior</span>}</p>
+              {e.detail && <p className="text-xs text-gray-600 break-words">{e.detail}</p>}
               <p className="text-[11px] text-gray-400">{limaDateTime(e.at)} (Lima){e.actor ? ` · ${e.actor}` : ''}</p>
             </li>
           ))}

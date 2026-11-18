@@ -20,7 +20,8 @@ const project = { id: projectId, request_id: requestId, project_number: 'INT26-1
 const request = { id: requestId, request_type: 'Prueba ficticia', needs_code: false, requester_area: null }
 const draft = { requester_name: 'Persona ficticia', requester_area: 'Área ficticia', request_type: 'Prueba',
   description: 'Contenido ficticio', request_date: '', requested_date: '' }
-const internal = { title: ' Proyecto ficticio ', description: ' Contenido ficticio ', project_type: 'dual', priority: 'medium' }
+const assignee = '10000000-0000-4000-8000-000000000005'
+const internal = { title: ' Proyecto ficticio ', description: ' Contenido ficticio ', project_type: 'dual', priority: 'medium', assigned_dev: assignee }
 function rpcClient(handler = () => ({ data: receipt, error: null })) {
   const calls = []
   return { calls, rpc: async (name, args) => { calls.push({ name, args }); return handler(name, args) } }
@@ -81,14 +82,23 @@ test('manual project delegates numbering, links, flows and checklist in one RPC'
   assert.equal('project_number' in payload, false)
   assert.equal('request_id' in payload, false)
   assert.equal('project_flows' in payload, false)
+  // M12: siempre Development con responsable principal, aunque llegue otro tipo.
+  assert.equal(payload.project_type, 'development')
+  assert.equal(payload.assigned_dev, assignee)
+})
+
+test('manual project without principal assignee is rejected before calling the server', async () => {
+  const client = rpcClient(() => ({ data: project, error: null }))
+  await assert.rejects(createOperations(client).createInternalProject({ ...internal, assigned_dev: '' }, createRpcAttempt(() => key)), /responsable principal/)
+  assert.equal(client.calls.length, 0)
 })
 
 test('approval delegates side effects and sends SLA fields with stable retry input', async () => {
   const client = rpcClient(() => ({ data: project, error: null }))
   const attempt = createRpcAttempt(() => key)
   const api = createOperations(client)
-  await api.approveRequest(request, { project_type: 'dual', priority: 'medium', assigned_admin: '' }, attempt)
-  await api.approveRequest(request, { project_type: 'dual', priority: 'medium', assigned_admin: '' }, attempt)
+  await api.approveRequest(request, { priority: 'medium', assigned_dev: assignee }, attempt)
+  await api.approveRequest(request, { priority: 'medium', assigned_dev: assignee }, attempt)
   assert.equal(client.calls.length, 1)
   assert.equal(client.calls[0].name, 'approve_request')
   assert.equal(client.calls[0].args.p_request_id, requestId)
@@ -96,14 +106,16 @@ test('approval delegates side effects and sends SLA fields with stable retry inp
   assert.equal(client.calls[0].args.p_payload.sla_formal_days, null)
   assert.equal(client.calls[0].args.p_payload.sla_target_date, null)
   assert.equal(client.calls[0].args.p_payload.assigned_admin, null)
+  assert.equal(client.calls[0].args.p_payload.project_type, 'development')
+  assert.equal(client.calls[0].args.p_payload.assigned_dev, assignee)
 })
 
 test('low priority approval sends null SLA target; invalid approval response is rejected', async () => {
   const client = rpcClient(() => ({ data: project, error: null }))
-  await createOperations(client).approveRequest(request, { project_type: 'development', priority: 'low' }, createRpcAttempt(() => key))
+  await createOperations(client).approveRequest(request, { priority: 'low', assigned_dev: assignee }, createRpcAttempt(() => key))
   assert.equal(client.calls[0].args.p_payload.sla_target_date, null)
   const invalid = createOperations(rpcClient(() => ({ data: { ...project, request_id: token }, error: null })))
-  await assert.rejects(invalid.approveRequest(request, { project_type: 'development', priority: 'medium' }, createRpcAttempt(() => key)))
+  await assert.rejects(invalid.approveRequest(request, { priority: 'medium', assigned_dev: assignee }, createRpcAttempt(() => key)))
 })
 
 test('void RPC acknowledgments are valid; Supabase errors still reject', async () => {
@@ -112,19 +124,17 @@ test('void RPC acknowledgments are valid; Supabase errors still reject', async (
   await api.rejectRequest(requestId, ' Motivo ficticio ')
   await api.updateRequestDetails(requestId, '', ' Persona ficticia ')
   await api.adminUpdateUser(requestId, 'viewer', false)
-  await api.purgeProject(projectId)
-  assert.deepEqual(client.calls.map(call => call.name), ['reject_request', 'update_request_details', 'admin_update_user', 'purge_project'])
+  assert.deepEqual(client.calls.map(call => call.name), ['reject_request', 'update_request_details', 'admin_update_user'])
   assert.equal(client.calls[0].args.p_reason, 'Motivo ficticio')
   assert.equal(client.calls[1].args.p_area, null)
   const failed = createOperations(rpcClient(() => ({ data: null, error: { code: '42501' } })))
-  await assert.rejects(failed.purgeProject(projectId), /permiso/)
   await assert.rejects(failed.adminUpdateUser(requestId, 'admin', true), /permiso/)
 })
 
-test('project type change uses its dedicated RPC', async () => {
-  const client = rpcClient(() => ({ data: project, error: null }))
-  await createOperations(client).changeProjectType(projectId, 'administrative')
-  assert.deepEqual(client.calls[0], { name: 'change_project_type', args: { p_project_id: projectId, p_project_type: 'administrative' } })
+test('M12: purge and project-type change are no longer exposed by the frontend', () => {
+  const api = createOperations(rpcClient())
+  assert.equal('purgeProject' in api, false)
+  assert.equal('changeProjectType' in api, false)
 })
 
 test('public tracking uses only the REQ number and returns number + general status, including counters above 999', async () => {

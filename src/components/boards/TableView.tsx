@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { Project, ProjectFlow } from '../../types/database.types'
 import { PRIORITY_COLORS, PHASE_LABELS, PRIORITY_LABEL } from '../../lib/constants'
+import { checklistCount, phasePosition } from '../../lib/board'
 
 interface ProjectWithRelations extends Project {
   project_flows?: ProjectFlow[]
@@ -21,13 +22,15 @@ const PRIORITY_ORDER: Record<string, number> = { urgent: 0, high: 1, medium: 2, 
 
 function exportTableCSV(sorted: Array<{ project: ProjectWithRelations; flow: ProjectFlow }>) {
   const PRIORITY_ES: Record<string, string> = { urgent: 'Urgente', high: 'Alta', medium: 'Media', low: 'Baja' }
-  const headers = ['Título', 'Prioridad', 'Área', 'Fase', 'Progreso', 'Vencimiento', 'Creado']
+  const headers = ['Título', 'Prioridad', 'Área', 'Fase', 'Posición de fase', 'Checklist', 'Bloqueado', 'Fecha objetivo', 'Creado']
   const rows = sorted.map(({ project, flow }) => [
     project.title,
     PRIORITY_ES[project.priority] ?? project.priority,
     project.requests?.requester_area ?? '',
     PHASE_LABELS[flow.current_phase] ?? flow.current_phase,
-    `${flow.progress}%`,
+    phasePosition(flow.flow_type, flow.current_phase).label,
+    (({ done, total }) => total ? `${done}/${total}` : 'Sin tareas')(checklistCount(flow as any)),
+    project.is_blocked ? 'Sí' : 'No',
     project.due_date ?? '',
     new Date(project.created_at).toLocaleDateString('es-PE'),
   ])
@@ -65,8 +68,8 @@ export default function TableView({ projects, boardType, onProjectClick, loading
     if (sortKey === 'title')      cmp = pa.title.localeCompare(pb.title)
     if (sortKey === 'priority')   cmp = PRIORITY_ORDER[pa.priority] - PRIORITY_ORDER[pb.priority]
     if (sortKey === 'area')       cmp = ((pa.requests?.requester_area ?? '') > (pb.requests?.requester_area ?? '') ? 1 : -1)
-    if (sortKey === 'phase')      cmp = (a.flow.current_phase > b.flow.current_phase ? 1 : -1)
-    if (sortKey === 'progress')   cmp = a.flow.progress - b.flow.progress
+    if (sortKey === 'phase')      cmp = phasePosition(a.flow.flow_type, a.flow.current_phase).index - phasePosition(b.flow.flow_type, b.flow.current_phase).index
+    if (sortKey === 'progress')   cmp = (({ done, total }) => total ? done / total : -1)(checklistCount(a.flow as any)) - (({ done, total }) => total ? done / total : -1)(checklistCount(b.flow as any))
     if (sortKey === 'due_date')   cmp = ((pa.due_date ?? '9999') > (pb.due_date ?? '9999') ? 1 : -1)
     if (sortKey === 'created_at') cmp = (pa.created_at > pb.created_at ? 1 : -1)
     return sortDir === 'asc' ? cmp : -cmp
@@ -132,8 +135,8 @@ export default function TableView({ projects, boardType, onProjectClick, loading
               <SortHeader k="priority"   label="Prioridad" />
               <SortHeader k="area"       label="Área" />
               <SortHeader k="phase"      label="Fase" />
-              <SortHeader k="progress"   label="Progreso" />
-              <SortHeader k="due_date"   label="Vencimiento" />
+              <SortHeader k="progress"   label="Checklist" />
+              <SortHeader k="due_date"   label="Fecha objetivo" />
               <SortHeader k="created_at" label="Creado" />
             </tr>
           </thead>
@@ -170,19 +173,13 @@ export default function TableView({ projects, boardType, onProjectClick, loading
                   {/* Fase */}
                   <td className="px-4 py-3 whitespace-nowrap text-xs text-gray-700 font-medium">
                     {PHASE_LABELS[flow.current_phase] ?? flow.current_phase}
+                    <span className="ml-1 text-gray-400 font-normal">({phasePosition(flow.flow_type, flow.current_phase).label})</span>
+                    {project.is_blocked && <span className="ml-1.5 text-red-600 font-semibold" title={project.blocked_reason ?? ''}>🚫 Bloqueado</span>}
                   </td>
 
-                  {/* Progreso */}
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    <div className="flex items-center gap-2">
-                      <div className="w-20 bg-gray-100 rounded-full h-2">
-                        <div
-                          className="h-2 rounded-full bg-primary"
-                          style={{ width: `${flow.progress}%` }}
-                        />
-                      </div>
-                      <span className="text-xs font-semibold text-gray-700">{flow.progress}%</span>
-                    </div>
+                  {/* Checklist (conteo; el % oficial está en el detalle) */}
+                  <td className="px-4 py-3 whitespace-nowrap text-xs text-gray-700">
+                    {(({ done, total }) => total ? `${done}/${total} tareas` : <span className="text-gray-300">Sin tareas</span>)(checklistCount(flow as any))}
                   </td>
 
                   {/* Vencimiento */}

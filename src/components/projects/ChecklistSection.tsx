@@ -5,18 +5,17 @@ import type { ProjectFlow } from '../../types/database.types'
 import { PHASE_LABELS } from '../../lib/constants'
 import { useAuth } from '../../hooks/useAuth'
 import { canEdit } from '../../lib/access'
-import { errorMessage, CommittedWriteError } from '../../lib/supabase-errors'
+import { errorMessage } from '../../lib/supabase-errors'
 import { toast } from '../../lib/toast'
-
-const DEV_PHASES = ['backlog', 'design', 'dev', 'testing', 'deploy', 'done']
-const ADMIN_PHASES = ['backlog', 'ready_to_start', 'discovery', 'design', 'build', 'uat_validation', 'deployed']
+import { phasesFor } from '../../lib/board'
 
 interface Props {
   flow: ProjectFlow
-  onProgressUpdate?: () => void
+  /** Tras cada cambio: recargar el snapshot del servidor (progreso y pendientes). */
+  onChanged?: () => void
 }
 
-export default function ChecklistSection({ flow, onProgressUpdate }: Props) {
+export default function ChecklistSection({ flow, onChanged }: Props) {
   const { user } = useAuth()
   const editable = canEdit(user)
   const busy = useRef(false)
@@ -37,7 +36,7 @@ export default function ChecklistSection({ flow, onProgressUpdate }: Props) {
   const [expandedPhase, setExpandedPhase] = useState<string | null>(flow.current_phase)
   const [saving, setSaving] = useState<string | null>(null)
 
-  const phases = flow.flow_type === 'development' ? DEV_PHASES : ADMIN_PHASES
+  const phases = phasesFor(flow.flow_type)
 
   const itemsByPhase = phases.reduce((acc, phase) => {
     acc[phase] = items.filter(i => i.phase === phase)
@@ -48,7 +47,7 @@ export default function ChecklistSection({ flow, onProgressUpdate }: Props) {
     if (!editable || busy.current) return
     busy.current = true
     setSaving(itemId)
-    try { await toggleItem(itemId, completed); onProgressUpdate?.() }
+    try { await toggleItem(itemId, completed); onChanged?.() }
     catch (err) { toast.error(errorMessage(err)) }
     finally { busy.current = false; setSaving(null) }
   }
@@ -57,11 +56,8 @@ export default function ChecklistSection({ flow, onProgressUpdate }: Props) {
     if (!text || !editable || busy.current) return
     busy.current = true
     setSaving(phase)
-    try { await addItem(phase, text); setNewItemText(prev => ({ ...prev, [phase]: '' })); onProgressUpdate?.() }
-    catch (err) {
-      if (err instanceof CommittedWriteError) setNewItemText(prev => ({ ...prev, [phase]: '' }))
-      toast.error(errorMessage(err))
-    }
+    try { await addItem(phase, text); setNewItemText(prev => ({ ...prev, [phase]: '' })); onChanged?.() }
+    catch (err) { toast.error(errorMessage(err)) }
     finally { busy.current = false; setSaving(null) }
   }
 
@@ -69,7 +65,7 @@ export default function ChecklistSection({ flow, onProgressUpdate }: Props) {
     if (!editable || busy.current) return
     busy.current = true
     setSaving(id)
-    try { await deleteItem(id); onProgressUpdate?.() }
+    try { await deleteItem(id); onChanged?.() }
     catch (err) { toast.error(errorMessage(err)) }
     finally { busy.current = false; setSaving(null) }
   }
@@ -81,17 +77,15 @@ export default function ChecklistSection({ flow, onProgressUpdate }: Props) {
 
   const totalItems = items.length
   const completedItems = items.filter(i => i.completed).length
+  // El porcentaje del checklist lo calcula el servidor (snapshot); aquí solo se muestran conteos.
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
     <div className="space-y-1.5 mt-3">
       {/* Resumen global */}
       {totalItems > 0 && (
-        <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
-          <span>{completedItems} de {totalItems} completados</span>
-          <span className="font-semibold text-brand-600">
-            {totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0}%
-          </span>
+        <div className="text-xs text-gray-500 mb-2">
+          <span>{completedItems} de {totalItems} tareas completadas</span>
         </div>
       )}
 

@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '../../lib/supabase'
 import type { Comment } from '../../types/database.types'
-import { logActivity } from '../../hooks/useActivityLog'
 import { useUsers } from '../../hooks/useUsers'
 import { sendNotification } from '../../lib/notifications'
 import { useAuth } from '../../hooks/useAuth'
@@ -107,10 +106,6 @@ export default function CommentsSection({ projectId }: Props) {
       setNewComment('')
       await loadComments()
 
-      await logActivity(projectId, 'comment_added', {
-        comment_id: comment.id,
-        preview: newComment.trim().slice(0, 80),
-      })
 
       // Notificar a usuarios mencionados
       const mentions = [...newComment.matchAll(/@(\w+)/g)].map(m => m[1].toLowerCase())

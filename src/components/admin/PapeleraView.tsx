@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
-import { logActivity } from '../../hooks/useActivityLog'
-import { operations } from '../../lib/api'
-import { errorMessage, requireData } from '../../lib/supabase-errors'
+import { board } from '../../lib/api'
+import { actionKey } from '../../lib/board'
+import { errorMessage } from '../../lib/supabase-errors'
 
 interface DeletedProject {
   id: string
@@ -28,8 +28,6 @@ export default function PapeleraView() {
   const [loading, setLoading] = useState(true)
   const [confirmRestore, setConfirmRestore] = useState<string | null>(null)
   const [restoring, setRestoring] = useState(false)
-  const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
-  const [deleting, setDeleting] = useState(false)
 
   const load = async () => {
     setLoading(true)
@@ -49,24 +47,12 @@ export default function PapeleraView() {
   const restore = async (id: string) => {
     setRestoring(true)
     try {
-      requireData(await supabase.from('projects').update({ status: 'active' })
-        .eq('id', id).select('id').single(), 'Proyecto')
-      await logActivity(id, 'project_restored', {})
+      // Restauración auditada por el servidor (requiere admin/superadmin). Una fase final sigue terminada.
+      await board.restore(id, actionKey())
       setConfirmRestore(null)
       await load()
     } catch (err) { setError(errorMessage(err)) } finally {
       setRestoring(false)
-    }
-  }
-
-  const permanentDelete = async (id: string) => {
-    setDeleting(true)
-    try {
-      await operations.purgeProject(id)
-      setConfirmDelete(null)
-      await load()
-    } catch (err) { setError(errorMessage(err)) } finally {
-      setDeleting(false)
     }
   }
 
@@ -83,7 +69,7 @@ export default function PapeleraView() {
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-lg font-bold text-gray-900">🗑 Papelera</h3>
-          <p className="text-sm text-gray-500 mt-0.5">Proyectos eliminados — podés restaurarlos o eliminarlos permanentemente</p>
+          <p className="text-sm text-gray-500 mt-0.5">Proyectos eliminados antes del historial inmutable. Pueden restaurarse; no se borran definitivamente.</p>
         </div>
         <div className="flex items-center gap-2">
           <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm font-medium">
@@ -108,7 +94,7 @@ export default function PapeleraView() {
           {projects.map(p => {
             const code = p.requests?.request_number ?? p.project_number
             return (
-              <div key={p.id} className="bg-white border border-gray-200 rounded-lg px-4 py-3 flex items-center justify-between gap-4">
+              <div key={p.id} className="bg-white border border-gray-200 rounded-lg px-4 py-3 flex flex-wrap items-center justify-between gap-4">
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   <div className="flex flex-col gap-1">
                     {code && (
@@ -134,12 +120,6 @@ export default function PapeleraView() {
                   >
                     ↩ Restaurar
                   </button>
-                  <button
-                    onClick={() => setConfirmDelete(p.id)}
-                    className="px-3 py-1.5 bg-red-50 text-red-600 border border-red-200 rounded-lg text-xs font-medium hover:bg-red-100 transition"
-                  >
-                    Eliminar definitivo
-                  </button>
                 </div>
               </div>
             )
@@ -153,7 +133,7 @@ export default function PapeleraView() {
           <div className="bg-white rounded-lg max-w-sm w-full p-6 shadow-2xl">
             <h3 className="text-lg font-bold text-gray-900 mb-2">↩ Restaurar proyecto</h3>
             <p className="text-sm text-gray-600 mb-6">
-              El proyecto volverá a estar <span className="font-semibold text-green-600">activo</span> y visible en los boards.
+              El ticket volverá a los boards (activo, o terminado si ya estaba en su fase final). Queda registrado en el historial.
             </p>
             <div className="flex gap-3">
               <button
@@ -175,33 +155,6 @@ export default function PapeleraView() {
         </div>
       )}
 
-      {/* Confirm permanent delete */}
-      {confirmDelete && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-sm w-full p-6 shadow-2xl">
-            <h3 className="text-lg font-bold text-gray-900 mb-2">⚠️ Eliminar permanentemente</h3>
-            <p className="text-sm text-gray-600 mb-6">
-              Esta acción <span className="font-semibold text-red-600">no se puede deshacer</span>. El proyecto y todos sus datos serán eliminados definitivamente.
-            </p>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setConfirmDelete(null)}
-                disabled={deleting}
-                className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition text-sm"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={() => permanentDelete(confirmDelete)}
-                disabled={deleting}
-                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition text-sm disabled:opacity-50"
-              >
-                {deleting ? 'Eliminando...' : 'Sí, eliminar'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }

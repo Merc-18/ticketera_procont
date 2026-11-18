@@ -1,10 +1,8 @@
 # Ticketera Procont
 
-**Reglas operativas preparadas, M12 sin aplicar:** nuevos proyectos solo Development (ocho fases), cierre por Done con confirmación de pendientes, reapertura con motivo, progresos separados y auditoría del servidor inmutable. Ver [contratos para Claude](docs/board-operations.md). Requiere adaptación coordinada del frontend y autorización de aplicación; main/remoto no se modifican desde esta rama.
+**Tablero operativo integrado en `integration/board-operations`, M12 sin aplicar:** nuevos proyectos solo Development (ocho fases), cierre por Done con confirmación de pendientes, reapertura con motivo, progresos de fase y checklist separados, responsable principal y auditoría inmutable del servidor. El frontend ya usa las RPC de Codex. Ver [integración del tablero](docs/board-ui.md) y [contratos](docs/board-operations.md). Activar M12 y fusionar en `main` deben hacerse juntos.
 
 **Métricas activas (historial 11/11):** Cycle Time y Lead Time sobre una cohorte común de tickets terminados y urgencias mensuales por solicitante y estudio, solo para usuarios internos. Ver [reportes](docs/reports-ui.md) y [métricas](docs/business-metrics.md).
-
-**Métricas nuevas preparadas, sin aplicar:** Cycle Time desde primera salida de Backlog, Lead Time y urgencias por solicitante/estudio en mes de Perú. Contrato interno y permisos en [reglas y métricas](docs/business-metrics.md). La migración `20261118000700` está pendiente de integración/autorización; el remoto confirmado sigue en 10/10.
 
 **Trazabilidad activa (historial 10/10):** estados generales Recibida → En revisión → En backlog → En proceso → Terminado (alternativos: Bloqueado, Rechazada), sincronizados con el tablero en el servidor; seguimiento público solo con el número REQ. Ver [trazabilidad](docs/request-tracking.md).
 

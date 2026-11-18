@@ -47,8 +47,10 @@ export const AREA_COLORS: Record<string, string> = {}
 
 export const PHASE_LABELS: Record<string, string> = {
   backlog:        'Backlog',
+  analysis:       'Analysis',
   design:         'Design',
   dev:            'Development',
+  code_review:    'Code Review',
   testing:        'Testing',
   deploy:         'Deploy',
   done:           'Done',

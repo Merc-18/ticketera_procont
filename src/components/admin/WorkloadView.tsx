@@ -2,389 +2,183 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useUsers } from '../../hooks/useUsers'
 import type { User } from '../../types/database.types'
-import { PRIORITY_COLORS, PRIORITY_LABEL, getAvatarColor, getInitials } from '../../lib/constants'
+import { PRIORITY_COLORS, PRIORITY_LABEL, PHASE_LABELS, getAvatarColor, getInitials } from '../../lib/constants'
+import { metrics } from '../../lib/api'
+import { averageLabel, type MetricResult, type TimeAverages } from '../../lib/metrics-adapter'
 
-interface FlowWithProject {
+interface FlowRow {
   id: string
-  assigned_to: string
+  assigned_to: string | null
   flow_type: 'development' | 'administrative'
   current_phase: string
-  progress: number
   project_id: string
-  projects: {
-    id: string
-    title: string
-    priority: 'low' | 'medium' | 'high' | 'urgent'
-    status: string
-    due_date: string | null
-    is_blocked: boolean
-  } | null
+  projects: { id: string; title: string; priority: 'low' | 'medium' | 'high' | 'urgent'; status: string; is_blocked: boolean; project_number: string | null } | null
 }
+interface Ticket { project: NonNullable<FlowRow['projects']>; phases: string[] }
 
-function isOverdue(dueDate: string | null) {
-  if (!dueDate) return false
-  return dueDate < new Date().toISOString().slice(0, 10)
-}
-
-interface UserMetrics {
-  completed: number
-  avgCycleTime: number | null
-  onTime: number
-  late: number
-}
-
+/**
+ * Carga de trabajo: tickets activos por responsable. Cada ticket cuenta una sola vez por persona
+ * (los históricos Dual con dos flujos no se duplican). Sin «Cumplimiento SLA» ni fechas máximas:
+ * los plazos de Procont no están definidos. Cycle Time y Lead Time vienen de la métrica aprobada
+ * del servidor (metrics_time_averages, cohorte común), no de cálculos del navegador.
+ */
 export default function WorkloadView() {
   const { users, loading: usersLoading } = useUsers()
-  const [flows, setFlows]     = useState<FlowWithProject[]>([])
+  const [flows, setFlows] = useState<FlowRow[]>([])
   const [flowsLoading, setFlowsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [expanded, setExpanded] = useState<string | null>(null)
-  const [userMetrics, setUserMetrics] = useState<Record<string, UserMetrics>>({})
-
-  useEffect(() => {
-    loadFlows()
-    loadMetrics()
-  }, [])
-
-  const loadMetrics = async () => {
-    // Fetch completed project_flows grouped by assigned_to
-    const { data: completedFlows } = await supabase
-      .from('project_flows')
-      .select('assigned_to, project_id')
-      .not('assigned_to', 'is', null)
-
-    if (!completedFlows?.length) return
-
-    // Fetch sla_completed logs for those projects
-    const projectIds = [...new Set(completedFlows.map(f => f.project_id))]
-    const { data: slaLogs } = await supabase
-      .from('activity_logs')
-      .select('project_id, details')
-      .eq('action', 'sla_completed')
-      .in('project_id', projectIds)
-
-    if (!slaLogs) return
-
-    const slaByProject: Record<string, any> = {}
-    for (const log of slaLogs) slaByProject[log.project_id] = log.details
-
-    const metricsMap: Record<string, { cycleTimes: number[]; onTime: number; late: number }> = {}
-
-    for (const flow of completedFlows) {
-      const sla = slaByProject[flow.project_id]
-      if (!sla) continue // skip flows without completed SLA (project still active)
-      const uid = flow.assigned_to!
-      if (!metricsMap[uid]) metricsMap[uid] = { cycleTimes: [], onTime: 0, late: 0 }
-      const ct = sla.cycle_time_days ?? sla.days_elapsed
-      if (ct !== undefined) metricsMap[uid].cycleTimes.push(Number(ct))
-      if (sla.on_time === true) metricsMap[uid].onTime++
-      else if (sla.on_time === false) metricsMap[uid].late++
-    }
-
-    const result: Record<string, UserMetrics> = {}
-    for (const [uid, m] of Object.entries(metricsMap)) {
-      const completed = m.onTime + m.late
-      const avgCycleTime = m.cycleTimes.length > 0
-        ? Math.round(m.cycleTimes.reduce((a, b) => a + b, 0) / m.cycleTimes.length)
-        : null
-      result[uid] = { completed, avgCycleTime, onTime: m.onTime, late: m.late }
-    }
-    setUserMetrics(result)
-  }
+  const [averages, setAverages] = useState<MetricResult<TimeAverages> | null>(null)
 
   const loadFlows = async () => {
     setFlowsLoading(true)
     try {
-      const { data, error } = await supabase
-        .from('project_flows')
-        .select(`
-          id, assigned_to, flow_type, current_phase, progress, project_id,
-          projects ( id, title, priority, status, due_date, is_blocked )
-        `)
-        .not('assigned_to', 'is', null)
-
+      const { data, error } = await supabase.from('project_flows')
+        .select('id, assigned_to, flow_type, current_phase, project_id, projects!inner ( id, title, priority, status, is_blocked, project_number )')
+        .eq('projects.status', 'active')
       if (error) throw error
-      setFlows((data as unknown as FlowWithProject[]) || [])
-    } finally {
-      setFlowsLoading(false)
-    }
+      setFlows((data as unknown as FlowRow[]) || []); setError(null)
+    } catch { setError('No se pudo cargar la carga de trabajo.') }
+    finally { setFlowsLoading(false) }
+  }
+  useEffect(() => {
+    void loadFlows()
+    void metrics.timeAverages({ periodDays: 90, studioId: null }).then(setAverages)
+  }, [])
+
+  if (usersLoading || flowsLoading) {
+    return <div className="flex items-center justify-center h-48 text-gray-500 text-sm">Cargando carga de trabajo...</div>
   }
 
-  const loading = usersLoading || flowsLoading
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-48">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2" />
-          <p className="text-gray-500 text-sm">Cargando carga de trabajo...</p>
-        </div>
-      </div>
-    )
-  }
-
-  // Flujos activos (proyecto activo)
-  const activeFlows = flows.filter(f => f.projects?.status === 'active')
-
-  // Agrupar por assigned_to (UUID)
-  const flowsByUserId: Record<string, FlowWithProject[]> = {}
-  for (const f of activeFlows) {
+  // Tickets únicos por responsable (un ticket con dos flujos del mismo responsable cuenta una vez).
+  const byUser = new Map<string, Map<string, Ticket>>()
+  const allActive = new Set<string>()
+  const withOwner = new Set<string>()
+  for (const f of flows) {
+    if (!f.projects) continue
+    allActive.add(f.project_id)
     if (!f.assigned_to) continue
-    if (!flowsByUserId[f.assigned_to]) flowsByUserId[f.assigned_to] = []
-    flowsByUserId[f.assigned_to].push(f)
+    withOwner.add(f.project_id)
+    const tickets = byUser.get(f.assigned_to) ?? new Map<string, Ticket>()
+    const t = tickets.get(f.project_id) ?? { project: f.projects, phases: [] }
+    t.phases.push(f.current_phase)
+    tickets.set(f.project_id, t)
+    byUser.set(f.assigned_to, tickets)
   }
-
-  // Usuarios activos con sus flows
-  const activeUsers = users.filter(u => u.is_active !== false)
-
-  // Proyectos únicos por usuario (evitar duplicados por dual flow)
-  function uniqueProjects(userFlows: FlowWithProject[]) {
-    const seen = new Set<string>()
-    return userFlows.filter(f => {
-      if (seen.has(f.project_id)) return false
-      seen.add(f.project_id)
-      return true
-    })
-  }
-
-  // Stats generales
-  const totalAssigned   = Object.keys(flowsByUserId).length
-  const unassignedCount = flows.filter(f => !f.assigned_to).length
-  const overdueCount    = activeFlows.filter(f => isOverdue(f.projects?.due_date ?? null)).length
+  const unassigned = [...allActive].filter(id => !withOwner.has(id)).length
+  const blocked = new Set(flows.filter(f => f.projects?.is_blocked).map(f => f.project_id)).size
+  const activeUsers = users.filter(u => u.is_active !== false && u.role !== 'viewer')
+  const sample = averages?.state === 'ready' ? averages.data.cycle_sample_size ?? averages.data.completed_count : null
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h3 className="text-lg font-bold text-gray-900">Carga de Trabajo del Equipo</h3>
-          <p className="text-sm text-gray-500 mt-0.5">Proyectos activos asignados por persona</p>
+          <p className="text-sm text-gray-500 mt-0.5">Tickets activos por responsable principal (cada ticket cuenta una vez)</p>
         </div>
-        <button
-          onClick={loadFlows}
-          className="px-3 py-1.5 bg-white border border-gray-200 text-gray-600 rounded-lg text-sm hover:bg-gray-50 transition shadow-sm"
-        >
-          ↺ Actualizar
-        </button>
+        <button onClick={() => { void loadFlows() }}
+          className="px-3 py-1.5 bg-white border border-gray-200 text-gray-600 rounded-lg text-sm hover:bg-gray-50 transition shadow-sm">↺ Actualizar</button>
       </div>
+      {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
 
-      {/* Stats rápidas */}
-      <div className="grid grid-cols-3 gap-4">
-        <div className="bg-white rounded-xl border-l-4 border-brand-500 p-4 shadow-sm">
-          <p className="text-2xl font-bold text-gray-900">{totalAssigned}</p>
-          <p className="text-xs text-gray-500">Personas con proyectos</p>
-        </div>
-        <div className="bg-white rounded-xl border-l-4 border-green-500 p-4 shadow-sm">
-          <p className="text-2xl font-bold text-gray-900">{activeFlows.length}</p>
-          <p className="text-xs text-gray-500">Flujos activos asignados</p>
-        </div>
-        <div className="bg-white rounded-xl border-l-4 border-red-500 p-4 shadow-sm">
-          <p className="text-2xl font-bold text-gray-900">{overdueCount}</p>
-          <p className="text-xs text-gray-500">Flujos vencidos</p>
-        </div>
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+        <Stat value={allActive.size} label="Tickets activos" tone="border-brand-500" />
+        <Stat value={unassigned} label="Sin responsable" tone="border-gray-400" />
+        <Stat value={blocked} label="Bloqueados" tone="border-red-500" />
+        <Stat value={averageLabel(averages, t => t.avg_cycle_time_days)} label="Cycle Time prom. (90 días)" tone="border-accent-400" />
+        <Stat value={averageLabel(averages, t => t.avg_lead_time_days)} label="Lead Time prom. (90 días)" tone="border-accent-400" />
       </div>
+      {sample !== null && sample > 0 && (
+        <p className="text-xs text-gray-500 -mt-3">Promedios del equipo calculados por el servidor sobre los mismos {sample} trabajos terminados.</p>
+      )}
 
-      {/* Tarjetas por usuario */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        {activeUsers.map(user => {
-          const userFlows    = flowsByUserId[user.id] ?? []
-          const projects     = uniqueProjects(userFlows)
-          const avgProgress  = userFlows.length
-            ? Math.round(userFlows.reduce((s, f) => s + f.progress, 0) / userFlows.length)
-            : 0
-          const isExpanded   = expanded === user.id
-          const blockedCount = projects.filter(f => f.projects?.is_blocked).length
-          const overdueLocal = projects.filter(f => isOverdue(f.projects?.due_date ?? null)).length
-
-          return (
-            <UserCard
-              key={user.id}
-              user={user}
-              flows={userFlows}
-              projects={projects}
-              avgProgress={avgProgress}
-              blockedCount={blockedCount}
-              overdueCount={overdueLocal}
-              metrics={userMetrics[user.id] ?? null}
-              isExpanded={isExpanded}
-              onToggle={() => setExpanded(isExpanded ? null : user.id)}
-            />
-          )
-        })}
-
-        {/* Sin asignados */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 items-start">
+        {activeUsers.map(user => (
+          <UserCard key={user.id} user={user} tickets={[...(byUser.get(user.id)?.values() ?? [])]}
+            isExpanded={expanded === user.id} onToggle={() => setExpanded(expanded === user.id ? null : user.id)} />
+        ))}
         {activeUsers.length === 0 && (
-          <div className="col-span-3 py-16 text-center text-gray-400 bg-white rounded-xl border">
-            <p className="text-4xl mb-3">📭</p>
-            <p className="font-medium">No hay proyectos asignados</p>
-            <p className="text-sm mt-1">Asigna responsables desde el detalle de cada proyecto</p>
+          <div className="col-span-full py-16 text-center text-gray-400 bg-white rounded-xl border">
+            <p className="font-medium">No hay responsables activos</p>
           </div>
         )}
       </div>
-
-      {unassignedCount > 0 && (
-        <p className="text-xs text-gray-400 text-center">
-          {unassignedCount} flujo{unassignedCount !== 1 ? 's' : ''} activo{unassignedCount !== 1 ? 's' : ''} sin asignar
-        </p>
-      )}
     </div>
   )
 }
 
-// ─── Sub-componente tarjeta de usuario ───────────────────────────────────────
+function Stat({ value, label, tone }: { value: number | string; label: string; tone: string }) {
+  return (
+    <div className={`bg-white rounded-xl border-l-4 ${tone} p-4 shadow-sm`}>
+      <p className="text-xl font-bold text-gray-900">{value}</p>
+      <p className="text-xs text-gray-500">{label}</p>
+    </div>
+  )
+}
 
-function UserCard({
-  user, flows, projects, avgProgress,
-  blockedCount, overdueCount, metrics, isExpanded, onToggle,
-}: {
-  user: User
-  flows: FlowWithProject[]
-  projects: FlowWithProject[]
-  avgProgress: number
-  blockedCount: number
-  overdueCount: number
-  metrics: UserMetrics | null
-  isExpanded: boolean
-  onToggle: () => void
-}) {
-  const displayName = user.full_name
+const ROLE_BADGE: Record<string, string> = {
+  superadmin: 'bg-accent-100 text-accent-800', admin: 'bg-red-100 text-red-700', developer: 'bg-brand-100 text-brand-700',
+}
 
-  const ROLE_BADGE: Record<string, string> = {
-    admin: 'bg-red-100 text-red-700', developer: 'bg-brand-100 text-brand-700', viewer: 'bg-gray-100 text-gray-500',
-  }
-
+function UserCard({ user, tickets, isExpanded, onToggle }: { user: User; tickets: Ticket[]; isExpanded: boolean; onToggle: () => void }) {
+  const blockedCount = tickets.filter(t => t.project.is_blocked).length
+  const byPhase = new Map<string, number>()
+  for (const t of tickets) for (const ph of new Set(t.phases)) byPhase.set(ph, (byPhase.get(ph) ?? 0) + 1)
   return (
     <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
-      {/* Card header */}
       <div className="p-4">
         <div className="flex items-start gap-3">
-          <div className={`w-10 h-10 rounded-full ${getAvatarColor(displayName)} flex items-center justify-center text-white text-sm font-bold shrink-0`}>
-            {getInitials(displayName)}
+          <div className={`w-10 h-10 rounded-full ${getAvatarColor(user.full_name)} flex items-center justify-center text-white text-sm font-bold shrink-0`}>
+            {getInitials(user.full_name)}
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="font-semibold text-gray-900 text-sm">{displayName}</span>
-              <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${ROLE_BADGE[user.role] ?? ''}`}>
-                {user.role}
-              </span>
+              <span className="font-semibold text-gray-900 text-sm">{user.full_name}</span>
+              <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${ROLE_BADGE[user.role] ?? ''}`}>{user.role}</span>
             </div>
             <p className="text-xs text-gray-400 mt-0.5 truncate">{user.email}</p>
           </div>
           <div className="text-right shrink-0">
-            <p className="text-xl font-bold text-gray-900">{projects.length}</p>
-            <p className="text-xs text-gray-400">proyecto{projects.length !== 1 ? 's' : ''}</p>
+            <p className="text-xl font-bold text-gray-900">{tickets.length}</p>
+            <p className="text-xs text-gray-400">ticket{tickets.length !== 1 ? 's' : ''}</p>
           </div>
         </div>
-
-        {/* Barra de progreso promedio */}
-        {flows.length > 0 && (
-          <div className="mt-3">
-            <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
-              <span>Progreso promedio</span>
-              <span className="font-semibold text-primary">{avgProgress}%</span>
-            </div>
-            <div className="w-full bg-gray-100 rounded-full h-2">
-              <div
-                className="h-2 rounded-full bg-primary transition-all duration-500"
-                style={{ width: `${avgProgress}%` }}
-              />
-            </div>
+        {byPhase.size > 0 && (
+          <div className="flex flex-wrap gap-1 mt-3">
+            {[...byPhase].map(([ph, n]) => (
+              <span key={ph} className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-full">{PHASE_LABELS[ph] ?? ph}: {n}</span>
+            ))}
           </div>
         )}
-
-        {/* Métricas históricas */}
-        {metrics && metrics.completed > 0 && (
-          <div className="mt-3 grid grid-cols-3 gap-2 text-center bg-gray-50 rounded-lg p-2">
-            <div>
-              <p className="text-sm font-bold text-gray-800">{metrics.completed}</p>
-              <p className="text-[10px] text-gray-400 leading-tight">completados</p>
-            </div>
-            <div>
-              <p className="text-sm font-bold text-gray-800">{metrics.avgCycleTime !== null ? `${metrics.avgCycleTime}d` : '—'}</p>
-              <p className="text-[10px] text-gray-400 leading-tight">cycle time prom.</p>
-            </div>
-            <div>
-              <p className={`text-sm font-bold ${metrics.completed > 0 && Math.round(metrics.onTime / metrics.completed * 100) >= 80 ? 'text-green-600' : 'text-orange-500'}`}>
-                {metrics.completed > 0 ? `${Math.round(metrics.onTime / metrics.completed * 100)}%` : '—'}
-              </p>
-              <p className="text-[10px] text-gray-400 leading-tight">SLA cumplido</p>
-            </div>
-          </div>
+        {blockedCount > 0 && (
+          <span className="inline-block mt-2 px-2 py-0.5 bg-red-50 text-red-700 text-xs rounded-full border border-red-200">
+            🚫 {blockedCount} bloqueado{blockedCount !== 1 ? 's' : ''}
+          </span>
         )}
-
-        {/* Alertas */}
-        {(blockedCount > 0 || overdueCount > 0) && (
-          <div className="flex gap-2 mt-3">
-            {blockedCount > 0 && (
-              <span className="px-2 py-0.5 bg-red-50 text-red-700 text-xs rounded-full border border-red-200">
-                🚫 {blockedCount} bloqueado{blockedCount !== 1 ? 's' : ''}
-              </span>
-            )}
-            {overdueCount > 0 && (
-              <span className="px-2 py-0.5 bg-orange-50 text-orange-700 text-xs rounded-full border border-orange-200">
-                ⚠️ {overdueCount} vencido{overdueCount !== 1 ? 's' : ''}
-              </span>
-            )}
-          </div>
-        )}
-
-        {/* Toggle proyectos */}
-        {projects.length > 0 && (
-          <button
-            onClick={onToggle}
-            className="mt-3 w-full text-xs text-gray-500 hover:text-primary flex items-center justify-center gap-1 py-1 rounded hover:bg-gray-50 transition"
-          >
-            {isExpanded ? '▲ Ocultar proyectos' : '▼ Ver proyectos'}
+        {tickets.length > 0 && (
+          <button onClick={onToggle}
+            className="mt-3 w-full text-xs text-gray-500 hover:text-primary flex items-center justify-center gap-1 py-1 rounded hover:bg-gray-50 transition">
+            {isExpanded ? '▲ Ocultar tickets' : '▼ Ver tickets'}
           </button>
         )}
       </div>
-
-      {/* Lista de proyectos (expandible) */}
-      {isExpanded && projects.length > 0 && (
+      {isExpanded && tickets.length > 0 && (
         <div className="border-t divide-y">
-          {projects.map(f => {
-            const p = f.projects
-            if (!p) return null
-            const overdue = isOverdue(p.due_date)
-            return (
-              <div key={f.id} className="px-4 py-3">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-800 truncate">{p.title}</p>
-                    <div className="flex items-center gap-2 mt-1 flex-wrap">
-                      <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${PRIORITY_COLORS[p.priority] ?? ''}`}>
-                        {PRIORITY_LABEL[p.priority] ?? p.priority}
-                      </span>
-                      <span className="text-xs text-gray-400 capitalize">
-                        {f.flow_type === 'development' ? '💻' : '📋'} {f.current_phase}
-                      </span>
-                      {p.is_blocked && (
-                        <span className="text-xs text-red-600">🚫 Bloqueado</span>
-                      )}
-                      {overdue && !p.is_blocked && (
-                        <span className="text-xs text-orange-600">⚠️ Vencido</span>
-                      )}
-                    </div>
-                  </div>
-                  <div className="text-right shrink-0">
-                    <p className="text-sm font-bold text-primary">{f.progress}%</p>
-                  </div>
-                </div>
-                {/* Mini progress bar */}
-                <div className="mt-1.5 w-full bg-gray-100 rounded-full h-1.5">
-                  <div
-                    className={`h-1.5 rounded-full ${p.is_blocked ? 'bg-red-400' : overdue ? 'bg-orange-400' : 'bg-primary'}`}
-                    style={{ width: `${f.progress}%` }}
-                  />
-                </div>
+          {tickets.map(({ project: p, phases }) => (
+            <div key={p.id} className="px-4 py-3">
+              <p className="text-sm font-medium text-gray-800 truncate">{p.title}</p>
+              <div className="flex items-center gap-2 mt-1 flex-wrap">
+                {p.project_number && <span className="text-xs font-mono text-gray-500">{p.project_number}</span>}
+                <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${PRIORITY_COLORS[p.priority] ?? ''}`}>{PRIORITY_LABEL[p.priority] ?? p.priority}</span>
+                <span className="text-xs text-gray-500">{phases.map(ph => PHASE_LABELS[ph] ?? ph).join(' · ')}</span>
+                {p.is_blocked && <span className="text-xs text-red-600 font-medium">🚫 Bloqueado</span>}
               </div>
-            )
-          })}
+            </div>
+          ))}
         </div>
       )}
-
-      {flows.length === 0 && (
-        <div className="px-4 pb-4 text-xs text-gray-400 italic">Sin proyectos activos asignados</div>
-      )}
+      {tickets.length === 0 && <div className="px-4 pb-4 text-xs text-gray-400 italic">Sin tickets activos asignados</div>}
     </div>
   )
 }

@@ -1,8 +1,13 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
-import { errorMessage, requireData, CommittedWriteError } from '../lib/supabase-errors'
+import { errorMessage, requireData } from '../lib/supabase-errors'
 import type { ChecklistItem } from '../types/database.types'
 
+/**
+ * CRUD del checklist bajo RLS (permitido también con el ticket bloqueado). La auditoría
+ * (checklist_added/updated/deleted) la genera el servidor; el progreso NO se escribe desde el
+ * navegador: tras cada cambio se recarga el snapshot del tablero (get_board_ticket).
+ */
 export function useChecklist(flowId: string) {
   const [items, setItems] = useState<ChecklistItem[]>([])
   const [loading, setLoading] = useState(true)
@@ -18,34 +23,20 @@ export function useChecklist(flowId: string) {
     finally { setLoading(false) }
   }
   useEffect(() => { if (flowId) void loadItems() }, [flowId])
-  const saveProgress = async (rows: ChecklistItem[]) => {
-    const progress = rows.length ? Math.round(rows.filter(item => item.completed).length / rows.length * 100) : 0
-    requireData(await supabase.from('project_flows').update({ progress }).eq('id', flowId)
-      .select('id').single(), 'Progreso')
-  }
   const toggleItem = async (id: string, completed: boolean) => {
     const row = requireData(await supabase.from('checklist_items').update({ completed }).eq('id', id)
       .select('*').single(), 'Tarea') as ChecklistItem
-    const updated = items.map(item => item.id === id ? row : item)
-    setItems(updated)
-    try { await saveProgress(updated) }
-    catch (err) { throw new CommittedWriteError(`La tarea se guardó, pero no se actualizó el progreso: ${errorMessage(err)}`) }
+    setItems(prev => prev.map(item => item.id === id ? row : item))
   }
   const deleteItem = async (id: string) => {
     requireData(await supabase.from('checklist_items').delete().eq('id', id).select('id').single(), 'Tarea')
-    const updated = items.filter(item => item.id !== id)
-    setItems(updated)
-    try { await saveProgress(updated) }
-    catch (err) { throw new CommittedWriteError(`La tarea se eliminó, pero no se actualizó el progreso: ${errorMessage(err)}`) }
+    setItems(prev => prev.filter(item => item.id !== id))
   }
   const addItem = async (phase: string, description: string) => {
     const last = Math.max(-1, ...items.filter(item => item.phase === phase).map(item => item.order_index))
     const row = requireData(await supabase.from('checklist_items').insert({ project_flow_id: flowId,
       phase, description: description.trim(), order_index: last + 1 }).select('*').single(), 'Tarea') as ChecklistItem
-    const updated = [...items, row]
-    setItems(updated)
-    try { await saveProgress(updated) }
-    catch (err) { throw new CommittedWriteError(`La tarea se creó, pero no se actualizó el progreso: ${errorMessage(err)}`) }
+    setItems(prev => [...prev, row])
   }
   const reorderItems = async (phase: string, from: number, to: number) => {
     const rows = items.filter(item => item.phase === phase)

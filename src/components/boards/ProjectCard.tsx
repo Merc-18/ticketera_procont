@@ -27,17 +27,6 @@ function getDueDateBadge(dueDate?: string | null) {
   return { label: new Date(dueDate + 'T00:00:00').toLocaleDateString('es-PE', { day: '2-digit', month: 'short' }), cls: 'bg-gray-100 text-gray-500 border border-gray-200' }
 }
 
-function getSlaTargetBadge(slaTargetDate?: string | null) {
-  if (!slaTargetDate) return null
-  const today = new Date().toISOString().slice(0, 10)
-  const diff = Math.ceil((new Date(slaTargetDate).getTime() - new Date(today).getTime()) / 86400000)
-  if (diff < 0)  return { label: `🎯 Target vencido (${Math.abs(diff)}d)`, cls: 'bg-red-100 text-red-700 border border-red-300' }
-  if (diff === 0) return { label: '🎯 Target hoy',                          cls: 'bg-red-50 text-red-600 border border-red-200' }
-  if (diff <= 2)  return { label: `🎯 ${diff}d`,                            cls: 'bg-orange-100 text-orange-700 border border-orange-300' }
-  if (diff <= 5)  return { label: `🎯 ${diff}d`,                            cls: 'bg-yellow-100 text-yellow-700 border border-yellow-200' }
-  return { label: `🎯 ${new Date(slaTargetDate + 'T00:00:00').toLocaleDateString('es-PE', { day: '2-digit', month: 'short' })}`, cls: 'bg-green-50 text-green-700 border border-green-200' }
-}
-
 export default function ProjectCard({ project, flow, onClick, users = [], onAssign, selected, onSelect }: Props) {
   const area = project.requests?.requester_area
   const requesterName = project.requests?.requester_name
@@ -45,7 +34,6 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
   const requestNumber = project.requests?.request_number ?? project.project_number
   const areaColorClass = area ? (AREA_COLORS[area] ?? 'bg-gray-100 text-gray-600') : ''
   const dueBadge = getDueDateBadge(project.due_date)
-  const slaTargetBadge = getSlaTargetBadge(project.sla_target_date)
 
   const checklistItems: Array<{ id: string; completed: boolean }> = (flow as any).checklist_items ?? []
   const checkTotal = checklistItems.length
@@ -77,9 +65,9 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
   return (
     <div
       onClick={onClick}
-      className={`relative bg-white rounded-lg shadow-sm border p-3.5 mb-3 hover:shadow-md transition-shadow cursor-pointer group/card ${
-        selected ? 'border-brand-400 ring-1 ring-brand-200' : 'border-gray-200'
-      }`}
+      className={`relative rounded-lg shadow-sm border p-3.5 mb-3 hover:shadow-md transition-shadow cursor-pointer group/card ${
+        project.is_blocked ? 'bg-red-50 border-l-4 border-l-red-500' : 'bg-white'
+      } ${selected ? 'border-brand-400 ring-1 ring-brand-200' : project.is_blocked ? 'border-red-200' : 'border-gray-200'}`}
     >
       {onSelect && (
         <div
@@ -94,12 +82,12 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
         <h3 className="font-semibold text-gray-900 text-sm flex-1 leading-snug line-clamp-2">
           {project.title}
         </h3>
-        {project.is_blocked && (
-          <span className="text-red-500 text-base ml-2 flex-shrink-0" title={project.blocked_reason || 'Bloqueado'}>
-            🚫
-          </span>
-        )}
       </div>
+      {project.is_blocked && (
+        <p className="text-[11px] font-semibold text-red-700 mb-2 line-clamp-2" title={project.blocked_reason || 'Bloqueado'}>
+          🚫 Bloqueado{project.blocked_reason ? `: ${project.blocked_reason}` : ''}
+        </p>
+      )}
 
       {/* Badges */}
       <div className="flex flex-wrap gap-1 mb-2.5">
@@ -117,16 +105,11 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
           </span>
         )}
         {project.project_type === 'dual' && (
-          <span className="px-1.5 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">
-            DUAL
+          <span className="px-1.5 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800" title="Proyecto histórico con dos flujos">
+            DUAL (histórico)
           </span>
         )}
-        {slaTargetBadge && (
-          <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${slaTargetBadge.cls}`}>
-            {slaTargetBadge.label}
-          </span>
-        )}
-        {!slaTargetBadge && dueBadge && (
+        {dueBadge && (
           <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${dueBadge.cls}`}>
             {dueBadge.label}
           </span>

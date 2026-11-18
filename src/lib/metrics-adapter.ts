@@ -95,3 +95,13 @@ export function createMetricsAdapter(client: RpcClient) {
   }
 }
 export type MetricsAdapter = ReturnType<typeof createMetricsAdapter>
+
+/** Etiqueta de un promedio de días del servidor (Cycle/Lead), sin inventar valores. */
+export function averageLabel(result: MetricResult<TimeAverages> | null, pick: (t: TimeAverages) => number | null) {
+  if (result === null) return 'Cargando…'
+  if (result.state === 'pending_contract') return 'Pendiente de integración'
+  if (result.state === 'error') return 'No disponible'
+  const v = result.data.completed_count > 0 && result.data.cycle_sample_size !== 0 ? pick(result.data) : null
+  if (v === null) return 'Sin datos suficientes'
+  return v < 1 ? `${Math.max(1, Math.round(v * 24))}h` : `${v.toFixed(1).replace('.0', '')}d`
+}
