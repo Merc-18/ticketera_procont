@@ -1,16 +1,19 @@
 {
+  "checked_at_utc": "2026-11-18T23:47:32.470575+00:00",
   "project": "ticketera-procont",
   "ref": "xsxdpaiivklqeudgqoqf",
   "cli_version": "3.2.0",
-  "status": "blocked_authentication",
-  "current_dry_run_verified": false,
-  "linked_project_metadata_verified": true,
-  "migration_local": "20261118000800_board_operations.sql",
-  "previous_claude_report": "M12 only; retained as previous evidence, not a current remote verification",
-  "reason": "No DB password available to the agent; native CLI authentication rejected before obtaining a migration plan",
+  "status": "verified",
+  "plan": {
+    "migrations": [
+      "20261118000800_board_operations.sql"
+    ],
+    "seeds": [],
+    "roles": [],
+    "dryRun": true
+  },
   "applied": false,
-  "remote_roles_created": false,
-  "credentials_saved": false,
+  "migration_sha256": "66995addf02ce4af8d53b6794fd030f4369ed88a02284d8815afe99e0dafc6be",
   "inventory_repeated": false,
-  "next_action": "Run scripts/check_board_m12_dry_run.py --commit-evidence in a normal local terminal; password input is hidden"
+  "credentials_saved": false
 }
