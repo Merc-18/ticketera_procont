@@ -97,3 +97,7 @@ Ver [seguridad de tickets](../docs/ticket-security.md).
 # Trazabilidad (M10)
 
 `migrations/20261118000600_request_tracking.sql` está **aplicada**. Verificación: `recovery/request_tracking_check.sql`.
+
+# Métricas (M11)
+
+`migrations/20261118000700_business_metrics.sql` está **aplicada**. Verificación: `recovery/business_metrics_check.sql`.

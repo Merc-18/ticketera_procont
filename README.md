@@ -1,5 +1,7 @@
 # Ticketera Procont
 
+**Métricas activas (historial 11/11):** Cycle Time y Lead Time sobre una cohorte común de tickets terminados y urgencias mensuales por solicitante y estudio, solo para usuarios internos. Ver [reportes](docs/reports-ui.md) y [métricas](docs/business-metrics.md).
+
 **Métricas nuevas preparadas, sin aplicar:** Cycle Time desde primera salida de Backlog, Lead Time y urgencias por solicitante/estudio en mes de Perú. Contrato interno y permisos en [reglas y métricas](docs/business-metrics.md). La migración `20261118000700` está pendiente de integración/autorización; el remoto confirmado sigue en 10/10.
 
 **Trazabilidad activa (historial 10/10):** estados generales Recibida → En revisión → En backlog → En proceso → Terminado (alternativos: Bloqueado, Rechazada), sincronizados con el tablero en el servidor; seguimiento público solo con el número REQ. Ver [trazabilidad](docs/request-tracking.md).

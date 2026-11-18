@@ -1,0 +1,65 @@
+{
+  "migration": {
+    "status": "applied_verified",
+    "at_utc": "2026-11-18T21:55:00Z",
+    "project": "ticketera-procont",
+    "project_ref": "xsxdpaiivklqeudgqoqf",
+    "version": "20261118000700",
+    "method": "Supabase CLI 3.2.0 db push --remote",
+    "preflight": {
+      "dry_run_pending": [
+        "20261118000700_business_metrics.sql"
+      ],
+      "ledger_versions_before": 10,
+      "requests_before": 1,
+      "recovery_capture_before": "privada en .supabase-local"
+    },
+    "cohort_fix": "metrics_time_averages promedia Cycle y Lead sobre la misma cohorte (metric_status=complete); excluded_count para terminados sin inicio o cronología válida",
+    "post_check": {
+      "ledger_versions": 11,
+      "paired_cohort_definition": true,
+      "private_helpers_closed": true,
+      "grants": "metrics_* y get_* solo authenticated (perfil interno validado en la función); track_request_status anon",
+      "REQ26-001_unchanged": true
+    },
+    "rpc_read_only_checks": {
+      "method": "transacción READ ONLY + ROLLBACK como authenticated (superadmin existente); solo formas y conteos",
+      "metrics_time_averages": {
+        "completed_count": 0,
+        "avg_cycle_time_days": null,
+        "avg_lead_time_days": null,
+        "cohort": "paired_complete",
+        "excluded_count": 0
+      },
+      "metrics_monthly_urgency": {
+        "rows": 1,
+        "keys": [
+          "month",
+          "requester_name",
+          "studio_id",
+          "studio_name",
+          "total_requests",
+          "urgent_pct",
+          "urgent_requests"
+        ]
+      },
+      "metrics_requester_urgency": {
+        "REQ26-001": {
+          "total": 1,
+          "urgent": 0
+        }
+      }
+    },
+    "api_checks_anon": {
+      "metrics_time_averages": "401 42501",
+      "metrics_monthly_urgency": "401 42501",
+      "metrics_requester_urgency": "401 42501",
+      "get_requester_urgency_month": "401 42501",
+      "get_ticket_performance": "401 42501",
+      "track_request_status REQ26-001": "200 {request_number,status:received}"
+    },
+    "tickets_modified": 0,
+    "tickets_created": 0,
+    "credentials_saved": false
+  }
+}
