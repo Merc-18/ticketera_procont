@@ -73,7 +73,7 @@ cuatro migraciones iniciales permanecen intactas. Operación y bootstrap privado
 [procedimiento](../docs/account-administration.md). No usar los ejecutores de
 cuatro migraciones ni sus bundles para aplicar o revertir esta ampliación.
 
-# Catálogo de áreas preparado
+# Catálogo de áreas activo
 
-`migrations/20261118000200_areas.sql` está preparada y **no aplicada**. Aplicación
-autorizada solo con `scripts/apply_areas.py`. Ver [áreas](../docs/areas.md).
+`migrations/20261118000200_areas.sql` está **aplicada** (CLI `db push --remote`).
+Próximas migraciones: `db push --remote --dry-run`, captura de solo lectura, `db push --remote --yes`. Ver [áreas](../docs/areas.md).

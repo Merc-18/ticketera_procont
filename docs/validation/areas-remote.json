@@ -1,0 +1,48 @@
+{
+  "migration": {
+    "status": "applied_verified",
+    "at_utc": "2026-11-18T17:00:30Z",
+    "project": "ticketera-procont",
+    "project_ref": "xsxdpaiivklqeudgqoqf",
+    "version": "20261118000200",
+    "file_sha256": "e5c8d8f6f68ead3fb9088ccde36b1d3460dd54ff8de71d011e3586366923d16a",
+    "method": "Supabase CLI 3.2.0 db push --remote (autenticación CLI existente, rol de login temporal; sin contraseña PostgreSQL)",
+    "preflight": {
+      "dry_run_pending": [
+        "20261118000200_areas.sql"
+      ],
+      "recovery_capture_before": "privada en .supabase-local (supabase_read_only_user)",
+      "drift_vs_snapshot5": "solo objetos gestionados por Supabase: particiones diarias realtime.messages_* y vistas de pg_stat_statements; historial idéntico; sin cambios en public/app_private/auth"
+    },
+    "post_check": {
+      "ledger_versions": 6,
+      "migration_registered": true,
+      "rls_enabled": true,
+      "policies": 5,
+      "policy_names": [
+        "areas_member_read:SELECT:authenticated",
+        "areas_public_read:SELECT:anon",
+        "areas_superadmin_insert:INSERT:authenticated",
+        "areas_superadmin_read:SELECT:authenticated",
+        "areas_superadmin_update:UPDATE:authenticated"
+      ],
+      "anon_write": false,
+      "delete_granted": false,
+      "areas": 0,
+      "auth_users": 1,
+      "app_users": 1,
+      "active_superadmins": 1
+    },
+    "api_checks_anon": {
+      "select id,name,is_active": "200 []",
+      "select created_by": "401 42501",
+      "insert": "401 42501",
+      "update": "401 42501",
+      "delete": "401 42501"
+    },
+    "previous_migrations_modified": false,
+    "users_modified": false,
+    "credentials_saved": false,
+    "other_projects_touched": false
+  }
+}

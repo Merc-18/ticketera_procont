@@ -1,7 +1,9 @@
-# Catálogo de áreas — preparado, sin aplicar
+# Catálogo de áreas — activo en Supabase
 
 18/11/2026. Migración nueva [`20261118000200_areas.sql`](../supabase/migrations/20261118000200_areas.sql)
-(las cinco anteriores no cambian). **No aplicada en Supabase.** Catálogo vacío:
+(las cinco anteriores no cambian). **Aplicada y verificada** el 18/11/2026 con
+Supabase CLI (`db push --remote`): historial 6/6, RLS, 5 políticas, sin DELETE ni
+escritura anónima, catálogo vacío. Evidencia: [`areas-remote.json`](validation/areas-remote.json). Catálogo vacío:
 no se copian áreas de Gilat ni se crean áreas de Procont.
 
 ## Modelo y seguridad
@@ -29,13 +31,16 @@ no se copian áreas de Gilat ni se crean áreas de Procont.
 16 comprobaciones nuevas en PostgreSQL 17.12 aislado (`supabase/tests/areas_local.py`),
 evidencia en [`areas-local.json`](validation/areas-local.json). Build correcto.
 
-## Activación (requiere autorización)
+## Siguiente paso
 
-```bash
-cd /home/procont/projects/ticketera-procont && python3 scripts/apply_areas.py
-```
+El superadmin crea las áreas oficiales en **Equipo → 🏷 Áreas**. Con al menos una
+activa, los formularios cambian de texto libre a selector.
 
-Pide la contraseña PostgreSQL oculta; exige estructura idéntica a la captura 5,
-plan con solo la migración 6, y verifica historial 6/6, RLS, 5 políticas, sin
-escritura anon ni DELETE y catálogo vacío (`supabase/recovery/areas_check.sql`).
-Después, el superadmin crea las áreas oficiales desde la interfaz.
+## Procedimiento para próximas migraciones
+
+Usar Supabase CLI con la autenticación y el enlace existentes (sin contraseña
+PostgreSQL en scripts): `supabase db push --remote --dry-run` (confirmar destino y
+única pendiente) → captura privada de `supabase/recovery/inventory.sql` con
+`db query --remote --read-only` → `supabase db push --remote --yes` → verificación
+de solo lectura. `scripts/apply_areas.py` (ruta con contraseña) queda como
+alternativa histórica, no necesaria.
