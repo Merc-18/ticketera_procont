@@ -1,9 +1,13 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { supabase } from '../../lib/supabase'
-import { useDashboardData, type DashboardStats } from '../../hooks/useDashboardData'
+import { useDashboardData } from '../../hooks/useDashboardData'
 import { toast } from '../../lib/toast'
 import { useAreas } from '../../hooks/useAreas'
 import { useCatalogs } from '../../hooks/useCatalogs'
+import { useAuth } from '../../hooks/useAuth'
+import { metrics } from '../../lib/api'
+import type { MetricResult, TimeAverages } from '../../lib/metrics-adapter'
+import UrgencyStatsPanel from '../metrics/UrgencyStatsPanel'
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -111,7 +115,7 @@ function StatCard({ label, value, color, icon }: {
     <div className={`bg-white rounded-xl border-l-4 ${color} p-5 shadow-sm flex items-center gap-4`}>
       <span className="text-3xl">{icon}</span>
       <div>
-        <p className="text-3xl font-bold text-gray-900">{value}</p>
+        <p className={`font-bold ${typeof value === 'string' && value.length > 6 ? 'text-base text-gray-400' : 'text-3xl text-gray-900'}`}>{value}</p>
         <p className="text-sm text-gray-500 mt-0.5">{label}</p>
       </div>
     </div>
@@ -144,80 +148,6 @@ function HBarChart({ title, items }: {
   )
 }
 
-function SLABreakdown({ sla }: { sla: DashboardStats['sla'] }) {
-  const rateColor = sla.rate >= 80 ? 'text-green-600' : sla.rate >= 60 ? 'text-yellow-500' : 'text-red-500'
-  const barColor  = sla.rate >= 80 ? 'bg-green-500' : sla.rate >= 60 ? 'bg-yellow-400' : 'bg-red-500'
-
-  return (
-    <div className="bg-white rounded-xl border p-5 shadow-sm">
-      <h3 className="font-semibold text-gray-800 mb-4 text-sm uppercase tracking-wide">Cumplimiento SLA</h3>
-      {sla.total === 0 ? (
-        <p className="text-gray-400 text-sm text-center py-6">Sin proyectos completados aún</p>
-      ) : (
-        <div className="flex items-center gap-6">
-          <div className="text-center shrink-0">
-            <p className={`text-5xl font-bold ${rateColor}`}>{sla.rate}%</p>
-            <p className="text-xs text-gray-400 mt-1">{sla.total} proyectos</p>
-          </div>
-          <div className="flex-1">
-            <div className="h-6 rounded-full overflow-hidden bg-red-100 flex">
-              <div className={`${barColor} transition-all duration-700`} style={{ width: `${sla.rate}%` }} />
-            </div>
-            <div className="flex justify-between mt-2 text-xs">
-              <span className="text-green-600 font-medium">✓ {sla.onTime} a tiempo</span>
-              <span className="text-red-500 font-medium">⚠ {sla.late} fuera de SLA</span>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  )
-}
-
-function QuarterlyChart({ data }: { data: DashboardStats['completedByQuarter'] }) {
-  const max = Math.max(...data.map(d => d.total), 1)
-
-  return (
-    <div className="bg-white rounded-xl border p-5 shadow-sm">
-      <h3 className="font-semibold text-gray-800 mb-4 text-sm uppercase tracking-wide">Entregas por Quarter (Q1 - Q4)</h3>
-      {data.length === 0 ? (
-        <p className="text-gray-400 text-sm text-center py-6">Sin datos en el período seleccionado</p>
-      ) : (
-        <>
-          <div className="flex items-end gap-3 h-28 pt-2">
-            {data.map(d => {
-              const late      = d.total - d.onTime
-              const heightPct = Math.max((d.total / max) * 100, 6)
-              const onTimePct = d.total > 0 ? (d.onTime / d.total) * 100 : 0
-              const latePct   = 100 - onTimePct
-              return (
-                <div key={d.quarter} className="flex-1 flex flex-col items-center gap-1">
-                  <span className="text-[10px] text-gray-600 font-bold">{d.total}</span>
-                  <div className="w-full max-w-[48px] flex flex-col-reverse overflow-hidden rounded-md shadow-xs" style={{ height: `${heightPct}%` }}>
-                    <div className="bg-green-500 transition-all duration-500" style={{ height: `${onTimePct}%` }} />
-                    {late > 0 && <div className="bg-red-400 transition-all duration-500" style={{ height: `${latePct}%` }} />}
-                  </div>
-                  <span className="text-xs font-semibold text-gray-700 text-center mt-1">{d.quarter}</span>
-                </div>
-              )
-            })}
-          </div>
-          <div className="flex gap-4 mt-3 pt-3 border-t border-gray-100">
-            <div className="flex items-center gap-1.5 text-xs text-gray-500">
-              <div className="w-3 h-3 rounded-sm bg-green-500" /> A tiempo
-            </div>
-            <div className="flex items-center gap-1.5 text-xs text-gray-500">
-              <div className="w-3 h-3 rounded-sm bg-red-400" /> Fuera de SLA
-            </div>
-          </div>
-        </>
-      )}
-    </div>
-  )
-}
-
-// ── Main component ───────────────────────────────────────────────────────────
-
 const PERIOD_OPTIONS = [
   { value: 30,   label: 'Últimos 30d' },
   { value: 90,   label: 'Últimos 90d' },
@@ -238,6 +168,12 @@ export default function DashboardView() {
   const [typeFilter, setTypeFilter] = useState<string | null>(null)
   const [exporting, setExporting] = useState<'completed' | 'active' | null>(null)
   const { stats, loading, reload } = useDashboardData(period, areaFilter, typeFilter, studioFilter)
+  const { user } = useAuth()
+  const canSeeUrgency = user?.role === 'superadmin' || user?.role === 'admin'
+  // Promedios del servidor (contrato de Codex). Mientras no esté publicado se conservan los valores
+  // ya existentes del panel (registro de trabajos completados), sin cálculos nuevos.
+  const [averages, setAverages] = useState<MetricResult<TimeAverages> | null>(null)
+  useEffect(() => { void metrics.timeAverages({ periodDays: period, studioId: studioFilter }).then(setAverages) }, [period, studioFilter])
   // Opciones del filtro: áreas activas de Supabase + áreas presentes en los datos
   const { activeNames } = useAreas()
   const seenAreas = useRef(new Set<string>())
@@ -289,8 +225,12 @@ export default function DashboardView() {
       return { label, value, color: colors[i % colors.length] }
     })
 
-  const cycleLabel = stats.sla.avgCycleTime !== null ? `${stats.sla.avgCycleTime}d` : '—'
-  const leadLabel  = stats.sla.avgLeadTime  !== null ? `${stats.sla.avgLeadTime}d`  : '—'
+  const server = averages?.state === 'ready' ? averages.data : null
+  const cycle = server ? (server.completed_count > 0 ? server.avg_cycle_time_days : null) : stats.sla.avgCycleTime
+  const lead  = server ? (server.completed_count > 0 ? server.avg_lead_time_days : null) : stats.sla.avgLeadTime
+  const NO_DATA = 'Sin datos suficientes'
+  const cycleLabel = cycle !== null && cycle !== undefined ? `${Math.round(cycle)}d` : NO_DATA
+  const leadLabel  = lead  !== null && lead  !== undefined ? `${Math.round(lead)}d`  : NO_DATA
 
   return (
     <div className="space-y-6">
@@ -396,27 +336,8 @@ export default function DashboardView() {
         <StatCard label="Vencidos"    value={stats.overdue}            icon="⚠️" color="border-orange-500" />
       </div>
 
-      {/* Stat Cards — métricas de tiempo (filtradas por período) */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className={`bg-white rounded-xl border-l-4 p-5 shadow-sm ${
-          stats.sla.total === 0 ? 'border-gray-300' :
-          stats.sla.rate >= 80 ? 'border-green-500' :
-          stats.sla.rate >= 60 ? 'border-yellow-400' : 'border-red-500'
-        }`}>
-          <div className="flex items-center gap-4">
-            <span className="text-3xl">🎯</span>
-            <div>
-              <p className={`text-3xl font-bold ${
-                stats.sla.total === 0 ? 'text-gray-400' :
-                stats.sla.rate >= 80 ? 'text-green-600' :
-                stats.sla.rate >= 60 ? 'text-yellow-500' : 'text-red-500'
-              }`}>
-                {stats.sla.total === 0 ? '—' : `${stats.sla.rate}%`}
-              </p>
-              <p className="text-sm text-gray-500 mt-0.5">Cumplimiento SLA</p>
-            </div>
-          </div>
-        </div>
+      {/* Métricas de tiempo (sin «Cumplimiento SLA»: los plazos de Procont aún no están configurados) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <StatCard label="Cycle Time promedio" value={cycleLabel} icon="🔄" color="border-brand-400" />
         <StatCard label="Lead Time promedio"  value={leadLabel}  icon="📦" color="border-purple-400" />
       </div>
@@ -435,11 +356,8 @@ export default function DashboardView() {
         }
       </div>
 
-      {/* SLA breakdown + Tendencia mensual */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <SLABreakdown sla={stats.sla} />
-        <QuarterlyChart data={stats.completedByQuarter} />
-      </div>
+      {/* Urgencias por solicitante y estudio: solo usuarios internos autorizados */}
+      {canSeeUrgency && <UrgencyStatsPanel />}
 
       {/* Status breakdown */}
       <div className="bg-white rounded-xl border p-5 shadow-sm">

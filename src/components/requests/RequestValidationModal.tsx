@@ -7,6 +7,7 @@ import { errorMessage } from '../../lib/supabase-errors'
 import { listRequestAttachments } from '../../lib/attachments'
 import { toast } from '../../lib/toast'
 import RequestTimeline from './RequestTimeline'
+import RequesterUrgencySummary from '../metrics/RequesterUrgencySummary'
 
 type Catalogs = ReturnType<typeof useCatalogs>
 type Mode = 'view' | 'approve' | 'reject'
@@ -120,6 +121,7 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
           <section className="space-y-3">
             <h3 className="text-sm font-semibold text-brand-700 uppercase tracking-wide">Solicitud del cliente</h3>
             {urgent && <p className="inline-block px-3 py-1 bg-red-100 text-red-700 border border-red-200 rounded-full text-xs font-bold">🔴 Atención urgente solicitada</p>}
+            {canManage && <RequesterUrgencySummary requestId={r.id} createdAt={r.created_at} />}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-gray-50 border rounded-lg p-3">
               {info('Solicitante', r.requester_name)}
               {info('Estudio', name(catalogs.studios, r.studio_id))}
@@ -231,7 +233,8 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-gray-600 mb-1">Prioridad definitiva *</label>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">Prioridad definitiva *
+                      {urgent && <span className="ml-1 font-normal text-gray-400">(el cliente pidió urgencia; puedes cambiarla)</span>}</label>
                     <select value={priority} onChange={e => setPriority(e.target.value as Priority)} className={input}>
                       {PRIORITIES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
                     </select>

@@ -38,11 +38,16 @@ export default function PublicRequestForm() {
   const [retrying, setRetrying] = useState(false)
 
   const set = (patch: Partial<typeof EMPTY>) => setForm(f => ({ ...f, ...patch }))
+  const [nameTouched, setNameTouched] = useState(false)
+  const nameInvalid = nameTouched && !form.requester_name.trim()
   // Nombres de estudio únicos (sin RUC ni códigos internos).
   const studios = Array.from(new Map(catalogs.studios.map(s => [s.name.toLowerCase(), s])).values())
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    // Nombre, título y descripción no pueden quedar vacíos ni contener solo espacios.
+    if (!form.requester_name.trim()) { setNameTouched(true); setError('Ingresa el nombre del solicitante.'); return }
+    if (!form.title.trim() || !form.description.trim()) { setError('Completa el título y la descripción.'); return }
     if (!prepared) { setError('Espera a que terminen de prepararse los adjuntos.'); return }
     if (!prepared.ok) { setError(prepared.error); return }
     setLoading(true); setError(null)
@@ -52,7 +57,7 @@ export default function PublicRequestForm() {
       const items: DeliveryItem[] = prepared.items.map(i => ({ file: i.file, uploadKey: crypto.randomUUID() }))
       setReceipt(result)
       await deliver(result, items)
-      setForm(EMPTY); setUrgent(false); setPickerKey(k => k + 1)
+      setForm(EMPTY); setUrgent(false); setPickerKey(k => k + 1); setNameTouched(false)
     } catch (err) {
       setError(errorMessage(err))
     } finally {
@@ -145,9 +150,13 @@ export default function PublicRequestForm() {
               <section className="space-y-4">
                 <h3 className={section}>Datos del solicitante</h3>
                 <div>
-                  {label('Nombre')}
+                  {label('Nombre del solicitante')}
                   <input required maxLength={200} value={form.requester_name} placeholder="Nombre y apellido"
-                    onChange={e => set({ requester_name: e.target.value })} className={field} />
+                    pattern=".*\S.*" title="Ingresa el nombre del solicitante" aria-invalid={nameInvalid}
+                    onBlur={() => setNameTouched(true)}
+                    onChange={e => set({ requester_name: e.target.value })}
+                    className={`${field} ${nameInvalid ? 'border-red-400 focus:ring-red-400' : ''}`} />
+                  {nameInvalid && <p className="text-xs text-red-600 mt-1">El nombre es obligatorio.</p>}
                 </div>
               </section>
 
