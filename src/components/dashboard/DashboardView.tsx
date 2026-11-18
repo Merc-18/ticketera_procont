@@ -170,8 +170,7 @@ export default function DashboardView() {
   const { stats, loading, reload } = useDashboardData(period, areaFilter, typeFilter, studioFilter)
   const { user } = useAuth()
   const canSeeUrgency = user?.role === 'superadmin' || user?.role === 'admin'
-  // Promedios del servidor (contrato de Codex). Mientras no esté publicado se conservan los valores
-  // ya existentes del panel (registro de trabajos completados), sin cálculos nuevos.
+  // Promedios del servidor (metrics_time_averages, contrato de Codex). Sin cálculos locales.
   const [averages, setAverages] = useState<MetricResult<TimeAverages> | null>(null)
   useEffect(() => { void metrics.timeAverages({ periodDays: period, studioId: studioFilter }).then(setAverages) }, [period, studioFilter])
   // Opciones del filtro: áreas activas de Supabase + áreas presentes en los datos
@@ -225,12 +224,16 @@ export default function DashboardView() {
       return { label, value, color: colors[i % colors.length] }
     })
 
-  const server = averages?.state === 'ready' ? averages.data : null
-  const cycle = server ? (server.completed_count > 0 ? server.avg_cycle_time_days : null) : stats.sla.avgCycleTime
-  const lead  = server ? (server.completed_count > 0 ? server.avg_lead_time_days : null) : stats.sla.avgLeadTime
-  const NO_DATA = 'Sin datos suficientes'
-  const cycleLabel = cycle !== null && cycle !== undefined ? `${Math.round(cycle)}d` : NO_DATA
-  const leadLabel  = lead  !== null && lead  !== undefined ? `${Math.round(lead)}d`  : NO_DATA
+  const timeLabel = (pick: (t: TimeAverages) => number | null) => {
+    if (averages === null) return 'Cargando…'
+    if (averages.state === 'pending_contract') return 'Pendiente de integración'
+    if (averages.state === 'error') return 'No disponible'
+    const v = averages.data.completed_count > 0 ? pick(averages.data) : null
+    if (v === null) return 'Sin datos suficientes'
+    return v < 1 ? `${Math.max(1, Math.round(v * 24))}h` : `${v.toFixed(1).replace('.0', '')}d`
+  }
+  const cycleLabel = timeLabel(t => t.avg_cycle_time_days)
+  const leadLabel  = timeLabel(t => t.avg_lead_time_days)
 
   return (
     <div className="space-y-6">

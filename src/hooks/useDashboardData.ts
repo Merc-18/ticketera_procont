@@ -9,15 +9,7 @@ export interface DashboardStats {
   byType: { development: number; administrative: number; dual: number }
   blocked: number
   overdue: number
-  sla: {
-    total: number
-    onTime: number
-    late: number
-    rate: number
-    avgCycleTime: number | null
-    avgLeadTime: number | null
-  }
-  completedByQuarter: { quarter: string; total: number; onTime: number }[]
+  // Cycle Time y Lead Time se obtienen del servidor (metrics_time_averages); sin cálculos locales.
 }
 
 export function useDashboardData(periodDays: number | null = null, areaFilter: string | null = null, typeFilter: string | null = null, studioFilter: string | null = null) {
@@ -46,25 +38,10 @@ export function useDashboardData(periodDays: number | null = null, areaFilter: s
   async function load() {
     setLoading(true)
 
-    // SLA logs: filter by period if specified
-    let slaQuery = supabase
-      .from('activity_logs')
-      .select('details, created_at')
-      .eq('action', 'sla_completed')
-      .order('created_at', { ascending: true })
-
-    if (periodDays !== null) {
-      const since = new Date(Date.now() - periodDays * 86400000).toISOString()
-      slaQuery = slaQuery.gte('created_at', since)
-    }
-
-    const [{ data: rawProjects }, { data: slaLogs }] = await Promise.all([
-      supabase
-        .from('projects')
-        .select('status, priority, project_type, is_blocked, due_date, requests(*)')
-        .neq('status', 'deleted'),
-      slaQuery,
-    ])
+    const { data: rawProjects } = await supabase
+      .from('projects')
+      .select('status, priority, project_type, is_blocked, due_date, requests(*)')
+      .neq('status', 'deleted')
 
     let projects = areaFilter
       ? (rawProjects ?? []).filter(p => (p as any).requests?.requester_area === areaFilter)
@@ -96,51 +73,9 @@ export function useDashboardData(periodDays: number | null = null, areaFilter: s
       if (area) byArea[area] = (byArea[area] ?? 0) + 1
     }
 
-    // ── SLA / Cycle Time / Lead Time stats ───────────────────────────
-    let onTime = 0, late = 0
-    const cycleTimes: number[] = []
-    const leadTimes: number[] = []
-    const quarterMap: Record<string, { total: number; onTime: number }> = {
-      'Q1': { total: 0, onTime: 0 },
-      'Q2': { total: 0, onTime: 0 },
-      'Q3': { total: 0, onTime: 0 },
-      'Q4': { total: 0, onTime: 0 },
-    }
-
-    for (const log of slaLogs ?? []) {
-      const d = log.details as any
-      const date = new Date(log.created_at)
-      const qNum = Math.floor(date.getMonth() / 3) + 1
-      const qKey = `Q${qNum}`
-
-      if (d?.on_time === true) onTime++
-      else if (d?.on_time === false) late++
-
-      const ct = d?.cycle_time_days ?? d?.days_elapsed
-      if (ct !== undefined) cycleTimes.push(Number(ct))
-      if (d?.lead_time_days !== undefined) leadTimes.push(Number(d.lead_time_days))
-
-      if (!quarterMap[qKey]) quarterMap[qKey] = { total: 0, onTime: 0 }
-      quarterMap[qKey].total++
-      if (d?.on_time === true) quarterMap[qKey].onTime++
-    }
-
-    const slaTotal = onTime + late
-    const slaRate  = slaTotal > 0 ? Math.round((onTime / slaTotal) * 100) : 0
-    const avg = (arr: number[]) =>
-      arr.length > 0 ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length) : null
-
-    const completedByQuarter = ['Q1', 'Q2', 'Q3', 'Q4'].map(q => ({
-      quarter: q,
-      total: quarterMap[q].total,
-      onTime: quarterMap[q].onTime,
-    }))
-
     setStats({
       total: projects.length,
       byStatus, byPriority, byArea, byType, blocked, overdue,
-      sla: { total: slaTotal, onTime, late, rate: slaRate, avgCycleTime: avg(cycleTimes), avgLeadTime: avg(leadTimes) },
-      completedByQuarter,
     })
     setLoading(false)
   }

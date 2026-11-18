@@ -41,6 +41,17 @@ test('incoherent responses are rejected instead of displayed', async () => {
   assert.equal((await createMetricsAdapter(client({ data: [row, { foo: 1 }], error: null })).monthlyUrgency('2026-11')).state, 'error')
 })
 
+test('requester urgency null (no study / not REQ) is a valid «no data» answer', async () => {
+  assert.deepEqual(await createMetricsAdapter(client({ data: null, error: null })).requesterUrgency('r', '2026-11'), { state: 'ready', data: null })
+  assert.equal((await createMetricsAdapter(client({ data: null, error: null })).monthlyUrgency('2026-11')).state, 'error')
+})
+
+test('time averages accept server sample sizes', async () => {
+  const data = { completed_count: 3, avg_cycle_time_days: 1.25, avg_lead_time_days: 2.5, cycle_sample_size: 2, lead_sample_size: 3 }
+  assert.deepEqual(await createMetricsAdapter(client({ data, error: null })).timeAverages({ periodDays: null, studioId: null }), { state: 'ready', data })
+  assert.equal((await createMetricsAdapter(client({ data: { ...data, cycle_sample_size: -1 }, error: null })).timeAverages({ periodDays: null, studioId: null })).state, 'error')
+})
+
 test('other server errors and network failures → error state', async () => {
   assert.equal((await createMetricsAdapter(client({ data: null, error: { code: '42501' } })).monthlyUrgency('2026-11')).state, 'error')
   const throwing = { rpc: async () => { throw new Error('network') } }

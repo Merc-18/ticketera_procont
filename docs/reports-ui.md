@@ -1,4 +1,4 @@
-# Reportes y panel visual — interfaz (rama `claude/reports-ui`)
+# Reportes y panel visual — interfaz integrada con métricas de Codex
 
 18/11/2026. Solo frontend; sin migraciones ni cambios de modelo. Las métricas se obtienen del
 backend de Codex mediante un adaptador tipado; el frontend no las calcula.
@@ -18,25 +18,24 @@ backend de Codex mediante un adaptador tipado; el frontend no las calcula.
   «Solicitudes urgentes por solicitante y estudio» con selector de mes (6 meses), solo
   admin/superadmin, tabla en escritorio y tarjetas en móvil.
 
-## Dependencia con Codex (pendiente)
+## Integración con Codex (rama `integration/business-metrics`)
 
-`src/lib/metrics-adapter.ts` define el contrato esperado (provisional) y es el único punto a
-ajustar al recibir el definitivo:
+Contrato real: migración `20261118000700_business_metrics.sql` (Codex, `537d7cf`), **pendiente de
+aplicar**. `src/lib/metrics-adapter.ts` usa sus tres RPC (solo `authenticated` con perfil interno
+activo; anon sin acceso):
 
-| RPC provisional | Argumentos | Respuesta |
-|---|---|---|
-| `metrics_requester_urgency` | `p_request_id uuid, p_month 'YYYY-MM'` | `UrgencyRow` |
-| `metrics_monthly_urgency` | `p_month 'YYYY-MM'` | `UrgencyRow[]` |
-| `metrics_time_averages` | `p_period_days int\|null, p_studio_id uuid\|null` | `{completed_count, avg_cycle_time_days, avg_lead_time_days}` |
+| RPC | Uso en la interfaz |
+|---|---|
+| `metrics_time_averages(p_period_days, p_studio_id)` | Dashboard: Cycle Time (primera salida efectiva de Backlog → Terminado) y Lead Time (solicitud → Terminado), días transcurridos; «Sin datos suficientes» sin trabajos terminados |
+| `metrics_monthly_urgency(p_month)` | Dashboard: urgencias por solicitante (nombre normalizado) y estudio, mes de Lima (admin/superadmin) |
+| `metrics_requester_urgency(p_request_id, p_month)` | Validador: resumen del solicitante; `null` → «Sin datos suficientes» |
 
-`UrgencyRow = {requester_name, studio_id, studio_name, month, total_requests, urgent_requests, urgent_pct}`
-(mes en America/Lima; `urgent_pct` 0–100 calculado por el servidor, `null` si no hay solicitudes).
-Mientras la RPC no exista (PGRST202/42883) la interfaz muestra «Pendiente de integración con
-las métricas del servidor»; respuestas incoherentes se descartan. Hasta entonces, Cycle/Lead Time
-usan los valores que el panel ya mostraba (registro de trabajos completados), sin cálculos nuevos.
+El dashboard ya no calcula tiempos desde `activity_logs`; el hook dejó de consultar los registros
+SLA (los datos históricos no se tocan; «Equipo → Carga» conserva su vista). Sin RPC publicada la
+interfaz muestra «Pendiente de integración».
 
 ## Verificación
 
-`tests/metrics-adapter.test.mjs` (5). Build correcto. Revisión visual en escritorio y 390 px:
+`tests/metrics-adapter.test.mjs` (7) y `business_metrics_local.py` de Codex (39, incluida la validación del adaptador con respuestas reales en PostgreSQL aislado). Build correcto. Revisión visual en escritorio y 390 px:
 dashboard y validador con arnés local de datos ficticios (fuera del repositorio); formulario
 público contra Supabase sin enviar (nombre con espacios → inválido, mensaje visible).

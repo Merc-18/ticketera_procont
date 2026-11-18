@@ -1,8 +1,8 @@
-// Adaptador tipado para el contrato de métricas que implementa Codex (backend de reglas y métricas).
-// DEPENDENCIA PENDIENTE: los nombres de RPC y las formas de respuesta de METRICS_CONTRACT son
-// provisionales hasta recibir el contrato definitivo. Al integrarlo, ajustar SOLO este archivo.
-// El frontend nunca calcula estas estadísticas por su cuenta: si el contrato no está disponible
-// muestra «pendiente de integración»; si la respuesta no es coherente, la descarta.
+// Adaptador tipado del contrato de métricas de Codex (migración 20261118000700_business_metrics).
+// RPC reales: metrics_time_averages, metrics_monthly_urgency y metrics_requester_urgency
+// (SECURITY DEFINER; exigen perfil interno activo; nunca expuestas a anon).
+// El frontend no calcula estas estadísticas: si la RPC no está publicada muestra «pendiente de
+// integración»; si la respuesta no es coherente, la descarta.
 
 export const METRICS_CONTRACT = {
   /** Historial mensual de urgencias de un solicitante y su estudio (vista del validador). */
@@ -22,10 +22,14 @@ export interface UrgencyRow {
   urgent_requests: number
   urgent_pct: number | null  // 0–100 calculado por el servidor; null si total = 0
 }
+/** Cycle Time: primera salida efectiva de Backlog → Terminado. Lead Time: solicitud → Terminado.
+ *  Días transcurridos (calendario corrido) calculados por el servidor sobre trabajos terminados. */
 export interface TimeAverages {
   completed_count: number
   avg_cycle_time_days: number | null
   avg_lead_time_days: number | null
+  cycle_sample_size?: number
+  lead_sample_size?: number
 }
 
 export type MetricResult<T> =
@@ -47,6 +51,8 @@ export function isUrgencyRow(v: any): v is UrgencyRow {
 }
 export function isTimeAverages(v: any): v is TimeAverages {
   return !!v && count(v.completed_count) && days(v.avg_cycle_time_days) && days(v.avg_lead_time_days)
+    && (v.cycle_sample_size === undefined || count(v.cycle_sample_size))
+    && (v.lead_sample_size === undefined || count(v.lead_sample_size))
 }
 
 const notPublished = (error: any) => ['PGRST202', '42883'].includes(String(error?.code ?? ''))
@@ -68,8 +74,10 @@ export const limaMonth = (date = new Date()) =>
 
 export function createMetricsAdapter(client: RpcClient) {
   return {
+    /** null: la solicitud no aplica (sin estudio, no REQ o nombre no normalizable). */
     requesterUrgency: (requestId: string, month: string) =>
-      call(client, METRICS_CONTRACT.requesterUrgency, { p_request_id: requestId, p_month: month }, isUrgencyRow),
+      call(client, METRICS_CONTRACT.requesterUrgency, { p_request_id: requestId, p_month: month },
+        (v): v is UrgencyRow | null => v === null || isUrgencyRow(v)),
     monthlyUrgency: (month: string) =>
       call(client, METRICS_CONTRACT.monthlyUrgency, { p_month: month },
         (v): v is UrgencyRow[] => Array.isArray(v) && v.every(isUrgencyRow)),

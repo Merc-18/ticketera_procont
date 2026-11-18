@@ -11,13 +11,15 @@ const monthLabel = (m: string) => new Date(`${m}-15T12:00:00Z`).toLocaleDateStri
  */
 export default function RequesterUrgencySummary({ requestId, createdAt }: { requestId: string; createdAt: string }) {
   const month = limaMonth(new Date(createdAt))
-  const [result, setResult] = useState<MetricResult<UrgencyRow> | null>(null)
+  const [result, setResult] = useState<MetricResult<UrgencyRow | null> | null>(null)
   useEffect(() => { setResult(null); void metrics.requesterUrgency(requestId, month).then(setResult) }, [requestId, month])
 
   return (
     <div className="border border-gray-200 rounded-lg px-3 py-2.5 bg-white">
       <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Historial de urgencias · {monthLabel(month)}</p>
-      {result?.state === 'ready' ? (
+      {result?.state === 'ready' && result.data === null ? (
+        <p className="text-xs text-gray-500">Sin datos suficientes para esta solicitud.</p>
+      ) : result?.state === 'ready' && result.data ? (
         <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 text-sm">
           <span className="text-gray-800 font-medium">{result.data.requester_name}</span>
           <span className="text-gray-500">{result.data.studio_name ?? 'Sin estudio'}</span>

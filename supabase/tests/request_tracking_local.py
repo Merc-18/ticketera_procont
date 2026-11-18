@@ -76,6 +76,9 @@ try:
     assert q(f"SELECT details->>'to'||'|'||(details->>'cause') FROM request_events WHERE request_id='{R0['id']}' AND action='status_changed'",owner)=='received|baseline'
     assert q(f"SELECT updated_at FROM requests WHERE id='{R0['id']}'",owner)==before
     passed('existing requests get a baseline status event without being modified')
+    # Cadena completa: las migraciones posteriores (p. ej. M11 métricas) deben conservar estos estados.
+    for path in sorted((ROOT/'supabase/migrations').glob('*.sql')):
+        if path.name>M10:sql(path.read_text(),owner)
     fixture(S,'super@example.invalid');sql(f"SELECT app_private.bootstrap_superadmin('{S}')",owner)
     for identity,email in [(A,'admin@example.invalid'),(V,'viewer@example.invalid')]:
         fixture(identity,email);sql(f"SELECT app_private.provision_auth_profile('{identity}')",owner)
