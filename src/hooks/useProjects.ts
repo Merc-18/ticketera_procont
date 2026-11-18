@@ -92,8 +92,8 @@ export function useProjects() {
   }
 
   /** Cambio de fase (arrastre o selector). El cierre con pendientes exige confirmación explícita. */
-  const moveFlow = async (projectId: string, flowId: string, phase: Phase, options: { confirmPending?: boolean; pendingFingerprint?: string } = {}) => {
-    try { return await board.movePhase(projectId, phase, actionKey(), { flowId, ...options }) }
+  const moveFlow = async (projectId: string, flowId: string, phase: Phase, options: { confirmPending?: boolean; pendingFingerprint?: string } = {}, key: string = actionKey()) => {
+    try { return await board.movePhase(projectId, phase, key, { flowId, ...options }) }
     finally { await loadProjects() }
   }
 

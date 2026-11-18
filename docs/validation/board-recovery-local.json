@@ -1,0 +1,25 @@
+{
+  "at_utc": "2026-11-18T23:31:20.023626+00:00",
+  "base_backend_commit": "1ba71b2",
+  "recovered_commit": "17c8c19",
+  "branch": "integration/board-operations-recovery",
+  "backup": "claude-board-20261118T231348Z",
+  "backup_files_verified": 35,
+  "staged_deletions_preserved": 2,
+  "file_1_untouched": true,
+  "frontend_tests": {
+    "passed": 15,
+    "new": 6,
+    "affected_existing": 9
+  },
+  "dry_run_script_tests": 4,
+  "build": "passed",
+  "backend_74_repeated": false,
+  "claude_sql_26_repeated": false,
+  "migration_sha256": "66995addf02ce4af8d53b6794fd030f4369ed88a02284d8815afe99e0dafc6be",
+  "backend_sql_changed": false,
+  "remote_applied": false,
+  "dry_run_current": "blocked_authentication",
+  "main_merged": false,
+  "pushed": false
+}

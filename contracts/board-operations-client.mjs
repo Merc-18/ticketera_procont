@@ -1,4 +1,5 @@
 /** M12 backend contract. Normal authenticated session only; retain one UUID per user action. */
+import { attachmentMetadata } from './ticket-security-client.mjs'
 export const DEVELOPMENT_PHASES = Object.freeze(['backlog','analysis','design','dev','code_review','testing','deploy','done'])
 export function createBoardOperations(client) {
   async function read(name, args) {
@@ -35,7 +36,7 @@ export function createBoardOperations(client) {
     }),
     reserveEvidence: (id, file, uploadKey) => read('reserve_board_evidence', {
       p_project_id: id, p_upload_key: uploadKey, p_file_name: file.name,
-      p_size_bytes: file.size, p_mime_type: file.type,
+      p_size_bytes: file.size, p_mime_type: attachmentMetadata(file, uploadKey).mime_type,
     }),
   }
 }

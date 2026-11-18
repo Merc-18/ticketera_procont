@@ -8,3 +8,6 @@ export declare function uploadReservedTicketAttachment(client: unknown, grant: A
   Promise<{ path: string; expires_at: string }>
 export declare function uploadTicketAttachment(client: unknown, requestId: string, trackingToken: string,
   file: File, uploadKey: string): Promise<{ path: string; expires_at: string }>
+
+export declare function attachmentMetadata(file: { name: string; size: number; type: string }, uploadKey: string):
+  { upload_key: string; file_name: string; size_bytes: number; mime_type: string }

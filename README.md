@@ -1,5 +1,7 @@
 # Ticketera Procont
 
+**Integración recuperada de Claude:** cambios preservados en una rama/copia aislada, build correcto y correcciones puntuales de reintentos. M12 sigue sin aplicar; falta dry-run autenticado vigente. Ver [recuperación y único paso pendiente](docs/board-recovery.md).
+
 **Tablero operativo integrado en `integration/board-operations`, M12 sin aplicar:** nuevos proyectos solo Development (ocho fases), cierre por Done con confirmación de pendientes, reapertura con motivo, progresos de fase y checklist separados, responsable principal y auditoría inmutable del servidor. El frontend ya usa las RPC de Codex. Ver [integración del tablero](docs/board-ui.md) y [contratos](docs/board-operations.md). Activar M12 y fusionar en `main` deben hacerse juntos.
 
 **Métricas activas (historial 11/11):** Cycle Time y Lead Time sobre una cohorte común de tickets terminados y urgencias mensuales por solicitante y estudio, solo para usuarios internos. Ver [reportes](docs/reports-ui.md) y [métricas](docs/business-metrics.md).

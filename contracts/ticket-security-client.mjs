@@ -54,3 +54,6 @@ export async function uploadTicketAttachment(client, requestId, trackingToken, f
   if (error || !grant) throw new Error('No se autorizó la reserva del adjunto. Conserva su identificador para revisión.')
   return uploadReservedTicketAttachment(client, grant, file)
 }
+
+// Shared MIME inference; documents remain the original File object.
+export { metadata as attachmentMetadata }

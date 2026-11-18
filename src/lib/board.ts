@@ -68,28 +68,27 @@ export function boardErrorMessage(error: unknown): string {
  * mensaje genérico) y traducirlo sin exponer detalles internos.
  */
 export function createBoard(client: BoardRpcClient) {
-  let last: unknown = null
-  const tracking: BoardRpcClient = {
-    rpc: (name, args) => Promise.resolve(client.rpc(name, args)).then(r => { last = r.error ?? null; return r }),
-  }
-  const ops = createBoardOperations(tracking)
-  const wrap = <A extends unknown[], R>(fn: (...args: A) => Promise<R>) => async (...args: A): Promise<R> => {
-    last = null
-    try { return await fn(...args) }
+  // Error state belongs to one call: a parallel snapshot must not overwrite it.
+  const wrap = <A extends unknown[], R>(select: (ops: ReturnType<typeof createBoardOperations>) => (...args: A) => Promise<R>) => async (...args: A): Promise<R> => {
+    let last: unknown = null
+    const tracking: BoardRpcClient = {
+      rpc: (name, params) => Promise.resolve(client.rpc(name, params)).then(r => { last = r.error ?? null; return r }),
+    }
+    try { return await select(createBoardOperations(tracking))(...args) }
     catch (err) { throw new Error(last ? boardErrorMessage(last) : boardErrorMessage(err)) }
   }
   return {
-    getTicket: wrap(ops.getTicket),
-    movePhase: wrap(ops.movePhase),
-    reopen: wrap(ops.reopen),
-    assign: wrap(ops.assign),
-    setPriority: wrap(ops.setPriority),
-    block: wrap(ops.block),
-    unblock: wrap(ops.unblock),
-    archive: wrap(ops.archive),
-    restore: wrap(ops.restore),
-    bulk: wrap(ops.bulk),
-    reserveEvidence: wrap(ops.reserveEvidence),
+    getTicket: wrap(ops => ops.getTicket),
+    movePhase: wrap(ops => ops.movePhase),
+    reopen: wrap(ops => ops.reopen),
+    assign: wrap(ops => ops.assign),
+    setPriority: wrap(ops => ops.setPriority),
+    block: wrap(ops => ops.block),
+    unblock: wrap(ops => ops.unblock),
+    archive: wrap(ops => ops.archive),
+    restore: wrap(ops => ops.restore),
+    bulk: wrap(ops => ops.bulk),
+    reserveEvidence: wrap(ops => ops.reserveEvidence),
   }
 }
 export type Board = ReturnType<typeof createBoard>

@@ -2,9 +2,11 @@
 
 Rama `integration/board-operations`, construida sobre `main@94bd8fd` más el backend de Codex
 (`codex/board-operations@1ba71b2`, recuperado de `.supabase-local/workspaces/board-operations`).
-**M12 (`20261118000800_board_operations.sql`) no está aplicada**; el dry-run sobre
-`ticketera-procont` (`xsxdpaiivklqeudgqoqf`) muestra que es la única migración pendiente.
-Las once migraciones aplicadas no se modificaron.
+**M12 (`20261118000800_board_operations.sql`) no está aplicada**. Claude reportó un dry-run
+sobre `ticketera-procont` (`xsxdpaiivklqeudgqoqf`) con M12 como única pendiente.
+Las once migraciones aplicadas no se modificaron. El dry-run mencionado arriba es el
+reporte previo de Claude: el intento actual se detuvo en autenticación y no se considera
+verificación remota vigente. Ver [recuperación y cierre](board-recovery.md).
 
 El frontend no implementa otro motor: reutiliza el adaptador de Codex
 [`contracts/board-operations-client.mjs`](../contracts/board-operations-client.mjs) a través de
@@ -60,7 +62,11 @@ Cada acción del usuario usa su propia UUID de idempotencia (`actionKey()`).
   vez por persona; distribución por fase y bloqueados; Cycle/Lead Time del equipo desde
   `metrics_time_averages` (cohorte común, 90 días).
 
-## Validación
+## Validación anterior documentada por Claude
+
+Estos resultados se conservan como evidencia previa. La recuperación ejecutó build, las
+9 pruebas de integración afectadas y 6 nuevas; no repitió las suites PostgreSQL. El estado
+actual del dry-run y las pruebas nuevas están en [board-recovery.md](board-recovery.md).
 
 | Prueba | Resultado |
 |---|---|
@@ -74,6 +80,13 @@ Cada acción del usuario usa su propia UUID de idempotencia (`actionKey()`).
 
 Las pruebas usan PostgreSQL 17 aislado con stubs de Auth/Storage y datos ficticios; no crean tickets
 reales ni modifican REQ26-001.
+
+## Recuperación tras interrupción de Claude
+
+El trabajo sin commit se preservó en `17c8c19`, rama `integration/board-operations-recovery`
+en una copia Git aislada. Se corrigieron reintentos de Done/evidencias, inferencia MIME y
+concurrencia del diagnóstico, conservando los componentes y las RPC existentes.
+Ver [estado, respaldo y comprobaciones actuales](board-recovery.md).
 
 ## Pendiente para activar
 

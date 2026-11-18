@@ -16,7 +16,7 @@ import type { ProjectFlow } from '../../types/database.types'
 import { useAreas } from '../../hooks/useAreas'
 import { useCatalogs } from '../../hooks/useCatalogs'
 import { board } from '../../lib/api'
-import { needsPendingConfirmation, type BoardTicket, type Phase } from '../../lib/board'
+import { actionKey, needsPendingConfirmation, type BoardTicket, type Phase } from '../../lib/board'
 import { DoneConfirmDialog } from '../projects/BoardDialogs'
 
 
@@ -85,7 +85,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
   const [showNewModal, setShowNewModal] = useState(false)
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   // Cierre por arrastre con tareas pendientes: requiere confirmación explícita.
-  const [pendingClose, setPendingClose] = useState<{ ticket: BoardTicket; flowId: string; title: string } | null>(null)
+  const [pendingClose, setPendingClose] = useState<{ ticket: BoardTicket; flowId: string; title: string; key: string } | null>(null)
   const [closing, setClosing] = useState(false)
   const [priorityFilter, setPriorityFilter] = useState(() => localStorage.getItem('kanban_priorityFilter') || 'all')
   const [areaFilter, setAreaFilter]         = useState(() => localStorage.getItem('kanban_areaFilter') || 'all')
@@ -191,7 +191,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
       if (target === 'done' || target === 'deployed') {
         // Snapshot del servidor: si cerrar deja tareas pendientes, se pide confirmación.
         const ticket = await board.getTicket(item.p.id)
-        if (needsPendingConfirmation(ticket, draggableId, target)) { setPendingClose({ ticket, flowId: draggableId, title: item.p.title }); return }
+        if (needsPendingConfirmation(ticket, draggableId, target)) { setPendingClose({ ticket, flowId: draggableId, title: item.p.title, key: actionKey() }); return }
       }
       await moveFlow(item.p.id, draggableId, target)
     } catch (error) {
@@ -202,10 +202,10 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
   const confirmClose = async () => {
     if (!pendingClose) return
     setClosing(true)
-    const { ticket, flowId } = pendingClose
+    const { ticket, flowId, key } = pendingClose
     const target = ticket.flows.find(f => f.id === flowId)?.flow_type === 'administrative' ? 'deployed' : 'done'
     try {
-      await moveFlow(ticket.project_id, flowId, target, { confirmPending: true, pendingFingerprint: ticket.pending_fingerprint })
+      await moveFlow(ticket.project_id, flowId, target, { confirmPending: true, pendingFingerprint: ticket.pending_fingerprint }, key)
       toast.success('Ticket terminado (Done)')
       setPendingClose(null)
     } catch (error) {

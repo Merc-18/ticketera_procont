@@ -1,6 +1,5 @@
 import { supabase } from './supabase'
-import { deliverAttachments, type DeliveryItem } from './attachment-delivery.ts'
-import { uploadReservedTicketAttachment } from '../../contracts/ticket-security-client.mjs'
+import { deliverAttachments, deliverBoardEvidence, type DeliveryItem } from './attachment-delivery.ts'
 import { board } from './api'
 export type { DeliveryItem, DeliveryResult } from './attachment-delivery.ts'
 
@@ -31,16 +30,5 @@ export async function listRequestAttachments(requestId: string) {
  * (reserve_board_evidence; sin token del cliente, válida también con el ticket bloqueado) y
  * subida a la ruta asignada por el servidor. Mismos límites: 4 archivos / 2.500.000 bytes por ticket.
  */
-export async function uploadBoardEvidence(projectId: string, items: DeliveryItem[]): Promise<{ uploaded: string[]; failed: string[]; error: string | null }> {
-  const uploaded: string[] = []; const failed: string[] = []; let error: string | null = null
-  for (const { file, uploadKey } of items) {
-    try {
-      const grant = await board.reserveEvidence(projectId, file, uploadKey)
-      await uploadReservedTicketAttachment(supabase, grant, file)
-      uploaded.push(file.name)
-    } catch (err) {
-      failed.push(file.name); error ??= err instanceof Error ? err.message : 'No se pudo subir la evidencia.'
-    }
-  }
-  return { uploaded, failed, error }
-}
+export const uploadBoardEvidence = (projectId: string, items: DeliveryItem[], completedKeys: ReadonlySet<string> = new Set()) =>
+  deliverBoardEvidence(supabase, (file, key) => board.reserveEvidence(projectId, file, key), items, completedKeys)

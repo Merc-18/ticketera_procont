@@ -11,6 +11,7 @@ export default function EvidenceSection({ projectId, requestId, editable, onChan
   const [files, setFiles] = useState<{ name: string; url: string | null }[] | null>(null)
   const [prepared, setPrepared] = useState<PreparationResult | null>(null)
   const [keys, setKeys] = useState<Map<File, string>>(new Map())
+  const [deliveredKeys, setDeliveredKeys] = useState<ReadonlySet<string>>(() => new Set())
   const [busy, setBusy] = useState(false)
   const [resetKey, setResetKey] = useState(0)
 
@@ -27,12 +28,15 @@ export default function EvidenceSection({ projectId, requestId, editable, onChan
       return { file: i.file, uploadKey: next.get(i.file)! }
     })
     setKeys(next)
-    const result = await uploadBoardEvidence(projectId, items)
-    setBusy(false)
-    if (result.uploaded.length) toast.success(`${result.uploaded.length} evidencia(s) subida(s)`)
-    if (result.error) toast.error(result.error)
-    if (!result.failed.length) { setResetKey(k => k + 1); setKeys(new Map()) }
-    await load(); onChanged?.()
+    try {
+      const result = await uploadBoardEvidence(projectId, items, deliveredKeys)
+      setDeliveredKeys(new Set(result.uploadedKeys))
+      if (result.uploaded.length) toast.success(`${result.uploaded.length} evidencia(s) subida(s)`)
+      if (result.error) toast.error(result.error)
+      if (!result.failed.length) { setResetKey(k => k + 1); setKeys(new Map()); setDeliveredKeys(new Set()) }
+      await load(); onChanged?.()
+    } catch { toast.error('No se pudo confirmar la entrega de las evidencias pendientes.') }
+    finally { setBusy(false) }
   }
 
   return (
@@ -57,7 +61,7 @@ export default function EvidenceSection({ projectId, requestId, editable, onChan
           <AttachmentPicker onChange={setPrepared} resetKey={resetKey} />
           <button onClick={() => { void upload() }} disabled={busy || !prepared?.ok || prepared.items.length === 0}
             className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-brand-700 disabled:opacity-50">
-            {busy ? 'Subiendo…' : 'Subir evidencias'}
+            {busy ? 'Subiendo…' : deliveredKeys.size ? 'Reintentar evidencias pendientes' : 'Subir evidencias'}
           </button>
         </div>
       )}
