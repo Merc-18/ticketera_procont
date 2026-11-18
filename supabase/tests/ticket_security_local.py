@@ -40,7 +40,7 @@ def denied(name, text, role='anon', actor=None, code='42501'):
 def reserve(receipt, key=None, name='fixture.txt', size=8, mime='text/plain', token=None):
     return (f"SELECT public.reserve_request_attachment('{receipt['id']}','{token or receipt['tracking_token']}',"
             f"'{key or uuid.uuid4()}',{literal(name)},{size},{literal(mime)})")
-def upload(path): return f"INSERT INTO storage.objects(bucket_id,name) VALUES('request-attachments',{literal(path)})"
+def upload(path): return f"INSERT INTO storage.objects(bucket_id,name,metadata) VALUES('request-attachments',{literal(path)},'{{\"size\":8,\"mimetype\":\"text/plain\"}}'::jsonb)"
 def tracking(receipt, token=None):
     return json.loads(q(f"SELECT public.track_request('{receipt['request_number']}','{token or receipt['tracking_token']}')", 'anon') or 'null')
 try:
@@ -59,7 +59,7 @@ try:
     sql(f'ALTER TABLE auth.users ADD COLUMN email_confirmed_at timestamptz; GRANT USAGE ON SCHEMA auth TO {owner}; GRANT SELECT(id,email,raw_user_meta_data,email_confirmed_at),REFERENCES(id) ON auth.users TO {owner}; ALTER PUBLICATION supabase_realtime OWNER TO {owner};')
     sql(f"""CREATE SCHEMA storage AUTHORIZATION {owner};
       CREATE TABLE storage.buckets(id text PRIMARY KEY,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);
-      CREATE TABLE storage.objects(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),bucket_id text REFERENCES storage.buckets(id),name text,owner uuid,created_at timestamptz DEFAULT now(),UNIQUE(bucket_id,name));
+      CREATE TABLE storage.objects(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),bucket_id text REFERENCES storage.buckets(id),name text,owner uuid,metadata jsonb,created_at timestamptz DEFAULT now(),UNIQUE(bucket_id,name));
       ALTER TABLE storage.buckets OWNER TO {owner}; ALTER TABLE storage.objects OWNER TO {owner};
       ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
       GRANT USAGE ON SCHEMA storage TO anon,authenticated;
@@ -100,18 +100,18 @@ try:
     assert q(f'SELECT count(*) FROM storage.objects WHERE name={literal(g["path"])}',owner)=='1'
     passed('no Storage UPDATE policy permits overwriting')
     denied('private grants inaccessible to anon','SELECT * FROM app_private.request_attachment_grants')
-    denied('actual 10 MiB maximum retained at reservation',reserve(first,size=10485761),code='22023')
+    denied('single reservation cannot exceed total 2500000 byte budget',reserve(first,size=2500001),code='22023')
     denied('unapproved MIME denied',reserve(first,mime='text/html'),code='22023')
     with ThreadPoolExecutor(max_workers=6) as pool:
         results=list(pool.map(lambda _:sql(reserve(with_old_upload), 'anon',ok=False),range(6)))
-    assert sum(x.returncode==0 for x in results)==4
+    assert sum(x.returncode==0 for x in results)==3
     assert all(x.returncode==0 or '23514' in x.stderr for x in results)
-    passed('concurrent reservations plus existing M8 upload cannot exceed five slots')
+    passed('concurrent reservations plus existing M8 upload cannot exceed four slots')
     expired=ticket(); eg=json.loads(q(reserve(expired),'anon'))
     sql(f"UPDATE public.requests SET created_at=now()-interval '31 minutes' WHERE id='{expired['id']}'",owner)
     denied('thirty minute boundary blocks reservation',reserve(expired))
     denied('thirty minute boundary revokes outstanding upload capability',upload(eg['path']))
-    assert q("SELECT (NOT public)||':'||file_size_limit FROM storage.buckets WHERE id='request-attachments'",owner)=='true:10485760'
+    assert q("SELECT (NOT public)||':'||file_size_limit FROM storage.buckets WHERE id='request-attachments'",owner)=='true:2500000'
     assert q('SELECT count(*) FROM storage.objects','anon')=='0'
     passed('Storage RLS hides all attachment objects from anonymous clients')
     for identity,email in [(S,'security-super@example.invalid'),(V,'security-viewer@example.invalid')]:

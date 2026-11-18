@@ -12,6 +12,7 @@ function mock({ reserveError = false, uploadError = false } = {}) {
       return { error: reserveError, data: reserveError ? null : {
         bucket: 'request-attachments', path: 'synthetic-request/random-capability-fixture.txt',
         mime_type: args.p_mime_type, expires_at: 'synthetic-expiration',
+        size_bytes: args.p_size_bytes,
       } }
     },
     storage: { from(bucket) { calls.push(['bucket', bucket]); return {

@@ -10,7 +10,8 @@ Migración nueva:
 
 ## Adjuntos: autorización y límites
 
-El bucket y las políticas Storage de M8 se conservan. La función existente
+Se conservan el bucket privado y las políticas RLS de M8. Su límite individual
+se reduce a 2.500.000 bytes y se añade una guarda propia al confirmar escrituras. La función existente
 `request_attachment_allowed(text)` ahora exige una reserva exacta emitida por
 el servidor, además de solicitud pendiente y ventana original de 30 minutos.
 El UUID del ticket, un nombre parecido o un token de otro ticket no bastan.
@@ -30,33 +31,84 @@ aleatoria generada por el servidor. El token de seguimiento nunca aparece en
 la ruta. La capacidad autoriza únicamente esa ruta, durante la ventana original;
 se trata como un secreto temporal de subida. No se permite sobrescribir.
 
-Se mantiene el bucket privado y su límite de **10 MiB**; los tipos MIME deben
-estar en la lista existente. La tabla de reservas tiene RLS y carece de lectura
-directa para anon/authenticated/service_role. La reserva serializa por ticket:
-máximo **cinco plazas**, incluyendo archivos previos de M8 y reservas pendientes.
-La cuota no se libera por un fallo de red: reintentar con la misma clave y datos
-reutiliza la plaza. Si la subida ya pudo completarse, revisar su resultado antes
-de reenviarla; el adaptador no reintenta automáticamente.
+Los límites definitivos son **cuatro archivos y 2.500.000 bytes combinados**,
+exactamente en bytes decimales, no 2,5 MiB. Incluyen reservas pendientes y archivos
+anteriores de M8; estos últimos no se modifican ni eliminan. Si falta el tamaño
+real de un archivo anterior o ya no queda presupuesto, se rechazan nuevas reservas.
+
+La reserva toma un bloqueo por ticket y suma tanto plazas como bytes. La clave
+estable y los mismos datos reutilizan la reserva, sin consumir otra cuota. Esta
+no se libera automáticamente después de un fallo de red. La tabla privada mantiene
+RLS y carece de acceso directo para anon/authenticated/service_role.
+
+**La declaración del navegador no basta:** el trigger diferido propio
+`procont_attachment_final_size` comprueba al COMMIT los metadatos reales de Storage
+(`metadata.size` y `metadata.mimetype`, nunca `user_metadata`). Exige coincidencia
+con la reserva y vuelve a verificar el total y la cantidad bajo el mismo bloqueo
+por ticket. Incluye las escrituras privilegiadas finales de Storage, sin cambiar
+sus triggers administrados. Una subida mayor o menor que lo reservado, sin tamaño
+real, fuera de plazo o con otro MIME no se confirma.
+
+El trigger es diferido porque Storage prueba INSERT en una transacción/savepoint
+que revierte antes de transferir el archivo. Esa prueba puede no tener tamaño real;
+la escritura final sí lo debe tener. Las reservas y la guarda final conservan el
+plazo de 30 minutos desde el ticket, sin renovarlo en reintentos. El bucket aplica
+además un máximo individual de 2.500.000 bytes y la lista MIME de M8.
+Fuentes del flujo de Storage:
+[prueba de permisos](https://github.com/supabase/storage/blob/master/src/storage/database/pg.ts),
+[metadatos de la escritura final](https://github.com/supabase/storage/blob/master/src/storage/uploader.ts).
 
 ### Integración con Claude, pendiente de revisión conjunta
 
-**No se sustituyó** `src/lib/attachments.ts`. Su subida UUID/nombre antigua será
-rechazada después de M9. Antes de activar M9 y probar archivos reales, integrar
-en ese helper la RPC de reserva y usar exclusivamente la ruta devuelta:
+**No se sustituyó** `src/lib/attachments.ts` ni ninguna pantalla de Claude. El
+helper antiguo UUID/nombre será rechazado después de M9: frontend y migración
+se deben activar juntos, después de revisión y autorización de integración.
 
-```javascript
-await uploadTicketAttachment(client, receipt.id, receipt.tracking_token, file, uploadKey)
+Contrato recomendado, con reserva atómica de todo el lote:
+
+```text
+reserve_request_attachments(
+  p_request_id uuid,
+  p_tracking_token uuid,
+  p_files [{upload_key: uuid, file_name: string, size_bytes: integer, mime_type: string}]
+) -> [{bucket, path, mime_type, size_bytes, expires_at}]
 ```
 
-Implementación lista para incorporar:
+- Array de 1 a 4 archivos, claves distintas, suma final <= 2500000. Cero archivos:
+  omitir la llamada. Si un elemento falla, no queda ninguna reserva parcial nueva.
+- Mismo orden de entrada/salida. Usar siempre la ruta devuelta, nunca construirla
+  desde el UUID. La RPC individual anterior sigue disponible con la misma firma.
+- Reservar todo el lote antes de comenzar a subir; luego se pueden subir en paralelo
+  con `upsert: false`. Los controles del servidor siguen aplicándose en concurrencia.
+
+Secuencia exacta para la compresión que implementará Claude:
+
+1. Seleccionar como máximo cuatro archivos. Comprimir **solo imágenes** a un formato
+   ya admitido (por ejemplo image/jpeg o image/webp), actualizando nombre y MIME.
+2. Conservar los documentos originales (PDF/Office/texto y otros admitidos): no
+   recomprimirlos, convertirlos ni truncarlos. El adaptador los envía intactos.
+3. Calcular `File.size`/`Blob.size` de los archivos **finales**. Si la suma excede
+   2500000, no reservar ni subir; pedir que se reduzca la selección o las imágenes.
+4. Generar un upload_key por archivo final y conservarlo junto con ese File/Blob
+   durante todos los reintentos. No volver a comprimir después de reservar.
+5. Llamar a la reserva por lote y subir cada archivo final a su ruta correspondiente.
+   Tanto tamaño como MIME deben coincidir; no enviar tamaños de los originales.
+
+Adaptador preparado fuera del frontend:
 [`contracts/ticket-security-client.mjs`](../contracts/ticket-security-client.mjs).
-No emplea claves privilegiadas. Mantiene rutas de dos componentes, compatibles
-con el listado interno actual. El prefijo del nombre pasa de ordinal a capacidad
-aleatoria; el frontend puede adaptar su etiqueta de visualización tras revisar
-la integración. Los tipos MIME vacíos usan las extensiones ya admitidas por M8.
-La lectura interna y enlaces firmados conservan las políticas existentes.
-El uso de INSERT sin upsert sigue el contrato de
-[Storage/RLS de Supabase](https://supabase.com/docs/guides/storage/security/access-control).
+
+```javascript
+const grants = await reserveTicketAttachments(client, receipt.id, receipt.tracking_token,
+  finalFiles, stableUploadKeys)
+await Promise.all(grants.map((grant, i) =>
+  uploadReservedTicketAttachment(client, grant, finalFiles[i])))
+```
+
+No emplea claves privilegiadas ni transforma documentos. Las capacidades mantienen
+rutas de dos componentes y la lectura interna/enlaces firmados existentes. Claude
+puede adaptar la etiqueta de archivo, cuyo prefijo deja de ser un ordinal. Un error
+de subida no provoca reintentos automáticos ni una nueva clave. Si la respuesta
+se perdió, revisar si el objeto quedó confirmado antes de reenviarlo.
 
 ## Rechazo: mensaje público separado
 
@@ -104,14 +156,34 @@ si se proporciona `sla_target_date`, y elimina ese SLA cuando la prioridad es
 esa RPC, los plazos ni las fórmulas. Las reglas oficiales se definirán después;
 las restricciones anteriores no quedan adoptadas como política de Procont.
 
+## Integración preparada, sin merge
+
+Se comparó con el HEAD actual de Claude `779e4ee`, sin cambiar sus referencias
+ni su árbol. No se detectaron rutas en conflicto con sus cambios locales. La
+rama conserva el commit anterior `8385620` y añade este ajuste; no se reescribió
+historial. Las ocho migraciones y todo `src` permanecen idénticos a la base.
+La comparación es local por base/rutas; no se ejecutó una integración real.
+
+El backend y el contrato están listos para revisión conjunta. Claude debe conectar
+su compresión y el nuevo helper de reserva/subida. Después se autorizarán por
+separado la integración y aplicación de M9: el frontend anterior no debe ponerse
+en producción junto con esta migración sin adaptar la subida. Si Claude añade
+otros commits antes de integrar, revisar de nuevo solo las rutas coincidentes.
+
 ## Pruebas y siguiente paso
 
-26 comprobaciones nuevas de seguridad en PostgreSQL 17.12, con stubs Auth/Storage
-y datos sintéticos; cuatro del adaptador. Incluyen autorización correcta/incorrecta,
-token de otro ticket, límites/caducidad, cuota concurrente, no sobrescritura,
-separación de notas, publicación histórica autorizada y contrato de rechazo
-compatible. El servidor aislado se detuvo. No se repitieron suites anteriores.
-Evidencia: [`ticket-security-local.json`](validation/ticket-security-local.json).
+Evidencia histórica del commit `8385620`: 26 comprobaciones SQL y cuatro del
+adaptador, con los límites anteriores. Se conserva en
+[`ticket-security-local.json`](validation/ticket-security-local.json); **no se
+repitió esa suite**. Sus fixtures se ajustaron para futura compatibilidad, sin
+presentarlas como revalidadas con los límites nuevos.
+
+Validación vigente: **20 pruebas nuevas** en PostgreSQL 17.12, incluyendo tamaños
+reales al COMMIT, escrituras privilegiadas, concurrencia, límite exacto y exceso
+de un byte, rollback de lote, archivos anteriores y plazo; **cinco pruebas nuevas**
+del contrato, documentos intactos y tamaños después de comprimir. Solo se usaron
+stubs Auth/Storage y datos sintéticos; el servidor temporal está detenido.
+Evidencia: [`ticket-attachment-limits-local.json`](validation/ticket-attachment-limits-local.json).
 
 El límite HTTP real de Storage, la subida desde navegador y el flujo completo no
 se prueban con stubs: quedan para la prueba real tras integración y autorización.

@@ -2,7 +2,9 @@
 
 **Corrección preparada en rama aislada, no integrada ni aplicada:** M9 refuerza
 la subida con una reserva autorizada por token de seguimiento y separa motivo
-público de notas internas. Requiere revisar el adaptador de adjuntos con Claude
+público de notas internas. La pendiente M9 incorpora los límites definitivos de
+4 archivos y 2.500.000 bytes totales, verificando bytes reales en Storage. Requiere
+revisar la compresión de imágenes y el adaptador de adjuntos con Claude
 antes de activarla. No modifica los ocho archivos anteriores ni las reglas SLA.
 Véase [seguridad de tickets](ticket-security.md). El resto describe M8 activa.
 

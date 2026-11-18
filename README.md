@@ -2,8 +2,10 @@
 
 En la rama aislada `codex/ticket-security-guards` están preparadas las
 [correcciones de adjuntos y rechazo público](docs/ticket-security.md), basadas en
-Claude `779e4ee`. La migración 9 no está aplicada. Falta revisar la integración
-del adaptador de adjuntos y autorizar integración/aplicación antes de la prueba
+Claude `779e4ee`. La migración 9 no está aplicada. Implementa los límites
+definitivos de 4 archivos y 2.500.000 bytes combinados, con control del tamaño real
+al confirmar Storage. Falta incorporar la compresión de imágenes de Claude y
+revisar el adaptador de adjuntos, y autorizar integración/aplicación antes de la prueba
 real; el frontend y las ocho migraciones existentes se conservan intactos.
 
 **Formulario del cliente y validación interna activos:** migración `20261118000400_request_intake.sql` aplicada (historial 8/8). Tipos de solicitud administrables, adjuntos privados, clasificación al validar y SLA «Pendiente de configuración» (sin plazos heredados). Ver [solicitudes](docs/request-intake.md).
