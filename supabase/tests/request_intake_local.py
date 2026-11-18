@@ -59,7 +59,9 @@ try:
       ALTER TABLE storage.buckets OWNER TO {owner}; ALTER TABLE storage.objects OWNER TO {owner};
       ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
       GRANT USAGE ON SCHEMA storage TO anon, authenticated; GRANT SELECT, INSERT ON storage.objects TO anon, authenticated;""")
-    for path in sorted((ROOT/'supabase/migrations').glob('*.sql')):sql(path.read_text(),owner)
+    # Contrato de la migración 8: aplica la cadena hasta ella (la 9 sustituye la subida directa por reservas).
+    for path in sorted((ROOT/'supabase/migrations').glob('*.sql')):
+        if path.name<='20261118000400_request_intake.sql':sql(path.read_text(),owner)
     q=lambda text,role=None,actor=None: sql(text,role,actor).stdout.strip()
     assert q("SELECT count(*) FROM request_types",'anon')=='9'
     passed('9 approved request types readable by the public form')

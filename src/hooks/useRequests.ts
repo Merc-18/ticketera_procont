@@ -36,8 +36,8 @@ export function useRequests({ loadInbox = false } = {}) {
     await operations.approveRequest(request, data, attempt)
     await loadRequests()
   }
-  const rejectRequest = async (id: string, reason: string) => {
-    await operations.rejectRequest(id, reason)
+  const rejectRequest = async (id: string, publicReason: string, internalNotes?: string) => {
+    await operations.rejectRequest(id, publicReason, internalNotes)
     await loadRequests()
   }
   return { requests, loading, error, createRequest, approveRequest, rejectRequest, reload: loadRequests }

@@ -39,6 +39,8 @@ export interface Request {
   request_type_id?: string | null;
   title?: string | null;
   urgent_requested?: boolean;
+  /** Motivo visible para el solicitante (migración 20261118000500); rejection_reason queda interno. */
+  public_rejection_reason?: string | null;
 }
 
 export interface Project {

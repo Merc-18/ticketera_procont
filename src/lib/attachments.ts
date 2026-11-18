@@ -1,26 +1,19 @@
 import { supabase } from './supabase'
+import { deliverAttachments, type DeliveryItem } from './attachment-delivery.ts'
+export type { DeliveryItem, DeliveryResult } from './attachment-delivery.ts'
 
 /** Evidencias de solicitudes: bucket privado `request-attachments`, carpeta = id de la solicitud. */
 export const ATTACHMENT_BUCKET = 'request-attachments'
 export const ATTACHMENT_ACCEPT = '.png,.jpg,.jpeg,.webp,.gif,.pdf,.txt,.csv,.xlsx,.xls,.docx,.doc'
-// Límites y compresión: ver attachment-prep.ts (máx. 4 archivos, total ≤ 2.500.000 bytes).
+// Límites y compresión: attachment-prep.ts (máx. 4 archivos, total ≤ 2.500.000 bytes), iguales al contrato de Codex.
 
-const safeName = (name: string) =>
-  name.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9._-]+/g, '_').slice(-120) || 'archivo'
+/** Entrega con el cliente Supabase de la aplicación. */
+export const uploadRequestAttachments = (requestId: string, trackingToken: string, items: DeliveryItem[]) =>
+  deliverAttachments(supabase, requestId, trackingToken, items)
 
-/**
- * Sube evidencias YA preparadas (comprimidas si correspondía) por prepareAttachments().
- * Devuelve los nombres que fallaron.
- */
-export async function uploadRequestAttachments(requestId: string, files: File[]): Promise<string[]> {
-  const failed: string[] = []
-  for (const [i, file] of files.entries()) {
-    const { error } = await supabase.storage.from(ATTACHMENT_BUCKET)
-      .upload(`${requestId}/${i + 1}-${safeName(file.name)}`, file, { upsert: false, contentType: file.type || undefined })
-    if (error) failed.push(file.name)
-  }
-  return failed
-}
+/** Nombre visible: quita el prefijo que asigna el servidor (`<uuid>-`) o el antiguo (`<n>-`). */
+export const displayAttachmentName = (objectName: string) =>
+  objectName.replace(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}-/i, '').replace(/^\d+-/, '')
 
 /** Lista evidencias con enlaces firmados temporales (solo miembros internos; RLS de Storage). */
 export async function listRequestAttachments(requestId: string) {
@@ -28,5 +21,5 @@ export async function listRequestAttachments(requestId: string) {
   if (error || !data?.length) return []
   const paths = data.map(f => `${requestId}/${f.name}`)
   const { data: signed } = await supabase.storage.from(ATTACHMENT_BUCKET).createSignedUrls(paths, 600)
-  return data.map((f, i) => ({ name: f.name.replace(/^\d+-/, ''), url: signed?.[i]?.signedUrl ?? null }))
+  return data.map((f, i) => ({ name: displayAttachmentName(f.name), url: signed?.[i]?.signedUrl ?? null }))
 }

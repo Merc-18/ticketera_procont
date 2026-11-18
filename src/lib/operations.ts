@@ -106,7 +106,10 @@ export function createOperations(client: RpcClient) {
         return project
       })
     },
-    rejectRequest: (id: string, reason: string) => command('reject_request', { p_request_id: id, p_reason: reason.trim() }),
+    /** Rechazo (migración 20261118000500): motivo público para el solicitante y notas internas opcionales. */
+    rejectRequest: (id: string, publicReason: string, internalNotes?: string) => internalNotes?.trim()
+      ? command('reject_request_with_notes', { p_request_id: id, p_public_reason: publicReason.trim(), p_internal_notes: internalNotes.trim() })
+      : command('reject_request', { p_request_id: id, p_reason: publicReason.trim() }),
     assignStudioCode: (id: string, codeId: string) => command('assign_request_studio_code', { p_request_id: id, p_studio_code_id: codeId }),
     changeProjectType: (id: string, type: Project['project_type']) => value<Project | Project[]>('change_project_type', { p_project_id: id, p_project_type: type }),
     updateRequestDetails: (id: string, area: string, name: string) => command('update_request_details', {

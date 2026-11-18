@@ -6,7 +6,7 @@ import { errorMessage } from '../../lib/supabase-errors'
 import { handoffTracking } from '../../lib/tracking-handoff'
 import type { SubmissionReceipt } from '../../lib/operations'
 import { useCatalogs } from '../../hooks/useCatalogs'
-import { uploadRequestAttachments } from '../../lib/attachments'
+import { uploadRequestAttachments, type DeliveryItem } from '../../lib/attachments'
 import type { PreparationResult } from '../../lib/attachment-prep'
 import AttachmentPicker from './AttachmentPicker'
 import BrandLogo from '../ui/BrandLogo'
@@ -31,7 +31,11 @@ export default function PublicRequestForm() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [receipt, setReceipt] = useState<SubmissionReceipt | null>(null)
-  const [failedFiles, setFailedFiles] = useState<string[]>([])
+  // Entrega de adjuntos (reserva con token privado + subida). Se conserva para reintentar
+  // con las mismas claves de subida mientras la autorización del ticket siga vigente.
+  const [pendingDelivery, setPendingDelivery] = useState<DeliveryItem[]>([])
+  const [deliveryError, setDeliveryError] = useState<string | null>(null)
+  const [retrying, setRetrying] = useState(false)
 
   const set = (patch: Partial<typeof EMPTY>) => setForm(f => ({ ...f, ...patch }))
   // Nombres de estudio únicos (sin RUC ni códigos internos).
@@ -44,16 +48,29 @@ export default function PublicRequestForm() {
     setLoading(true); setError(null)
     try {
       const result = await operations.submitClientRequest({ ...form, urgent_requested: urgent }, attempt.current)
-      const ready = prepared.items.map(i => i.file)
-      const failed = ready.length ? await uploadRequestAttachments(result.id, ready) : []
-      setFailedFiles(failed)
+      // Los archivos ya están comprimidos; cada uno recibe una clave de subida estable.
+      const items: DeliveryItem[] = prepared.items.map(i => ({ file: i.file, uploadKey: crypto.randomUUID() }))
       setReceipt(result)
+      await deliver(result, items)
       setForm(EMPTY); setUrgent(false); setPickerKey(k => k + 1)
     } catch (err) {
       setError(errorMessage(err))
     } finally {
       setLoading(false)
     }
+  }
+
+  async function deliver(target: SubmissionReceipt, items: DeliveryItem[]) {
+    if (items.length === 0) { setPendingDelivery([]); setDeliveryError(null); return }
+    const outcome = await uploadRequestAttachments(target.id, target.tracking_token, items)
+    const remaining = items.filter(i => outcome.failed.includes(i.file.name))
+    setPendingDelivery(remaining)
+    setDeliveryError(outcome.error)
+  }
+  const retryDelivery = async () => {
+    if (!receipt) return
+    setRetrying(true)
+    try { await deliver(receipt, pendingDelivery) } finally { setRetrying(false) }
   }
 
   /* ── Confirmación: número REQ y token privado ── */
@@ -68,10 +85,16 @@ export default function PublicRequestForm() {
             <p className="text-sm text-gray-600 mb-2">Número de seguimiento:</p>
             <p className="text-3xl font-bold text-primary">{receipt.request_number}</p>
           </div>
-          {failedFiles.length > 0 && (
-            <p className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4">
-              No se pudieron adjuntar: {failedFiles.join(', ')}. La solicitud sí quedó registrada.
-            </p>
+          {pendingDelivery.length > 0 && (
+            <div className="text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4 text-left space-y-2">
+              <p>La solicitud quedó registrada, pero no se pudieron adjuntar: <strong>{pendingDelivery.map(i => i.file.name).join(', ')}</strong>.</p>
+              {deliveryError && <p className="text-xs">{deliveryError}</p>}
+              <p className="text-xs">Puedes reintentar durante los 30 minutos siguientes al envío.</p>
+              <button type="button" onClick={() => void retryDelivery()} disabled={retrying}
+                className="px-3 py-1.5 bg-accent-400 hover:bg-accent-300 text-gray-900 rounded-lg text-xs font-bold disabled:opacity-50">
+                {retrying ? 'Reintentando…' : 'Reintentar adjuntos'}
+              </button>
+            </div>
           )}
           <p className="text-sm text-gray-500 mb-4">
             Guarda el número y este token para consultar tu solicitud. El token solo se muestra ahora; no lo compartas.
@@ -81,7 +104,7 @@ export default function PublicRequestForm() {
             <code className="break-all select-all">{receipt.tracking_token}</code>
           </div>
           <div className="space-y-3">
-            <button onClick={() => { attempt.current = createRpcAttempt(); setReceipt(null) }}
+            <button onClick={() => { attempt.current = createRpcAttempt(); setReceipt(null); setPendingDelivery([]); setDeliveryError(null) }}
               className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-brand-700 transition">
               Crear otra solicitud
             </button>

@@ -24,7 +24,7 @@ interface Props {
   users: User[]
   onApprove: (id: string, data: { title: string; project_type: BoardType; priority: Priority; assigned_dev?: string; assigned_admin?: string },
     attempt: ReturnType<typeof createRpcAttempt>) => Promise<void>
-  onReject: (id: string, reason: string) => Promise<void>
+  onReject: (id: string, publicReason: string, internalNotes?: string) => Promise<void>
   onClose: () => void
 }
 
@@ -43,7 +43,8 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
   const [responsible, setResponsible] = useState('')
   const [priority, setPriority] = useState<Priority>(r.urgent_requested ? 'urgent' : 'medium')
   const [board, setBoard] = useState<BoardType>('development')
-  const [reason, setReason] = useState('')
+  const [reason, setReason] = useState('')          // motivo público (lo ve el cliente)
+  const [internalNotes, setInternalNotes] = useState('') // notas internas (no se publican)
   const [busy, setBusy] = useState(false)
   const [files, setFiles] = useState<{ name: string; url: string | null }[] | null>(null)
   const attempt = useRef(createRpcAttempt())
@@ -66,7 +67,7 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
     if (mode === 'approve' && studioAreas.length > 0 && !area) return 'Selecciona el área (obligatoria para este estudio).'
     if (mode === 'approve' && requiresSub && !subsystem) return 'Selecciona el subproyecto.'
     if (mode === 'approve' && !responsible) return 'Selecciona el responsable.'
-    if (mode === 'reject' && !reason.trim()) return 'Indica el motivo del rechazo.'
+    if (mode === 'reject' && !reason.trim()) return 'Indica el motivo del rechazo para el solicitante.'
     return null
   })()
 
@@ -83,7 +84,7 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
           assigned_dev: responsible, assigned_admin: responsible }, attempt.current)
         toast.success('Solicitud aceptada y trabajo creado en el tablero')
       } else {
-        await onReject(r.id, reason)
+        await onReject(r.id, reason, internalNotes)
         toast.success('Solicitud rechazada')
       }
       onClose()
@@ -197,7 +198,14 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
           {decided ? (
             <section className={`rounded-lg p-4 border ${r.status === 'approved' ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
               <p className="text-sm font-semibold">{r.status === 'approved' ? '✅ Aceptada — trabajo creado en el tablero' : '❌ Rechazada'}</p>
-              {r.rejection_reason && <p className="text-sm text-red-800 mt-1 whitespace-pre-wrap">{r.rejection_reason}</p>}
+              {r.status === 'rejected' && (
+                <div className="mt-2 grid gap-2 sm:grid-cols-2">
+                  <div><p className="text-xs text-gray-500">Motivo para el solicitante</p>
+                    <p className="text-sm text-red-800 whitespace-pre-wrap">{r.public_rejection_reason || 'Sin motivo público registrado (se mostrará un mensaje genérico).'}</p></div>
+                  <div><p className="text-xs text-gray-500">Notas internas</p>
+                    <p className="text-sm text-gray-700 whitespace-pre-wrap">{r.rejection_reason || '—'}</p></div>
+                </div>
+              )}
               {r.classified_at && <p className="text-xs text-gray-500 mt-1">Clasificada el {new Date(r.classified_at).toLocaleString('es-PE')}</p>}
             </section>
           ) : canManage ? (
@@ -233,11 +241,19 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
                   </div>
                 </div>
               ) : (
-                <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Motivo del rechazo *</label>
-                  <textarea value={reason} onChange={e => setReason(e.target.value)} rows={3} maxLength={5000}
-                    placeholder="Este motivo será visible para el solicitante en el seguimiento"
-                    className={`${input} resize-none`} />
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">Motivo para el solicitante *</label>
+                    <textarea value={reason} onChange={e => setReason(e.target.value)} rows={3} maxLength={5000}
+                      placeholder="Visible para el cliente en el seguimiento"
+                      className={`${input} resize-none`} />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">Notas internas (opcional)</label>
+                    <textarea value={internalNotes} onChange={e => setInternalNotes(e.target.value)} rows={2} maxLength={5000}
+                      placeholder="Solo para el equipo; nunca se muestran al cliente"
+                      className={`${input} resize-none bg-gray-50`} />
+                  </div>
                 </div>
               )}
 

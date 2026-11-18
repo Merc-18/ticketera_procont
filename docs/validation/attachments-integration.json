@@ -1,0 +1,20 @@
+{
+  "at_utc": "2026-11-18T20:03:03.759690+00:00",
+  "branch": "integration/attachments-security",
+  "bases": {
+    "claude_main": "c85b624",
+    "codex": "a67764c (bundle verificado)"
+  },
+  "previous_eight_migrations_unchanged": true,
+  "migration_9_applied_remotely": false,
+  "tests": {
+    "codex_node": "tests/ticket-security-client.test.mjs + tests/ticket-attachment-limits.test.mjs: 9/9",
+    "codex_postgres_full_chain": "ticket_security_local.py 26/26, ticket_attachment_limits_local.py 20/20 (PostgreSQL 17.12 aislado, 9 migraciones)",
+    "integration_node": "tests/attachment-integration.test.mjs: 6/6",
+    "consumers_after_reject_change": "tests/consumers.test.mjs: 19/19",
+    "m8_contract_test_scoped_to_m1_m8": "request_intake_local.py 22/22",
+    "build": "tsc + vite OK"
+  },
+  "tickets_created": 0,
+  "remote_sql_executed": false
+}

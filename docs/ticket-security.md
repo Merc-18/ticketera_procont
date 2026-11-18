@@ -1,5 +1,10 @@
 # Correcciones de seguridad de tickets — preparadas, no aplicadas
 
+**Integración (Claude, rama `integration/attachments-security`):** fusionada sin conflictos
+sobre `c85b624`; el frontend usa este contrato (compresión → reserva por lote con token →
+subida de rutas autorizadas) y la separación de rechazo. Las 46 comprobaciones de esta rama
+(26 + 20) pasan sobre la cadena completa de 9 migraciones. Sigue **sin aplicar** en Supabase.
+
 Base: Claude `779e4ee`, octava migración ya existente. Rama aislada
 `codex/ticket-security-guards`; la rama anterior `codex/client-validator-backend`
 se conserva. No se modifica el árbol compartido, `src`, ni las ocho migraciones.

@@ -270,10 +270,13 @@ export default function RequestInbox() {
                 </div>
                 <div className="mb-2"><TypeChips request={request} /></div>
                 <p className="text-sm text-gray-600 line-clamp-2">{request.description}</p>
-                {request.rejection_reason && (
-                  <div className="mt-2 bg-red-50 border border-red-100 rounded px-3 py-2">
-                    <p className="text-xs text-red-600 font-medium mb-0.5">Razón del rechazo:</p>
-                    <p className="text-xs text-red-800 line-clamp-2">{request.rejection_reason}</p>
+                {(request.public_rejection_reason || request.rejection_reason) && (
+                  <div className="mt-2 bg-red-50 border border-red-100 rounded px-3 py-2 space-y-1">
+                    <p className="text-xs text-red-600 font-medium">Motivo para el solicitante:</p>
+                    <p className="text-xs text-red-800 line-clamp-2">{request.public_rejection_reason || 'Sin motivo público (mensaje genérico)'}</p>
+                    {request.rejection_reason && request.rejection_reason !== request.public_rejection_reason && (
+                      <p className="text-xs text-gray-600 line-clamp-2"><span className="font-medium">Nota interna:</span> {request.rejection_reason}</p>
+                    )}
                   </div>
                 )}
                 <p className="text-xs text-gray-400 mt-2">

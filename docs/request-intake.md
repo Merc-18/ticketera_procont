@@ -1,11 +1,10 @@
-# Formulario del cliente y validación interna — activos
+# Formulario del cliente y validación interna — activos (M9 integrada, pendiente de aplicar)
 
-**Corrección preparada en rama aislada, no integrada ni aplicada:** M9 refuerza
-la subida con una reserva autorizada por token de seguimiento y separa motivo
-público de notas internas. La pendiente M9 incorpora los límites definitivos de
-4 archivos y 2.500.000 bytes totales, verificando bytes reales en Storage. Requiere
-revisar la compresión de imágenes y el adaptador de adjuntos con Claude
-antes de activarla. No modifica los ocho archivos anteriores ni las reglas SLA.
+**Integrado con M9 (rama `integration/attachments-security`, sin aplicar en Supabase):** la
+migración `20261118000500_ticket_security.sql` de Codex añade reserva de adjuntos autorizada
+por token de seguimiento, límites de 4 archivos y 2.500.000 bytes verificados en Storage, y
+separa el motivo público de rechazo de las notas internas. El frontend ya usa ese contrato
+(ver abajo). Las ocho migraciones anteriores no cambian.
 Véase [seguridad de tickets](ticket-security.md). El resto describe M8 activa.
 
 18/11/2026. Migración [`20261118000400_request_intake.sql`](../supabase/migrations/20261118000400_request_intake.sql)
@@ -36,13 +35,13 @@ archivos antes de enviar. Si el total supera el límite, `prepareAttachments`
 capturas) y se detiene en el primero que cumple. PDF, Word, Excel, texto y GIF no se modifican.
 Si ni así cabe, muestra un mensaje claro y bloquea el envío.
 
-**Integración con el backend de Codex (rama `codex/ticket-security-guards`, 9.ª migración
-pendiente):** la preparación ocurre antes de cualquier llamada al servidor; el formulario solo
-envía cuando `prepared.ok`. `attachmentManifest(items)` entrega nombre, tamaño y tipo finales
-para un contrato de reserva previo a la subida; `uploadRequestAttachments` recibe los archivos
-ya preparados. Hoy se sube tras crear la solicitud con la política de Storage de la migración 8
-(que todavía admite 5 archivos y 10 MB por archivo); el límite 4 / 2,5 MB lo aplica el frontend
-hasta que el backend lo haga cumplir.
+**Flujo integrado con el contrato de Codex (M9):** preparar/comprimir → `submit_client_request`
+→ `reserve_request_attachments(request_id, tracking_token, lote)` (atómico; el token privado
+solo viaja a la RPC) → subir cada archivo a la ruta asignada por el servidor
+(`uploadReservedTicketAttachment`, `upsert:false`). `src/lib/attachment-delivery.ts` usa
+`contracts/ticket-security-client.mjs` sin modificarlo (tipos en `.d.mts`). Cada archivo recibe
+una `upload_key` estable; si la reserva o alguna subida falla, la confirmación muestra qué
+archivos faltan y permite **reintentar** con las mismas claves dentro de los 30 minutos.
 
 Pruebas: `tests/attachment-prep.test.mjs` (8, lógica con compresor simulado) y prueba real en
 Chromium headless: 3 capturas PNG 2880×1800 + PDF (8,15 MB) → 2,26 MB en 0,7 s, WebP
@@ -59,7 +58,9 @@ y subárea opcional; no aplicables a otros estudios.
 - **Aceptar:** responsable, prioridad definitiva (baja/media/alta/urgente), tablero
   (desarrollo/administrativo/ambos); crea el trabajo. **SLA: «Pendiente de configuración»**:
   no se calcula fecha (se eliminaron `sla-config.ts` y las fórmulas heredadas).
-- **Rechazar:** código interno + motivo obligatorio; sin responsable ni SLA.
+- **Rechazar:** código interno + **motivo para el solicitante** (obligatorio, visible en el
+  seguimiento) + **notas internas** opcionales (`reject_request_with_notes`, M9); sin responsable
+  ni SLA. El seguimiento público solo muestra `public_rejection_reason`.
 
 Reglas en base de datos (trigger): datos del cliente inmutables; clasificación editable solo
 mientras está pendiente; requisitos de decisión anteriores. Trazabilidad en `request_events`
