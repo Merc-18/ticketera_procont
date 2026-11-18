@@ -52,3 +52,10 @@ Ver [contrato de métricas](business-metrics.md), migración `20261118000700`: n
 público obligatorio, prioridades existentes sin cambio, tiempos derivados de eventos
 del servidor y urgencias por nombre normalizado/estudio en America/Lima. No altera
 solicitudes existentes ni el seguimiento público. No aplicada en remoto.
+
+## Reglas operativas nuevas — M12 pendiente
+
+Ver [contrato del tablero](board-operations.md), migración `20261118000800`: estados
+sincronizados por Done, reapertura controlada, progresos separados y auditoría inmutable.
+Reutiliza los eventos y métricas existentes; no convierte registros históricos ni
+aplica cambios remotos. Requiere adaptar el frontend antes de autorizar su activación.

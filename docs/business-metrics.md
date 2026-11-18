@@ -189,3 +189,10 @@ git -C /home/procont/projects/ticketera-procont fetch /home/procont/projects/tic
 
 No ejecutar esta operación en una terminal que mantenga `.git` montado en solo lectura.
 El bundle requiere la base `f526283`, que ya pertenece al repositorio original.
+
+## Reglas operativas nuevas — M12 pendiente
+
+Ver [contrato del tablero](board-operations.md), migración `20261118000800`: estados
+sincronizados por Done, reapertura controlada, progresos separados y auditoría inmutable.
+Reutiliza los eventos y métricas existentes; no convierte registros históricos ni
+aplica cambios remotos. Requiere adaptar el frontend antes de autorizar su activación.

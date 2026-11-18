@@ -1,5 +1,7 @@
 # Ticketera Procont
 
+**Reglas operativas preparadas, M12 sin aplicar:** nuevos proyectos solo Development (ocho fases), cierre por Done con confirmación de pendientes, reapertura con motivo, progresos separados y auditoría del servidor inmutable. Ver [contratos para Claude](docs/board-operations.md). Requiere adaptación coordinada del frontend y autorización de aplicación; main/remoto no se modifican desde esta rama.
+
 **Métricas activas (historial 11/11):** Cycle Time y Lead Time sobre una cohorte común de tickets terminados y urgencias mensuales por solicitante y estudio, solo para usuarios internos. Ver [reportes](docs/reports-ui.md) y [métricas](docs/business-metrics.md).
 
 **Métricas nuevas preparadas, sin aplicar:** Cycle Time desde primera salida de Backlog, Lead Time y urgencias por solicitante/estudio en mes de Perú. Contrato interno y permisos en [reglas y métricas](docs/business-metrics.md). La migración `20261118000700` está pendiente de integración/autorización; el remoto confirmado sigue en 10/10.
