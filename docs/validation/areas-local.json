@@ -1,0 +1,31 @@
+{
+  "at_utc": "2026-11-18T16:53:13.733051+00:00",
+  "postgresql": "17.12 (Ubuntu 17.12-1.pgdg24.04+1)",
+  "migration": "20261118000200_areas.sql",
+  "checks": [
+    "catalog starts empty",
+    "superadmin creates area",
+    "duplicate name rejected case-insensitively",
+    "untrimmed or empty name rejected",
+    "admin cannot create area",
+    "viewer cannot create area",
+    "anon cannot create area",
+    "created_by cannot be forged",
+    "admin update affects no rows",
+    "superadmin edits and deactivates area",
+    "delete not permitted",
+    "anon reads only active areas",
+    "anon cannot read audit columns",
+    "members read only active areas",
+    "superadmin reads inactive areas",
+    "inactive profile reads nothing"
+  ],
+  "passed": 16,
+  "socket_only": true,
+  "server_stopped": true,
+  "synthetic_auth_stub_only": true,
+  "real_accounts_created": 0,
+  "real_areas_created": 0,
+  "remote_sql_executed": false,
+  "previous_suites_repeated": false
+}

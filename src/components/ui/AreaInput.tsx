@@ -1,5 +1,4 @@
-import { useId } from 'react'
-import { AREAS } from '../../lib/constants'
+import { useAreas } from '../../hooks/useAreas'
 
 interface Props {
   value: string
@@ -7,35 +6,34 @@ interface Props {
   required?: boolean
   placeholder?: string
   className?: string
-  /** Valores adicionales a sugerir (p. ej. áreas ya registradas). */
-  suggestions?: readonly string[]
 }
 
 /**
- * Campo de área en texto libre con sugerencias del catálogo centralizado
- * (`AREAS`). Mientras Procont Business no defina su catálogo, no se ofrecen
- * opciones predefinidas ni se asume un área por defecto.
+ * Campo de área. Con áreas activas en Supabase muestra un selector con ese
+ * catálogo (y conserva un valor histórico que ya no esté en la lista). Si el
+ * catálogo está vacío o aún no disponible, mantiene el texto libre anterior.
  */
-export default function AreaInput({ value, onChange, required, placeholder = 'Escribe el área', className, suggestions = [] }: Props) {
-  const listId = useId()
-  const options = Array.from(new Set([...AREAS, ...suggestions].filter(Boolean)))
+export default function AreaInput({ value, onChange, required, placeholder = 'Escribe el área', className }: Props) {
+  const { activeNames, loading } = useAreas()
+
+  if (!loading && activeNames.length > 0) {
+    return (
+      <select required={required} value={value} onChange={e => onChange(e.target.value)} className={className}>
+        <option value="">{required ? 'Selecciona un área' : placeholder}</option>
+        {activeNames.map(name => <option key={name} value={name}>{name}</option>)}
+        {value && !activeNames.includes(value) && <option value={value}>{value} (histórica)</option>}
+      </select>
+    )
+  }
   return (
-    <>
-      <input
-        type="text"
-        required={required}
-        maxLength={200}
-        value={value}
-        onChange={e => onChange(e.target.value)}
-        list={options.length > 0 ? listId : undefined}
-        placeholder={placeholder}
-        className={className}
-      />
-      {options.length > 0 && (
-        <datalist id={listId}>
-          {options.map(a => <option key={a} value={a} />)}
-        </datalist>
-      )}
-    </>
+    <input
+      type="text"
+      required={required}
+      maxLength={200}
+      value={value}
+      onChange={e => onChange(e.target.value)}
+      placeholder={placeholder}
+      className={className}
+    />
   )
 }

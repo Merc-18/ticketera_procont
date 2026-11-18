@@ -14,6 +14,7 @@ import UserManagementPanel from './components/admin/UserManagementPanel'
 import WorkloadView from './components/admin/WorkloadView'
 
 import PapeleraView from './components/admin/PapeleraView'
+import AreasPanel from './components/admin/AreasPanel'
 import NotificationBell from './components/notifications/NotificationBell'
 import BrandLogo from './components/ui/BrandLogo'
 import { usePendingCount } from './hooks/usePendingCount'
@@ -43,9 +44,10 @@ function Dashboard() {
   const { user, signOut } = useAuth()
   const [currentBoard, setCurrentBoard] = useState<'development' | 'administrative'>('development')
   const [currentTab, setCurrentTab]   = useState<'dashboard' | 'boards' | 'requests' | 'equipo'>('dashboard')
-  const [adminSubTab, setAdminSubTab] = useState<'usuarios' | 'carga' | 'papelera'>('carga')
+  const [adminSubTab, setAdminSubTab] = useState<'usuarios' | 'carga' | 'papelera' | 'areas'>('carga')
   const [openProjectId, setOpenProjectId] = useState<string | null>(null)
   const isAdminOrSuperAdmin = user?.role === 'admin' || user?.role === 'superadmin'
+  const isSuperAdmin = user?.role === 'superadmin'
   const canSeeEquipo = isAdminOrSuperAdmin || user?.role === 'developer'
   const pendingCount = usePendingCount(isAdminOrSuperAdmin)
   useSlaWarnings()
@@ -198,12 +200,26 @@ function Dashboard() {
                   🗑 Papelera
                 </button>
               )}
+
+              {isSuperAdmin && (
+                <button
+                  onClick={() => setAdminSubTab('areas')}
+                  className={`px-4 py-2 rounded-md font-medium text-sm transition ${
+                    adminSubTab === 'areas'
+                      ? 'bg-white text-primary shadow-sm'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  🏷 Áreas
+                </button>
+              )}
             </div>
 
             {adminSubTab === 'carga'    && <WorkloadView />}
             {adminSubTab === 'usuarios' && <UserManagementPanel />}
 
             {adminSubTab === 'papelera' && <PapeleraView />}
+            {adminSubTab === 'areas' && isSuperAdmin && <AreasPanel />}
           </>
         )}
       </div>

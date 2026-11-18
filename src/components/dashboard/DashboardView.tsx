@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useDashboardData, type DashboardStats } from '../../hooks/useDashboardData'
 import { toast } from '../../lib/toast'
-import { AREAS } from '../../lib/constants'
+import { useAreas } from '../../hooks/useAreas'
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -235,10 +235,11 @@ export default function DashboardView() {
   const [typeFilter, setTypeFilter] = useState<string | null>(null)
   const [exporting, setExporting] = useState<'completed' | 'active' | null>(null)
   const { stats, loading, reload } = useDashboardData(period, areaFilter, typeFilter)
-  // Opciones del filtro: catálogo centralizado + áreas presentes en los datos
+  // Opciones del filtro: áreas activas de Supabase + áreas presentes en los datos
+  const { activeNames } = useAreas()
   const seenAreas = useRef(new Set<string>())
   Object.keys(stats?.byArea ?? {}).forEach(a => seenAreas.current.add(a))
-  const areaOptions = Array.from(new Set([...AREAS, ...seenAreas.current, ...(areaFilter ? [areaFilter] : [])])).sort()
+  const areaOptions = Array.from(new Set([...activeNames, ...seenAreas.current, ...(areaFilter ? [areaFilter] : [])])).sort()
 
   const handleExportCompleted = async () => {
     setExporting('completed')

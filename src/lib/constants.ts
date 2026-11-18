@@ -40,9 +40,8 @@ export const PRIORITY_DOT: Record<string, string> = {
 
 /**
  * Area badge — includes border-color class.
- * Catálogo de áreas de Procont Business pendiente de definición por el
- * propietario: no se precargan áreas ni colores. Las áreas sin entrada usan
- * el estilo neutro de respaldo en los consumidores.
+ * El catálogo de áreas vive en Supabase (`public.areas`, hook `useAreas`).
+ * No se asignan colores por área: los consumidores usan el estilo neutro.
  */
 export const AREA_COLORS: Record<string, string> = {}
 
@@ -60,10 +59,4 @@ export const PHASE_LABELS: Record<string, string> = {
   deployed:       'Deployed',
 }
 
-/**
- * Catálogo de áreas sugeridas (vacío hasta que Procont Business lo defina).
- * Los formularios aceptan texto libre mediante <AreaInput>; añadir aquí los
- * nombres oficiales los ofrecerá como sugerencias sin cambiar la lógica.
- */
-export const AREAS: readonly string[] = []
 

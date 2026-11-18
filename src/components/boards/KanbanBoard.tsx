@@ -13,7 +13,7 @@ import { useAuth } from '../../hooks/useAuth'
 import { toast } from '../../lib/toast'
 import { errorMessage } from '../../lib/supabase-errors'
 import type { ProjectFlow } from '../../types/database.types'
-import { AREAS } from '../../lib/constants'
+import { useAreas } from '../../hooks/useAreas'
 
 
 type BoardType = 'development' | 'administrative'
@@ -115,6 +115,11 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
   }, [openProjectId, projects])
 
   const phases = PHASES[boardType]
+  // Opciones de área: catálogo activo de Supabase + áreas presentes en los proyectos + filtro guardado
+  const { activeNames } = useAreas()
+  const areaOptions = Array.from(new Set([...activeNames,
+    ...projects.map(p => (p as any).requests?.requester_area as string | undefined).filter((a): a is string => !!a),
+    ...(areaFilter !== 'all' ? [areaFilter] : [])])).sort()
 
 
   const filteredProjects = projects.filter(project => {
@@ -288,7 +293,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
               }`}
             >
               <option value="all">Área</option>
-              {AREAS.map(area => (
+              {areaOptions.map(area => (
                 <option key={area} value={area}>{area}</option>
               ))}
             </select>
