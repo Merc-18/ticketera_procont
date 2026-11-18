@@ -36,3 +36,12 @@ credencial técnica de la reserva de adjuntos y ya no se muestra al cliente.
 El modal de la solicitud muestra la línea de tiempo interna (`RequestTimeline`): estados, eventos,
 clasificación, decisiones, fases y bloqueos con fecha/hora de Lima y usuario, más el historial del
 proyecto (`activity_logs`). Identificador estable: UUID interno de la solicitud.
+
+## Verificación visual (18/11/2026)
+
+Seguimiento público contra Supabase (solo consulta de REQ26-001 → «Solicitud recibida», sin
+token ni datos internos) en escritorio y móvil (390 px). Vistas internas (tablero, bandeja,
+validación y línea de tiempo con bloqueo/desbloqueo, terminado y rechazado) con un arnés local
+de datos ficticios, fuera del repositorio. Correcciones móviles: pestañas de la bandeja con
+desplazamiento horizontal propio y buscador del tablero a ancho completo; sin desbordamiento
+de página a 390 px.

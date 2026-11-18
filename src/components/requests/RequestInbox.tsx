@@ -108,7 +108,7 @@ export default function RequestInbox() {
       )}
 
       {/* Tabs */}
-      <div className="flex gap-2 border-b">
+      <div className="flex gap-2 border-b overflow-x-auto">
         {([
           { key: 'pending',  label: 'Pendientes',  count: pendingRequests.length,  dot: 'bg-yellow-400' },
           { key: 'approved', label: 'Aprobadas',   count: approvedRequests.length, dot: 'bg-green-500' },
@@ -117,7 +117,7 @@ export default function RequestInbox() {
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`px-4 py-2.5 text-sm font-medium border-b-2 transition flex items-center gap-2 ${
+            className={`px-4 py-2.5 text-sm font-medium border-b-2 transition flex items-center gap-2 whitespace-nowrap shrink-0 ${
               activeTab === tab.key
                 ? 'border-primary text-primary'
                 : 'border-transparent text-gray-500 hover:text-gray-700'

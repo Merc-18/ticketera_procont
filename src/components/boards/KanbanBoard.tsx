@@ -235,7 +235,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
   return (
     <>
       {/* Header: título + buscador */}
-      <div className="flex items-center gap-4 mb-4">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-3 mb-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">{boardTitle}</h2>
           <p className="text-gray-500 text-xs mt-0.5">Arrastra y suelta los proyectos entre las columnas</p>
@@ -245,7 +245,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
           placeholder="Buscar por título, número o área..."
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
-          className="px-4 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary bg-white placeholder-gray-400 w-72"
+          className="px-4 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary bg-white placeholder-gray-400 w-full sm:w-72"
         />
       </div>
 
