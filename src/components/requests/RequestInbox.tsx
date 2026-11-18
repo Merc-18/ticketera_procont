@@ -44,12 +44,23 @@ export default function RequestInbox() {
   const catalogs = useCatalogs('member')
   const [studioCodeId, setStudioCodeId] = useState('')
   const nameOf = (list: { id: string; name: string }[], id?: string | null) => (id ? list.find(x => x.id === id)?.name : undefined)
+  // Conceptos independientes: estudio, proyecto, subproyecto, área, subárea y código interno.
   const classificationOf = (r: Request) => r.studio_id ? {
     studio: nameOf(catalogs.studios, r.studio_id) ?? '—',
-    project: [nameOf(catalogs.systems, r.system_id), nameOf(catalogs.subsystems, r.subsystem_id)].filter(Boolean).join(' / ') || '—',
-    area: [nameOf(catalogs.areas, r.area_id), nameOf(catalogs.areas, r.subarea_id)].filter(Boolean).join(' / ') || null,
+    project: nameOf(catalogs.systems, r.system_id) ?? '—',
+    subproject: nameOf(catalogs.subsystems, r.subsystem_id) ?? '—',
+    area: nameOf(catalogs.areas, r.area_id) ?? '—',
+    subarea: nameOf(catalogs.areas, r.subarea_id) ?? '—',
     code: catalogs.codes.find(c => c.id === r.studio_code_id)?.code ?? null,
   } : null
+  const [studioFilter, setStudioFilter] = useState('all')
+  /** Línea secundaria de la lista: estudio y área por separado (el área solo si existe). */
+  const meta = (r: Request) => (
+    <p className="text-sm text-gray-600 flex flex-wrap gap-x-3">
+      {r.studio_id && <span>🏢 {nameOf(catalogs.studios, r.studio_id) ?? '—'}</span>}
+      {r.requester_area && <span>📍 {r.requester_area}</span>}
+    </p>
+  )
   /** Antes de aceptar o rechazar un ticket clasificado, fija el código interno del estudio. */
   const ensureStudioCode = async (r: Request) => {
     if (!r.studio_id || r.studio_code_id === studioCodeId) return
@@ -91,9 +102,11 @@ export default function RequestInbox() {
     assigned_admin: '',
   })
 
-  const pendingRequests  = requests.filter(r => r.status === 'pending')
-  const approvedRequests = requests.filter(r => r.status === 'approved')
-  const rejectedRequests = requests.filter(r => r.status === 'rejected')
+  const visibleRequests  = studioFilter === 'all' ? requests
+    : requests.filter(r => studioFilter === 'none' ? !r.studio_id : r.studio_id === studioFilter)
+  const pendingRequests  = visibleRequests.filter(r => r.status === 'pending')
+  const approvedRequests = visibleRequests.filter(r => r.status === 'approved')
+  const rejectedRequests = visibleRequests.filter(r => r.status === 'rejected')
 
   const openApproveModal = (request: Request) => {
     approvalAttempt.current = createRpcAttempt()
@@ -103,7 +116,7 @@ export default function RequestInbox() {
     setStudioCodeId(request.studio_code_id ?? '')
     setApproveData(d => ({
       ...d,
-      title: `${firstType} - ${request.requester_area}`,
+      title: request.requester_area ? `${firstType} - ${request.requester_area}` : firstType,
       project_type: request.needs_code ? 'development' : 'administrative',
       priority: urgent ? 'urgent' : 'medium',
       due_date: request.requested_date ? request.requested_date.slice(0, 10) : '',
@@ -186,6 +199,19 @@ export default function RequestInbox() {
         </div>
       )}
 
+      {/* Filtro Estudio (independiente del área) */}
+      {catalogs.studios.length > 0 && (
+        <div className="flex items-center gap-2">
+          <label className="text-sm text-gray-600">Estudio</label>
+          <select value={studioFilter} onChange={e => setStudioFilter(e.target.value)}
+            className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-primary outline-none">
+            <option value="all">Todos</option>
+            {catalogs.studios.map(st => <option key={st.id} value={st.id}>{st.name}</option>)}
+            <option value="none">Sin estudio</option>
+          </select>
+        </div>
+      )}
+
       {/* Tabs */}
       <div className="flex gap-2 border-b">
         {([
@@ -242,7 +268,7 @@ export default function RequestInbox() {
                         )}
                       </div>
                       <p className="font-semibold text-gray-900">{request.requester_name}</p>
-                      <p className="text-sm text-gray-600">{request.requester_area}</p>
+                      {meta(request)}
                     </div>
                     <span className={`px-3 py-1 rounded-full text-xs font-medium border ${statusColors.pending}`}>
                       Pendiente
@@ -306,7 +332,7 @@ export default function RequestInbox() {
                         )}
                       </div>
                       <p className="font-semibold text-gray-900">{request.requester_name}</p>
-                      <p className="text-sm text-gray-600">{request.requester_area}</p>
+                      {meta(request)}
                     </div>
                     <span className={`px-3 py-1 rounded-full text-xs font-medium border ${statusColors.approved}`}>
                       ✅ Aprobado
@@ -343,7 +369,7 @@ export default function RequestInbox() {
                   <div>
                     <p className="font-mono font-bold text-primary">{request.request_number}</p>
                     <p className="font-semibold text-gray-900">{request.requester_name}</p>
-                    <p className="text-sm text-gray-600">{request.requester_area}</p>
+                    {meta(request)}
                   </div>
                   <span className={`px-3 py-1 rounded-full text-xs font-medium border ${statusColors.rejected}`}>
                     ❌ Rechazado
@@ -406,16 +432,20 @@ export default function RequestInbox() {
                 )}
               </div>
 
-              <div>
-                <p className="text-sm text-gray-600">Área</p>
-                <p className="font-medium">{selectedRequest.requester_area}</p>
-              </div>
-
-              {classificationOf(selectedRequest) && (
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-gray-50 border rounded-lg p-3">
-                  <div><p className="text-xs text-gray-500">Estudio</p><p className="text-sm font-medium">{classificationOf(selectedRequest)!.studio}</p></div>
-                  <div><p className="text-xs text-gray-500">Proyecto</p><p className="text-sm font-medium">{classificationOf(selectedRequest)!.project}</p></div>
-                  <div><p className="text-xs text-gray-500">Código interno</p><p className="text-sm font-medium font-mono">{classificationOf(selectedRequest)!.code ?? 'Pendiente'}</p></div>
+              {classificationOf(selectedRequest) ? (
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-gray-50 border rounded-lg p-3">
+                  {([['Estudio', 'studio'], ['Proyecto', 'project'], ['Subproyecto', 'subproject'],
+                     ['Área', 'area'], ['Subárea', 'subarea']] as const).map(([label, key]) => (
+                    <div key={key}><p className="text-xs text-gray-500">{label}</p>
+                      <p className="text-sm font-medium">{classificationOf(selectedRequest)![key]}</p></div>
+                  ))}
+                  <div><p className="text-xs text-gray-500">Código interno</p>
+                    <p className="text-sm font-medium font-mono">{classificationOf(selectedRequest)!.code ?? 'Pendiente de validación'}</p></div>
+                </div>
+              ) : (
+                <div>
+                  <p className="text-sm text-gray-600">Área</p>
+                  <p className="font-medium">{selectedRequest.requester_area || '—'}</p>
                 </div>
               )}
 

@@ -72,10 +72,10 @@ export default function ClassificationFields({ value, onChange, studios, systems
       )}
       {subareas.length > 0 && (
         <div>
-          {label('Subárea', true)}
-          <select required value={value.subarea_id} className={selectClassName}
+          {label('Subárea', false)}
+          <select value={value.subarea_id} className={selectClassName}
             onChange={e => set({ subarea_id: e.target.value })}>
-            <option value="">Selecciona una subárea</option>
+            <option value="">Sin subárea</option>
             {subareas.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
           </select>
         </div>

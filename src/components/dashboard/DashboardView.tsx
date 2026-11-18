@@ -3,6 +3,7 @@ import { supabase } from '../../lib/supabase'
 import { useDashboardData, type DashboardStats } from '../../hooks/useDashboardData'
 import { toast } from '../../lib/toast'
 import { useAreas } from '../../hooks/useAreas'
+import { useCatalogs } from '../../hooks/useCatalogs'
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -232,9 +233,11 @@ const TYPE_VIEW_OPTIONS = [
 export default function DashboardView() {
   const [period, setPeriod] = useState<number | null>(null)
   const [areaFilter, setAreaFilter] = useState<string | null>(null)
+  const [studioFilter, setStudioFilter] = useState<string | null>(null)
+  const { studios } = useCatalogs('member')
   const [typeFilter, setTypeFilter] = useState<string | null>(null)
   const [exporting, setExporting] = useState<'completed' | 'active' | null>(null)
-  const { stats, loading, reload } = useDashboardData(period, areaFilter, typeFilter)
+  const { stats, loading, reload } = useDashboardData(period, areaFilter, typeFilter, studioFilter)
   // Opciones del filtro: áreas activas de Supabase + áreas presentes en los datos
   const { activeNames } = useAreas()
   const seenAreas = useRef(new Set<string>())
@@ -347,6 +350,18 @@ export default function DashboardView() {
               <option key={area} value={area}>{area}</option>
             ))}
           </select>
+
+            {/* Filtro por Estudio (independiente del área) */}
+            {studios.length > 0 && (
+              <select
+                value={studioFilter ?? ''}
+                onChange={e => setStudioFilter(e.target.value || null)}
+                className={`px-3 py-2 border rounded-lg text-sm outline-none transition cursor-pointer ${studioFilter ? 'border-brand-400 bg-brand-50 text-brand-700' : 'border-gray-200 bg-white text-gray-600'}`}
+              >
+                <option value="">Todos los estudios</option>
+                {studios.map(st => <option key={st.id} value={st.id}>{st.name}</option>)}
+              </select>
+            )}
 
           <button
             onClick={handleExportActive}

@@ -76,25 +76,27 @@ try:
         return sql(f"SELECT public.submit_classified_request({payload},'{json.dumps(cls)}'::jsonb,gen_random_uuid())->>'id'",role,ok=False)
     r=submit({'studio_id':BA,'system_id':FAC,'subsystem_id':WEB,'area_id':C000,'subarea_id':C001})
     assert r.returncode==0,r.stderr; R1=r.stdout.strip()
-    assert q(f"SELECT requester_area||'|'||(studio_id='{BA}')||'|'||(subarea_id='{C001}') FROM requests WHERE id='{R1}'",owner)=='CONTABILIDAD / TRANSPORTES|true|true'
-    passed('anon submits classified ticket with area/subarea')
+    assert q(f"SELECT requester_area||'|'||(studio_id='{BA}')||'|'||(subarea_id='{C001}') FROM requests WHERE id='{R1}'",owner)=='CONTABILIDAD|true|true'
+    passed('anon submits classified ticket; requester_area keeps only the area name')
     for name,cls in [('BA requires area',{'studio_id':BA,'system_id':OT}),
-                     ('area with subareas requires subarea',{'studio_id':BA,'system_id':OT,'area_id':C000}),
                      ('subarea must belong to area',{'studio_id':BA,'system_id':OT,'area_id':C000,'subarea_id':L001}),
                      ('other studio cannot use areas',{'studio_id':CR,'system_id':OT,'area_id':C000}),
                      ('system requiring subproject rejects missing one',{'studio_id':CR,'system_id':FAC}),
                      ('subproject must belong to system',{'studio_id':CR,'system_id':FAC,'subsystem_id':NEG_WEB})]:
         r=submit(cls);assert r.returncode and '22023' in r.stderr,name;passed(name)
     r=submit({'studio_id':BA,'system_id':OT,'area_id':AD00});assert r.returncode==0,r.stderr;passed('area without subareas accepted')
+    r=submit({'studio_id':BA,'system_id':OT,'area_id':C000});assert r.returncode==0,r.stderr;passed('subarea optional for BUSINESS ACCOMPANYING SAC')
     r=submit({'studio_id':CR,'system_id':OT});assert r.returncode==0,r.stderr;R2=r.stdout.strip()
-    assert q(f"SELECT requester_area FROM requests WHERE id='{R2}'",owner)=='ESTUDIO CONTABLE CREY'
-    passed('studio without areas and system without subproject accepted')
+    assert q(f"SELECT (requester_area IS NULL)||'|'||(area_id IS NULL)||'|'||(studio_id='{CR}') FROM requests WHERE id='{R2}'",owner)=='true|true|true'
+    passed('other studio: ticket without area; studio not used as area')
+    r=sql(f"SELECT public.submit_classified_request('{{\"requester_name\":\"P\",\"requester_area\":\"X\",\"request_type\":\"T\",\"description\":\"D\"}}'::jsonb,'{json.dumps({'studio_id':CR,'system_id':OT})}'::jsonb,gen_random_uuid())",'anon',ok=False)
+    assert r.returncode and '22023' in r.stderr;passed('classified contract rejects free-text requester_area')
     denied('decision requires studio code',f"SELECT public.reject_request('{R1}','motivo')",'authenticated',A,code='23514')
     CR_CODE=ids('studio_codes',"code='CREY'");PROCONT=ids('studio_codes',"code='PROCONT'")
     denied('code must belong to request studio',f"SELECT public.assign_request_studio_code('{R1}','{CR_CODE}')",'authenticated',A,code='22023')
     denied('viewer cannot assign code',f"SELECT public.assign_request_studio_code('{R1}','{PROCONT}')",'authenticated',V)
     sql(f"SELECT public.assign_request_studio_code('{R1}','{PROCONT}'); SELECT public.reject_request('{R1}','motivo')",'authenticated',A)
-    assert q(f"SELECT status||'|'||(studio_code_id='{PROCONT}')||'|'||(classified_by='{A}')||'|'||requester_area FROM requests WHERE id='{R1}'",owner)=='rejected|true|true|CONTABILIDAD / TRANSPORTES'
+    assert q(f"SELECT status||'|'||(studio_code_id='{PROCONT}')||'|'||(classified_by='{A}')||'|'||requester_area FROM requests WHERE id='{R1}'",owner)=='rejected|true|true|CONTABILIDAD'
     passed('admin assigns code and decision keeps code and original data')
     denied('code frozen after decision',f"UPDATE requests SET studio_code_id=NULL WHERE id='{R1}'",owner,code='23514')
     denied('original classification immutable',f"UPDATE requests SET studio_id='{BA}' WHERE id='{R2}'",owner,code='23514')

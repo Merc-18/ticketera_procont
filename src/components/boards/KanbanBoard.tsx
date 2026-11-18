@@ -14,6 +14,7 @@ import { toast } from '../../lib/toast'
 import { errorMessage } from '../../lib/supabase-errors'
 import type { ProjectFlow } from '../../types/database.types'
 import { useAreas } from '../../hooks/useAreas'
+import { useCatalogs } from '../../hooks/useCatalogs'
 
 
 type BoardType = 'development' | 'administrative'
@@ -78,6 +79,8 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [priorityFilter, setPriorityFilter] = useState(() => localStorage.getItem('kanban_priorityFilter') || 'all')
   const [areaFilter, setAreaFilter]         = useState(() => localStorage.getItem('kanban_areaFilter') || 'all')
+  const [studioFilter, setStudioFilter]     = useState(() => localStorage.getItem('kanban_studioFilter') || 'all')
+  const { studios } = useCatalogs('member')
   const [userFilter, setUserFilter]         = useState(() => localStorage.getItem('kanban_userFilter') || 'all')
   const [myProjectsOnly, setMyProjectsOnly] = useState(() => localStorage.getItem('kanban_myProjectsOnly') === 'true')
   const [searchQuery, setSearchQuery] = useState('')
@@ -88,6 +91,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
 
   useEffect(() => { localStorage.setItem('kanban_priorityFilter', priorityFilter) }, [priorityFilter])
   useEffect(() => { localStorage.setItem('kanban_areaFilter', areaFilter) },         [areaFilter])
+  useEffect(() => { localStorage.setItem('kanban_studioFilter', studioFilter) },     [studioFilter])
   useEffect(() => { localStorage.setItem('kanban_userFilter', userFilter) },         [userFilter])
   useEffect(() => { localStorage.setItem('kanban_myProjectsOnly', String(myProjectsOnly)) }, [myProjectsOnly])
   useEffect(() => { localStorage.setItem('kanban_viewMode', viewMode) },              [viewMode])
@@ -126,6 +130,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
     if (priorityFilter !== 'all' && project.priority !== priorityFilter) return false
     const area = (project as any).requests?.requester_area
     if (areaFilter !== 'all' && area !== areaFilter) return false
+    if (studioFilter !== 'all' && (project as any).requests?.studio_id !== studioFilter) return false
 
     // Filtro por responsable / usuario
     if (canManage) {
@@ -175,7 +180,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
     }
   }
 
-  const hasFilters = priorityFilter !== 'all' || areaFilter !== 'all' || (canManage ? userFilter !== 'all' : myProjectsOnly) || searchQuery.trim() !== ''
+  const hasFilters = priorityFilter !== 'all' || areaFilter !== 'all' || studioFilter !== 'all' || (canManage ? userFilter !== 'all' : myProjectsOnly) || searchQuery.trim() !== ''
   const filteredCount = filteredProjects.length
   const totalCount = projects.length
 
@@ -298,6 +303,18 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
               ))}
             </select>
 
+            {/* Filtro por Estudio (independiente del área) */}
+            {studios.length > 0 && (
+              <select
+                value={studioFilter}
+                onChange={e => setStudioFilter(e.target.value)}
+                className={`px-3 py-1.5 rounded-full text-sm font-medium border transition cursor-pointer outline-none ${studioFilter !== 'all' ? 'border-brand-400 bg-brand-50 text-brand-700' : 'border-gray-200 bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+              >
+                <option value="all">🏢 Estudio</option>
+                {studios.map(st => <option key={st.id} value={st.id}>{st.name}</option>)}
+              </select>
+            )}
+
             {/* Filtro por Responsable / Usuario */}
             {canManage ? (
               <select
@@ -335,7 +352,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
             {hasFilters && (
               <>
                 <button
-                  onClick={() => { setPriorityFilter('all'); setAreaFilter('all'); setUserFilter('all'); setMyProjectsOnly(false); setSearchQuery('') }}
+                  onClick={() => { setPriorityFilter('all'); setAreaFilter('all'); setStudioFilter('all'); setUserFilter('all'); setMyProjectsOnly(false); setSearchQuery('') }}
                   className="px-3 py-1.5 rounded-full text-sm font-medium border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 transition"
                 >
                   ✕ Limpiar
@@ -410,7 +427,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
           <span className="text-5xl mb-3">🔍</span>
           <p className="text-base font-medium text-gray-500">Sin proyectos con los filtros aplicados</p>
           <button
-            onClick={() => { setPriorityFilter('all'); setAreaFilter('all'); setMyProjectsOnly(false); setSearchQuery('') }}
+            onClick={() => { setPriorityFilter('all'); setAreaFilter('all'); setStudioFilter('all'); setMyProjectsOnly(false); setSearchQuery('') }}
             className="mt-3 text-sm text-primary hover:underline"
           >
             Limpiar filtros

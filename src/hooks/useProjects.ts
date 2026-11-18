@@ -65,7 +65,7 @@ export function useProjects() {
         .select(`
           *,
           project_flows (*, checklist_items(id, completed)),
-          requests (requester_area, requester_name, request_type, request_number)
+          requests (*)
         `)
         .eq('status', status)
         .order('created_at', { ascending: false })

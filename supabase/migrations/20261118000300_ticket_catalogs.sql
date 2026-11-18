@@ -150,12 +150,18 @@ GRANT INSERT (studio_id, code, is_active), UPDATE (code, is_active) ON public.st
 GRANT SELECT (parent_id, studio_id) ON public.areas TO anon;
 GRANT INSERT (code, studio_id, parent_id), UPDATE (code) ON public.areas TO authenticated;
 
--- ─── Envío clasificado (reutiliza submit_request; añade la clasificación) ──────
+-- ─── Envío clasificado ─────────────────────────────────────────────────────────
+-- Contrato propio (no exige requester_area): Estudio, Proyecto, Subproyecto, Área y
+-- Subárea se guardan como conceptos independientes. requester_area (texto histórico)
+-- recibe solo el nombre del área principal, o NULL si el estudio no usa áreas.
+-- submit_request y las solicitudes existentes no cambian.
 CREATE FUNCTION public.submit_classified_request(p_payload jsonb, p_classification jsonb, p_idempotency_key uuid)
 RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path = '' AS $$
-DECLARE result jsonb; input jsonb; st public.studios; sy public.catalog_systems;
-  v_sub uuid; v_area public.areas; v_subarea public.areas; label text;
+DECLARE result jsonb; input jsonb; st public.studios; sy public.catalog_systems; r public.requests; token uuid;
+  v_sub uuid; v_area public.areas; v_subarea public.areas;
 BEGIN
+  PERFORM app_private.assert_payload(p_payload, ARRAY['requester_name','requester_email','request_type','origin',
+    'data_system_involved','description','observations','request_date','requested_date','needs_code']);
   PERFORM app_private.assert_payload(p_classification, ARRAY['studio_id','system_id','subsystem_id','area_id','subarea_id']);
   input := jsonb_build_object('payload', p_payload, 'classification', p_classification);
   result := app_private.replay('submit_classified_request', p_idempotency_key, input);
@@ -176,6 +182,7 @@ BEGIN
   END IF;
 
   IF EXISTS (SELECT 1 FROM public.areas WHERE studio_id = st.id AND parent_id IS NULL AND is_active) THEN
+    -- Estudio con áreas (BUSINESS ACCOMPANYING SAC): área obligatoria, subárea opcional.
     SELECT * INTO v_area FROM public.areas WHERE id = nullif(p_classification->>'area_id','')::uuid
       AND studio_id = st.id AND parent_id IS NULL AND is_active;
     IF NOT FOUND THEN RAISE EXCEPTION 'Área requerida para este estudio' USING ERRCODE='22023'; END IF;
@@ -183,21 +190,21 @@ BEGIN
       SELECT * INTO v_subarea FROM public.areas WHERE id = (p_classification->>'subarea_id')::uuid
         AND parent_id = v_area.id AND is_active;
       IF NOT FOUND THEN RAISE EXCEPTION 'Subárea inválida' USING ERRCODE='22023'; END IF;
-    ELSIF EXISTS (SELECT 1 FROM public.areas WHERE parent_id = v_area.id AND is_active) THEN
-      RAISE EXCEPTION 'Subárea requerida' USING ERRCODE='22023';
     END IF;
-    label := v_area.name || coalesce(' / ' || v_subarea.name, '');
   ELSIF nullif(p_classification->>'area_id','') IS NOT NULL OR nullif(p_classification->>'subarea_id','') IS NOT NULL THEN
     RAISE EXCEPTION 'Este estudio no tiene áreas' USING ERRCODE='22023';
-  ELSE
-    label := st.name;  -- compatibilidad: requester_area es obligatorio en submit_request
   END IF;
 
-  result := public.submit_request((p_payload - 'requester_area') || jsonb_build_object('requester_area', left(label, 200)),
-                                  p_idempotency_key);
-  UPDATE public.requests SET studio_id = st.id, system_id = sy.id, subsystem_id = v_sub,
-      area_id = v_area.id, subarea_id = v_subarea.id
-    WHERE id = (result->>'id')::uuid;
+  INSERT INTO public.requests(requester_name,requester_email,requester_area,request_type,origin,
+    data_system_involved,description,observations,request_date,requested_date,needs_code,
+    studio_id,system_id,subsystem_id,area_id,subarea_id)
+  VALUES (btrim(p_payload->>'requester_name'),nullif(p_payload->>'requester_email',''),v_area.name,
+    btrim(p_payload->>'request_type'),coalesce(p_payload->>'origin','Interno'),p_payload->>'data_system_involved',
+    btrim(p_payload->>'description'),p_payload->>'observations',nullif(p_payload->>'request_date','')::date,
+    nullif(p_payload->>'requested_date','')::date,coalesce((p_payload->>'needs_code')::boolean,false),
+    st.id,sy.id,v_sub,v_area.id,v_subarea.id) RETURNING * INTO r;
+  INSERT INTO app_private.request_access(request_id) VALUES (r.id) RETURNING tracking_token INTO token;
+  result := jsonb_build_object('id',r.id,'request_number',r.request_number,'tracking_token',token);
   RETURN app_private.remember('submit_classified_request', p_idempotency_key, input, result);
 END $$;
 

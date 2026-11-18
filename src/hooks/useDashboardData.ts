@@ -20,18 +20,18 @@ export interface DashboardStats {
   completedByQuarter: { quarter: string; total: number; onTime: number }[]
 }
 
-export function useDashboardData(periodDays: number | null = null, areaFilter: string | null = null, typeFilter: string | null = null) {
+export function useDashboardData(periodDays: number | null = null, areaFilter: string | null = null, typeFilter: string | null = null, studioFilter: string | null = null) {
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => { load() }, [periodDays, areaFilter, typeFilter])
+  useEffect(() => { load() }, [periodDays, areaFilter, typeFilter, studioFilter])
 
   // Refresh when the browser tab becomes visible again
   useEffect(() => {
     const onVisible = () => { if (document.visibilityState === 'visible') load() }
     document.addEventListener('visibilitychange', onVisible)
     return () => document.removeEventListener('visibilitychange', onVisible)
-  }, [periodDays, areaFilter, typeFilter])
+  }, [periodDays, areaFilter, typeFilter, studioFilter])
 
   // Realtime: refresh when projects or SLA logs change
   useEffect(() => {
@@ -61,7 +61,7 @@ export function useDashboardData(periodDays: number | null = null, areaFilter: s
     const [{ data: rawProjects }, { data: slaLogs }] = await Promise.all([
       supabase
         .from('projects')
-        .select('status, priority, project_type, is_blocked, due_date, requests(requester_area)')
+        .select('status, priority, project_type, is_blocked, due_date, requests(*)')
         .neq('status', 'deleted'),
       slaQuery,
     ])
@@ -69,6 +69,7 @@ export function useDashboardData(periodDays: number | null = null, areaFilter: s
     let projects = areaFilter
       ? (rawProjects ?? []).filter(p => (p as any).requests?.requester_area === areaFilter)
       : (rawProjects ?? [])
+    if (studioFilter) projects = projects.filter(p => (p as any).requests?.studio_id === studioFilter)
     if (typeFilter) {
       if (typeFilter === 'development') {
         projects = projects.filter(p => p.project_type === 'development' || p.project_type === 'dual')

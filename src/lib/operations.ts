@@ -74,7 +74,7 @@ export function createOperations(client: RpcClient) {
     async approveRequest(request: Request, data: ApprovalInput, attempt: RpcAttempt) {
       const days = calcSlaFormalDays(request.request_type, request.needs_code)
       const payload = { project_type: data.project_type, priority: data.priority,
-        title: data.title?.trim() || `${request.request_type} - ${request.requester_area ?? ''}`,
+        title: data.title?.trim() || (request.requester_area ? `${request.request_type} - ${request.requester_area}` : request.request_type),
         start_date: nullable(data.start_date), due_date: nullable(data.due_date),
         sla_target_date: calcTargetDate(days, data.priority, attempt.startedAt), sla_formal_days: days,
         assigned_dev: nullable(data.assigned_dev), assigned_admin: nullable(data.assigned_admin) }
