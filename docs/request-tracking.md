@@ -45,3 +45,10 @@ validación y línea de tiempo con bloqueo/desbloqueo, terminado y rechazado) co
 de datos ficticios, fuera del repositorio. Correcciones móviles: pestañas de la bandeja con
 desplazamiento horizontal propio y buscador del tablero a ancho completo; sin desbordamiento
 de página a 390 px.
+
+## Reglas y métricas nuevas — pendientes de integración/aplicación
+
+Ver [contrato de métricas](business-metrics.md), migración `20261118000700`: nombre
+público obligatorio, prioridades existentes sin cambio, tiempos derivados de eventos
+del servidor y urgencias por nombre normalizado/estudio en America/Lima. No altera
+solicitudes existentes ni el seguimiento público. No aplicada en remoto.

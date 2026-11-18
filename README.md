@@ -1,5 +1,7 @@
 # Ticketera Procont
 
+**Métricas nuevas preparadas, sin aplicar:** Cycle Time desde primera salida de Backlog, Lead Time y urgencias por solicitante/estudio en mes de Perú. Contrato interno y permisos en [reglas y métricas](docs/business-metrics.md). La migración `20261118000700` está pendiente de integración/autorización; el remoto confirmado sigue en 10/10.
+
 **Trazabilidad activa (historial 10/10):** estados generales Recibida → En revisión → En backlog → En proceso → Terminado (alternativos: Bloqueado, Rechazada), sincronizados con el tablero en el servidor; seguimiento público solo con el número REQ. Ver [trazabilidad](docs/request-tracking.md).
 
 **M9 activa (historial 9/9):** integrada en `main`; une la compresión de adjuntos de Claude con la seguridad de Codex (`20261118000500_ticket_security.sql`): reserva por token, 4 archivos / 2.500.000 bytes y motivo público de rechazo separado de notas internas. Ver [solicitudes](docs/request-intake.md) y [seguridad](docs/ticket-security.md).
@@ -61,7 +63,7 @@ pendientes de definición. Paleta y cambios en
 ### Gestión de solicitudes
 - Portal público para envío de solicitudes (`/request`)
 - Página de seguimiento para solicitantes (`/tracking`)
-- Cálculo automático de fechas SLA según tipo, prioridad y días hábiles
+- Urgencia solicitada por el cliente y prioridad definitiva decidida por el validador; sin plazos SLA oficiales
 - Bandeja de entrada para revisar, aprobar o rechazar solicitudes
 - Importación masiva desde planificadores externos (Excel)
 
@@ -73,7 +75,7 @@ pendientes de definición. Paleta y cambios en
 - Doble flujo: Desarrollo (Backlog → Deploy) y Administrativo (Backlog → UAT)
 
 ### SLA y trazabilidad
-- Fechas SLA calculadas en días hábiles (sin fines de semana)
+- Campos y funciones SLA históricos conservados por compatibilidad; sin calendario laboral ni fórmula oficial activa
 - Alertas y notificaciones cuando un proyecto se acerca al vencimiento
 - Log de actividad con historial completo de cambios
 - Bloqueos con motivo registrado

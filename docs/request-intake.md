@@ -81,3 +81,10 @@ mientras está pendiente; requisitos de decisión anteriores. Trazabilidad en `r
   requiere iniciar sesión; se validó con 22 comprobaciones aisladas y build).
 - Al desplegar el frontend: añadir su dominio a `PROCONT_ALLOWED_ORIGINS` (solo afecta a
   la administración de usuarios).
+
+## Reglas y métricas nuevas — pendientes de integración/aplicación
+
+Ver [contrato de métricas](business-metrics.md), migración `20261118000700`: nombre
+público obligatorio, prioridades existentes sin cambio, tiempos derivados de eventos
+del servidor y urgencias por nombre normalizado/estudio en America/Lima. No altera
+solicitudes existentes ni el seguimiento público. No aplicada en remoto.
