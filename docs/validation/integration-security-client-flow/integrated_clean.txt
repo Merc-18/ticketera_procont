@@ -1,0 +1,11 @@
+PASS A: clean installation applies M1-M15 in order before application fixtures
+PASS M15 effective permissions reject direct legacy creation and external/inactive/viewer internal intake
+PASS actual portal adapter loads M13 sessions and creates both providers through M15 with REQ/study/idempotency intact
+PASS actual My tickets/detail adapters isolate identities and preserve session after foreign detail denial
+PASS client attachment adapter reserves/uploads through real SQL policies and rejects fifth slot or foreign ticket
+PASS real Planner consumer adapter preserves authorized superadmin/admin/developer intake and retry
+PASS historical-shaped Planner intake without studio still approves with an explicit authorized principal
+PASS actual approval/board adapters preserve inbox, classification, eight Development phases, checklist, block and Done rules under M15
+PASS real server Cycle/Lead metrics follow completion/reopen; unknown dates stay null and audit history rejects edits
+PASS rejection exposes only public reason; REQ tracking remains public; logout/expiry block actual client adapters
+10 integrated clean groups passed; server stopped.

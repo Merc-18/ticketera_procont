@@ -238,9 +238,10 @@ Consumidores revisados antes de elegir los roles:
 - `operations.submitRequest(..., classification)` selecciona
   `submit_classified_request`; se preserva ese contrato del adaptador aunque no
   se encontró una llamada activa de interfaz que proporcione la clasificación.
-- `PublicRequestForm` sin adaptador utiliza `submit_client_request`; `/request`
-  sigue visible, pero su envío anónimo queda denegado por PostgreSQL tras M15.
-  El formulario legítimo de `/cliente/nuevo` usa `client_submit_request` y continúa.
+- Antes de integrar la rama frontend, `PublicRequestForm` sin adaptador utilizaba
+  `submit_client_request`. En el árbol integrado ese modo y su adaptador están
+  retirados; `/request` redirige a `/cliente`. El formulario de `/cliente/nuevo`
+  conserva `client_submit_request`; M15 también impide el acceso directo a la RPC antigua.
 
 Las dos RPC internas usan ahora `app_private.require_role` con los mismos
 editores activos de `canEdit`: superadmin/admin/developer. La comprobación es
@@ -293,3 +294,64 @@ Pendientes registrados de la auditoría, sin activarlos en esta entrega:
 M15 no depende técnicamente de M14, como demuestra la base M13 aislada; esto no
 autoriza alterar el orden del historial remoto. No cambiar M1–M14 ni ejecutar
 `db push` como parte de esta revisión: podría aplicar también M14 pendiente.
+
+## Integración local controlada — 19/11/2026
+
+Rama `integration/ticketera-security-client-flow`, base común
+`44cebebca91c0424762c3dd640c0a1f8ae4deaff`. Repositorio y worktree propios en
+`/tmp/ticketera-integration-security-client-flow-20261119/`; ningún worktree previo
+ni main se actualiza. Importación Git exclusivamente local, conservando los commits:
+
+- Backend `c4e7252788b131264e0f209e4d5d872c551f6875`.
+- Frontend `b21c91c666b1677914489078236777407fdc95cc`.
+- Corrección de exportación `e528bc77fb4b42609e1344056786e41083dd56cb`.
+
+No hubo conflictos de merge. Se resolvieron dos incompatibilidades de pruebas:
+las suites históricas M13/M14 contaban todos los archivos de migración y fallaban
+con M15 presente. Ahora seleccionan su prefijo histórico, conservando sus
+comprobaciones; las pruebas integradas ejecutan por separado la cadena completa.
+No se modificó ninguna migración ni código de producto adicional al ya revisado.
+
+Prueba integrada nueva: `supabase/tests/integrated_security_client_flow_local.py`
+ejecuta los adaptadores reales de cliente, operaciones/Planner, tablero y métricas
+del árbol integrado contra los cuerpos RPC de PostgreSQL por socket Unix.
+`tests/integration/database-client-flows.mjs` implementa el puente de pruebas.
+La aserción externa de identidad y los esquemas Auth/Storage son ficticios: esto
+no equivale a autenticación Quipu/QuipuFac ni Storage HTTP reales.
+
+- A: M1–M15 antes de los fixtures; después se verifican roles, sesiones, creación,
+  REQ, reintentos, adjuntos, bandeja, clasificación/aprobación/rechazo, Planner sin
+  estudio, ocho fases, checklist, bloqueo, cierre/reapertura, auditoría y métricas.
+- B: historia Administrative creada antes de M12; base M13 con usuarios, estudio,
+  asociación, identidades, sesiones, ticket, reserva, objeto Storage y comentario
+  ficticios existentes. M14 preserva las 34 tablas previas; M15 preserva las 35.
+  Se ejecuta el mismo circuito y se opera el histórico sin convertir su flujo.
+- Las suites SQL históricas siguen identificadas como M9/M11/M12/M13/M14; sus
+  resultados no se presentan como si hubieran usado M15. La suite de seguridad
+  M15 y los escenarios A/B sí ejecutan M15.
+- React/Chromium recorre el portal y crea tickets solo en memoria del simulador,
+  incluido adjunto, aislamiento y logout; Planner procesa un Excel sintético.
+  Las pruebas de exportación incluyen 3.201 terminados y proyectos por lotes de 100.
+
+Ejecución sin servicios remotos (requiere PostgreSQL 17 y Chromium locales):
+
+```bash
+python3 -B supabase/tests/integrated_security_client_flow_local.py --pg-bin /ruta/postgresql/17/bin --runtime-lib /ruta/runtime/lib --scenario clean
+python3 -B supabase/tests/integrated_security_client_flow_local.py --pg-bin /ruta/postgresql/17/bin --runtime-lib /ruta/runtime/lib --scenario upgrade
+node --test tests/*.test.mjs
+CHROMIUM_EXECUTABLE=/ruta/chrome npm run test:ui
+npm run build
+```
+
+Resultados exactos, matriz de requisitos, hashes, comandos y fallos iniciales del
+arnés: [informe de integración](validation/integration-security-client-flow.json).
+Las evidencias actuales se guardan bajo `validation/integration-security-client-flow/`;
+no reemplazan las evidencias históricas de activaciones anteriores.
+
+Aceptación local con observaciones: la exportación usa peticiones separadas,
+no una fotografía transaccional. Un cambio concurrente que conserve el total
+puede no detectarse. Se acepta la corrección del límite de filas con datos estables;
+no se promete una fotografía coherente bajo cambios simultáneos. No se cambia SQL
+para resolverlo aquí. Tampoco se activan M14/M15, client-login, CORS ni redirects.
+No hubo SQL, tickets, configuración, push o despliegues remotos. La siguiente
+verificación independiente debe partir de esta rama, antes de autorizar main o servicios.

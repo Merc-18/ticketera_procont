@@ -1,0 +1,21 @@
+PASS M13 applies without changing historical ticket or staff profiles/roles
+PASS Quipu users and QuipuFac company account have distinct authenticated scopes
+PASS stable provider id survives username change; fallback preserves distinct case-sensitive users
+PASS anonymous caller cannot mint sessions or platform entry codes
+PASS platform codes bind provider, are single-use and cannot widen direct access
+PASS all four product-selection cases are filtered in PostgreSQL
+PASS forged product id cannot bypass entry-context restrictions
+PASS creation reuses required name, urgency, REQ numbering, study and identity-scoped idempotency
+PASS ticket is linked to company, verified identity and authentication method
+PASS empty names, caller-selected study and changed idempotent payload are rejected
+PASS My tickets isolates individual users and shares only the RUC company account; declared names stay unverified
+PASS changing request id cannot read foreign, legacy-unlinked or nonexistent tickets
+PASS authorized detail/timeline and both existing public tracking contracts remain compatible
+PASS existing private attachment reservation, final Storage write and cross-ticket capability checks work
+PASS ambiguous RUC blocks creation until explicit staff mapping; other companies remain isolated
+PASS unknown RUC never selects an arbitrary catalog study
+PASS expired platform codes are rejected
+PASS concurrent code exchange has exactly one winner
+PASS malformed, missing, expired and revoked sessions fail before returning data or replaying a ticket
+PASS private tables are RLS protected; no session plaintext, historical edits or staff-role changes
+20 M13 PostgreSQL checks passed; isolated server stopped.

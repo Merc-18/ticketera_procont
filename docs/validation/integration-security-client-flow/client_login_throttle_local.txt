@@ -1,0 +1,8 @@
+PASS M14 applies on top of M1-M13 and adds exactly one function
+PASS subject limit: 10 attempts per window, other identities unaffected
+PASS IP limit: 50 attempts per window
+PASS only SHA-256 buckets are stored (no RUC, username or address)
+PASS invalid keys rejected with 22023
+PASS only service_role may call the function; nobody reads the table directly
+PASS counters reset in the next 15-minute window
+ALL M14 LOCAL CHECKS PASSED

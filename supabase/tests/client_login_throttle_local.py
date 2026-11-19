@@ -62,7 +62,8 @@ try:
       ALTER TABLE storage.buckets OWNER TO {owner}; ALTER TABLE storage.objects OWNER TO {owner};
       ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
       GRANT USAGE ON SCHEMA storage TO anon,authenticated; GRANT SELECT,INSERT ON storage.objects TO anon,authenticated;''', None)
-    paths = sorted((ROOT/'supabase/migrations').glob('*.sql'))
+    # Historical M14 suite: do not mistake later files for a broken M14 baseline.
+    paths = [p for p in sorted((ROOT/'supabase/migrations').glob('*.sql')) if p.name <= M14]
     assert len(paths) == 14 and paths[-1].name == M14, [p.name for p in paths]
     for path in paths[:-1]: q(path.read_text())
     before = q("SELECT count(*) FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname IN ('public','app_private')")

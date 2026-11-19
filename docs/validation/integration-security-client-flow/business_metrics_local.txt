@@ -1,0 +1,39 @@
+PASS M11 changes no existing request, timestamp or historical event
+PASS public RPC rejects missing, blank, Unicode-whitespace and non-string names
+PASS legacy creation routine cannot bypass nonblank name guard
+PASS display name preserved verbatim; NFKC/case/whitespace comparison keeps accents distinct
+PASS anon cannot query ticket metrics
+PASS anon cannot query summaries
+PASS anon cannot query requester statistics
+PASS inactive profile cannot query metrics
+PASS authenticated without profile cannot query metrics
+PASS viewer cannot query requester statistics
+PASS developer cannot query requester statistics
+PASS authenticated cannot bypass RPC through private helper
+PASS all four active internal roles may read performance; absent samples are null
+PASS unfinished tickets and empty study return no fabricated timing samples
+PASS urgent request may be approved High, without generating SLA/delivery dates
+PASS one finished flow does not finish a dual ticket or enter averages
+PASS cycle starts at first Backlog exit; regression/blocking count; dual work counted once
+PASS reopened work is excluded from completed averages
+PASS recompletion keeps first start and latest completion without duplicate samples
+PASS explicit completion without first phase exit yields Lead only, never invented Cycle
+PASS historical baseline done does not invent a completion timestamp
+PASS inconsistent historical timeline yields null instead of clamping to a false zero
+PASS monthly requester identity merges normalized aliases, separates canonical studies
+PASS monthly urgency includes rejected/pending/approved independently of final priority
+PASS Lima midnight month boundaries are inclusive/exclusive and missing study is not merged
+PASS monthly result independent of session timezone; admin/superadmin filters and empty month work
+PASS concurrent sibling completions serialize and produce one reliable done sample
+PASS repeated identical final phase does not duplicate completion or timing
+PASS public tracking remains status-only without requester names, metrics or statistics
+PASS anon denied frontend RPC metrics_monthly_urgency
+PASS anon denied frontend RPC metrics_requester_urgency
+PASS anon denied frontend RPC metrics_time_averages
+PASS developer denied frontend monthly identities
+PASS viewer denied frontend requester identity
+PASS Claude monthly/requester contracts match canonical identities, preserve display names and handle missing identity
+PASS nonpositive reporting period rejected
+PASS malformed reporting month rejected
+PASS Claude time contract filters by completion date/study and returns fractional days/null without SLA
+38 new checks passed; isolated PostgreSQL stopped.

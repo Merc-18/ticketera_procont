@@ -1,0 +1,27 @@
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✔ [escritorio] integración: formulario crea Quipu y QuipuFac con adjunto simulado y separa Mis tickets (2174.483054ms)
+✖ [movil] integración: formulario crea Quipu y QuipuFac con adjunto simulado y separa Mis tickets (31043.742236ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 34046.26794
+
+✖ failing tests:
+
+test at tests/ui/portal-navigation.ui.test.mjs:330:3
+✖ [movil] integración: formulario crea Quipu y QuipuFac con adjunto simulado y separa Mis tickets (31043.742236ms)
+  locator.waitFor: Timeout 30000ms exceeded.
+  Call log:
+  [2m  - waiting for getByText('REQ26-9101', { exact: true }).first() to be visible[22m
+  [2m    64 × locator resolved to hidden <a class="text-brand-700 hover:underline" href="/cliente/tickets/079736c6-3dfd-450f-bb14-fd104dc7d987">REQ26-9101</a>[22m
+
+      at TestContext.<anonymous> (/tmp/ticketera-integration-validation-20261119/tests/ui/portal-navigation.ui.test.mjs:351:61) {
+    name: 'TimeoutError',
+    log: [ "  - waiting for getByText('REQ26-9101', { exact: true }).first() to be visible", '    64 × locator resolved to hidden <a class="text-brand-700 hover:underline" href="/cliente/tickets/079736c6-3dfd-450f-bb14-fd104dc7d987">REQ26-9101</a>' ]
+  }

@@ -1,0 +1,14 @@
+PASS B: existing M1-M13 database includes a genuine pre-M12 Administrative fixture
+PASS B: M14 preserves all 34 pre-existing fixture tables and adds an empty throttle table
+PASS B: M15 preserves all 35 fixture tables including history, identities, sessions and reservations
+PASS M15 effective permissions reject direct legacy creation and external/inactive/viewer internal intake
+PASS actual portal adapter loads M13 sessions and creates both providers through M15 with REQ/study/idempotency intact
+PASS actual My tickets/detail adapters isolate identities and preserve session after foreign detail denial
+PASS client attachment adapter reserves/uploads through real SQL policies and rejects fifth slot or foreign ticket
+PASS real Planner consumer adapter preserves authorized superadmin/admin/developer intake and retry
+PASS historical-shaped Planner intake without studio still approves with an explicit authorized principal
+PASS actual approval/board adapters preserve inbox, classification, eight Development phases, checklist, block and Done rules under M15
+PASS real server Cycle/Lead metrics follow completion/reopen; unknown dates stay null and audit history rejects edits
+PASS existing Administrative history remains readable/operable and reopens without conversion under M15
+PASS rejection exposes only public reason; REQ tracking remains public; logout/expiry block actual client adapters
+13 integrated upgrade groups passed; server stopped.

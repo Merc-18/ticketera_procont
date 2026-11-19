@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/tmp/ticketera-integration-validation-20261119/supabase/tests/client_login_throttle_local.py", line 66, in <module>
+    assert len(paths) == 14 and paths[-1].name == M14, [p.name for p in paths]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ['20261117000100_schema.sql', '20261117000200_security.sql', '20261117000300_operations.sql', '20261117000400_reference_checklists.sql', '20261118000100_account_administration.sql', '20261118000200_areas.sql', '20261118000300_ticket_catalogs.sql', '20261118000400_request_intake.sql', '20261118000500_ticket_security.sql', '20261118000600_request_tracking.sql', '20261118000700_business_metrics.sql', '20261118000800_board_operations.sql', '20261119000100_client_access.sql', '20261119000200_client_login_throttle.sql', '20261119000300_security_request_creation.sql']

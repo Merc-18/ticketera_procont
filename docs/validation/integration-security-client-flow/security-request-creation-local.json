@@ -1,0 +1,71 @@
+{
+  "at_utc": "2026-11-19T21:34:20.842539+00:00",
+  "postgresql": "17.12 (Ubuntu 17.12-1.pgdg26.04+1)",
+  "migration": "20261119000300_security_request_creation.sql",
+  "baseline_migrations": 14,
+  "migration_sha256": "ca8612aee78beb13be331571934a694647f8f0febcf61c0dc6ec77cafdd69d1f",
+  "prior_migration_sha256": {
+    "20261117000100_schema.sql": "4cc433c7eb91278abf020b82d9e40ddc39052642630db267e0753bf2c4f5fbcd",
+    "20261117000200_security.sql": "669171a4a000c4dbfeb78ca53e4c58df3b7ba9473c7735ef4d024047d5bf8cf5",
+    "20261117000300_operations.sql": "06b2bf5b0d5275c1e3d95b1848983c4242610f45d28a611fca256e3e696d206a",
+    "20261117000400_reference_checklists.sql": "2ae7b98b460a040319e0c2007809c1842374e97cb2ee4ac140a8fdfc48b0b145",
+    "20261118000100_account_administration.sql": "66f0a0df721c29152bf2a7fe8e4e4a1c269a36f3dacb66e650d0f578a725f16e",
+    "20261118000200_areas.sql": "e5c8d8f6f68ead3fb9088ccde36b1d3460dd54ff8de71d011e3586366923d16a",
+    "20261118000300_ticket_catalogs.sql": "cfa7af9868184011cb2fa08d45dcba54d1559146b39f7e38bac6974af3b747b1",
+    "20261118000400_request_intake.sql": "92bc5dd2dcee53ccfcdcb61ec63e1dd6f1db30e060e087dcbe2b84d8936bdc06",
+    "20261118000500_ticket_security.sql": "af982fb3388d1dd1ae4f9ee02b2aa843ec107e087f2b30b318cc34a99805094b",
+    "20261118000600_request_tracking.sql": "089c1764f3e54ac689063ab3b8ba3092e154bdb3ae51c11ec58c374746528635",
+    "20261118000700_business_metrics.sql": "e1241afcdfd28649612a139efb5f2ab1fe6991b40f32c137e7d6695ec7d03a66",
+    "20261118000800_board_operations.sql": "66995addf02ce4af8d53b6794fd030f4369ed88a02284d8815afe99e0dafc6be",
+    "20261119000100_client_access.sql": "9a90e6d9b3c2185fb9a71c48e8e92972a77039b2a618a776c43b396853821718",
+    "20261119000200_client_login_throttle.sql": "9021b2a7e5d2010d7f756c5c16b9d939c2418f6054c100f6c166a98fe222ccb9"
+  },
+  "passed": 18,
+  "checks": [
+    "isolated Unix-socket PostgreSQL applies M1-M14 as fixture setup",
+    "baseline reproduces anonymous/viewer/inactive creation; missing profile fails at audit FK",
+    "M15 preserves every row in all application, Auth and Storage fixture tables",
+    "only intended ACLs and two authorization guards change; M13 bodies/owners remain intact",
+    "effective EXECUTE permissions exclude PUBLIC inheritance and all prohibited direct callers",
+    "legacy client creation is denied even to native authenticated editors and service_role",
+    "missing/inactive/viewer profiles fail before validation or replay, with no data changes",
+    "submit_request: active superadmin/admin/developer preserve existing receipts, creation and retry",
+    "submit_classified_request: active superadmin/admin/developer preserve existing receipts, creation and retry",
+    "deactivation or demotion blocks reuse of a previously authorized idempotent receipt",
+    "quipu: M13 creates through the revoked helper with unchanged receipt, identity and study",
+    "quipufac: M13 creates through the revoked helper with unchanged receipt, identity and study",
+    "all four product rules hold; forged products fail with PT403 and no writes",
+    "both platform contexts also create their authorized product through the revoked helper",
+    "concurrent M13 and both internal RPC retries create one ticket; identity keys stay separate",
+    "My tickets and details isolate identities; foreign PT404 leaves the valid session usable",
+    "absent, invalid, expired and revoked sessions cannot create or replay existing M13 tickets",
+    "anonymous REQ tracking remains callable and returns only request number and public status"
+  ],
+  "effective_execute": {
+    "public.submit_client_request(jsonb,uuid)": {
+      "anon": false,
+      "authenticated": false,
+      "service_role": false,
+      "procont_security_owner": true
+    },
+    "public.submit_request(jsonb,uuid)": {
+      "anon": false,
+      "authenticated": true,
+      "service_role": false,
+      "procont_security_owner": true
+    },
+    "public.submit_classified_request(jsonb,jsonb,uuid)": {
+      "anon": false,
+      "authenticated": true,
+      "service_role": false,
+      "procont_security_owner": true
+    }
+  },
+  "preserved_fixture_tables": 35,
+  "socket_only": true,
+  "server_stopped": true,
+  "synthetic_auth_and_storage_only": true,
+  "remote_sql_executed": false,
+  "external_provider_calls": false,
+  "previous_suites_repeated": false
+}

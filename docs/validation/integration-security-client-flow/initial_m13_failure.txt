@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/tmp/ticketera-integration-validation-20261119/supabase/tests/client_access_local.py", line 98, in <module>
+    assert len(paths)==13 and paths[-1].name==M13
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

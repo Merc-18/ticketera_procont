@@ -1,0 +1,21 @@
+PASS private bucket maximum is exactly 2500000 decimal bytes
+PASS atomic four-file batch accepts exact total and idempotent retry consumes no extra quota
+PASS concurrent final writes at exact boundary commit four files and 2500000 actual bytes
+PASS fifth file is rejected even when zero bytes
+PASS five-file batch is rejected
+PASS combined total plus one byte rolls back whole batch
+PASS single file above total cap is rejected
+PASS parallel reservations cannot exceed combined byte quota
+PASS actual size greater than declaration fails at commit despite user_metadata size
+PASS changed compressed size below reservation also fails at commit
+PASS actual size is mandatory at final commit
+PASS changed actual MIME fails at commit
+PASS rolled-back Storage permission probe may omit size without committing a file
+PASS valid privileged Storage final write is checked and accepted
+PASS legacy actual bytes count toward the combined cap
+PASS unknown historical size requires review rather than zero-byte assumption
+PASS privileged concurrent final writes independently enforce actual byte quota
+PASS privileged concurrent final writes independently enforce actual file count
+PASS new batch still requires the private tracking token
+PASS final privileged write cannot bypass thirty minute deadline
+20 new byte-limit checks passed; isolated PostgreSQL stopped.

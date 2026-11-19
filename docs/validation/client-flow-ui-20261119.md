@@ -23,7 +23,8 @@ Edge Functions, Supabase remoto ni Vercel. `VITE_CLIENT_LOGIN_ENABLED=0` en Verc
 | Documentación contradictoria | README, `client-portal.md`, `deployment.md` | docs |
 
 Datos históricos: no se borra ni modifica ningún dato; `sla_target_date` y los eventos históricos se
-conservan. Proyectos históricos con solo `sla_target_date` (sin `due_date`) ya no aparecen en Roadmap.
+conservan. Proyectos históricos con solo `sla_target_date` (sin `due_date`) siguen visibles en
+«Sin fecha de vencimiento» del Roadmap; ya no se ubican en un trimestre usando la fecha SLA.
 
 ## Pruebas
 

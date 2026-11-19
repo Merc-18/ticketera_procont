@@ -154,3 +154,18 @@ test('proyectos por lotes acotados: nunca una consulta sujeta al límite de fila
   assert.equal(byId.size, 2500)
   assert.ok(client.calls.every(c => c.in[1].length <= 100))
 })
+
+test('integración: 3.201 terminados y proyectos completos, cuatro páginas y 33 lotes', async () => {
+  const finished = done(10000, 3201)
+  const projects = finished.map(r => ({ id: r.project_id, title: `Proyecto ${r.request_number}`,
+    priority: 'medium', project_type: 'development', requests: { requester_area: 'Área ficticia' } }))
+  const client = postgrest([...notDone(1, 1200), ...finished], { projects })
+  const result = await buildCompletedExport(client)
+  assert.equal(result.rows.length, 3201)
+  assert.equal(new Set(result.rows.map(r => r[0])).size, 3201)
+  assert.ok(result.rows.every(r => r[1].startsWith('Proyecto REQ') && r[2] === 'Área ficticia'))
+  assert.deepEqual(client.calls.filter(c => c.kind === 'rpc').map(c => c.offset), [0, 1000, 2000, 3000])
+  const batches = client.calls.filter(c => c.kind === 'projects')
+  assert.equal(batches.length, 33)
+  assert.ok(batches.every(c => c.in[1].length <= 100))
+})

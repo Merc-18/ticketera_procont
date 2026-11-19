@@ -94,7 +94,8 @@ try:
       ALTER TABLE storage.buckets OWNER TO {owner}; ALTER TABLE storage.objects OWNER TO {owner};
       ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
       GRANT USAGE ON SCHEMA storage TO anon,authenticated; GRANT SELECT,INSERT ON storage.objects TO anon,authenticated;''',None)
-    paths=sorted((ROOT/'supabase/migrations').glob('*.sql'))
+    # Historical M13 suite: later migrations have their own integrated regression.
+    paths=[p for p in sorted((ROOT/'supabase/migrations').glob('*.sql')) if p.name<=M13]
     assert len(paths)==13 and paths[-1].name==M13
     for path in paths[:-1]: q(path.read_text())
     admin='00000000-0000-4000-8000-000000000013'

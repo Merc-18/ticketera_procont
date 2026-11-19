@@ -1,0 +1,19 @@
+PASS isolated Unix-socket PostgreSQL applies M1-M14 as fixture setup
+PASS baseline reproduces anonymous/viewer/inactive creation; missing profile fails at audit FK
+PASS M15 preserves every row in all application, Auth and Storage fixture tables
+PASS only intended ACLs and two authorization guards change; M13 bodies/owners remain intact
+PASS effective EXECUTE permissions exclude PUBLIC inheritance and all prohibited direct callers
+PASS legacy client creation is denied even to native authenticated editors and service_role
+PASS missing/inactive/viewer profiles fail before validation or replay, with no data changes
+PASS submit_request: active superadmin/admin/developer preserve existing receipts, creation and retry
+PASS submit_classified_request: active superadmin/admin/developer preserve existing receipts, creation and retry
+PASS deactivation or demotion blocks reuse of a previously authorized idempotent receipt
+PASS quipu: M13 creates through the revoked helper with unchanged receipt, identity and study
+PASS quipufac: M13 creates through the revoked helper with unchanged receipt, identity and study
+PASS all four product rules hold; forged products fail with PT403 and no writes
+PASS both platform contexts also create their authorized product through the revoked helper
+PASS concurrent M13 and both internal RPC retries create one ticket; identity keys stay separate
+PASS My tickets and details isolate identities; foreign PT404 leaves the valid session usable
+PASS absent, invalid, expired and revoked sessions cannot create or replay existing M13 tickets
+PASS anonymous REQ tracking remains callable and returns only request number and public status
+18 M15 PostgreSQL checks passed; isolated server stopped.

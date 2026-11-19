@@ -11,6 +11,7 @@ import { existsSync, mkdirSync, readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { createServer as createViteServer } from 'vite'
 import { chromium } from 'playwright-core'
+import XLSX from 'xlsx'
 import { startFixtureServer, performanceScenario, STAFF, SIMULATED_PASSWORD } from './fixture-server.mjs'
 import { MOCK_RUC, MOCK_PASSWORD } from '../../src/dev/client-portal-mock.ts'
 
@@ -324,4 +325,66 @@ test('13F. Error en la segunda página: no se descarga un CSV parcial y se infor
     assert.match(text, /página 2/)
     await done(page)
   } finally { fixture.setPerformance(null) }
+})
+
+for (const [label, viewport] of Object.entries(VIEWPORTS)) {
+  test(`[${label}] integración: formulario crea Quipu y QuipuFac con adjunto simulado y separa Mis tickets`, async () => {
+    const page = await open(viteMock.url, '/portal', viewport)
+    await page.getByRole('button', { name: /Nueva Solicitud/ }).click()
+    await page.waitForURL('**/cliente')
+    let quipuReq
+    for (const provider of ['quipu', 'quipufac']) {
+      await clientLogin(page, provider)
+      await page.waitForURL('**/cliente/nuevo')
+      await page.locator('#ticket-product').waitFor()
+      if (provider === 'quipufac') assert.equal((await productOptions(page)).includes('Quipu'), false)
+      await page.fill('#ticket-requester', 'Persona ficticia integrada')
+      await page.selectOption('#ticket-product', { label: provider === 'quipu' ? 'Quipu' : 'Quipu_Fac' })
+      await page.selectOption('#ticket-type', { label: 'Mejora' })
+      await page.fill('#ticket-title', `Prueba de formulario ${provider}`)
+      await page.fill('#ticket-description', 'Datos ficticios del simulador local; sin tickets remotos.')
+      await page.locator('input[type=file]').setInputFiles({ name: 'fixture.pdf', mimeType: 'application/pdf', buffer: Buffer.from('synthetic fixture') })
+      await page.getByRole('button', { name: 'Enviar solicitud', exact: true }).click()
+      await page.getByRole('heading', { name: '¡Solicitud enviada!' }).waitFor()
+      const number = (await page.getByText(/^REQ\d{2}-\d{3,}$/).first().textContent()).trim()
+      await page.getByRole('button', { name: 'Ver Mis tickets', exact: true }).click()
+      await page.getByRole('heading', { name: 'Mis tickets' }).waitFor()
+      await page.locator('main a:visible', { hasText: number }).first().waitFor()
+      if (provider === 'quipu') quipuReq = number
+      else assert.equal(await page.getByText(quipuReq, { exact: true }).count(), 0)
+      await page.getByRole('button', { name: 'Salir', exact: true }).click()
+      await page.waitForURL(/\/cliente(\?|$)/)
+    }
+    await done(page)
+  })
+}
+
+test('integración: Planner procesa Excel real y conserva payload/acuse de la RPC interna', async () => {
+  const page = await adminDashboard()
+  let submitted
+  await page.route('**/rest/v1/rpc/submit_request', async route => {
+    submitted = route.request().postDataJSON()
+    await route.fulfill({ status: 200, contentType: 'application/json', headers: {
+      'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': '*',
+    }, body: JSON.stringify({ id: '00000000-0000-4000-8000-000000009501', request_number: 'REQ26-9501',
+      tracking_token: '00000000-0000-4000-8000-000000009502' }) })
+  })
+  await page.getByRole('button', { name: '📬 Requests', exact: true }).click()
+  await page.getByRole('button', { name: /Importar Planner/ }).click()
+  const book = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(book, XLSX.utils.json_to_sheet([{ 'Task Name': 'Solicitud Planner integrada',
+    'Bucket Name': 'Otro', 'Created By': 'Operador ficticio', Description: 'Fixture local', 'Due date': '2026-12-01' }]), 'Planner')
+  await page.locator('input[type=file]').setInputFiles({ name: 'planner-fixture.xlsx',
+    mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    buffer: XLSX.write(book, { type: 'buffer', bookType: 'xlsx' }) })
+  await page.getByText('Solicitud Planner integrada', { exact: true }).waitFor()
+  await page.getByPlaceholder('Área (obligatoria)').fill('Área de fixture')
+  await page.getByRole('button', { name: '📥 Importar 1 solicitud', exact: true }).click()
+  await page.getByRole('heading', { name: '1 solicitudes confirmadas' }).waitFor()
+  assert.equal(submitted.p_payload.requester_name, 'Operador ficticio')
+  assert.equal(submitted.p_payload.requester_area, 'Área de fixture')
+  assert.equal(submitted.p_payload.requested_date, '2026-12-01')
+  assert.equal(submitted.p_payload.origin, 'Interno')
+  assert.match(submitted.p_idempotency_key, /^[0-9a-f-]{36}$/)
+  await done(page)
 })
