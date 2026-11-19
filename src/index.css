@@ -8,3 +8,10 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+/* Portal de clientes: aparición del formulario de ingreso seleccionado. */
+@keyframes client-reveal {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.client-reveal { animation: client-reveal 220ms ease-out; }
+@media (prefers-reduced-motion: reduce) { .client-reveal { animation: none; } }

@@ -6,7 +6,9 @@ import { errorMessage } from '../../lib/supabase-errors'
 import { handoffTracking } from '../../lib/tracking-handoff'
 import type { SubmissionReceipt } from '../../lib/operations'
 import { useCatalogs } from '../../hooks/useCatalogs'
-import { uploadRequestAttachments, type DeliveryItem } from '../../lib/attachments'
+import { uploadRequestAttachments, type DeliveryItem, type DeliveryResult } from '../../lib/attachments'
+import type { RpcAttempt } from '../../lib/rpc-attempt'
+import type { ClientProduct, ClientTicketInput } from '../../lib/client-portal'
 import type { PreparationResult } from '../../lib/attachment-prep'
 import AttachmentPicker from './AttachmentPicker'
 import BrandLogo from '../ui/BrandLogo'
@@ -15,15 +17,30 @@ import { BRAND } from '../../theme/brand'
 const EMPTY = { requester_name: '', studio_id: '', system_id: '', request_type_id: '', title: '', description: '' }
 const field = 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none bg-white'
 
+/** Modo cliente autenticado (portal Quipu/QuipuFac): sin estudio; producto desde la sesión. */
+export interface ClientFormConfig {
+  /** Productos permitidos devueltos por el backend para la sesión. */
+  products: ClientProduct[]
+  /** true: abierto desde una plataforma; el producto queda fijo y no hay selector. */
+  fixedProduct: boolean
+  submit: (input: ClientTicketInput, attempt: RpcAttempt) => Promise<SubmissionReceipt>
+  onViewMine: () => void
+  /** Entrega de adjuntos; por defecto la misma del formulario público (token del ticket). */
+  deliver?: (requestId: string, trackingToken: string, items: DeliveryItem[]) => Promise<DeliveryResult>
+}
+
 /**
  * Formulario público definitivo (aprobado 18/11/2026). El cliente no ve correo, subproyecto,
  * área, RUC, códigos, responsables, prioridad, SLA ni plazos.
+ * Con `client` se reutiliza dentro del espacio del cliente: el estudio lo deriva el servidor y el
+ * producto se elige solo entre los permitidos (o queda fijo si viene de una plataforma).
  */
-export default function PublicRequestForm() {
+export default function PublicRequestForm({ client }: { client?: ClientFormConfig } = {}) {
   const navigate = useNavigate()
   const catalogs = useCatalogs('public')
   const attempt = useRef(createRpcAttempt())
-  const [form, setForm] = useState(EMPTY)
+  const initial = client && client.products.length === 1 ? { ...EMPTY, system_id: client.products[0].id } : EMPTY
+  const [form, setForm] = useState(initial)
   const [urgent, setUrgent] = useState(false)
   // Adjuntos ya preparados (comprimidos si hacía falta) ANTES de enviar; null = procesando.
   const [prepared, setPrepared] = useState<PreparationResult | null>({ items: [], totalBytes: 0, originalBytes: 0, ok: true, error: null })
@@ -48,16 +65,20 @@ export default function PublicRequestForm() {
     // Nombre, título y descripción no pueden quedar vacíos ni contener solo espacios.
     if (!form.requester_name.trim()) { setNameTouched(true); setError('Ingresa el nombre del solicitante.'); return }
     if (!form.title.trim() || !form.description.trim()) { setError('Completa el título y la descripción.'); return }
+    if (client && !client.products.some(p => p.id === form.system_id)) { setError('Selecciona el producto.'); return }
     if (!prepared) { setError('Espera a que terminen de prepararse los adjuntos.'); return }
     if (!prepared.ok) { setError(prepared.error); return }
     setLoading(true); setError(null)
     try {
-      const result = await operations.submitClientRequest({ ...form, urgent_requested: urgent }, attempt.current)
+      const result = client
+        ? await client.submit({ requester_name: form.requester_name, system_id: form.system_id, request_type_id: form.request_type_id,
+            title: form.title, description: form.description, urgent_requested: urgent }, attempt.current)
+        : await operations.submitClientRequest({ ...form, urgent_requested: urgent }, attempt.current)
       // Los archivos ya están comprimidos; cada uno recibe una clave de subida estable.
       const items: DeliveryItem[] = prepared.items.map(i => ({ file: i.file, uploadKey: crypto.randomUUID() }))
       setReceipt(result)
       await deliver(result, items)
-      setForm(EMPTY); setUrgent(false); setPickerKey(k => k + 1); setNameTouched(false)
+      setForm(initial); setUrgent(false); setPickerKey(k => k + 1); setNameTouched(false)
     } catch (err) {
       setError(errorMessage(err))
     } finally {
@@ -67,7 +88,7 @@ export default function PublicRequestForm() {
 
   async function deliver(target: SubmissionReceipt, items: DeliveryItem[]) {
     if (items.length === 0) { setPendingDelivery([]); setDeliveryError(null); return }
-    const outcome = await uploadRequestAttachments(target.id, target.tracking_token, items)
+    const outcome = await (client?.deliver ?? uploadRequestAttachments)(target.id, target.tracking_token, items)
     const remaining = items.filter(i => outcome.failed.includes(i.file.name))
     setPendingDelivery(remaining)
     setDeliveryError(outcome.error)
@@ -80,9 +101,10 @@ export default function PublicRequestForm() {
 
   /* ── Confirmación: número REQ y token privado ── */
   if (receipt) {
+    const outer = client ? 'flex justify-center' : 'min-h-screen bg-gradient-to-br from-brand-700 via-brand-800 to-brand-950 flex items-center justify-center p-4'
     return (
-      <div className="min-h-screen bg-gradient-to-br from-brand-700 via-brand-800 to-brand-950 flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl p-8 text-center border-t-4 border-accent-400">
+      <div className={outer}>
+        <div className={`max-w-md w-full bg-white rounded-2xl p-8 text-center border-t-4 border-accent-400 ${client ? 'shadow-lg border border-gray-200' : 'shadow-2xl'}`}>
           <div className="text-6xl mb-4">✅</div>
           <h2 className="text-2xl font-bold text-brand-700 mb-2">¡Solicitud enviada!</h2>
           <p className="text-gray-600 mb-6">Tu solicitud fue registrada y será revisada por el {BRAND.teamLabel}.</p>
@@ -102,17 +124,26 @@ export default function PublicRequestForm() {
             </div>
           )}
           <p className="text-sm text-gray-500 mb-6">
-            Guarda este número: con él puedes consultar el estado de tu solicitud en «Rastrear solicitud».
+            {client
+              ? 'Puedes seguir su avance en «Mis tickets».'
+              : 'Guarda este número: con él puedes consultar el estado de tu solicitud en «Rastrear solicitud».'}
           </p>
           <div className="space-y-3">
             <button onClick={() => { attempt.current = createRpcAttempt(); setReceipt(null); setPendingDelivery([]); setDeliveryError(null) }}
               className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-brand-700 transition">
-              Crear otra solicitud
+              {client ? 'Crear otro ticket' : 'Crear otra solicitud'}
             </button>
-            <button onClick={() => { handoffTracking(receipt.request_number); navigate('/tracking') }}
-              className="w-full bg-gray-100 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-200 transition">
-              Rastrear mi solicitud
-            </button>
+            {client ? (
+              <button onClick={client.onViewMine}
+                className="w-full bg-gray-100 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-200 transition">
+                Ver Mis tickets
+              </button>
+            ) : (
+              <button onClick={() => { handoffTracking(receipt.request_number); navigate('/tracking') }}
+                className="w-full bg-gray-100 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-200 transition">
+                Rastrear mi solicitud
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -127,9 +158,15 @@ export default function PublicRequestForm() {
   const section = 'font-semibold text-brand-700 border-b pb-2'
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-700 via-brand-800 to-brand-950 py-12 px-4">
+    <div className={client ? '' : 'min-h-screen bg-gradient-to-br from-brand-700 via-brand-800 to-brand-950 py-12 px-4'}>
       <div className="max-w-3xl mx-auto">
-        <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8">
+        <div className={`bg-white rounded-2xl p-6 sm:p-8 ${client ? 'shadow-sm border border-gray-200' : 'shadow-2xl'}`}>
+          {client ? (
+            <div className="mb-8">
+              <h1 className="text-2xl font-bold text-brand-700 mb-1">Nuevo ticket</h1>
+              <p className="text-gray-600 text-sm">Completa el formulario para enviar tu solicitud al {BRAND.teamLabel}.</p>
+            </div>
+          ) : (
           <div className="mb-8">
             <button type="button" onClick={() => navigate('/portal')}
               className="flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 transition mb-4">← Inicio</button>
@@ -140,6 +177,7 @@ export default function PublicRequestForm() {
               <p className="text-gray-600">Completa el formulario para enviar una solicitud al {BRAND.teamLabel}</p>
             </div>
           </div>
+          )}
 
           {catalogs.loading ? (
             <p className="text-center text-gray-400 py-8">Cargando formulario...</p>
@@ -160,6 +198,28 @@ export default function PublicRequestForm() {
                 </div>
               </section>
 
+              {client ? (
+              <section className="space-y-4">
+                <h3 className={section}>¿Para qué producto es la solicitud?</h3>
+                {client.fixedProduct ? (
+                  <div>
+                    {label('Producto')}
+                    <p className={`${field} bg-gray-50 text-gray-800 flex items-center gap-2`} aria-readonly="true">
+                      <span aria-hidden="true">🔒</span>{client.products[0]?.name}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">Ingresaste desde esta plataforma: el ticket se registra para este producto.</p>
+                  </div>
+                ) : (
+                  <div>
+                    {label('Producto')}
+                    <select required value={form.system_id} onChange={e => set({ system_id: e.target.value })} className={field}>
+                      <option value="">Selecciona un producto</option>
+                      {client.products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                    </select>
+                  </div>
+                )}
+              </section>
+              ) : (
               <section className="space-y-4">
                 <h3 className={section}>¿Dónde ocurre el problema o requerimiento?</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -179,6 +239,7 @@ export default function PublicRequestForm() {
                   </div>
                 </div>
               </section>
+              )}
 
               <section className="space-y-4">
                 <h3 className={section}>¿Qué necesitas?</h3>
