@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import ErrorBoundary from './components/ErrorBoundary'
 import Toaster from './components/ui/Toaster'
+import BuildVersion from './components/ui/BuildVersion'
 import './index.css'
 import { configurationError } from './lib/supabase'
 
@@ -18,5 +19,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       ) : <App />}
       <Toaster />
     </ErrorBoundary>
+    {/* Versión de la compilación al pie de todas las pantallas (incluida la de error). */}
+    <BuildVersion />
   </React.StrictMode>,
 )

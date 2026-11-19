@@ -14,6 +14,7 @@ import { chromium } from 'playwright-core'
 import XLSX from 'xlsx'
 import { startFixtureServer, performanceScenario, STAFF, SIMULATED_PASSWORD } from './fixture-server.mjs'
 import { MOCK_RUC, MOCK_PASSWORD } from '../../src/dev/client-portal-mock.ts'
+import { formatBuildVersion } from '../../src/lib/build-version.ts'
 
 const ROOT = fileURLToPath(new URL('../..', import.meta.url))
 const VIEWPORTS = { escritorio: { width: 1366, height: 900 }, movil: { width: 390, height: 844 } }
@@ -33,11 +34,14 @@ async function startVite(env) {
   return { server, url: `http://127.0.0.1:${port}` }
 }
 
+let versionWindow = []
 before(async () => {
   fixture = await startFixtureServer()
+  versionWindow.push(formatBuildVersion(new Date()))
   const common = { VITE_SUPABASE_URL: fixture.url, VITE_SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_simulada_solo_pruebas' }
   viteMock = await startVite({ ...common, VITE_CLIENT_PORTAL_MOCK: '1' })
   viteOff = await startVite({ ...common, VITE_CLIENT_PORTAL_MOCK: '0', VITE_CLIENT_LOGIN_ENABLED: '0' })
+  versionWindow.push(formatBuildVersion(new Date()))   // la versión se fija al cargar la configuración de Vite
   browser = await chromium.launch({ executablePath: process.env.CHROMIUM_EXECUTABLE || undefined })
   if (SHOTS) mkdirSync(SHOTS, { recursive: true })
 })
@@ -388,3 +392,44 @@ test('integración: Planner procesa Excel real y conserva payload/acuse de la RP
   assert.match(submitted.p_idempotency_key, /^[0-9a-f-]{36}$/)
   await done(page)
 })
+
+// ── Versión de la compilación al pie de todas las pantallas ──
+async function footerCheck(page, label) {
+  const footer = page.getByTestId('build-version')
+  await footer.waitFor()
+  const text = await footer.textContent()
+  assert.match(text, /^Versión \d{12}$/, `${label}: formato exacto`)
+  assert.ok(versionWindow.includes(text.slice(8)), `${label}: versión de la compilación (${text})`)
+  const box = await footer.boundingBox()
+  const overlaps = await page.$$eval('button, input, select, textarea, table, a', (els, f) => els
+    .filter(el => !el.closest('[data-testid="build-version"]'))
+    .map(el => el.getBoundingClientRect()).filter(r => r.width && r.height)
+    .filter(r => r.left < f.x + f.width && r.right > f.x && r.top + window.scrollY < f.y + f.height && r.bottom + window.scrollY > f.y).length,
+    { x: box.x, y: box.y + await page.evaluate(() => window.scrollY), width: box.width, height: box.height })
+  assert.equal(overlaps, 0, `${label}: el pie no se superpone`)
+  return text
+}
+for (const [label, viewport] of Object.entries(VIEWPORTS)) {
+  test(`[${label}] Versión de la compilación visible y estable en todas las pantallas`, async () => {
+    const seen = new Set()
+    const page = await open(viteMock.url, '/portal', viewport)
+    seen.add(await footerCheck(page, 'portal'))
+    await page.reload(); seen.add(await footerCheck(page, 'portal tras recargar'))
+    await page.getByRole('button', { name: /Nueva Solicitud/ }).click(); await page.waitForURL('**/cliente')
+    await page.getByRole('button', { name: /Ingreso con usuario/ }).click(); seen.add(await footerCheck(page, 'login Quipu'))
+    await page.getByRole('button', { name: /Cambiar tipo/ }).click()
+    await page.getByRole('button', { name: /Ingreso empresarial/ }).click(); seen.add(await footerCheck(page, 'login QuipuFac'))
+    await page.getByRole('button', { name: /Cambiar tipo/ }).click()
+    await clientLogin(page, 'quipu'); await page.waitForURL('**/cliente/nuevo'); await page.locator('#ticket-product').waitFor()
+    seen.add(await footerCheck(page, 'Nuevo ticket'))
+    await page.getByRole('link', { name: /Mis tickets/ }).click(); await page.locator('main a:visible', { hasText: 'REQ26-9001' }).first().waitFor()
+    seen.add(await footerCheck(page, 'Mis tickets'))
+    await page.goto(viteMock.url + '/tracking'); seen.add(await footerCheck(page, 'Seguimiento público'))
+    await page.goto(viteMock.url + '/login'); seen.add(await footerCheck(page, 'Login del personal'))
+    await page.goto(viteMock.url + '/portal'); await staffLogin(page, 'superadmin'); seen.add(await footerCheck(page, 'Panel interno'))
+    await page.reload(); await page.locator('nav[aria-label="Secciones"]').waitFor(); seen.add(await footerCheck(page, 'Panel tras recargar'))
+    if (SHOTS) { await page.getByTestId('build-version').scrollIntoViewIfNeeded(); await shot(page, `${label}-15-version-panel`) }
+    assert.equal(seen.size, 1, 'la misma versión en todas las pantallas y tras recargar')
+    await done(page)
+  })
+}
