@@ -1,9 +1,12 @@
-# Reglas operativas del tablero — M12 preparada, no aplicada
+# Reglas operativas del tablero — M12 activa, historial 12/12
 
 Base `main@94bd8fd`, con once migraciones aplicadas según el estado confirmado.
 Rama `codex/board-operations`, en copia Git aislada dentro de
 `.supabase-local/workspaces/board-operations/` por la restricción de escritura de `.git`
-del repositorio principal. No cambia main, sus componentes ni el archivo sin seguimiento `1`.
+del repositorio principal. Ese fue el estado de preparación del backend.
+M12 se aplicó y verificó el 19/11/2026; el frontend recuperado se conserva en
+`integration/board-operations-recovery`, junto al backend y todas sus evidencias.
+Estado vigente: [verificación remota](validation/board-m12-rpc-smoke-diagnosis.json).
 
 Migración: [`20261118000800_board_operations.sql`](../supabase/migrations/20261118000800_board_operations.sql).
 Evidencia: [74 comprobaciones locales](validation/board-operations-local.json).
@@ -133,14 +136,13 @@ Una cuenta con historial se desactiva; no puede borrarse destruyendo sus referen
 Un administrador SQL con capacidad de cambiar triggers/esquema queda fuera del límite
 normal de los perfiles de aplicación; no se pretende impedirle administrar el motor.
 
-## Compatibilidad, límites y activación pendiente
+## Compatibilidad y límites
 
-El frontend actual NO es compatible con las escrituras antiguas de current_phase/progress,
-assigned_to, prioridad, status y bloqueo, cuyos permisos directos se revocan. Claude debe
-usar las RPC, retirar el botón de cierre independiente, añadir confirmación/reapertura,
-y dejar de insertar activity_logs o duplicar notificaciones que ahora emite el servidor.
-También debe usar el nuevo snapshot para porcentajes separados y las ocho columnas.
-No se ha modificado ningún componente ni hook frontend en esta rama.
+El frontend recuperado usa las RPC para current_phase, assigned_to, prioridad, status y
+bloqueo. Retira el cierre independiente y las inserciones de activity_logs del navegador,
+incluye confirmación de pendientes y reapertura, y usa los porcentajes separados del
+snapshot y las ocho columnas. Las escrituras directas anteriores están revocadas por M12.
+Detalles de la integración: [board-ui.md](board-ui.md).
 
 Cycle/Lead reutilizan M11: primera salida real de Backlog, cierre más reciente, tiempo
 continuo con bloqueos y regresiones incluidos. Reapertura excluye del promedio hasta el
@@ -152,8 +154,8 @@ no reabre fases finales; para reabrir se requiere la acción explícita y su mot
 Ninguna decisión adicional bloquea las reglas solicitadas. No se definen nuevos pesos de
 esfuerzo, SLA, calendarios, cuotas de usuarios ni plantillas oficiales de tareas.
 
-Antes de aplicar: revisar/integrar coordinadamente el frontend bajo autorización separada,
-capturar baseline privado de funciones, ACL y FK reemplazadas, y autorizar M12 expresamente.
+La aplicación autorizada conserva capturas privadas anteriores y posteriores de funciones,
+ACL, FK, historial y hashes de datos. No debe repetirse M12 durante el cierre de Git.
 La migración es transaccional, sin DML de conversión. Un fallo antes de COMMIT revierte el DDL.
 Después de usar fases/eventos nuevos, NO restaurar ciegamente M11 ni eliminar auditoría:
 la recuperación debe conservar esos datos mediante una corrección posterior revisada.

@@ -1,5 +1,10 @@
 # Recuperación de la integración del tablero de Claude
 
+**Estado vigente, 19/11/2026:** M12 aplicada y verificada, historial 12/12; permisos,
+lectura real de un ticket y rechazo de las cuatro RPC sin actor comprobados sin modificar
+datos. La integración en main está autorizada; los apartados de rescate conservan el
+registro histórico. Evidencia vigente: [diagnóstico y cierre remoto](validation/board-m12-rpc-smoke-diagnosis.json).
+
 Base encontrada: `integration/board-operations@1ba71b2`; `main@94bd8fd`.
 El backend ya estaba incorporado: no se volvió a importar, fusionar ni implementar.
 Claude no dejó commits frontend: sus cambios estaban en el árbol y dos eliminaciones
@@ -35,7 +40,7 @@ como caminos activos que vuelvan a escribir auditoría desde el navegador.
 | Evidencias privadas y compresión existente | Parcial en entregas parciales | Terminado: reintenta pendientes y reconoce respuestas perdidas verificables |
 | Tickets históricos, seguimiento público y estadísticas | Terminado | Terminado, conservado |
 | Build | Ya reportado por Claude | Verificado de nuevo sobre la recuperación y las correcciones |
-| Dry-run remoto actual M12 | Reportado por Claude, sin recibo recuperable | **Pendiente: autenticación de la terminal local** |
+| Activación remota M12 | Reportada inicialmente sin recibo recuperable | Aplicada; historial 12/12 y verificación de solo lectura completada |
 
 ## Correcciones concretas, sin reconstrucción
 
@@ -65,35 +70,25 @@ compararlos con las correcciones posteriores.
   el SQL no cambió. Tampoco se repitieron las otras suites anteriores.
 - La evidencia de revisión actual está en [board-recovery-local.json](validation/board-recovery-local.json).
 
-## Único bloqueo restante: dry-run autenticado
+## Activación completada el 19/11/2026
 
-Se verificaron enlace, nombre y ref locales. El intento nativo con URL del proyecto fijado,
-TLS y `--dry-run --skip-vault` terminó en autenticación: esta sesión no tiene contraseña DB.
-No se usó Management API para crear roles temporales ni se repitió un inventario.
-No se afirma que el plan remoto siga igual por el reporte anterior de Claude.
-Ver [estado actual](validation/board-recovery-dry-run.json).
+El dry-run autenticado quedó confirmado en `83b148e`. Posteriormente se aplicó solo M12,
+con capturas privadas anteriores y posteriores. El historial pasó de 11/11 a 12/12;
+las once entradas anteriores y los hashes de datos de negocio permanecieron intactos.
 
-Después del commit final, ejecutar en **terminal Ubuntu normal** (no pegar secretos en el chat):
+La CLI detuvo `rpc_smoke` porque faltaba `--yes`, antes de ejecutar ese SQL. La corrección
+`53f14a6` conserva la evidencia previa y permite continuar solo las verificaciones,
+sin reenviar M12. La lectura real del tablero, las cuatro denegaciones sin actor y los
+permisos se comprobaron en una transacción READ ONLY usando la sesión existente,
+sin pedir contraseñas. Ver [resultado completo](validation/board-m12-rpc-smoke-diagnosis.json).
 
-```bash
-python3 /home/procont/projects/ticketera-procont/.supabase-local/workspaces/board-integration-recovery/scripts/check_board_m12_dry_run.py --commit-evidence
-```
-
-Pide la contraseña de forma oculta, no la guarda ni la incorpora a argv. Solo acepta CLI 3.2.0,
-proyecto ticketera-procont/ref xsxdpaiivklqeudgqoqf, las once migraciones originales sin cambios
-y un plan con únicamente `20261118000800_board_operations.sql`, sin seeds/roles/vault.
-Si confirma el plan, actualiza el recibo y crea un commit local que contiene solo esa evidencia.
-No tiene modo de aplicación, merge o push. Si falla, se detiene sin reintentos automáticos.
-
-El frontend está preparado para revisión/integración, pero **NO APTO para autorizar la
-aplicación todavía**: falta ese dry-run actual y la autorización expresa de activación.
-No se fusiona main ni se aplica M12 desde esta tarea. La coordinación frontend/backend de
-[board-ui.md](board-ui.md) se conserva para la activación posterior.
+El cierre local conserva la recuperación de Claude y el backend de Codex, y actualiza
+la documentación de activación. No vuelve a ejecutar migraciones ni las suites aprobadas.
 
 ## Transporte local de los commits recuperados
 
 Se exporta también `.supabase-local/exports/board-integration-recovery.bundle` del proyecto
-original. La copia Git es la fuente más reciente, incluido el eventual commit del dry-run.
+original. La copia Git es la fuente más reciente, incluidos el dry-run y la verificación de M12.
 Para importar su referencia desde Ubuntu normal, sin checkout ni merge:
 
 ```bash
@@ -101,4 +96,5 @@ git -C /home/procont/projects/ticketera-procont fetch /home/procont/projects/tic
 ```
 
 Esto conserva los cambios sin commit del árbol original; no hay que descartarlos para traer
-la referencia. La integración en main continúa requiriendo autorización separada.
+la referencia. La integración en main cuenta con autorización expresa del 19/11/2026;
+no incluye push ni despliegue.

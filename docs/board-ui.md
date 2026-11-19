@@ -1,12 +1,13 @@
 # Tablero operativo: integración del frontend (M12)
 
-Rama `integration/board-operations`, construida sobre `main@94bd8fd` más el backend de Codex
-(`codex/board-operations@1ba71b2`, recuperado de `.supabase-local/workspaces/board-operations`).
-**M12 (`20261118000800_board_operations.sql`) no está aplicada**. Claude reportó un dry-run
-sobre `ticketera-procont` (`xsxdpaiivklqeudgqoqf`) con M12 como única pendiente.
-Las once migraciones aplicadas no se modificaron. El dry-run mencionado arriba es el
-reporte previo de Claude: el intento actual se detuvo en autenticación y no se considera
-verificación remota vigente. Ver [recuperación y cierre](board-recovery.md).
+Fuente de integración: `integration/board-operations-recovery`, descendiente de `main@94bd8fd`
+y del backend de Codex `1ba71b2`. Conserva el trabajo de Claude en `17c8c19` y sus
+correcciones en `6a4bce5`.
+**M12 (`20261118000800_board_operations.sql`) está aplicada en ticketera-procont,
+historial 12/12**, con las once entradas anteriores y los datos de negocio intactos.
+Permisos y comprobación de lectura verificados en `53f14a6`:
+[evidencia remota](validation/board-m12-rpc-smoke-diagnosis.json).
+La fusión local en main está autorizada y permite fast-forward; no requiere otra aplicación remota.
 
 El frontend no implementa otro motor: reutiliza el adaptador de Codex
 [`contracts/board-operations-client.mjs`](../contracts/board-operations-client.mjs) a través de
@@ -66,7 +67,7 @@ Cada acción del usuario usa su propia UUID de idempotencia (`actionKey()`).
 
 Estos resultados se conservan como evidencia previa. La recuperación ejecutó build, las
 9 pruebas de integración afectadas y 6 nuevas; no repitió las suites PostgreSQL. El estado
-actual del dry-run y las pruebas nuevas están en [board-recovery.md](board-recovery.md).
+de activación y las pruebas nuevas están en [board-recovery.md](board-recovery.md).
 
 | Prueba | Resultado |
 |---|---|
@@ -88,9 +89,11 @@ en una copia Git aislada. Se corrigieron reintentos de Done/evidencias, inferenc
 concurrencia del diagnóstico, conservando los componentes y las RPC existentes.
 Ver [estado, respaldo y comprobaciones actuales](board-recovery.md).
 
-## Pendiente para activar
+## Cierre de activación
 
-1. Autorización para aplicar M12 en `xsxdpaiivklqeudgqoqf` (captura previa privada, `db push`, verificación).
-2. Fusión de `integration/board-operations` en `main` después de aplicar M12: el frontend de esta rama
-   requiere M12 (las RPC nuevas) y el `main` actual no funciona con M12 aplicada (sus escrituras directas quedan revocadas).
-   Ambos pasos deben hacerse juntos.
+M12 se aplicó una sola vez el 19/11/2026. La primera comprobación `rpc_smoke` se detuvo
+en la confirmación de la CLI, antes de ejecutar SQL; se corrigió y se completó la
+verificación pendiente en una transacción READ ONLY, sin modificar tickets.
+El frontend de esta integración usa las RPC y es compatible con los permisos de M12.
+El cierre de Git conserva todos los commits mediante fast-forward desde `main@94bd8fd`.
+No se repiten las suites anteriores ni se ejecutan SQL remoto, push o despliegue como parte del cierre.

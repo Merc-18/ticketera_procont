@@ -1,0 +1,43 @@
+{
+  "at_utc": "2026-11-19T14:16:50.026138+00:00",
+  "source_branch": "integration/board-operations-recovery",
+  "base_main": "94bd8fd17972d0e7a96137f7a3a7d72c8b4cb445",
+  "verified_integration_commit": "53f14a6",
+  "preserved_ancestor_commits": [
+    "94bd8fd",
+    "1ba71b2",
+    "17c8c19",
+    "6a4bce5",
+    "83b148e",
+    "4e79e75",
+    "53f14a6"
+  ],
+  "fast_forward_possible": true,
+  "build": "passed",
+  "build_source_commit": "53f14a6",
+  "build_warnings": [
+    "outdated Browserslist data",
+    "bundle larger than 500 kB"
+  ],
+  "development_stages": [
+    "backlog",
+    "analysis",
+    "design",
+    "dev",
+    "code_review",
+    "testing",
+    "deploy",
+    "done"
+  ],
+  "kanban_and_contract_stages_match": true,
+  "hook_uses_board_rpc_adapter": true,
+  "migrations_unchanged": true,
+  "remote_checks_reused": "board-m12-rpc-smoke-diagnosis.json",
+  "previous_suites_repeated": false,
+  "supabase_operations_executed": false,
+  "pushed": false,
+  "deployed": false,
+  "file_1_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "original_working_branch_preserved": "integration/board-operations",
+  "original_git_write_restricted_in_agent": true
+}
