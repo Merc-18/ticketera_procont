@@ -1,8 +1,10 @@
-# Acceso de clientes: backend M13 preparado
+# Acceso de clientes: M13 activa, historial 13/13
 
 Base `main@35b9726`; rama aislada `codex/client-access-m13`. Migración nueva
 `20261119000100_client_access.sql`. Las doce migraciones anteriores permanecen
-intactas. No se aplicó SQL remoto, no se desplegó la función ni se fusionó main.
+intactas. M13 se aplicó una sola vez bajo autorización de activación. Historial, RPC
+y permisos verificados: [evidencia vigente](validation/client-m13-activation.json).
+`client-login` y el frontend no se desplegaron; el ingreso real sigue deshabilitado.
 
 ## Distinción de errores antes de activar
 
@@ -202,5 +204,6 @@ python3 -B supabase/tests/client_access_local.py --pg-bin /ruta/postgresql/17/bi
 
 Pendiente para un login real: contrato de respuesta de cada proveedor verificado y
 configuración privada correspondiente. La asociación de RUC ambiguos se realiza
-explícitamente cuando proceda. Aplicación de M13, despliegue, integración frontend y
-merge no se ejecutan en esta entrega.
+explícitamente cuando proceda. La aplicación de M13 ya está verificada. La integración frontend se conserva desde
+`19a10a8`, con la corrección puntual de errores en `8fd637e`; el cierre de Git permite
+fast-forward sin reescribir los commits de ambos agentes. No se realizó despliegue.

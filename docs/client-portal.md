@@ -5,6 +5,18 @@ backend de Codex `codex/client-access-m13@77fe593` (M13 + Edge Function `client-
 frontend de Claude `claude/client-portal@aeeaa12`, conectado al contrato real
 `contracts/client-access-client.mjs`. Backend detallado: [client-access-backend.md](client-access-backend.md).
 
+## Activación vigente
+
+M13 aplicada una sola vez el 19/11/2026 en ticketera-procont, historial 13/13.
+Las doce migraciones previas y los datos de negocio permanecen intactos; permisos
+verificados en las 11 RPC nuevas y seis tablas privadas. No se crearon cuentas ni
+tickets de prueba remotos. Evidencia: [client-m13-activation.json](validation/client-m13-activation.json).
+La corrección puntual `8fd637e` conserva la conexión `19a10a8`, los commits frontend
+de Claude y el backend de Codex. Verificación local actual: 35 pruebas Node del portal/login,
+20 comprobaciones de M13 en PostgreSQL 17.12 aislado, tres guardas de activación,
+TypeScript, Deno y build correctos. Las otras suites anteriores no se repitieron.
+`client-login` no se desplegó y el ingreso está deshabilitado por defecto.
+
 ## Rutas
 
 | Ruta | Pantalla | Sesión |

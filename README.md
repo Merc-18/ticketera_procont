@@ -1,5 +1,7 @@
 # Ticketera Procont
 
+**Portal de clientes: M13 activa, historial 13/13.** Integración Quipu/QuipuFac recuperada de ambos agentes, con sesiones independientes, selector validado en servidor y Mis tickets aislados por identidad. El ingreso real permanece deshabilitado hasta confirmar los contratos externos y un despliegue autorizado de `client-login`. Ver [portal](docs/client-portal.md) y [activación verificada](docs/validation/client-m13-activation.json).
+
 **Tablero operativo: M12 activa, historial 12/12.** El frontend recuperado de Claude usa las RPC de Codex: ocho etapas Development, cierre por Done con confirmación de pendientes, reapertura con motivo, progresos de fase y checklist separados, responsable principal y auditoría inmutable del servidor. Se conservan los commits de recuperación y sus correcciones de reintentos en `integration/board-operations-recovery`. Ver [integración](docs/board-ui.md), [recuperación](docs/board-recovery.md) y [verificación remota](docs/validation/board-m12-rpc-smoke-diagnosis.json). La finalización local no requiere ejecutar otra migración ni desplegar el frontend.
 
 **Métricas activas (historial 11/11):** Cycle Time y Lead Time sobre una cohorte común de tickets terminados y urgencias mensuales por solicitante y estudio, solo para usuarios internos. Ver [reportes](docs/reports-ui.md) y [métricas](docs/business-metrics.md).
