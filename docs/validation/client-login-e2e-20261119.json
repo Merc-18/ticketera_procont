@@ -1,0 +1,157 @@
+{
+  "date": "2026-11-19",
+  "project_ref": "xsxdpaiivklqeudgqoqf",
+  "integration_branch": "integration/client-login-local",
+  "base_commit": "2e39953",
+  "real_ui_submission": true,
+  "external_notifications_detected": false,
+  "creation_triggers_reviewed": [
+    "guard_request_classification",
+    "log_request_event",
+    "request_number",
+    "request_project_consistency",
+    "require_public_requester_name",
+    "sync_request_status",
+    "touch_updated_at"
+  ],
+  "duplicate_markers_before_creation": 0,
+  "exactly_two_test_requests": true,
+  "old_requests_unchanged": true,
+  "notification_count_unchanged": true,
+  "tests": [
+    {
+      "company_id": "bd541fc6-6cce-4327-96f1-9d5420701c8d",
+      "description": "Ticket ficticio para validar autenticación Quipu, creación, número REQ, tablero y aislamiento de identidad. No corresponde a una incidencia real.",
+      "entry_context": "direct",
+      "events": [
+        {
+          "action": "submitted",
+          "to": null
+        },
+        {
+          "action": "status_changed",
+          "to": "received"
+        }
+      ],
+      "general_status": "received",
+      "id": "a56a394f-34b5-42d6-a8e4-8404888c9dfc",
+      "identity_id": "702af2e7-73b1-4cfa-a949-21e01e97a640",
+      "product": "Quipu",
+      "project_id": null,
+      "provider": "quipu",
+      "request_number": "REQ26-002",
+      "request_type": "Mejora",
+      "request_type_id": "faeb3e36-456f-4e39-94c7-8016395316ee",
+      "requester_name": "QA E2E Quipu",
+      "status": "pending",
+      "studio": "BUSINESS ACCOMPANYING SAC",
+      "studio_id": "15dd782b-ffff-4918-ae75-4f0b36540bd1",
+      "system_id": "e8f06d70-1ef6-45a1-a034-f5a7974ce303",
+      "title": "[QA-E2E-20261119-QUIPU] Prueba controlada de Ticketera.",
+      "urgent_requested": false
+    },
+    {
+      "company_id": "bd541fc6-6cce-4327-96f1-9d5420701c8d",
+      "description": "Ticket ficticio para validar autenticación QuipuFac, creación, número REQ, tablero y aislamiento de cuenta empresarial. No corresponde a una incidencia real.",
+      "entry_context": "direct",
+      "events": [
+        {
+          "action": "submitted",
+          "to": null
+        },
+        {
+          "action": "status_changed",
+          "to": "received"
+        }
+      ],
+      "general_status": "received",
+      "id": "855fc8a9-c014-428b-a01d-1bb823a0e29e",
+      "identity_id": "348c8c7b-7bfa-49ae-8382-4beb5f289426",
+      "product": "Quipu_Fac",
+      "project_id": null,
+      "provider": "quipufac",
+      "request_number": "REQ26-003",
+      "request_type": "Mejora",
+      "request_type_id": "faeb3e36-456f-4e39-94c7-8016395316ee",
+      "requester_name": "QA E2E QuipuFac",
+      "status": "pending",
+      "studio": "BUSINESS ACCOMPANYING SAC",
+      "studio_id": "15dd782b-ffff-4918-ae75-4f0b36540bd1",
+      "system_id": "d772aace-6e95-4b92-b259-fbf26e020ef4",
+      "title": "[QA-E2E-20261119-QUIPUFAC] Prueba controlada de Ticketera.",
+      "urgent_requested": false
+    }
+  ],
+  "browser": {
+    "tickets": {
+      "quipu": {
+        "http_status": 200,
+        "id": "a56a394f-34b5-42d6-a8e4-8404888c9dfc",
+        "request_number": "REQ26-002",
+        "title": "[QA-E2E-20261119-QUIPU] Prueba controlada de Ticketera.",
+        "product": "Quipu",
+        "type": "Mejora",
+        "urgent": false,
+        "attachments": 0,
+        "reused": false,
+        "my_tickets": true,
+        "own_detail": true,
+        "foreign_detail_denied": true,
+        "foreign_detail_http": 404,
+        "foreign_not_listed": true,
+        "session_preserved_after_foreign_access": true
+      },
+      "quipufac": {
+        "http_status": 200,
+        "id": "855fc8a9-c014-428b-a01d-1bb823a0e29e",
+        "request_number": "REQ26-003",
+        "title": "[QA-E2E-20261119-QUIPUFAC] Prueba controlada de Ticketera.",
+        "product": "Quipu_Fac",
+        "type": "Mejora",
+        "urgent": false,
+        "attachments": 0,
+        "reused": false,
+        "my_tickets": true,
+        "foreign_not_listed": true,
+        "own_detail": true,
+        "foreign_detail_denied": true,
+        "foreign_detail_http": 404,
+        "session_preserved_after_foreign_access": true
+      }
+    },
+    "login_posts": 3,
+    "submission_posts": 2,
+    "blocked_mutations": 0,
+    "public_search": {
+      "quipu": {
+        "http_status": 200,
+        "keys": [
+          "request_number",
+          "status"
+        ],
+        "status": "received",
+        "no_private_data_visible": true
+      },
+      "quipufac": {
+        "http_status": 200,
+        "keys": [
+          "request_number",
+          "status"
+        ],
+        "status": "received",
+        "no_private_data_visible": true
+      }
+    },
+    "stage": "waiting_internal_admin",
+    "quipufac_excludes_quipu": true
+  },
+  "automated_checks": {
+    "node_tests_passed": 49,
+    "launcher_tests_passed": 4,
+    "build": "passed"
+  },
+  "migrations_applied": false,
+  "provider_platforms_changed": false,
+  "credentials_or_tokens_saved": false,
+  "push_or_deploy": false
+}

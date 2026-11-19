@@ -5,6 +5,11 @@ La copia aislada está en `.supabase-local/workspaces/client-login-dev-20261119`
 El checkout original queda intacto: su `.git` está en solo lectura para el agente.
 Sin despliegues, push, merge, cambios de migraciones ni tickets reales.
 
+Actualización QA autorizada: la asociación RUC → estudio ya está resuelta y se
+crearon exactamente dos tickets ficticios mediante el formulario real. Esta es
+la evidencia vigente: [prueba E2E](client-login-e2e.md). Las comprobaciones de
+asociación pendiente descritas más abajo corresponden al cierre anterior.
+
 ## Contratos confirmados
 
 | Proveedor | POST de desarrollo | Validación | Identidad |
