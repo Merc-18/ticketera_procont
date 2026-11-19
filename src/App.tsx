@@ -15,6 +15,12 @@ import WorkloadView from './components/admin/WorkloadView'
 
 import PapeleraView from './components/admin/PapeleraView'
 import CatalogsPanel from './components/admin/CatalogsPanel'
+import ClientHome from './components/client/ClientHome'
+import ClientLaunch from './components/client/ClientLaunch'
+import ClientWorkspace from './components/client/ClientWorkspace'
+import ClientNewTicket from './components/client/ClientNewTicket'
+import MyTickets from './components/client/MyTickets'
+import ClientTicketDetail from './components/client/ClientTicketDetail'
 import NotificationBell from './components/notifications/NotificationBell'
 import BrandLogo from './components/ui/BrandLogo'
 import { usePendingCount } from './hooks/usePendingCount'
@@ -235,6 +241,14 @@ function App() {
         <Route path="/portal" element={<PublicLanding />} />
         <Route path="/request" element={<PublicRequestForm />} />
         <Route path="/tracking" element={<RequestTracking />} />
+        {/* Portal de clientes Quipu/QuipuFac (sesión propia, separada del personal interno). */}
+        <Route path="/cliente" element={<ClientHome />} />
+        <Route path="/cliente/acceso" element={<ClientLaunch />} />
+        <Route element={<ClientWorkspace />}>
+          <Route path="/cliente/nuevo" element={<ClientNewTicket />} />
+          <Route path="/cliente/tickets" element={<MyTickets />} />
+          <Route path="/cliente/tickets/:number" element={<ClientTicketDetail />} />
+        </Route>
         <Route
           path="/"
           element={
