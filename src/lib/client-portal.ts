@@ -75,6 +75,7 @@ export interface ClientDeliveryResult { uploaded: string[]; failed: string[]; er
 export type ClientPortalErrorCode =
   | 'pending_contract' | 'invalid_input' | 'invalid_credentials' | 'session_expired'
   | 'invalid_launch' | 'studio_mapping_required' | 'product_unavailable' | 'unavailable' | 'invalid_response'
+  | 'rate_limited'
 
 const MESSAGES: Record<ClientPortalErrorCode, string> = {
   pending_contract: 'El ingreso todavía no está habilitado. Intenta más tarde o comunícate con Procont.',
@@ -86,6 +87,7 @@ const MESSAGES: Record<ClientPortalErrorCode, string> = {
   product_unavailable: 'Ese producto no está disponible para este acceso.',
   unavailable: 'El servicio no está disponible en este momento. Intenta más tarde.',
   invalid_response: 'El servidor devolvió una respuesta no válida. Intenta nuevamente.',
+  rate_limited: 'Demasiados intentos de ingreso. Espera 15 minutos e inténtalo de nuevo.',
 }
 
 export class ClientPortalError extends Error {
@@ -192,6 +194,7 @@ const LOGIN_ERRORS: Record<string, ClientPortalErrorCode> = {
   invalid_credentials: 'invalid_credentials',
   invalid_credentials_input: 'invalid_credentials',
   provider_identity_mismatch: 'invalid_credentials',
+  rate_limited: 'rate_limited',
 }
 function loginError(e: unknown) {
   const c = code(e)
