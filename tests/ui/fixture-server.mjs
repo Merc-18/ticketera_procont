@@ -50,8 +50,23 @@ const TABLES = {
   areas: [], request_types: REQUEST_TYPES, studio_codes: [], projects: PROJECTS,
 }
 
+const MAX_ROWS = 1000   // equivalente a [api] max_rows de supabase/config.toml
+const uuidN = n => `00000000-0000-4000-8000-${String(n).padStart(12, '0')}`
+/** Escenarios grandes de get_ticket_performance (simulados) para probar la paginación. */
+export function performanceScenario({ notDone = 0, done = 0, doneFrom = 100000 } = {}) {
+  const make = (n, status) => ({ request_id: uuidN(n), request_number: `REQ26-${n}`, project_id: null, studio_id: null,
+    general_status: status, first_started_at: status === 'done' && n % 3 ? '2026-11-03T15:00:00Z' : null,
+    completed_at: status === 'done' ? '2026-11-06T15:00:00Z' : null,
+    cycle_time_seconds: status === 'done' && n % 3 ? 259200 : null, lead_time_seconds: status === 'done' ? 432000 : null,
+    metric_status: status === 'done' ? (n % 3 ? 'complete' : 'missing_start') : 'not_completed' })
+  return [...Array.from({ length: notDone }, (_, i) => make(i + 1, i % 2 ? 'in_progress' : 'received')),
+          ...Array.from({ length: done }, (_, i) => make(doneFrom + i, 'done'))]
+}
+
 export async function startFixtureServer() {
   const log = []
+  let performance = PERFORMANCE
+  let failPerformancePage = null, performanceCalls = 0
   const server = createServer(async (req, res) => {
     const url = new URL(req.url, 'http://fixture')
     let body = ''
@@ -84,7 +99,29 @@ export async function startFixtureServer() {
         const { p_request_number } = JSON.parse(body || '{}')
         return send(200, p_request_number === 'REQ26-9201' ? { request_number: 'REQ26-9201', status: 'in_progress' } : null)
       }
-      if (name === 'get_ticket_performance') return send(200, PERFORMANCE)
+      if (name === 'get_ticket_performance') {
+        // Semántica de PostgREST sobre una RPC que devuelve TABLE: filtros eq.*, order, offset/limit,
+        // max_rows y count=exact (Content-Range). Sin order, el orden no está garantizado.
+        performanceCalls++
+        if (failPerformancePage === performanceCalls) return send(500, { code: 'XX000', message: 'fallo simulado de página' })
+        let rows = performance
+        for (const [key, value] of url.searchParams) {
+          if (['order', 'offset', 'limit', 'select'].includes(key)) continue
+          if (value.startsWith('eq.')) rows = rows.filter(r => String(r[key]) === value.slice(3))
+        }
+        const total = rows.length
+        const order = url.searchParams.get('order')
+        if (order) {
+          const [column, dir] = order.split('.')
+          rows = [...rows].sort((a, b) => (a[column] < b[column] ? -1 : a[column] > b[column] ? 1 : 0) * (dir === 'desc' ? -1 : 1))
+        } else rows = [...rows].sort(() => Math.random() - 0.5)
+        const offset = Number(url.searchParams.get('offset') ?? 0)
+        const limit = Math.min(Number(url.searchParams.get('limit') ?? MAX_ROWS), MAX_ROWS)
+        const pageRows = rows.slice(offset, offset + limit)
+        const counted = /count=exact/.test(req.headers.prefer ?? '')
+        const range = pageRows.length ? `${offset}-${offset + pageRows.length - 1}` : '*'
+        return send(200, pageRows, { 'Content-Range': `${range}/${counted ? total : '*'}` })
+      }
       return send(404, { code: 'PGRST202', message: 'función simulada no disponible' })
     }
 
@@ -100,14 +137,17 @@ export async function startFixtureServer() {
         return id ? send(200, single ? row : row ? [row] : []) : send(200, Object.entries(STAFF).map(([email, s]) => ({ ...s, email, is_active: true })))
       }
       let rows = TABLES[table] ?? []
+      const maxed = rows => rows.slice(0, MAX_ROWS)
       const status = url.searchParams.get('status')
       if (status?.startsWith('eq.')) rows = rows.filter(r => r.status === status.slice(3))
       const ids = url.searchParams.get('id')
       if (ids?.startsWith('in.(')) { const set = new Set(ids.slice(4, -1).split(',')); rows = rows.filter(r => set.has(r.id)) }
+      rows = maxed(rows)
       return send(200, req.method === 'HEAD' ? undefined : rows, { 'Content-Range': `0-${Math.max(rows.length - 1, 0)}/${rows.length}` })
     }
     send(404, { message: 'ruta simulada inexistente' })
   })
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve))
-  return { url: `http://127.0.0.1:${server.address().port}`, log, close: () => new Promise(r => server.close(r)) }
+  return { url: `http://127.0.0.1:${server.address().port}`, log, close: () => new Promise(r => server.close(r)),
+    setPerformance(rows, { failOnPage = null } = {}) { performance = rows ?? PERFORMANCE; failPerformancePage = failOnPage; performanceCalls = 0 } }
 }

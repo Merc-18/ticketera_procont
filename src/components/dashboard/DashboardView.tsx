@@ -9,14 +9,12 @@ import { metrics } from '../../lib/api'
 import type { MetricResult, TimeAverages } from '../../lib/metrics-adapter'
 import { averageLabel } from '../../lib/metrics-adapter'
 import UrgencyStatsPanel from '../metrics/UrgencyStatsPanel'
-import { createTicketMetrics } from '../../../contracts/ticket-metrics-client.mjs'
-import type { TicketPerformance } from '../../../contracts/ticket-metrics-client.d.mts'
+import { buildCompletedExport, ExportError, type ExportClient } from '../../lib/ticket-export'
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
 const PRIORITY_ES: Record<string, string> = { urgent: 'Urgente', high: 'Alta', medium: 'Media', low: 'Baja' }
 const TYPE_ES: Record<string, string> = { development: 'Desarrollo', administrative: 'Administrativo (histórico)', dual: 'Dual (histórico)' }
-const ticketMetrics = createTicketMetrics(supabase)
 
 function downloadCSV(filename: string, headers: string[], rows: (string | number)[][]) {
   const csv = [headers, ...rows]
@@ -62,59 +60,20 @@ async function exportActiveCSV() {
   downloadCSV('proyectos-activos', headers, rows)
 }
 
-/** Estado de la métrica por ticket (get_ticket_performance), sin rellenar valores desconocidos. */
-const METRIC_STATUS_ES: Record<TicketPerformance['metric_status'], string> = {
-  complete: 'Completa',
-  missing_start: 'Sin inicio de trabajo registrado',
-  missing_completion: 'Sin finalización registrada',
-  invalid_timeline: 'Cronología inválida (excluida de promedios)',
-  not_completed: 'No terminado',
-}
-const days = (seconds: number | null) => seconds == null ? '' : (Number(seconds) / 86400).toFixed(1)
-const limaDate = (iso: string | null) => iso
-  ? new Date(iso).toLocaleDateString('en-CA', { timeZone: 'America/Lima' })
-  : ''
-
 /**
- * Tickets terminados con métricas POR TICKET del servidor (get_ticket_performance, M11):
- * inicio de trabajo y finalización registrados en request_events, Cycle y Lead Time calculados
- * en PostgreSQL. No usa updated_at ni registros SLA heredados; un dato ausente queda vacío y
- * su motivo se indica en «Estado de la métrica» (nunca se sustituye por cero).
+ * Tickets terminados con métricas POR TICKET del servidor (get_ticket_performance, M11). Filtro
+ * general_status=done en el servidor, orden por request_id y paginación completa verificada
+ * (ver lib/ticket-export.ts). Si una página falla no se descarga nada.
  */
 async function exportCompletedCSV() {
-  let performance: TicketPerformance[]
-  try { performance = await ticketMetrics.performance(null) }
-  catch (err) { toast.error(err instanceof Error ? err.message : 'No se pudieron consultar las métricas.'); return }
-
-  const done = performance.filter(t => t.general_status === 'done')
-  if (!done.length) { toast.info('No hay tickets terminados para exportar.'); return }
-
-  const ids = done.map(t => t.project_id).filter((id): id is string => !!id)
-  const { data: projects, error } = ids.length
-    ? await supabase.from('projects').select('id, title, priority, project_type, requests(requester_area)').in('id', ids)
-    : { data: [], error: null }
-  if (error) { toast.error('No se pudieron cargar los datos de los proyectos. Inténtalo nuevamente.'); return }
-  const byId = new Map((projects ?? []).map(p => [p.id as string, p]))
-
-  done.sort((a, b) => (b.completed_at ?? '').localeCompare(a.completed_at ?? ''))
-  const headers = ['Número', 'Proyecto', 'Área', 'Prioridad', 'Tipo', 'Inicio de trabajo', 'Finalización',
-    'Cycle Time (d)', 'Lead Time (d)', 'Estado de la métrica']
-  const rows = done.map(t => {
-    const p: any = t.project_id ? byId.get(t.project_id) : undefined
-    return [
-      t.request_number,
-      p?.title ?? '',
-      p?.requests?.requester_area ?? '',
-      p ? PRIORITY_ES[p.priority] ?? p.priority : '',
-      p ? TYPE_ES[p.project_type] ?? p.project_type : '',
-      limaDate(t.first_started_at),
-      limaDate(t.completed_at),
-      days(t.cycle_time_seconds),
-      days(t.lead_time_seconds),
-      METRIC_STATUS_ES[t.metric_status] ?? t.metric_status,
-    ]
-  })
-  downloadCSV('tickets-terminados', headers, rows)
+  let result
+  try { result = await buildCompletedExport(supabase as unknown as ExportClient) }
+  catch (err) {
+    toast.error(err instanceof ExportError ? err.message : 'No se pudo completar la exportación. No se descargó ningún archivo.')
+    return
+  }
+  if (!result) { toast.info('No hay tickets terminados para exportar.'); return }
+  downloadCSV('tickets-terminados', result.headers, result.rows)
 }
 
 // ── Reusable components ──────────────────────────────────────────────────────

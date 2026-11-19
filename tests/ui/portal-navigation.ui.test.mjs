@@ -11,7 +11,7 @@ import { existsSync, mkdirSync, readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { createServer as createViteServer } from 'vite'
 import { chromium } from 'playwright-core'
-import { startFixtureServer, STAFF, SIMULATED_PASSWORD } from './fixture-server.mjs'
+import { startFixtureServer, performanceScenario, STAFF, SIMULATED_PASSWORD } from './fixture-server.mjs'
 import { MOCK_RUC, MOCK_PASSWORD } from '../../src/dev/client-portal-mock.ts'
 
 const ROOT = fileURLToPath(new URL('../..', import.meta.url))
@@ -255,4 +255,73 @@ test('14. No se disparan alertas SLA heredadas (sin inserciones de notificacione
   const inserts = fixture.log.slice(before).filter(r => r.path === '/rest/v1/notifications' && r.method === 'POST')
   assert.deepEqual(inserts, [])
   await done(page)
+})
+
+// ── Exportación de terminados: paginación completa contra PostgREST simulado (max_rows=1000) ──
+async function exportCompleted(page) {
+  let download = null
+  page.on('download', d => { download = d })
+  await page.getByRole('button', { name: /Completados CSV/ }).click()
+  await page.getByRole('button', { name: /Completados CSV/ }).waitFor({ timeout: 30000 })   // termina «Exportando...»
+  await page.waitForTimeout(800)
+  if (!download) return { csv: null, text: await page.locator('body').textContent() }
+  const csv = readFileSync(await download.path(), 'utf8').replace(/^\uFEFF/, '').split('\n').map(l => JSON.parse(`[${l}]`))
+  return { csv, text: '' }
+}
+async function adminDashboard() {
+  const page = await open(viteMock.url, '/portal', VIEWPORTS.escritorio)
+  await staffLogin(page, 'admin')
+  return page
+}
+const rpcCalls = since => fixture.log.slice(since).filter(r => r.method === 'POST' && r.path.endsWith('/rpc/get_ticket_performance'))
+
+test('13A. Cero terminados (1.500 registros sin terminar): mensaje correcto y sin descarga', async () => {
+  fixture.setPerformance(performanceScenario({ notDone: 1500 }))
+  try {
+    const page = await adminDashboard()
+    const { csv, text } = await exportCompleted(page)
+    assert.equal(csv, null); assert.match(text, /No hay tickets terminados para exportar/)
+    await done(page)
+  } finally { fixture.setPerformance(null) }
+})
+
+test('13C/D. Más de 1.000 registros con terminados fuera de la primera página: no se omiten', async () => {
+  fixture.setPerformance(performanceScenario({ notDone: 1000, done: 2 }))
+  try {
+    const page = await adminDashboard()
+    const since = fixture.log.length
+    const { csv } = await exportCompleted(page)
+    assert.ok(csv, 'debe descargarse el CSV')
+    assert.deepEqual(csv.slice(1).map(r => r[0]).sort(), ['REQ26-100000', 'REQ26-100001'])
+    for (const call of rpcCalls(since)) assert.equal(new URL('http://x' + call.path + call.query).searchParams.get('general_status'), 'eq.done')
+    await done(page)
+  } finally { fixture.setPerformance(null) }
+})
+
+test('13E/G/H. 1.200 sin terminar + 2.500 terminados: tres páginas ordenadas, sin duplicados ni pérdidas; null intactos', async () => {
+  fixture.setPerformance(performanceScenario({ notDone: 1200, done: 2500 }))
+  try {
+    const page = await adminDashboard()
+    const since = fixture.log.length
+    const { csv } = await exportCompleted(page)
+    const numbers = csv.slice(1).map(r => r[0])
+    assert.equal(numbers.length, 2500); assert.equal(new Set(numbers).size, 2500)
+    const calls = rpcCalls(since).map(c => new URL('http://x' + c.path + c.query).searchParams)
+    assert.deepEqual(calls.map(q => [q.get('order'), q.get('offset'), q.get('limit')]),
+      [['request_id.asc', '0', '1000'], ['request_id.asc', '1000', '1000'], ['request_id.asc', '2000', '1000']])
+    const missingStart = csv.find(r => r[9] === 'Sin inicio de trabajo registrado')
+    assert.deepEqual([missingStart[5], missingStart[7]], ['', ''], 'inicio y Cycle desconocidos quedan vacíos')
+    await done(page)
+  } finally { fixture.setPerformance(null) }
+})
+
+test('13F. Error en la segunda página: no se descarga un CSV parcial y se informa el error', async () => {
+  fixture.setPerformance(performanceScenario({ done: 2500 }), { failOnPage: 2 })
+  try {
+    const page = await adminDashboard()
+    const { csv, text } = await exportCompleted(page)
+    assert.equal(csv, null, 'sin descarga parcial')
+    assert.match(text, /página 2/)
+    await done(page)
+  } finally { fixture.setPerformance(null) }
 })
