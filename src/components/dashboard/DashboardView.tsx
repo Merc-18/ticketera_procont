@@ -9,22 +9,40 @@ import { metrics } from '../../lib/api'
 import type { MetricResult, TimeAverages } from '../../lib/metrics-adapter'
 import { averageLabel } from '../../lib/metrics-adapter'
 import UrgencyStatsPanel from '../metrics/UrgencyStatsPanel'
+import { createTicketMetrics } from '../../../contracts/ticket-metrics-client.mjs'
+import type { TicketPerformance } from '../../../contracts/ticket-metrics-client.d.mts'
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
+const PRIORITY_ES: Record<string, string> = { urgent: 'Urgente', high: 'Alta', medium: 'Media', low: 'Baja' }
+const TYPE_ES: Record<string, string> = { development: 'Desarrollo', administrative: 'Administrativo (histórico)', dual: 'Dual (histórico)' }
+const ticketMetrics = createTicketMetrics(supabase)
+
+function downloadCSV(filename: string, headers: string[], rows: (string | number)[][]) {
+  const csv = [headers, ...rows]
+    .map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(','))
+    .join('\n')
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' })
+  const url  = URL.createObjectURL(blob)
+  const a    = document.createElement('a')
+  a.href     = url
+  a.download = `${filename}-${new Date().toISOString().slice(0, 10)}.csv`
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
+/** Proyectos activos. Sin columnas SLA heredadas: solo la fecha límite ordinaria (due_date). */
 async function exportActiveCSV() {
-  const { data: projects } = await supabase
+  const { data: projects, error } = await supabase
     .from('projects')
-    .select('title, priority, project_type, status, is_blocked, due_date, sla_target_date, created_at, requests(requester_area), project_flows(flow_type, current_phase, assigned_to)')
+    .select('title, priority, project_type, status, is_blocked, due_date, created_at, requests(requester_area), project_flows(flow_type, current_phase, assigned_to)')
     .eq('status', 'active')
     .order('created_at', { ascending: false })
 
+  if (error) { toast.error('No se pudieron cargar los proyectos activos. Inténtalo nuevamente.'); return }
   if (!projects?.length) { toast.info('No hay proyectos activos para exportar.'); return }
 
-  const PRIORITY_ES: Record<string, string> = { urgent: 'Urgente', high: 'Alta', medium: 'Media', low: 'Baja' }
-  const TYPE_ES: Record<string, string> = { development: 'Desarrollo', administrative: 'Administrativo', dual: 'Dual' }
-
-  const headers = ['Proyecto', 'Área', 'Prioridad', 'Tipo', 'Bloqueado', 'Fase Dev', 'Fase Admin', 'SLA Vencimiento', 'Fecha creación']
+  const headers = ['Proyecto', 'Área', 'Prioridad', 'Tipo', 'Bloqueado', 'Fase Dev', 'Fase Admin (histórico)', 'Fecha límite', 'Fecha creación']
   const rows = projects.map(p => {
     const flows: any[] = (p as any).project_flows ?? []
     const devFlow  = flows.find((f: any) => f.flow_type === 'development')
@@ -37,74 +55,66 @@ async function exportActiveCSV() {
       p.is_blocked ? 'Sí' : 'No',
       devFlow?.current_phase ?? '',
       admFlow?.current_phase ?? '',
-      (p as any).sla_target_date ?? '',
+      p.due_date ?? '',
       (p.created_at as string)?.slice(0, 10) ?? '',
     ]
   })
-
-  const csv = [headers, ...rows]
-    .map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(','))
-    .join('\n')
-
-  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' })
-  const url  = URL.createObjectURL(blob)
-  const a    = document.createElement('a')
-  a.href     = url
-  a.download = `proyectos-activos-${new Date().toISOString().slice(0, 10)}.csv`
-  a.click()
-  URL.revokeObjectURL(url)
+  downloadCSV('proyectos-activos', headers, rows)
 }
 
+/** Estado de la métrica por ticket (get_ticket_performance), sin rellenar valores desconocidos. */
+const METRIC_STATUS_ES: Record<TicketPerformance['metric_status'], string> = {
+  complete: 'Completa',
+  missing_start: 'Sin inicio de trabajo registrado',
+  missing_completion: 'Sin finalización registrada',
+  invalid_timeline: 'Cronología inválida (excluida de promedios)',
+  not_completed: 'No terminado',
+}
+const days = (seconds: number | null) => seconds == null ? '' : (Number(seconds) / 86400).toFixed(1)
+const limaDate = (iso: string | null) => iso
+  ? new Date(iso).toLocaleDateString('en-CA', { timeZone: 'America/Lima' })
+  : ''
+
+/**
+ * Tickets terminados con métricas POR TICKET del servidor (get_ticket_performance, M11):
+ * inicio de trabajo y finalización registrados en request_events, Cycle y Lead Time calculados
+ * en PostgreSQL. No usa updated_at ni registros SLA heredados; un dato ausente queda vacío y
+ * su motivo se indica en «Estado de la métrica» (nunca se sustituye por cero).
+ */
 async function exportCompletedCSV() {
-  const { data: projects } = await supabase
-    .from('projects')
-    .select('id, title, priority, project_type, start_date, updated_at, requests(requester_area)')
-    .eq('status', 'completed')
-    .order('updated_at', { ascending: false })
+  let performance: TicketPerformance[]
+  try { performance = await ticketMetrics.performance(null) }
+  catch (err) { toast.error(err instanceof Error ? err.message : 'No se pudieron consultar las métricas.'); return }
 
-  if (!projects?.length) { toast.info('No hay proyectos completados para exportar.'); return }
+  const done = performance.filter(t => t.general_status === 'done')
+  if (!done.length) { toast.info('No hay tickets terminados para exportar.'); return }
 
-  const ids = projects.map(p => p.id)
-  const { data: slaLogs } = await supabase
-    .from('activity_logs')
-    .select('project_id, details')
-    .eq('action', 'sla_completed')
-    .in('project_id', ids)
+  const ids = done.map(t => t.project_id).filter((id): id is string => !!id)
+  const { data: projects, error } = ids.length
+    ? await supabase.from('projects').select('id, title, priority, project_type, requests(requester_area)').in('id', ids)
+    : { data: [], error: null }
+  if (error) { toast.error('No se pudieron cargar los datos de los proyectos. Inténtalo nuevamente.'); return }
+  const byId = new Map((projects ?? []).map(p => [p.id as string, p]))
 
-  const slaMap: Record<string, any> = {}
-  for (const l of slaLogs ?? []) slaMap[l.project_id] = l.details
-
-  const PRIORITY_ES: Record<string, string> = { urgent: 'Urgente', high: 'Alta', medium: 'Media', low: 'Baja' }
-  const TYPE_ES: Record<string, string> = { development: 'Desarrollo', administrative: 'Administrativo', dual: 'Dual' }
-
-  const headers = ['Proyecto', 'Área', 'Prioridad', 'Tipo', 'Fecha Inicio', 'Fecha Completado', 'Cycle Time (d)', 'Lead Time (d)', 'SLA Vencimiento', 'A Tiempo']
-  const rows = projects.map(p => {
-    const sla = slaMap[p.id] ?? {}
+  done.sort((a, b) => (b.completed_at ?? '').localeCompare(a.completed_at ?? ''))
+  const headers = ['Número', 'Proyecto', 'Área', 'Prioridad', 'Tipo', 'Inicio de trabajo', 'Finalización',
+    'Cycle Time (d)', 'Lead Time (d)', 'Estado de la métrica']
+  const rows = done.map(t => {
+    const p: any = t.project_id ? byId.get(t.project_id) : undefined
     return [
-      p.title,
-      (p as any).requests?.requester_area ?? '',
-      PRIORITY_ES[p.priority] ?? p.priority,
-      TYPE_ES[p.project_type] ?? p.project_type,
-      p.start_date ?? '',
-      (p.updated_at as string)?.slice(0, 10) ?? '',
-      sla.cycle_time_days ?? sla.days_elapsed ?? '',
-      sla.lead_time_days ?? '',
-      sla.due_date ?? '',
-      sla.on_time === true ? 'Sí' : sla.on_time === false ? 'No' : '',
+      t.request_number,
+      p?.title ?? '',
+      p?.requests?.requester_area ?? '',
+      p ? PRIORITY_ES[p.priority] ?? p.priority : '',
+      p ? TYPE_ES[p.project_type] ?? p.project_type : '',
+      limaDate(t.first_started_at),
+      limaDate(t.completed_at),
+      days(t.cycle_time_seconds),
+      days(t.lead_time_seconds),
+      METRIC_STATUS_ES[t.metric_status] ?? t.metric_status,
     ]
   })
-
-  const csv = [headers, ...rows]
-    .map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(','))
-    .join('\n')
-
-  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' })
-  const url  = URL.createObjectURL(blob)
-  const a    = document.createElement('a')
-  a.href     = url
-  a.download = `proyectos-completados-${new Date().toISOString().slice(0, 10)}.csv`
-  a.click()
-  URL.revokeObjectURL(url)
+  downloadCSV('tickets-terminados', headers, rows)
 }
 
 // ── Reusable components ──────────────────────────────────────────────────────

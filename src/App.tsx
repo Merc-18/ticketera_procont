@@ -6,7 +6,6 @@ import ProtectedRoute from './components/auth/ProtectedRoute'
 import KanbanBoard from './components/boards/KanbanBoard'
 import BoardSelector from './components/boards/BoardSelector'
 import DashboardView from './components/dashboard/DashboardView'
-import PublicRequestForm from './components/requests/PublicRequestForm'
 import RequestTracking from './components/requests/RequestTracking'
 import PublicLanding from './components/requests/PublicLanding'
 import RequestInbox from './components/requests/RequestInbox'
@@ -24,7 +23,6 @@ import ClientTicketDetail from './components/client/ClientTicketDetail'
 import NotificationBell from './components/notifications/NotificationBell'
 import BrandLogo from './components/ui/BrandLogo'
 import { usePendingCount } from './hooks/usePendingCount'
-import { useSlaWarnings } from './hooks/useSlaWarnings'
 import { errorMessage } from './lib/supabase-errors'
 import { toast } from './lib/toast'
 
@@ -56,7 +54,6 @@ function Dashboard() {
   const isSuperAdmin = user?.role === 'superadmin'
   const canSeeEquipo = isAdminOrSuperAdmin || user?.role === 'developer'
   const pendingCount = usePendingCount(isAdminOrSuperAdmin)
-  useSlaWarnings()
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -239,7 +236,8 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginForm />} />
         <Route path="/portal" element={<PublicLanding />} />
-        <Route path="/request" element={<PublicRequestForm />} />
+        {/* Recorrido anónimo retirado: Nueva Solicitud exige ingreso Quipu/QuipuFac. */}
+        <Route path="/request" element={<Navigate to="/cliente" replace />} />
         <Route path="/tracking" element={<RequestTracking />} />
         {/* Portal de clientes Quipu/QuipuFac (sesión propia, separada del personal interno). */}
         <Route path="/cliente" element={<ClientHome />} />

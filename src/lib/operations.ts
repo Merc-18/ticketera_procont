@@ -16,11 +16,6 @@ export interface PublicTracking {
   request_number: string
   status: GeneralStatus
 }
-/** Datos que envía el cliente (formulario público definitivo). */
-export interface ClientRequestInput {
-  requester_name: string; studio_id: string; system_id: string; request_type_id: string
-  title: string; description: string; urgent_requested: boolean
-}
 /** Clasificación interna fijada por el validador. */
 export interface InternalClassification {
   studio_code_id: string; subsystem_id?: string | null; area_id?: string | null; subarea_id?: string | null
@@ -66,18 +61,7 @@ export function createOperations(client: RpcClient) {
         return receipt
       })
     },
-    async submitClientRequest(data: ClientRequestInput, attempt: RpcAttempt) {
-      const payload = { requester_name: data.requester_name, studio_id: data.studio_id, system_id: data.system_id,
-        request_type_id: data.request_type_id, title: data.title.trim(), description: data.description.trim(),
-        urgent_requested: data.urgent_requested }
-      return attempt.run('submit_client_request', { p_payload: payload }, async args => {
-        const receipt = await value<SubmissionReceipt>('submit_client_request', args)
-        if (!uuidPattern.test(receipt.id) || !uuidPattern.test(receipt.tracking_token) || !/^REQ\d{2}-\d{3,}$/.test(receipt.request_number)) {
-          throw new Error('No se recibió una constancia válida. Reintenta sin cambiar los datos de la solicitud.')
-        }
-        return receipt
-      })
-    },
+    // Sin creación anónima desde el navegador: los clientes usan client_submit_request (client-portal.ts).
     classifyRequest: (id: string, c: InternalClassification) => command('classify_request', { p_request_id: id,
       p_classification: { studio_code_id: c.studio_code_id, subsystem_id: c.subsystem_id || null,
         area_id: c.area_id || null, subarea_id: c.subarea_id || null } }),

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import BrandLogo from '../ui/BrandLogo'
 import MockBanner from './MockBanner'
 import { BRAND } from '../../theme/brand'
@@ -24,6 +24,9 @@ const field = 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 f
 export default function ClientHome() {
   const navigate = useNavigate()
   const notice = (useLocation().state as { notice?: string } | null)?.notice ?? null
+  // Destino tras el ingreso: Nuevo ticket (por defecto) o Mis tickets (lista blanca, nunca una URL libre).
+  const goToTickets = useSearchParams()[0].get('ir') === 'tickets'
+  const destination = goToTickets ? '/cliente/tickets' : '/cliente/nuevo'
   const [type, setType] = useState<AuthType | null>(null)
   const [hasSession] = useState(() => clientSessionStore.get() !== null)
 
@@ -31,13 +34,20 @@ export default function ClientHome() {
     <div className="min-h-screen bg-gradient-to-br from-brand-700 via-brand-800 to-brand-950 flex flex-col">
       <MockBanner />
       <nav className="w-full px-4 sm:px-6 py-4 flex items-center justify-between gap-4 border-b border-white/10">
-        <BrandLogo tone="light" size={44} />
+        <div className="flex items-center gap-4 min-w-0">
+          <BrandLogo tone="light" size={44} />
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+        <Link to="/portal" className="text-sm font-medium text-white/80 hover:text-white px-3 py-2 rounded-lg hover:bg-white/10 transition">
+          ← Inicio
+        </Link>
         {hasSession && CLIENT_PORTAL_LOGIN_ENABLED && (
-          <button onClick={() => navigate('/cliente/nuevo')}
+          <button onClick={() => navigate(destination)}
             className="shrink-0 bg-white/10 text-white border border-white/30 px-3 py-2 rounded-lg text-sm font-medium hover:bg-white/20 transition">
             Ir a mi espacio →
           </button>
         )}
+        </div>
       </nav>
 
       <main className="flex-1 px-4 py-10 sm:py-14">
@@ -45,16 +55,19 @@ export default function ClientHome() {
           <div className="text-center mb-10">
             <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-3">¿Qué producto utilizas para ingresar?</h1>
             <div className="mx-auto mb-4 h-1 w-16 rounded-full bg-accent-400" aria-hidden="true" />
-            <p className="text-brand-100">Elige cómo inicias sesión. Luego podrás registrar y consultar tus tickets.</p>
+            <p className="text-brand-100">
+              {goToTickets ? 'Ingresa para consultar tus tickets.' : 'Elige cómo inicias sesión. Luego podrás registrar y consultar tus tickets.'}
+            </p>
           </div>
 
           {notice && (
             <p role="status" className="mb-6 bg-accent-50 border border-accent-300 text-gray-800 px-4 py-3 rounded-lg text-sm text-center">{notice}</p>
           )}
           {!CLIENT_PORTAL_LOGIN_ENABLED && (
-            <p role="status" className="mb-6 bg-white rounded-lg p-4 text-center text-gray-800">
-              El ingreso todavía no está habilitado. El seguimiento por número REQ sigue disponible.
-            </p>
+            <div role="status" className="mb-6 bg-white rounded-lg p-4 text-center text-gray-800 border-l-4 border-accent-400">
+              <p className="font-semibold">El ingreso de clientes todavía no está habilitado.</p>
+              <p className="text-sm text-gray-600 mt-1">Por ahora no es posible registrar ni consultar tickets con Quipu o QuipuFac. El seguimiento por número REQ sigue disponible más abajo.</p>
+            </div>
           )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6" role="group" aria-label="Tipo de ingreso">
@@ -63,9 +76,11 @@ export default function ClientHome() {
               const dimmed = type !== null && !selected
               return (
                 <button key={card.type} type="button" disabled={!CLIENT_PORTAL_LOGIN_ENABLED} aria-pressed={selected} onClick={() => setType(card.type)}
-                  className={`group relative bg-white rounded-2xl p-6 sm:p-8 text-left shadow-xl transition-all duration-200 border-b-4
-                    ${selected ? 'border-accent-400 ring-4 ring-accent-400/60 -translate-y-1' : 'border-transparent hover:border-accent-400 hover:-translate-y-1 hover:shadow-2xl'}
-                    ${dimmed ? 'opacity-60 hover:opacity-100' : ''}`}>
+                  className={`group relative rounded-2xl p-6 sm:p-8 text-left transition-all duration-200 border-b-4
+                    ${!CLIENT_PORTAL_LOGIN_ENABLED
+                      ? 'bg-white/60 border-transparent shadow-none cursor-not-allowed grayscale opacity-70'
+                      : `bg-white shadow-xl ${selected ? 'border-accent-400 ring-4 ring-accent-400/60 -translate-y-1' : 'border-transparent hover:border-accent-400 hover:-translate-y-1 hover:shadow-2xl'}
+                    ${dimmed ? 'opacity-60 hover:opacity-100' : ''}`}`}>
                   <div className="flex items-start gap-4">
                     <span className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-xl text-3xl ${selected ? 'bg-accent-100' : 'bg-brand-50'}`} aria-hidden="true">
                       {card.icon}
@@ -79,13 +94,16 @@ export default function ClientHome() {
                   {selected && (
                     <span className="absolute top-4 right-4 text-xs font-bold bg-accent-400 text-gray-900 px-2 py-0.5 rounded-full">Seleccionado</span>
                   )}
+                  {!CLIENT_PORTAL_LOGIN_ENABLED && (
+                    <span className="absolute top-4 right-4 text-xs font-bold bg-gray-200 text-gray-700 px-2 py-0.5 rounded-full">No disponible</span>
+                  )}
                 </button>
               )
             })}
           </div>
 
           {type && CLIENT_PORTAL_LOGIN_ENABLED && <LoginForm key={type} type={type} onChange={() => setType(null)}
-            onSuccess={() => navigate('/cliente/nuevo')} />}
+            onSuccess={() => navigate(destination)} />}
 
           <PublicSearch />
 

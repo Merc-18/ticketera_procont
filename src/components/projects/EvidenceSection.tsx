@@ -15,7 +15,12 @@ export default function EvidenceSection({ projectId, requestId, editable, onChan
   const [busy, setBusy] = useState(false)
   const [resetKey, setResetKey] = useState(0)
 
-  const load = async () => { setFiles(requestId ? await listRequestAttachments(requestId) : []) }
+  const [loadError, setLoadError] = useState<string | null>(null)
+  const load = async () => {
+    setLoadError(null)
+    try { setFiles(requestId ? await listRequestAttachments(requestId) : []) }
+    catch (err) { setFiles(null); setLoadError(err instanceof Error ? err.message : 'No se pudieron cargar las evidencias.') }
+  }
   useEffect(() => { void load() }, [requestId])
 
   const upload = async () => {
@@ -43,7 +48,8 @@ export default function EvidenceSection({ projectId, requestId, editable, onChan
     <div className="space-y-4">
       <div>
         <h3 className="font-semibold text-gray-900 mb-2">Evidencias del ticket</h3>
-        {files === null ? <p className="text-sm text-gray-400">Cargando…</p> : files.length === 0
+        {loadError ? <p role="alert" className="text-sm text-red-700">{loadError}</p>
+          : files === null ? <p className="text-sm text-gray-400">Cargando…</p> : files.length === 0
           ? <p className="text-sm text-gray-400">Sin evidencias adjuntas.</p>
           : (
             <ul className="space-y-1">
