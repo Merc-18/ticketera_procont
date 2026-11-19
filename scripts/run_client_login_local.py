@@ -100,6 +100,10 @@ def run(args):
                 'PROCONT_ALLOWED_ORIGINS': 'http://localhost:5173',
                 'QUIPU_AUTH_URL': 'https://api-gestion-test.quipufac.com/api/users/auth',
                 'QUIPUFAC_AUTH_URL': 'https://dev.quipufac.com/auth/login',
+                # Opt-in explícito y solo local a las API de desarrollo y sus contratos revisados.
+                'CLIENT_LOGIN_ALLOW_DEVELOPMENT_PROVIDERS': '1',
+                'QUIPU_AUTH_RESPONSE_CONTRACT': 'development',
+                'QUIPUFAC_AUTH_RESPONSE_CONTRACT': 'development',
             }
             if Path('/tmp/procont-m13-deno').is_dir(): server_env['DENO_DIR'] = '/tmp/procont-m13-deno'
             children.append(subprocess.Popen(command, cwd=ROOT, env=server_env, start_new_session=True))
