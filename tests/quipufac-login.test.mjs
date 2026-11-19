@@ -89,6 +89,7 @@ test('QuipuFac manifest comparison is restricted to RUC; Quipu keeps its exact-u
   assert.deepEqual(quipuDevelopmentContract, {
     version: 1, provider: 'quipu', verifiedReference: 'docs/validation/client-login-dev-api.json#quipu',
     success: { path: ['username'], equalsInput: 'username' }, tokenPath: ['token'], allowUsernameFallback: true,
+    failure: { statuses: [400] },
   })
 })
 

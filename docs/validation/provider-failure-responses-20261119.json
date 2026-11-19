@@ -1,0 +1,16 @@
+{
+  "date": "2026-11-19",
+  "environment": "development (pruebas locales; no producción)",
+  "purpose": "Respuestas reales de credenciales rechazadas, antes no verificadas (real_error_fields_confirmed=false)",
+  "method": "Un único POST por proveedor con la cuenta QA autorizada y una contraseña deliberadamente incorrecta; solo se registran estado HTTP y nombres de campos de primer nivel",
+  "quipu": { "url": "https://api-gestion-test.quipufac.com/api/users/auth", "http_status": 400,
+    "body": "cadena JSON (mensaje); sin token", "token_present": false },
+  "quipufac": { "url": "https://dev.quipufac.com/auth/login", "http_status": 500,
+    "body_fields": ["success", "message"], "success_value": false, "token_present": false },
+  "adapter_rule": {
+    "quipu": "failure.statuses=[400] → invalid_credentials",
+    "quipufac": "failure.statuses=[500] y success === false → invalid_credentials; cualquier otro 500 → provider_unavailable"
+  },
+  "credentials_printed_or_saved": false,
+  "values_printed_or_saved": false
+}

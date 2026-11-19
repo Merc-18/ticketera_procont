@@ -10,6 +10,8 @@ export const quipuDevelopmentContract = {
   success: { path: ['username'], equalsInput: 'username' },
   tokenPath: ['token'],
   allowUsernameFallback: true,
+  // Verified 19/11/2026 (docs/validation/provider-failure-responses-20261119.json): wrong password → 400.
+  failure: { statuses: [400] },
 }
 
 export const quipufacDevelopmentContract = {
@@ -20,4 +22,7 @@ export const quipufacDevelopmentContract = {
   tokenPath: ['token'],
   rucPath: ['businessRuc'],
   namePath: ['businessName'],
+  // Verified 19/11/2026: wrong password → 500 with {success:false, message}. A 500 without that
+  // marker remains an outage (provider_unavailable).
+  failure: { statuses: [500], path: ['success'], equals: false },
 }

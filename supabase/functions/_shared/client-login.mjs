@@ -66,7 +66,26 @@ export function validateProviderContract(contract, provider) {
   if (provider === 'quipu' && !contract.subjectPath && contract.allowUsernameFallback !== true) {
     reject(503, 'provider_contract_pending')
   }
+  // Optional verified failure rule: non-2xx statuses that mean rejected credentials (not outage).
+  if (contract.failure !== undefined) {
+    const f = contract.failure
+    if (!object(f) || !Array.isArray(f.statuses) || f.statuses.length < 1 || f.statuses.length > 10 ||
+        f.statuses.some(s => !Number.isInteger(s) || s < 400 || s > 599 || s === 401 || s === 403)) reject(503, 'provider_contract_pending')
+    if (f.path !== undefined) {
+      pathValue({}, f.path)
+      if (!['boolean', 'string', 'number'].includes(typeof f.equals)) reject(503, 'provider_contract_pending')
+    } else if (f.equals !== undefined) reject(503, 'provider_contract_pending')
+  }
   return contract
+}
+
+/** True only when the contract declares this non-2xx response as a credential rejection. */
+async function declaredCredentialFailure(contract, upstream) {
+  const f = contract.failure
+  if (!f || !f.statuses.includes(upstream.status)) return false
+  if (f.path === undefined) return true
+  if (!upstream.headers.get('content-type')?.toLowerCase().includes('application/json')) return false
+  try { return pathValue(await jsonBody(upstream.body, 65536), f.path) === f.equals } catch { return false }
 }
 
 export function adaptProviderResponse(provider, body, input, contract) {
@@ -208,7 +227,10 @@ export function clientLoginHandler({ client, providerUrls = {}, providerContract
         const upstream = await fetchImpl(url.toString(), { method: 'POST', redirect: 'error', signal: controller.signal,
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(body) })
         if (upstream.status === 401 || upstream.status === 403) reject(401, 'invalid_credentials')
-        if (!upstream.ok) reject(502, 'provider_unavailable')
+        if (!upstream.ok) {
+          if (await declaredCredentialFailure(contract, upstream)) reject(401, 'invalid_credentials')
+          reject(502, 'provider_unavailable')
+        }
         if (!upstream.headers.get('content-type')?.toLowerCase().includes('application/json')) reject(502, 'provider_response_invalid')
         let response
         try { response = await jsonBody(upstream.body, 65536) }
