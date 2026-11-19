@@ -215,3 +215,81 @@ despliegue autorizado y comprobar una sesión real desde la interfaz. La asociac
 explícitamente cuando proceda. La aplicación de M13 ya está verificada. La integración frontend se conserva desde
 `19a10a8`, con la corrección puntual de errores en `8fd637e`; el cierre de Git permite
 fast-forward sin reescribir los commits de ambos agentes. No se realizó despliegue.
+
+## M15 preparada: cierre de creación heredada — 19/11/2026
+
+Base `main@44cebebca91c0424762c3dd640c0a1f8ae4deaff`; rama
+`fix/ticketera-security-m15`, worktree independiente. El checkout compartido y
+los worktrees anteriores no se modifican. M1–M14 conservan sus bytes e historial.
+Migración nueva: `20261119000300_security_request_creation.sql`.
+**Solo implementación y pruebas locales; M15 no está aplicada en Supabase.**
+
+La auditoría de esa fecha confirmó en lectura que `submit_client_request(jsonb,uuid)`
+seguía ejecutable por anon/authenticated sin sesión Quipu/QuipuFac. M15 retira
+EXECUTE de PUBLIC, anon, authenticated y service_role. La función propietaria de
+M13 `client_submit_request` conserva su llamada interna SECURITY DEFINER; las
+firmas, propietarios y cuerpos M13 no cambian. No se añaden sesiones, roles ni
+sistemas de autenticación alternativos.
+
+Consumidores revisados antes de elegir los roles:
+
+- `PlannerImportModal` → `useRequests.createRequest` → `operations.submitRequest`
+  → `submit_request`. Planner conserva su interfaz admin/superadmin.
+- `operations.submitRequest(..., classification)` selecciona
+  `submit_classified_request`; se preserva ese contrato del adaptador aunque no
+  se encontró una llamada activa de interfaz que proporcione la clasificación.
+- `PublicRequestForm` sin adaptador utiliza `submit_client_request`; `/request`
+  sigue visible, pero su envío anónimo queda denegado por PostgreSQL tras M15.
+  El formulario legítimo de `/cliente/nuevo` usa `client_submit_request` y continúa.
+
+Las dos RPC internas usan ahora `app_private.require_role` con los mismos
+editores activos de `canEdit`: superadmin/admin/developer. La comprobación es
+la primera instrucción, antes de validar payload o consultar idempotencia.
+Viewer, perfil inactivo, perfil inexistente o UID ausente reciben 42501.
+Las funciones mantienen EXECUTE solo para authenticated y su propietario;
+authenticated por sí solo no autoriza. No se amplían permisos de Planner.
+
+Precisión del diagnóstico reproducido en PostgreSQL: viewer e inactivo sí
+podían crear y recuperar recibos con las RPC antiguas; un usuario Auth sin
+perfil fallaba al insertar por la FK de actor de auditoría (23503), no por una
+verificación explícita. M15 lo rechaza antes, con 42501. La desactivación o
+degradación posterior también impide recuperar recibos antes autorizados.
+
+Regresión ejecutable, sin red ni credenciales, con PostgreSQL 17:
+
+```bash
+python3 -B supabase/tests/security_request_creation_local.py --pg-bin /ruta/postgresql/17/bin --runtime-lib /ruta/runtime/lib --baseline-migrations 13
+python3 -B supabase/tests/security_request_creation_local.py --pg-bin /ruta/postgresql/17/bin --runtime-lib /ruta/runtime/lib --baseline-migrations 14
+node --experimental-strip-types --test tests/consumers.test.mjs tests/client-portal.test.mjs tests/client-login.test.mjs tests/quipufac-login.test.mjs
+npm run build
+```
+
+Resultados: 18/18 grupos SQL por cada base, 69/69 pruebas Node y build correcto.
+Las pruebas SQL ejecutan los cuerpos reales y permisos efectivos de PostgreSQL,
+incluido un grant previo a PUBLIC para detectar permisos heredados. Auth y Storage
+son stubs locales; los proveedores Node son simulados. No son un E2E remoto.
+Las bases son desechables bajo `/tmp`, con socket Unix y TCP deshabilitado, y se
+detienen y eliminan al finalizar. Las suites históricas no se vuelven a ejecutar.
+
+Se comparan todas las filas antes/después de M15: 34 tablas con base M1–M13 y
+35 con M1–M14, incluyendo Auth y Storage ficticios. Solo cambian los ACL de las
+tres RPC y las dos comprobaciones de autorización. También se verifican creación
+M13 de ambos proveedores y contextos, productos, sesiones inválidas/vencidas/revocadas,
+reintentos concurrentes con una única fila, aislamiento y seguimiento público mínimo.
+Evidencias: [base M13](validation/security-request-creation-m13-baseline-local.json)
+y [base M14](validation/security-request-creation-local.json), con hashes M1–M15,
+permisos efectivos y resultados sin credenciales ni tokens.
+
+Pendientes registrados de la auditoría, sin activarlos en esta entrega:
+
+- M14 pendiente en remoto y `client-login` todavía no desplegada.
+- El CORS de `admin-users` rechazó el dominio Vercel publicado; falta su ajuste.
+- Site URL/redirects de Auth e invitaciones siguen pendientes de configuración.
+- La asociación RUC → estudio es correcta actualmente, pero el resolvedor no
+  revalida el RUC si luego cambia el del estudio explícitamente asociado.
+- Revisión cruzada, eventual aplicación remota y E2E posterior requieren otra
+  autorización. No se ejecutó SQL remoto, no hubo tickets remotos ni despliegues.
+
+M15 no depende técnicamente de M14, como demuestra la base M13 aislada; esto no
+autoriza alterar el orden del historial remoto. No cambiar M1–M14 ni ejecutar
+`db push` como parte de esta revisión: podría aplicar también M14 pendiente.
