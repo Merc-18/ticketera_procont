@@ -4,6 +4,26 @@ Base `940191a`. Adaptador de autenticación, conexión local de esa función,
 pruebas y documentación asociada.
 Sin despliegue, push, merge, cambios de migraciones ni tickets reales.
 
+## Nueva dirección QuipuFac — comprobación 11:39 Perú
+
+`https://dev.quipufac.com/` resuelve desde un terminal normal de Ubuntu WSL y
+responde GET HTTP 200 con TLS verificado y `Content-Type: text/html`. La página
+se presenta como «API QUIPUFAC (Modo Pruebas)»; es una bienvenida HTML sin enlaces,
+scripts, formularios ni rutas documentadas. HEAD a la misma raíz devuelve 405 y
+`Allow: GET`; ese resultado solo describe la raíz, no una ruta de autenticación.
+
+No se confirmó ningún endpoint de login. No se trasladó `/auth/login` al nuevo
+dominio ni se probaron rutas alternativas. Cero autenticaciones y cero entradas
+de contraseña en esta comprobación. El contrato y la URL de Quipu permanecen intactos;
+el adaptador de QuipuFac sigue cerrado hasta confirmar su endpoint y respuesta.
+
+**Único bloqueo de esta comprobación:** solicitar al responsable la **URL HTTPS
+completa del endpoint POST de autenticación de QuipuFac en desarrollo**, con ruta
+y prefijo exactos, respaldada por documentación o un ejemplo confirmado para
+`{username: RUC, password}`. El DNS de la nueva dirección ya funciona.
+
+Evidencia: [quipufac-dev-discovery.json](validation/quipufac-dev-discovery.json).
+
 ## Respuestas reales observadas
 
 | Proveedor | Resultado | Campos observados y utilizados |
@@ -112,7 +132,8 @@ Las comprobaciones de sesión y acceso al portal de esta entrega son simuladas.
    Mis tickets sigue disponible pero Nuevo ticket no permite crear hasta que un
    administrador complete la asociación existente.
 
-QuipuFac requiere además resolver el bloqueo DNS y verificar su respuesta real.
+La URL anterior de QuipuFac no resolvía por DNS. La nueva dirección ya responde;
+falta confirmar la ruta POST de autenticación para poder verificar su respuesta real.
 No hace falta desplegar para probar en local. El arranque/conexión del servidor
 local y la verificación completa de navegador siguen pendientes; no se agregaron
 sistemas de autenticación. El transporte solo selecciona el origen de la función existente.

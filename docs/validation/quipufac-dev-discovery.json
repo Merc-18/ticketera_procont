@@ -1,0 +1,34 @@
+{
+  "checked_at_utc": "2026-11-19T16:39:49Z",
+  "environment": "development",
+  "execution": "normal Ubuntu WSL terminal via orca-cli",
+  "base_commit": "e584f11",
+  "url": "https://dev.quipufac.com/",
+  "dns_resolves": true,
+  "https_certificate_verified": true,
+  "get": {
+    "http_status": 200,
+    "content_type": "text/html",
+    "page_heading": "Bienvenido: API QUIPUFAC (Modo Pruebas).",
+    "script_sources": [],
+    "links": [],
+    "form_actions": [],
+    "documented_authentication_routes": []
+  },
+  "head_root": {
+    "http_status": 405,
+    "allow": "GET",
+    "scope": "root resource only"
+  },
+  "classification": "HTML welcome page identifying the service as a development API; API routes unconfirmed",
+  "authentication_endpoint_confirmed": false,
+  "authentication_attempts": 0,
+  "password_prompted": false,
+  "credentials_transmitted": false,
+  "unverified_paths_probed": false,
+  "adapter_or_frontend_modified": false,
+  "quipu_modified_or_retested": false,
+  "migrations_applied": false,
+  "general_tests_repeated": false,
+  "blocking_information": "Full HTTPS development POST authentication endpoint, including exact path/prefix, with documentation or a confirmed request example for username/password"
+}
