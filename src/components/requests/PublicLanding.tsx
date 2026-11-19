@@ -33,7 +33,7 @@ function LoginModal({ onClose }: { onClose: () => void }) {
     >
       <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-sm">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-gray-900">Iniciar sesión</h2>
+          <h2 className="text-xl font-bold text-gray-900">Ingreso del personal</h2>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 text-xl leading-none transition"
@@ -104,13 +104,13 @@ export default function PublicLanding() {
           onClick={() => setShowLogin(true)}
           className="shrink-0 flex items-center gap-2 bg-accent-400 hover:bg-accent-300 text-gray-900 px-4 py-2 rounded-lg text-sm font-bold transition shadow-sm"
         >
-          🔐 Iniciar sesión
+          🔐 Ingreso del personal
         </button>
       </nav>
 
       {/* Hero */}
       <div className="flex-1 flex flex-col items-center justify-center px-4 py-8">
-        <div className="w-full max-w-2xl">
+        <div className="w-full max-w-4xl">
           <div className="text-center mb-10">
             <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-3">Mesa de solicitudes</h1>
             <div className="mx-auto mb-4 h-1 w-16 rounded-full bg-accent-400" aria-hidden="true" />
@@ -118,10 +118,10 @@ export default function PublicLanding() {
           </div>
 
           {/* Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {/* Nueva Solicitud */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Nueva Solicitud: ingreso Quipu/QuipuFac antes del formulario (sin recorrido anónimo) */}
             <button
-              onClick={() => navigate('/request')}
+              onClick={() => navigate('/cliente')}
               className="bg-white rounded-2xl p-8 text-left shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-200 group border-b-4 border-transparent hover:border-accent-400"
             >
               <div className="text-5xl mb-4">📝</div>
@@ -129,15 +129,33 @@ export default function PublicLanding() {
                 Nueva Solicitud
               </h2>
               <p className="text-gray-500 text-sm leading-relaxed">
-                Completa el formulario para enviar una solicitud al {BRAND.teamLabel}.
+                Ingresa con Quipu o QuipuFac y registra tu solicitud al {BRAND.teamLabel}.
               </p>
               <div className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary">
-                Ir al formulario
+                Ingresar
                 <span className="group-hover:translate-x-1 transition-transform">→</span>
               </div>
             </button>
 
-            {/* Rastrear Solicitud */}
+            {/* Mis tickets: sin sesión, el espacio del cliente conduce al ingreso y vuelve aquí tras autenticarse */}
+            <button
+              onClick={() => navigate('/cliente/tickets')}
+              className="bg-white rounded-2xl p-8 text-left shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-200 group border-b-4 border-transparent hover:border-accent-400"
+            >
+              <div className="text-5xl mb-4">📋</div>
+              <h2 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">
+                Mis tickets
+              </h2>
+              <p className="text-gray-500 text-sm leading-relaxed">
+                Consulta las solicitudes registradas con tu usuario Quipu o tu cuenta QuipuFac.
+              </p>
+              <div className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary">
+                Ver mis tickets
+                <span className="group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </button>
+
+            {/* Rastrear Solicitud (público, sin autenticación) */}
             <button
               onClick={() => navigate('/tracking')}
               className="bg-white rounded-2xl p-8 text-left shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-200 group border-b-4 border-transparent hover:border-accent-400"

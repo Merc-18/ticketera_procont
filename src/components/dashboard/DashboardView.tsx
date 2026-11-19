@@ -9,22 +9,38 @@ import { metrics } from '../../lib/api'
 import type { MetricResult, TimeAverages } from '../../lib/metrics-adapter'
 import { averageLabel } from '../../lib/metrics-adapter'
 import UrgencyStatsPanel from '../metrics/UrgencyStatsPanel'
+import { buildCompletedExport, ExportError, type ExportClient } from '../../lib/ticket-export'
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
+const PRIORITY_ES: Record<string, string> = { urgent: 'Urgente', high: 'Alta', medium: 'Media', low: 'Baja' }
+const TYPE_ES: Record<string, string> = { development: 'Desarrollo', administrative: 'Administrativo (histórico)', dual: 'Dual (histórico)' }
+
+function downloadCSV(filename: string, headers: string[], rows: (string | number)[][]) {
+  const csv = [headers, ...rows]
+    .map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(','))
+    .join('\n')
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' })
+  const url  = URL.createObjectURL(blob)
+  const a    = document.createElement('a')
+  a.href     = url
+  a.download = `${filename}-${new Date().toISOString().slice(0, 10)}.csv`
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
+/** Proyectos activos. Sin columnas SLA heredadas: solo la fecha límite ordinaria (due_date). */
 async function exportActiveCSV() {
-  const { data: projects } = await supabase
+  const { data: projects, error } = await supabase
     .from('projects')
-    .select('title, priority, project_type, status, is_blocked, due_date, sla_target_date, created_at, requests(requester_area), project_flows(flow_type, current_phase, assigned_to)')
+    .select('title, priority, project_type, status, is_blocked, due_date, created_at, requests(requester_area), project_flows(flow_type, current_phase, assigned_to)')
     .eq('status', 'active')
     .order('created_at', { ascending: false })
 
+  if (error) { toast.error('No se pudieron cargar los proyectos activos. Inténtalo nuevamente.'); return }
   if (!projects?.length) { toast.info('No hay proyectos activos para exportar.'); return }
 
-  const PRIORITY_ES: Record<string, string> = { urgent: 'Urgente', high: 'Alta', medium: 'Media', low: 'Baja' }
-  const TYPE_ES: Record<string, string> = { development: 'Desarrollo', administrative: 'Administrativo', dual: 'Dual' }
-
-  const headers = ['Proyecto', 'Área', 'Prioridad', 'Tipo', 'Bloqueado', 'Fase Dev', 'Fase Admin', 'SLA Vencimiento', 'Fecha creación']
+  const headers = ['Proyecto', 'Área', 'Prioridad', 'Tipo', 'Bloqueado', 'Fase Dev', 'Fase Admin (histórico)', 'Fecha límite', 'Fecha creación']
   const rows = projects.map(p => {
     const flows: any[] = (p as any).project_flows ?? []
     const devFlow  = flows.find((f: any) => f.flow_type === 'development')
@@ -37,74 +53,27 @@ async function exportActiveCSV() {
       p.is_blocked ? 'Sí' : 'No',
       devFlow?.current_phase ?? '',
       admFlow?.current_phase ?? '',
-      (p as any).sla_target_date ?? '',
+      p.due_date ?? '',
       (p.created_at as string)?.slice(0, 10) ?? '',
     ]
   })
-
-  const csv = [headers, ...rows]
-    .map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(','))
-    .join('\n')
-
-  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' })
-  const url  = URL.createObjectURL(blob)
-  const a    = document.createElement('a')
-  a.href     = url
-  a.download = `proyectos-activos-${new Date().toISOString().slice(0, 10)}.csv`
-  a.click()
-  URL.revokeObjectURL(url)
+  downloadCSV('proyectos-activos', headers, rows)
 }
 
+/**
+ * Tickets terminados con métricas POR TICKET del servidor (get_ticket_performance, M11). Filtro
+ * general_status=done en el servidor, orden por request_id y paginación completa verificada
+ * (ver lib/ticket-export.ts). Si una página falla no se descarga nada.
+ */
 async function exportCompletedCSV() {
-  const { data: projects } = await supabase
-    .from('projects')
-    .select('id, title, priority, project_type, start_date, updated_at, requests(requester_area)')
-    .eq('status', 'completed')
-    .order('updated_at', { ascending: false })
-
-  if (!projects?.length) { toast.info('No hay proyectos completados para exportar.'); return }
-
-  const ids = projects.map(p => p.id)
-  const { data: slaLogs } = await supabase
-    .from('activity_logs')
-    .select('project_id, details')
-    .eq('action', 'sla_completed')
-    .in('project_id', ids)
-
-  const slaMap: Record<string, any> = {}
-  for (const l of slaLogs ?? []) slaMap[l.project_id] = l.details
-
-  const PRIORITY_ES: Record<string, string> = { urgent: 'Urgente', high: 'Alta', medium: 'Media', low: 'Baja' }
-  const TYPE_ES: Record<string, string> = { development: 'Desarrollo', administrative: 'Administrativo', dual: 'Dual' }
-
-  const headers = ['Proyecto', 'Área', 'Prioridad', 'Tipo', 'Fecha Inicio', 'Fecha Completado', 'Cycle Time (d)', 'Lead Time (d)', 'SLA Vencimiento', 'A Tiempo']
-  const rows = projects.map(p => {
-    const sla = slaMap[p.id] ?? {}
-    return [
-      p.title,
-      (p as any).requests?.requester_area ?? '',
-      PRIORITY_ES[p.priority] ?? p.priority,
-      TYPE_ES[p.project_type] ?? p.project_type,
-      p.start_date ?? '',
-      (p.updated_at as string)?.slice(0, 10) ?? '',
-      sla.cycle_time_days ?? sla.days_elapsed ?? '',
-      sla.lead_time_days ?? '',
-      sla.due_date ?? '',
-      sla.on_time === true ? 'Sí' : sla.on_time === false ? 'No' : '',
-    ]
-  })
-
-  const csv = [headers, ...rows]
-    .map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(','))
-    .join('\n')
-
-  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' })
-  const url  = URL.createObjectURL(blob)
-  const a    = document.createElement('a')
-  a.href     = url
-  a.download = `proyectos-completados-${new Date().toISOString().slice(0, 10)}.csv`
-  a.click()
-  URL.revokeObjectURL(url)
+  let result
+  try { result = await buildCompletedExport(supabase as unknown as ExportClient) }
+  catch (err) {
+    toast.error(err instanceof ExportError ? err.message : 'No se pudo completar la exportación. No se descargó ningún archivo.')
+    return
+  }
+  if (!result) { toast.info('No hay tickets terminados para exportar.'); return }
+  downloadCSV('tickets-terminados', result.headers, result.rows)
 }
 
 // ── Reusable components ──────────────────────────────────────────────────────

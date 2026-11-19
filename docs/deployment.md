@@ -45,7 +45,7 @@ Prohibido en el frontend: `SUPABASE_SERVICE_ROLE_KEY`, claves `sb_secret_…`, s
 | Base de datos M1–M13 | Aplicadas 13/13 (verificado en solo lectura) |
 | RPC de clientes, sesiones (hash SHA-256, 8 h, revocación), aislamiento por identidad | Listo (M13) |
 | Adjuntos: bucket privado, reserva por sesión, 4 archivos / 2 500 000 bytes, ventana de 30 min | Listo |
-| Frontend: build de producción, rutas SPA, `/cliente`, Nuevo ticket, Mis tickets, seguimiento REQ, login interno y tablero | Listo (build y rutas verificados con `vite preview`) |
+| Frontend: build de producción y rutas SPA | Listo. **Corrección 19/11:** la entrada `/portal` enviaba «Nueva Solicitud» al formulario anónimo `/request`; rama `fix/ticketera-client-flow-ui` la conecta con `/cliente` y redirige `/request` (pendiente de integración) |
 | Edge Function `admin-users` | Desplegada (v2); falta `PROCONT_INVITE_REDIRECT_URL` para invitar por correo |
 | Edge Function `client-login` | **No desplegada** |
 | Límite de intentos de login | **Código en main (rama `claude/client-login-throttle`); M14 sin aplicar** |
@@ -78,7 +78,7 @@ solo se aplican a esas dos URL exactas.
   y que el integrador abra `https://<dominio>/cliente/acceso/{quipu|quipufac}#code=<código>`.
 - RUC ambiguos: sin asociación, el cliente ve «Tu empresa aún no está habilitada». Resolver con
   `set_client_company_studio(p_ruc, p_studio_id)` desde una sesión interna admin/superadmin.
-- Formulario anónimo `/request`: sigue activo (decisión de negocio pendiente).
+- Formulario anónimo `/request`: retirado del frontend en `fix/ticketera-client-flow-ui` (redirige a `/cliente`). La RPC anónima `submit_client_request` la cierra Codex en M15.
 
 ## 4. Procedimiento
 

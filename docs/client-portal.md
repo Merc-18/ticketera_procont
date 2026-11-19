@@ -27,7 +27,7 @@ TypeScript, Deno y build correctos. Las otras suites anteriores no se repitieron
 | `/cliente/tickets` | Mis tickets (tabla en escritorio, tarjetas en móvil) | Sí |
 | `/cliente/tickets/:id` | Detalle autorizado por UUID: seguimiento general y datos enviados | Sí |
 
-Sin cambios: `/login`, `/`, `/portal`, `/request` (formulario público provisional), `/tracking`.
+Entrada (corregido 19/11, rama `fix/ticketera-client-flow-ui`): `/portal` → «Nueva Solicitud» → `/cliente` → `/cliente/nuevo`; «Mis tickets» → `/cliente/tickets` (sin sesión: `/cliente?ir=tickets` y vuelta tras ingresar); «Rastrear Solicitud» → `/tracking` (público); «Ingreso del personal» independiente. `/request` redirige a `/cliente`: no existe creación anónima desde el navegador.
 
 ## Conexión con el contrato de Codex (`src/lib/client-portal.ts`)
 

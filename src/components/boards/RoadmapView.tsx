@@ -9,7 +9,6 @@ interface Project {
   status: string
   is_blocked: boolean
   due_date: string | null
-  sla_target_date?: string | null
   project_number?: string
   requests?: { requester_area?: string } | null
 }
@@ -62,7 +61,7 @@ export default function RoadmapView({ projects, onProjectClick, loading }: Props
     const noDate: Project[] = []
 
     for (const p of projects) {
-      const date = p.sla_target_date || p.due_date
+      const date = p.due_date   // fecha límite ordinaria; sin fechas SLA heredadas
       if (!date) { noDate.push(p); continue }
       const matched = quarters.find(q => date >= q.start && date <= q.end)
       if (matched) map[matched.label].push(p)
@@ -90,7 +89,7 @@ export default function RoadmapView({ projects, onProjectClick, loading }: Props
         >
           {showYear + 1} →
         </button>
-        <span className="text-sm text-gray-400 ml-2">{totalInYear} proyecto{totalInYear !== 1 ? 's' : ''} con SLA en {showYear}</span>
+        <span className="text-sm text-gray-400 ml-2">{totalInYear} proyecto{totalInYear !== 1 ? 's' : ''} con fecha límite en {showYear}</span>
       </div>
 
       {/* Quarter grid */}
@@ -128,12 +127,12 @@ export default function RoadmapView({ projects, onProjectClick, loading }: Props
                 ) : (
                   qProjects
                     .sort((a, b) => {
-                      const dateA = a.sla_target_date || a.due_date || ''
-                      const dateB = b.sla_target_date || b.due_date || ''
+                      const dateA = a.due_date || ''
+                      const dateB = b.due_date || ''
                       return dateA.localeCompare(dateB)
                     })
                     .map(p => {
-                      const date    = p.sla_target_date || p.due_date
+                      const date    = p.due_date
                       const overdue = date && date < today && p.status === 'active'
                       return (
                         <button

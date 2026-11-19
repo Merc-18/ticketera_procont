@@ -48,7 +48,11 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
   const [files, setFiles] = useState<{ name: string; url: string | null }[] | null>(null)
   const attempt = useRef(createRpcAttempt())
 
-  useEffect(() => { void listRequestAttachments(r.id).then(setFiles) }, [r.id])
+  const [filesError, setFilesError] = useState<string | null>(null)
+  useEffect(() => {
+    setFiles(null); setFilesError(null)
+    listRequestAttachments(r.id).then(setFiles).catch(err => setFilesError(errorMessage(err)))
+  }, [r.id])
   // Abrir una solicitud pendiente como validador inicia la etapa «En revisión» (idempotente en el servidor).
   const [timelineKey, setTimelineKey] = useState(0)
   useEffect(() => {
@@ -65,11 +69,13 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
   const requiresSub = !!system?.requires_subproject && subs.length > 0
   const urgent = r.urgent_requested || !!r.observations?.startsWith('🔴 URGENTE')
 
+  // Requisitos de la decisión. La clasificación (código, área, subproyecto) solo aplica a solicitudes
+  // con estudio; el responsable al aceptar y el motivo público al rechazar se exigen SIEMPRE, también
+  // en solicitudes históricas sin estudio (antes se omitían y solo el servidor las rechazaba).
   const missing = (() => {
-    if (!classified) return null
-    if (!code) return 'Selecciona el código interno del estudio.'
-    if (mode === 'approve' && studioAreas.length > 0 && !area) return 'Selecciona el área (obligatoria para este estudio).'
-    if (mode === 'approve' && requiresSub && !subsystem) return 'Selecciona el subproyecto.'
+    if (classified && !code) return 'Selecciona el código interno del estudio.'
+    if (mode === 'approve' && classified && studioAreas.length > 0 && !area) return 'Selecciona el área (obligatoria para este estudio).'
+    if (mode === 'approve' && classified && requiresSub && !subsystem) return 'Selecciona el subproyecto.'
     if (mode === 'approve' && !responsible) return 'Selecciona el responsable.'
     if (mode === 'reject' && !reason.trim()) return 'Indica el motivo del rechazo para el solicitante.'
     return null
@@ -133,7 +139,8 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
             {r.observations && <div><p className="text-xs text-gray-500 mb-1">Observaciones</p><p className="text-sm text-gray-700 whitespace-pre-wrap">{r.observations}</p></div>}
             <div>
               <p className="text-xs text-gray-500 mb-1">Evidencias</p>
-              {files === null ? <p className="text-sm text-gray-400">Cargando...</p>
+              {filesError ? <p role="alert" className="text-sm text-red-700">{filesError}</p>
+                : files === null ? <p className="text-sm text-gray-400">Cargando...</p>
                 : files.length === 0 ? <p className="text-sm text-gray-400">Sin adjuntos</p>
                 : <ul className="flex flex-wrap gap-2">{files.map(f => (
                     <li key={f.name}>{f.url

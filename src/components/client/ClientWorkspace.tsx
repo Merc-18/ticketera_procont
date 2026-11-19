@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
-import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import BrandLogo from '../ui/BrandLogo'
 import { clientPortal } from '../../lib/client-portal-api'
 import { clientSessionStore } from '../../lib/client-session-store'
@@ -28,6 +28,9 @@ export function useClientSession() {
 /** Espacio autenticado del cliente: cabecera con empresa e identidad, Nuevo ticket y Mis tickets. */
 export default function ClientWorkspace() {
   const navigate = useNavigate()
+  // Sin sesión: ingreso Quipu/QuipuFac y, tras autenticarse, volver al destino pedido.
+  const destination = useLocation().pathname.startsWith('/cliente/tickets') ? 'tickets' : 'nuevo'
+  const loginPath = `/cliente?ir=${destination}`
   const [token] = useState(() => clientSessionStore.get())
   const [session, setSession] = useState<ClientSession | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -35,11 +38,11 @@ export default function ClientWorkspace() {
 
   const expire = useCallback((notice: string) => {
     clientSessionStore.clear()
-    navigate('/cliente', { replace: true, state: { notice } })
-  }, [navigate])
+    navigate(loginPath, { replace: true, state: { notice } })
+  }, [navigate, loginPath])
 
   useEffect(() => {
-    if (!token) { navigate('/cliente', { replace: true }); return }
+    if (!token) { navigate(loginPath, { replace: true }); return }
     let alive = true
     clientPortal.currentSession(token)
       .then(s => { if (alive) setSession(s) })

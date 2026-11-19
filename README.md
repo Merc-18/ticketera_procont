@@ -37,7 +37,7 @@ en Supabase; no se crearon cuentas reales y no se modificaron las pantallas.
 Reutiliza la arquitectura y las funcionalidades de la ticketera original; las
 áreas, personas y políticas de Procont se definirán con el propietario del proyecto.
 Permite administrar solicitudes internas y externas, proyectos y flujos de trabajo,
-checklists, tableros, comentarios, notificaciones y seguimiento de SLA.
+checklists, tableros, comentarios, notificaciones y trazabilidad (sin SLA oficial: pendiente de configuración).
 
 La revisión organizacional está en
 [FASE 2B.3C: adaptación a Procont](docs/fase-2b3c-adaptacion-procont.md).
@@ -65,7 +65,7 @@ pendientes de definición. Paleta y cambios en
 ## Funcionalidades
 
 ### Gestión de solicitudes
-- Portal público para envío de solicitudes (`/request`)
+- Mesa de solicitudes (`/portal`): Nueva Solicitud y Mis tickets exigen ingreso Quipu/QuipuFac (`/cliente`); Rastrear Solicitud es público (`/tracking`); `/request` redirige a `/cliente`
 - Página de seguimiento para solicitantes (`/tracking`)
 - Urgencia solicitada por el cliente y prioridad definitiva decidida por el validador; sin plazos SLA oficiales
 - Bandeja de entrada para revisar, aprobar o rechazar solicitudes
@@ -130,7 +130,7 @@ src/
 │   ├── layout/         # Estructura de página
 │   └── ui/             # Toast, logotipo, campo de área y componentes compartidos
 ├── hooks/              # Custom hooks (useProjects, useAuth, useRequests…)
-├── lib/                # Supabase client, constantes, SLA config, utilidades
+├── lib/                # Supabase client, contratos (adaptadores), constantes, utilidades
 ├── theme/              # brand.ts: paleta y textos corporativos (fuente única)
 ├── types/              # Interfaces TypeScript generadas desde Supabase
 └── App.tsx             # Enrutamiento principal
