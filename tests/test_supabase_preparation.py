@@ -1,5 +1,6 @@
 """New preparation helper tests only; no previous SQL/consumer suite or network."""
 import importlib.util
+import hashlib
 import io
 import json
 from pathlib import Path
@@ -33,10 +34,19 @@ class PreparationTests(unittest.TestCase):
             self.assertNotIn(KEY, str(error.exception))
 
     def test_only_publishable_keys_accepted(self):
-        for value in ['sb_' + 'secret_test_only_nonfunctional_fixture', 'eyJ.test.test', 'NOT_A_VALID_PUBLIC_KEY', KEY + '\nextra']:
-            with self.assertRaises(preparation.PreparationError) as error:
-                preparation.validate_values(URL, value, 'ticketera-procont')
-            self.assertNotIn(value, str(error.exception))
+        for value in [KEY, '  ' + KEY + '  ', '"' + KEY + '"', '“' + KEY + '”']:
+            self.assertEqual(preparation.validate_values(URL, value, 'ticketera-procont'), 'a' * 20)
+        invalid = ['sb_' + 'secret_test_only_nonfunctional_fixture', 'eyJ.test.test',
+                   'NOT_A_VALID_PUBLIC_KEY', KEY + '\nextra', KEY + '\r\nextra',
+                   KEY + ' extra', KEY[:20] + '\n' + KEY[20:]]
+        for char in ['\n', '\r', '\t', '\0', '\v', '\f', '\x1b', '\x7f', '\x85', '\u200b', '\u2028', '\u2029', '\ufeff']:
+            invalid.extend([KEY + char, char + KEY, '"' + KEY + char + '"'])
+        for index, value in enumerate(invalid):
+            with self.subTest(invalid_case=index):
+                with self.assertRaises(preparation.PreparationError) as error:
+                    preparation.validate_values(URL, value, 'ticketera-procont')
+                self.assertNotIn(value, str(error.exception))
+                self.assertNotIn(KEY, str(error.exception))
 
     def test_probe_sends_only_get_schema_without_redirects(self):
         seen = []
@@ -101,8 +111,47 @@ class PreparationTests(unittest.TestCase):
                 preparation.save_configuration(root, URL, KEY, 'a' * 20, {}, [])
             self.assertEqual(list(root.iterdir()), [])
 
-    def test_migration_manifest_matches_the_four_existing_files(self):
-        self.assertEqual([item['file'] for item in preparation.migration_manifest()], list(preparation.MIGRATION_FILES))
+    def test_current_migrations_preserve_the_four_file_historical_manifest(self):
+        root = Path(__file__).resolve().parents[1]
+        historical_path = root / 'docs/validation/fase-2b3d-migrations.json'
+        historical_bytes = historical_path.read_bytes()
+        historical = json.loads(historical_bytes)['migrations']
+        current = preparation.migration_manifest(root)
+        files = sorted((root / 'supabase/migrations').glob('*.sql'))
+        self.assertEqual(current, [{'file': p.name, 'sha256': hashlib.sha256(p.read_bytes()).hexdigest()} for p in files])
+        self.assertGreater(len(current), len(preparation.MIGRATION_FILES))
+        self.assertEqual([row['file'] for row in historical], list(preparation.MIGRATION_FILES))
+        self.assertEqual(current[:len(historical)], historical)
+
+        with tempfile.TemporaryDirectory() as directory:
+            fixture = Path(directory)
+            folder = fixture / 'supabase/migrations'
+            folder.mkdir(parents=True)
+            evidence = fixture / 'docs/validation/fase-2b3d-migrations.json'
+            evidence.parent.mkdir(parents=True)
+            evidence.write_bytes(historical_bytes)
+            for name in preparation.MIGRATION_FILES:
+                (folder / name).write_bytes((root / 'supabase/migrations' / name).read_bytes())
+            # The original four-file snapshot remains valid; later migrations are additive.
+            self.assertEqual(preparation.migration_manifest(fixture), historical)
+            for path in files[len(historical):]:
+                (folder / path.name).write_bytes(path.read_bytes())
+            self.assertEqual(preparation.migration_manifest(fixture), current)
+            for name in preparation.MIGRATION_FILES:
+                with self.subTest(historical_migration=name):
+                    path = folder / name
+                    original = path.read_bytes()
+                    path.write_bytes(original + b'\n-- synthetic tampering\n')
+                    with self.assertRaises(preparation.PreparationError):
+                        preparation.migration_manifest(fixture)
+                    path.unlink()
+                    with self.assertRaises(preparation.PreparationError):
+                        preparation.migration_manifest(fixture)
+                    path.write_bytes(original)
+            (folder / '20261116000100_unapproved_prefix.sql').write_text('-- synthetic fixture\n')
+            with self.assertRaises(preparation.PreparationError):
+                preparation.migration_manifest(fixture)
+        self.assertEqual(historical_path.read_bytes(), historical_bytes)
 
 
 if __name__ == '__main__':

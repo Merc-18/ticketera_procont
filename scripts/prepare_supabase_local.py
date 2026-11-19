@@ -12,12 +12,14 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+import unicodedata
 import urllib.error
 import urllib.parse
 import urllib.request
 
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_PROJECT = 'ticketera-procont'
+# Immutable four-file preparation baseline, not the current migration inventory.
 MIGRATION_FILES = (
     '20261117000100_schema.sql',
     '20261117000200_security.sql',
@@ -31,7 +33,10 @@ class PreparationError(Exception):
 
 
 def normalize_input(value):
-    value = value.replace('\r', '').replace('\n', '').strip()
+    # Reject before trimming/unquoting: never turn a multiline key into a valid one.
+    if any(unicodedata.category(char) in ('Cc', 'Cf', 'Zl', 'Zp') for char in value):
+        raise PreparationError('La entrada contiene caracteres de control o separadores de línea no admitidos.')
+    value = value.strip()
     quotes = {'"': '"', "'": "'", '“': '”', '‘': '’'}
     while len(value) >= 2 and value[0] in quotes and value[-1] == quotes[value[0]]:
         value = value[1:-1].strip()
@@ -84,13 +89,15 @@ def configure_visible_input():
 
 
 def migration_manifest(root=ROOT):
+    """Inventory current SQLs while verifying the original approved prefix hashes."""
     folder = root / 'supabase/migrations'
-    if sorted(p.name for p in folder.glob('*.sql')) != list(MIGRATION_FILES):
-        raise PreparationError('La secuencia de migraciones difiere de las cuatro aprobadas. Detenerse y revisar.')
+    files = sorted(folder.glob('*.sql'))
+    if [p.name for p in files[:len(MIGRATION_FILES)]] != list(MIGRATION_FILES):
+        raise PreparationError('Falta o cambió el orden del lote histórico de cuatro migraciones. Detenerse y revisar.')
     manifest = json.loads((root / 'docs/validation/fase-2b3d-migrations.json').read_text())
-    actual = [{'file': name, 'sha256': hashlib.sha256((folder / name).read_bytes()).hexdigest()}
-              for name in MIGRATION_FILES]
-    if actual != manifest['migrations']:
+    actual = [{'file': path.name, 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()}
+              for path in files]
+    if actual[:len(MIGRATION_FILES)] != manifest['migrations']:
         raise PreparationError('El contenido de las migraciones cambió respecto del manifiesto de preparación.')
     return actual
 
