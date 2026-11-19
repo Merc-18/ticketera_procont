@@ -14,7 +14,7 @@ RUC = '20602111602'
 USERNAME = 'Marco'
 PROVIDERS = {
     'quipu': 'https://api-gestion-test.quipufac.com/api/users/auth',
-    'quipufac': 'https://api-dev.quipufac.com/auth/login',
+    'quipufac': 'https://dev.quipufac.com/auth/login',
 }
 # Unknown keys may themselves contain personal data: never print them.
 SAFE_KEYS = set(('data result response payload auth authentication user usuario users '
@@ -25,7 +25,7 @@ SAFE_KEYS = set(('data result response payload auth authentication user usuario 
                  'ruc RUC document document_number documentNumber numero_documento '
                  'id _id uuid user_id userId id_user idUser id_usuario usuario_id '
                  'username userName name nombre full_name fullName nombres apellidos '
-                 'company_name companyName business_name businessName razon_social razonSocial '
+                 'company_name companyName business_name businessName businessRuc razon_social razonSocial '
                  'token_type tokenType expires_in expiresIn').split())
 TOKENS = {'token', 'access_token', 'accessToken', 'refresh_token', 'refreshToken', 'id_token', 'jwt'}
 MARKERS = {'success', 'successful', 'authenticated', 'isAuthenticated', 'status', 'statusCode', 'code', 'ok'}

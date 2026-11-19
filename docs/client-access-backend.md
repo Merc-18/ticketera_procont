@@ -62,16 +62,17 @@ que falta validar/configurar la respuesta real del proveedor, no credenciales in
 Quipu envía al proveedor `{ruc, username, password}` por POST a
 `https://api-gestion-test.quipufac.com/api/users/auth`.
 QuipuFac envía `{username:ruc, password}` por POST a
-`https://api-dev.quipufac.com/auth/login`.
+`https://dev.quipufac.com/auth/login`, ruta confirmada por el responsable de su API.
 Se pueden cambiar mediante `QUIPU_AUTH_URL` y `QUIPUFAC_AUTH_URL`, solo en servidor.
 HTTPS obligatorio, sin redirecciones, timeout de diez segundos, entrada de 16 KiB
 y respuesta de 64 KiB. No se registran cuerpos, contraseñas, tokens o errores crudos.
 
 El 19/11/2026 se hizo una sola autenticación real de Quipu: HTTP 200,
 `username` coincidente y `token` no vacío. Ese contrato mínimo de desarrollo está
-incluido solo para su URL confirmada. QuipuFac no pudo resolver por DNS, también
-comprobado desde Ubuntu WSL normal; permanece cerrado con HTTP 503
-`provider_contract_pending`. No se hicieron intentos con contraseñas incorrectas:
+incluido solo para su URL confirmada. QuipuFac ya respondió HTTP 200 en la nueva
+URL confirmada: `username` y `businessRuc` coinciden con el RUC enviado,
+`businessName` es un nombre empresarial no vacío y `token` es no vacío. Su
+contrato predeterminado queda limitado a esa URL. No se hicieron intentos con contraseñas incorrectas:
 los cuerpos de error reales siguen sin confirmar. Véanse
 [la entrega de desarrollo](client-login-development.md) y
 [la evidencia depurada](validation/client-login-dev-api.json).
@@ -87,7 +88,7 @@ interface ProviderResponseContract {
   provider: 'quipu' | 'quipufac'
   verifiedReference: string // Referencia a la evidencia revisada; sin secretos.
   success: { path: string[]; equals: boolean | string | number }
-    | { path: string[]; equalsInput: 'username' } // Solo Quipu; comparación exacta.
+    | { path: string[]; equalsInput: 'username' | 'ruc' } // username: Quipu; ruc: QuipuFac.
   tokenPath: string[]
   rucPath?: string[]
   subjectPath?: string[]
@@ -97,7 +98,8 @@ interface ProviderResponseContract {
 ```
 
 Las rutas se deben obtener de las respuestas auténticas. El marcador de éxito
-debe coincidir exactamente (Quipu compara `username` con el usuario enviado), el token debe
+debe coincidir exactamente (Quipu compara `username` con el usuario enviado;
+QuipuFac compara `username` con el RUC enviado), el token debe
 ser una cadena no vacía y, si hay `rucPath`, debe coincidir con el RUC autenticado.
 Si el proveedor no devuelve RUC, la revisión debe confirmar que la autenticación
 vincula las credenciales al RUC enviado. Un HTTP 200 por sí solo nunca crea sesión.
@@ -207,8 +209,8 @@ tsc --noEmit --strict --target ES2022 --module NodeNext --moduleResolution NodeN
 python3 -B supabase/tests/client_access_local.py --pg-bin /ruta/postgresql/17/bin --runtime-lib /ruta/runtime/lib
 ```
 
-Quipu tiene contrato mínimo verificado en desarrollo; QuipuFac espera resolución
-DNS y respuesta auténtica. Sigue pendiente ejecutar la función localmente o un
+Quipu y QuipuFac tienen contratos mínimos verificados en desarrollo. Sigue
+pendiente ejecutar la función localmente o un
 despliegue autorizado y comprobar una sesión real desde la interfaz. La asociación de RUC ambiguos se realiza
 explícitamente cuando proceda. La aplicación de M13 ya está verificada. La integración frontend se conserva desde
 `19a10a8`, con la corrección puntual de errores en `8fd637e`; el cierre de Git permite

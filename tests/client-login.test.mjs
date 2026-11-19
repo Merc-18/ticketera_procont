@@ -27,7 +27,7 @@ function fixture(overrides = {}) {
     return { data: name === 'client_session_info' ? { expires_at: 'synthetic-expiration', entry_context: 'direct' } : null, error: null }
   } }
   const handler = clientLoginHandler({ client,
-    providerUrls: { quipu: 'https://api-gestion-test.quipufac.com/api/users/auth', quipufac: 'https://api-dev.quipufac.com/auth/login' },
+    providerUrls: { quipu: 'https://api-gestion-test.quipufac.com/api/users/auth', quipufac: 'https://dev.quipufac.com/auth/login' },
     providerContracts: { quipu: contract('quipu'), quipufac: contract('quipufac') },
     fetchImpl: async (url, options) => { external.push([url, options]); return response(upstream()) },
     ...overrides,
@@ -42,7 +42,7 @@ for (const provider of ['quipu', 'quipufac']) {
     assert.match(body.session_token, /^[a-f0-9]{64}$/)
     assert.equal(f.external.length, 1)
     const [url, options] = f.external[0]
-    assert.equal(url, provider === 'quipu' ? 'https://api-gestion-test.quipufac.com/api/users/auth' : 'https://api-dev.quipufac.com/auth/login')
+    assert.equal(url, provider === 'quipu' ? 'https://api-gestion-test.quipufac.com/api/users/auth' : 'https://dev.quipufac.com/auth/login')
     assert.equal(options.method, 'POST'); assert.equal(options.redirect, 'error')
     assert.deepEqual(JSON.parse(options.body), provider === 'quipu'
       ? { ruc, username: input.username, password: input.password } : { username: ruc, password: input.password })

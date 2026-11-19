@@ -1,6 +1,6 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.98.0'
 import { clientLoginHandler } from '../_shared/client-login.mjs'
-import { quipuDevelopmentContract } from '../_shared/client-provider-contracts.mjs'
+import { quipuDevelopmentContract, quipufacDevelopmentContract } from '../_shared/client-provider-contracts.mjs'
 
 function responseContract(name: string, fallback?: unknown) {
   const value = Deno.env.get(name)
@@ -11,15 +11,18 @@ const client = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABAS
   { auth: { persistSession: false, autoRefreshToken: false } })
 const quipuDevelopmentUrl = 'https://api-gestion-test.quipufac.com/api/users/auth'
 const quipuAuthUrl = Deno.env.get('QUIPU_AUTH_URL') ?? quipuDevelopmentUrl
+const quipufacDevelopmentUrl = 'https://dev.quipufac.com/auth/login'
+const quipufacAuthUrl = Deno.env.get('QUIPUFAC_AUTH_URL') ?? quipufacDevelopmentUrl
 Deno.serve(clientLoginHandler({ client,
   providerUrls: {
     quipu: quipuAuthUrl,
-    quipufac: Deno.env.get('QUIPUFAC_AUTH_URL') ?? 'https://api-dev.quipufac.com/auth/login',
+    quipufac: quipufacAuthUrl,
   },
   providerContracts: {
     quipu: responseContract('QUIPU_AUTH_RESPONSE_CONTRACT',
       quipuAuthUrl === quipuDevelopmentUrl ? quipuDevelopmentContract : undefined),
-    quipufac: responseContract('QUIPUFAC_AUTH_RESPONSE_CONTRACT'),
+    quipufac: responseContract('QUIPUFAC_AUTH_RESPONSE_CONTRACT',
+      quipufacAuthUrl === quipufacDevelopmentUrl ? quipufacDevelopmentContract : undefined),
   },
   platformSecrets: {
     quipu: Deno.env.get('QUIPU_PLATFORM_ENTRY_SECRET'),

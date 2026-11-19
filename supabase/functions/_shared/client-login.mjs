@@ -56,7 +56,8 @@ export function validateProviderContract(contract, provider) {
   if (!object(contract) || contract.version !== 1 || contract.provider !== provider ||
       !bounded(contract.verifiedReference, 300) || !object(contract.success)) reject(503, 'provider_contract_pending')
   const matchesInput = Object.hasOwn(contract.success, 'equalsInput')
-  if (matchesInput ? provider !== 'quipu' || contract.success.equalsInput !== 'username' ||
+  if (matchesInput ? (provider === 'quipufac' ? contract.success.equalsInput !== 'ruc' :
+      provider !== 'quipu' || contract.success.equalsInput !== 'username') ||
       Object.hasOwn(contract.success, 'equals') :
       !['boolean', 'string', 'number'].includes(typeof contract.success.equals)) reject(503, 'provider_contract_pending')
   pathValue({}, contract.success.path)
@@ -71,7 +72,8 @@ export function validateProviderContract(contract, provider) {
 export function adaptProviderResponse(provider, body, input, contract) {
   validateProviderContract(contract, provider)
   const providerToken = pathValue(body, contract.tokenPath)
-  const expected = contract.success.equalsInput ? input.username : contract.success.equals
+  const expected = contract.success.equalsInput === 'ruc' ? input.ruc
+    : contract.success.equalsInput ? input.username : contract.success.equals
   if (contract.success.equalsInput && (!bounded(expected, 256) || !expected.trim())) reject(401, 'invalid_credentials')
   if (!object(body) || pathValue(body, contract.success.path) !== expected ||
       !bounded(providerToken, 16384) || !providerToken.trim()) reject(401, 'invalid_credentials')

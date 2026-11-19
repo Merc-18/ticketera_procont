@@ -1,0 +1,61 @@
+{
+  "date": "2026-11-19",
+  "base_commit": "704102c",
+  "environment": "development",
+  "endpoint_confirmation": "Exact POST URL supplied by API owner via user before this request",
+  "url": "https://dev.quipufac.com/auth/login",
+  "request": {
+    "method": "POST",
+    "body_fields": ["username", "password"],
+    "username_source": "requested RUC",
+    "password_input": "hidden getpass in Ubuntu WSL terminal",
+    "post_attempts": 1,
+    "redirects_followed": false,
+    "retries": 0
+  },
+  "response": {
+    "http_status": 200,
+    "root_type": "JSON object",
+    "observed_contract_fields": {
+      "username": { "type": "string", "matches_requested_ruc": true },
+      "businessRuc": { "type": "string", "matches_requested_ruc": true },
+      "businessName": { "type": "string", "nonempty": true },
+      "token": { "type": "string", "nonempty": true, "value_printed_or_saved": false }
+    },
+    "other_fields_discarded": true,
+    "success_field_present_at_root": false,
+    "error_field_present_at_root": false,
+    "real_failed_authentication_response_tested": false
+  },
+  "adapter": {
+    "success_rule": "HTTP success AND JSON AND username equals input RUC AND businessRuc equals input RUC AND nonempty token",
+    "company_name_field": "businessName",
+    "identity_scope": "company account per RUC",
+    "subject": "company",
+    "subject_source": "company",
+    "username": null,
+    "same_live_response_accepted_offline_in_memory": true,
+    "verified_company_subject": true,
+    "verified_company_source": true,
+    "verified_absent_individual_username": true,
+    "verified_name_present": true,
+    "live_response_discarded": true
+  },
+  "verification": {
+    "node_specific_tests": 17,
+    "python_probe_tests": 5,
+    "deno_edge_check": "passed",
+    "typescript_and_build": "passed",
+    "session_and_portal_rpc_storage": "synthetic",
+    "real_ticketera_session_created": false,
+    "real_browser_login_verified": false,
+    "general_tests_or_sql_audits_repeated": false
+  },
+  "quipu_authentication_changed_or_repeated": false,
+  "frontend_changed": false,
+  "migrations_changed_or_applied": false,
+  "provider_credentials_or_tokens_saved": false,
+  "complete_sensitive_responses_saved": false,
+  "real_tickets_created": false,
+  "merge_push_or_deploy": false
+}

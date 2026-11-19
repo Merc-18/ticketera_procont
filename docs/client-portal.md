@@ -89,10 +89,10 @@ con `vite` y `VITE_CLIENT_PORTAL_MOCK=1`. Eliminada del build (verificado).
 
 ## Pendiente para operar con clientes reales
 
-1. **Contratos de desarrollo:** Quipu ya tiene un contrato mínimo confirmado
-   (`username` exacto + `token` no vacío). QuipuFac sigue con `provider_contract_pending`
-   porque su dominio tampoco resuelve desde Ubuntu WSL normal. Una llamada de Quipu,
-   sin repetir autenticaciones: [resultado y pendientes](client-login-development.md).
+1. **Contratos de desarrollo confirmados:** Quipu conserva `username` exacto +
+   `token` no vacío. QuipuFac usa `https://dev.quipufac.com/auth/login` y exige
+   `username` y `businessRuc` iguales al RUC enviado + `token` no vacío. Ambos tienen
+   un procedimiento local único: [resultado y configuración](client-login-development.md).
 2. Desplegar la Edge Function `client-login` con `PROCONT_ALLOWED_ORIGINS` = origen del frontend
    (si falta, el navegador recibe `origin_denied` → «servicio no disponible»).
 3. Acceso desde plataforma: secretos `QUIPU_PLATFORM_ENTRY_SECRET` / `QUIPUFAC_PLATFORM_ENTRY_SECRET`
