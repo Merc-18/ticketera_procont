@@ -7,12 +7,15 @@ import {
   AUTH_TYPE_LABEL, identityLabel, isClientPortalError, type ClientSession,
 } from '../../lib/client-portal'
 import MockBanner from './MockBanner'
+import { useCatalogs } from '../../hooks/useCatalogs'
 
 interface ClientContextValue {
   session: ClientSession
   token: string
   /** Trata errores comunes: sesión vencida → vuelve al ingreso. Devuelve el mensaje a mostrar. */
   handleError: (err: unknown) => string
+  /** Nombre visible del producto (catálogo público activo); '—' si no está disponible. */
+  productName: (systemId: string) => string
 }
 const ClientContext = createContext<ClientContextValue | null>(null)
 
@@ -28,6 +31,7 @@ export default function ClientWorkspace() {
   const [token] = useState(() => clientSessionStore.get())
   const [session, setSession] = useState<ClientSession | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const catalogs = useCatalogs('public')
 
   const expire = useCallback((notice: string) => {
     clientSessionStore.clear()
@@ -76,6 +80,10 @@ export default function ClientWorkspace() {
     return <div className="min-h-screen bg-slate-50 flex items-center justify-center text-gray-400">Cargando tu espacio…</div>
   }
 
+  const studioName = catalogs.studios.find(s => s.id === session.studio_id)?.name
+  const companyLabel = studioName ?? `RUC ${session.ruc}`
+  const productName = (id: string) =>
+    session.products.find(p => p.id === id)?.name ?? catalogs.systems.find(s => s.id === id)?.name ?? '—'
   const tab = ({ isActive }: { isActive: boolean }) =>
     `px-4 py-2 rounded-md font-medium text-sm transition ${isActive ? 'bg-brand-700 text-white shadow-sm' : 'text-gray-600 hover:text-brand-700 hover:bg-white'}`
 
@@ -89,7 +97,7 @@ export default function ClientWorkspace() {
             <BrandLogo tone="light" size={36} showName={false} className="sm:hidden" />
             <div className="flex items-center gap-3 min-w-0">
               <div className="text-right min-w-0">
-                <p className="font-semibold text-white leading-tight truncate" title={session.company_name}>{session.company_name}</p>
+                <p className="font-semibold text-white leading-tight truncate" title={companyLabel}>{companyLabel}</p>
                 <p className="text-xs text-accent-300 truncate">{identityLabel(session)}</p>
               </div>
               <button onClick={() => void logout()}
@@ -114,7 +122,7 @@ export default function ClientWorkspace() {
         </nav>
       </header>
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-6">
-        <ClientContext.Provider value={{ session, token, handleError }}>
+        <ClientContext.Provider value={{ session, token, handleError, productName }}>
           <Outlet />
         </ClientContext.Provider>
       </main>

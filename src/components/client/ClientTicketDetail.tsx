@@ -12,19 +12,19 @@ import { GENERAL_STATUS, MAIN_PATH } from '../../lib/request-status'
  * o inexistente muestra el mismo mensaje.
  */
 export default function ClientTicketDetail() {
-  const { number = '' } = useParams()
-  const { session, token, handleError } = useClientSession()
+  const { id = '' } = useParams()
+  const { session, token, handleError, productName } = useClientSession()
   const [ticket, setTicket] = useState<Detail | null | undefined>(undefined)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     let alive = true
     setTicket(undefined); setError(null)
-    clientPortal.ticketDetail(token, number)
+    clientPortal.ticketDetail(token, id)
       .then(t => { if (alive) setTicket(t) })
       .catch(err => { if (alive) setError(handleError(err)) })
     return () => { alive = false }
-  }, [token, number, handleError])
+  }, [token, id, handleError])
 
   const back = <Link to="/cliente/tickets" className="text-sm text-gray-500 hover:text-brand-700 transition">← Mis tickets</Link>
   if (error) return <div className="space-y-4">{back}<p role="alert" className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">{error}</p></div>
@@ -82,9 +82,8 @@ export default function ClientTicketDetail() {
         )}
 
         <dl className="px-5 sm:px-6 py-5 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-          <div><dt className="text-gray-500">Producto</dt><dd className="font-medium text-gray-900">{ticket.product_name}</dd></div>
+          <div><dt className="text-gray-500">Producto</dt><dd className="font-medium text-gray-900">{productName(ticket.system_id)}</dd></div>
           <div><dt className="text-gray-500">Fecha</dt><dd className="font-medium text-gray-900">{shortDate(ticket.created_at)}</dd></div>
-          {ticket.request_type && <div><dt className="text-gray-500">Tipo de solicitud</dt><dd className="font-medium text-gray-900">{ticket.request_type}</dd></div>}
           <div><dt className="text-gray-500">{requesterLabel}</dt><dd className="font-medium text-gray-900">{ticket.requester_name}</dd></div>
           <div><dt className="text-gray-500">Atención urgente solicitada</dt><dd className="font-medium text-gray-900">{ticket.urgent_requested ? 'Sí' : 'No'}</dd></div>
           <div className="sm:col-span-2">

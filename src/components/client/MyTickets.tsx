@@ -13,7 +13,7 @@ export const shortDate = (iso: string) =>
  * Quipu → del usuario individual; QuipuFac → de la cuenta empresarial, con el nombre declarado.
  */
 export default function MyTickets() {
-  const { session, token, handleError } = useClientSession()
+  const { session, token, handleError, productName } = useClientSession()
   const [tickets, setTickets] = useState<ClientTicketSummary[] | null>(null)
   const [error, setError] = useState<string | null>(null)
   const companyAccount = session.identity.kind === 'company_account'
@@ -67,11 +67,11 @@ export default function MyTickets() {
                 {tickets.map(t => {
                   const s = GENERAL_STATUS[t.status]
                   return (
-                    <tr key={t.request_number} className="hover:bg-gray-50">
+                    <tr key={t.id} className="hover:bg-gray-50">
                       <td className="px-4 py-3 font-bold">
-                        <Link to={`/cliente/tickets/${t.request_number}`} className="text-brand-700 hover:underline">{t.request_number}</Link>
+                        <Link to={`/cliente/tickets/${t.id}`} className="text-brand-700 hover:underline">{t.request_number}</Link>
                       </td>
-                      <td className="px-4 py-3 text-gray-700">{t.product_name}</td>
+                      <td className="px-4 py-3 text-gray-700">{productName(t.system_id)}</td>
                       <td className="px-4 py-3 text-gray-900 max-w-xs truncate" title={t.title}>{t.title}</td>
                       {companyAccount && <td className="px-4 py-3 text-gray-700">{t.requester_name}</td>}
                       <td className="px-4 py-3 text-gray-600 whitespace-nowrap">{shortDate(t.created_at)}</td>
@@ -90,8 +90,8 @@ export default function MyTickets() {
             {tickets.map(t => {
               const s = GENERAL_STATUS[t.status]
               return (
-                <li key={t.request_number}>
-                  <Link to={`/cliente/tickets/${t.request_number}`}
+                <li key={t.id}>
+                  <Link to={`/cliente/tickets/${t.id}`}
                     className="block bg-white rounded-xl border border-gray-200 p-4 shadow-sm hover:border-accent-400 transition">
                     <div className="flex items-center justify-between gap-2 mb-1">
                       <span className="font-bold text-brand-700">{t.request_number}</span>
@@ -99,7 +99,7 @@ export default function MyTickets() {
                     </div>
                     <p className="text-gray-900 font-medium">{t.title}</p>
                     <p className="text-xs text-gray-500 mt-1">
-                      {t.product_name} · {shortDate(t.created_at)}{companyAccount && <> · {t.requester_name} (declarado)</>}
+                      {productName(t.system_id)} · {shortDate(t.created_at)}{companyAccount && <> · {t.requester_name} (declarado)</>}
                     </p>
                   </Link>
                 </li>

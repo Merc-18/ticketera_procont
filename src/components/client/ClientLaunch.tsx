@@ -1,15 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import BrandLogo from '../ui/BrandLogo'
 import MockBanner from './MockBanner'
 import { clientPortal } from '../../lib/client-portal-api'
 import { clientSessionStore } from '../../lib/client-session-store'
 import { AUTH_TYPE_LABEL, identityLabel, type ClientSession } from '../../lib/client-portal'
 
-/** Lee y borra de inmediato el código del fragmento (#c=…): no queda en el historial ni en el Referer. */
+/** Lee y borra de inmediato el código del fragmento (#code=…): no queda en el historial ni en el Referer. */
 function takeLaunchCode(): string | null {
   const params = new URLSearchParams(window.location.hash.replace(/^#/, ''))
-  const code = params.get('c')
+  const code = params.get('code')
   if (window.location.hash) window.history.replaceState(null, '', window.location.pathname)
   return code
 }
@@ -21,6 +21,7 @@ function takeLaunchCode(): string | null {
  */
 export default function ClientLaunch() {
   const navigate = useNavigate()
+  const { provider = '' } = useParams()
   const started = useRef(false)
   const [pending, setPending] = useState<{ token: string; session: ClientSession } | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -30,10 +31,10 @@ export default function ClientLaunch() {
     started.current = true
     const code = takeLaunchCode()
     if (!code) { setError('El enlace de acceso no es válido. Vuelve a abrir Ticketera desde tu sistema.'); return }
-    clientPortal.exchangeLaunch(code)
+    clientPortal.exchangeLaunch(provider, code)
       .then(setPending)
       .catch(err => setError(err instanceof Error ? err.message : 'No se pudo validar el acceso.'))
-  }, [])
+  }, [provider])
 
   const confirm = () => {
     if (!pending) return
@@ -67,9 +68,9 @@ export default function ClientLaunch() {
               <h1 className="text-xl font-bold text-brand-700 text-center mb-1">Confirma tu ingreso</h1>
               <p className="text-sm text-gray-500 text-center mb-6">Desde {AUTH_TYPE_LABEL[pending.session.origin!]}</p>
               <dl className="bg-brand-50 border border-brand-100 rounded-lg p-4 space-y-2 text-sm mb-4">
-                <div><dt className="text-gray-500">Empresa</dt><dd className="font-semibold text-gray-900">{pending.session.company_name}</dd></div>
+                <div><dt className="text-gray-500">Empresa</dt><dd className="font-semibold text-gray-900">RUC {pending.session.ruc}</dd></div>
                 <div><dt className="text-gray-500">Identidad</dt><dd className="font-semibold text-gray-900">{identityLabel(pending.session)}</dd></div>
-                <div><dt className="text-gray-500">Producto de los tickets</dt><dd className="font-semibold text-gray-900">🔒 {pending.session.products[0].name}</dd></div>
+                <div><dt className="text-gray-500">Producto de los tickets</dt><dd className="font-semibold text-gray-900">🔒 {pending.session.products[0]?.name ?? 'No disponible'}</dd></div>
               </dl>
               <p className="text-xs text-gray-500 mb-6">Si estos datos no son tuyos, elige «No soy yo».</p>
               <div className="space-y-3">

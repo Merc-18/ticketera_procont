@@ -1,89 +1,79 @@
 # Portal de clientes Quipu / QuipuFac — frontend
 
-19/11/2026. Base `main` @ `35b9726`, rama `claude/client-portal`. Solo frontend: sin SQL,
-migraciones, Edge Functions ni cambios en Supabase. El backend (M13, autenticación, sesiones y
-Mis tickets) lo implementa Codex; este frontend se conecta mediante un adaptador provisional.
+19/11/2026. Rama de integración `integration/client-portal` (base `main@35b9726`) =
+backend de Codex `codex/client-access-m13@77fe593` (M13 + Edge Function `client-login`) +
+frontend de Claude `claude/client-portal@aeeaa12`, conectado al contrato real
+`contracts/client-access-client.mjs`. Backend detallado: [client-access-backend.md](client-access-backend.md).
 
 ## Rutas
 
 | Ruta | Pantalla | Sesión |
 |---|---|---|
 | `/cliente` | Pública: «¿Qué producto utilizas para ingresar?», tarjetas Quipu / QuipuFac, formulario dinámico y búsqueda por REQ (solo número y estado) | No |
-| `/cliente/acceso#c=<código>` | Acceso desde plataforma Quipu/QuipuFac: canje del código, confirmación «Continuar / No soy yo» | Crea sesión |
-| `/cliente/nuevo` | Nuevo ticket (reutiliza `PublicRequestForm` en modo cliente) | Sí |
+| `/cliente/acceso/{quipu\|quipufac}#code=<código>` | Acceso desde plataforma: lee y borra el fragmento, `exchange(provider, code)`, confirmación «Continuar / No soy yo» | Crea sesión |
+| `/cliente/nuevo` | Nuevo ticket (reutiliza `PublicRequestForm` en modo cliente) o aviso de asociación pendiente | Sí |
 | `/cliente/tickets` | Mis tickets (tabla en escritorio, tarjetas en móvil) | Sí |
-| `/cliente/tickets/:REQ` | Detalle autorizado: seguimiento general y datos enviados | Sí |
+| `/cliente/tickets/:id` | Detalle autorizado por UUID: seguimiento general y datos enviados | Sí |
 
 Sin cambios: `/login`, `/`, `/portal`, `/request` (formulario público provisional), `/tracking`.
-La búsqueda por REQ no aparece dentro del espacio del cliente.
 
-## Reglas de producto (las calcula el servidor)
+## Conexión con el contrato de Codex (`src/lib/client-portal.ts`)
 
-| Acceso | Productos en Nuevo ticket |
-|---|---|
-| Web con Quipu | Todos los activos (selector) |
-| Web con QuipuFac | Todos excepto Quipu (selector) |
-| Desde plataforma Quipu | Quipu fijo (sin selector) |
-| Desde plataforma QuipuFac | QuipuFac fijo (sin selector) |
+`createClientPortal(transport, {metadata, upload})` envuelve `createClientAccess` (no hay backend propio):
 
-El frontend no tiene lista propia: muestra `session.products`. `parseSession` descarta sesiones
-incoherentes (QuipuFac con Quipu, plataforma con más de un producto, origen ≠ tipo de ingreso,
-QuipuFac con usuario individual). `submitTicket` rechaza productos fuera de la sesión; el servidor
-debe revalidarlo.
+| Interfaz | Contrato | Notas |
+|---|---|---|
+| Ingreso Quipu / QuipuFac | `login` → Edge `client-login` `{action:'login', provider, ruc, username?, password}` | Luego `client_session_info` + `client_products` |
+| Acceso desde plataforma | `exchange(provider, code)` → Edge `client-login` `action:'exchange'` | Exige `entry_context:'platform'` del mismo proveedor |
+| Sesión actual | `session` + `products` | Coherencia: Quipu = usuario; QuipuFac = empresa; plataforma ≤ 1 producto |
+| Nuevo ticket | `submit(token, payload, key)` → `client_submit_request` | Sin `studio_id`/RUC; clave de idempotencia de `createRpcAttempt` |
+| Adjuntos | `reserveAttachments` → `client_reserve_attachments` + `uploadReservedTicketAttachment` | 4 archivos / 2.500.000 bytes, reserva atómica |
+| Mis tickets | `tickets(token, {limit:100})` → `client_list_tickets` | Nombre de producto desde `client_products` o el catálogo público |
+| Detalle | `detail(token, id)` → `client_ticket_detail` | Ajeno o inexistente → «no encontrado» |
+| Salir | `logout` → `client_logout` | Revoca y limpia `sessionStorage` |
 
-## Adaptador (`src/lib/client-portal.ts`)
+Mensajes por código: `provider_contract_pending` → «El ingreso todavía no está habilitado»;
+`invalid_credentials*`/`provider_identity_mismatch` → «No pudimos validar los datos»;
+`studio_mapping_required` (o `company.studio_mapping:'required'`) → «Tu empresa aún no está
+habilitada…», sin datos internos; resto → «servicio no disponible».
 
-`CLIENT_PORTAL_CONTRACT` (provisional; ajustar solo este archivo al publicarse el definitivo):
+**Desambiguación 42501.** M13 usa 42501 para sesión inválida, producto no permitido y ticket ajeno;
+el adaptador de Codex los convierte todos en `client_authentication_required`. Antes de expulsar al
+usuario se consulta `client_session_info`: si la sesión sigue vigente, el error se trata como
+«producto no disponible», «no encontrado» o «ventana de adjuntos cerrada». Sugerencia a Codex:
+códigos distintos para recurso y sesión.
 
-| Operación | Llamada | Argumentos | Respuesta esperada |
-|---|---|---|---|
-| Inicio de sesión | Edge Function `client-login` | `{auth_type:'quipu', ruc, username, password}` o `{auth_type:'quipufac', ruc, password}` | `{session_token, session}`; 400/401/403 → credenciales; 404 → no publicado; 429 → límite |
-| Acceso desde plataforma | RPC `exchange_client_launch` | `p_code` | `{session_token, session}` con `origin` no nulo |
-| Sesión actual | RPC `get_client_session` | `p_session_token` | `session` |
-| Crear ticket | RPC `submit_authenticated_client_request` | `p_session_token`, `p_payload` {requester_name, system_id, request_type_id, title, description, urgent_requested}, `p_idempotency_key` | `{id, request_number, tracking_token}` |
-| Mis tickets | RPC `list_my_client_requests` | `p_session_token` | `[{request_number, product_name, title, created_at, status, requester_name}]` |
-| Detalle | RPC `get_my_client_request` | `p_session_token`, `p_request_number` | objeto o `null` (ajeno = inexistente) |
-| Cerrar sesión | RPC `end_client_session` | `p_session_token` | — |
-
-`session` = `{company_name, auth_type, origin, identity, products:[{id, name, client_key}], expires_at}`;
-`identity` = `{kind:'individual', username, display_name}` (Quipu) o `{kind:'company_account'}` (QuipuFac).
-`status` = estado general de `request-status.ts`.
-
-Errores RPC esperados: `PGRST202`/`42883` → «acceso aún no habilitado»; `28000` → sesión vencida
-(vuelve a `/cliente`); `22023`/`23514` → mensaje de validación del servidor.
-
-Seguridad en el cliente: la contraseña solo viaja en el cuerpo de `client-login` y se borra del
-estado tras cada intento; en `sessionStorage` solo se guarda el token opaco (`client-session-store.ts`);
-el token nunca va en la URL; el código de acceso se lee del fragmento y se elimina del historial
-antes del canje; las respuestas se filtran por lista blanca (nada interno llega a la vista).
-
-## Adjuntos
-
-Sin cambios de contrato: tras crear el ticket se usa `uploadRequestAttachments(id, tracking_token)`
-(reserva atómica + subida, 4 archivos / 2,5 MB). Requiere que `submit_authenticated_client_request`
-devuelva `tracking_token` como `submit_client_request`.
+Diferencias con el diseño previo: el contrato no expone nombre de empresa (la cabecera muestra el
+estudio asociado o «RUC …») ni el tipo de solicitud en el detalle (no se muestra).
 
 ## Datos ficticios
 
 Solo en `tests/client-portal.test.mjs` y en la vista de desarrollo aislada
-(`src/dev/client-portal-mock.ts`), activada únicamente con `vite` y `VITE_CLIENT_PORTAL_MOCK=1`
-(banner rojo «DATOS FICTICIOS»). La rama se elimina del build de producción (verificado: el bundle
-no contiene textos del simulador). Credenciales ficticias: RUC `20000000001`, contraseña `demo`.
+(`src/dev/client-portal-mock.ts`, simula el contrato de Codex con sus SQLSTATE), activada únicamente
+con `vite` y `VITE_CLIENT_PORTAL_MOCK=1`. Eliminada del build (verificado).
 
-## Validación
+## Validación de la integración (19/11/2026)
 
-- `node --test tests/*.test.mjs`: 101/101 (16 nuevas del portal).
-- `npm run build`: correcto (aviso preexistente de tamaño de chunk).
-- Revisión en Chromium headless, 1366×900 y 390×844: tarjetas y formularios, validaciones, las
-  cuatro reglas, envío, Mis tickets Quipu/QuipuFac, detalle propio/rechazado/ajeno, acceso desde
-  plataforma (código eliminado de la URL, producto fijo), código inválido, detalle sin sesión →
-  ingreso; `/request` y `/portal` sin cambios. Sin errores de consola.
+- `node --test tests/client-portal.test.mjs tests/client-login.test.mjs tests/ticket-attachment-limits.test.mjs tests/attachment-integration.test.mjs`: 44/44.
+- Contrato TypeScript de Codex (`tests/client-access-contract.types.mts`) y `tsc` del proyecto: sin errores; `npm run build` correcto.
+- Chromium headless 1366×900 y 390×844: dos formularios, cuatro reglas (QuipuFac directo incluye
+  Quipu_Gestion y excluye Quipu), envío, Mis tickets por identidad, detalle propio/rechazado/ajeno,
+  acceso desde plataforma (fragmento eliminado, producto fijo), código inválido, asociación pendiente,
+  contrato de proveedor pendiente y detalle sin sesión → ingreso. Sin errores de consola.
+- Supabase `xsxdpaiivklqeudgqoqf`: `migration list` 12/12 aplicadas, solo `20261119000100` pendiente;
+  `db push --remote --dry-run` → solo `20261119000100_client_access.sql`. Precondiciones (solo
+  lectura): `Quipu` y `Quipu_Fac` activos, `requests.public_rejection_reason`, `submit_client_request`
+  y `reserve_request_attachments` presentes, ninguna tabla `app_private.client_*` previa. M13 **no aplicada**.
 
-## Pendiente del backend (Codex)
+## Pendiente para operar con clientes reales
 
-1. Publicar `client-login` y las RPC con los nombres/formas de arriba, o informar los definitivos.
-2. `catalog_systems.client_key` (`quipu`/`quipufac`) y el cálculo de productos permitidos.
-3. `tracking_token` en la constancia de envío (adjuntos).
-4. Códigos de error acordados (`28000` sesión, `22023` validación).
-5. Decisiones abiertas del plan: si «excepto Quipu» incluye `Quipu_Gestion`; asociación RUC → estudio;
-   formato de respuesta de las API de autenticación; destino del formulario público `/request`.
+1. **Contrato de respuesta de las API externas** (Quipu y QuipuFac): sin `QUIPU_AUTH_RESPONSE_CONTRACT`
+   / `QUIPUFAC_AUTH_RESPONSE_CONTRACT` verificados, `client-login` responde `provider_contract_pending`
+   y la interfaz muestra «El ingreso todavía no está habilitado». No se hicieron llamadas reales.
+2. Desplegar la Edge Function `client-login` con `PROCONT_ALLOWED_ORIGINS` = origen del frontend
+   (si falta, el navegador recibe `origin_denied` → «servicio no disponible»).
+3. Acceso desde plataforma: secretos `QUIPU_PLATFORM_ENTRY_SECRET` / `QUIPUFAC_PLATFORM_ENTRY_SECRET`
+   y que el integrador abra `https://<ticketera>/cliente/acceso/{quipu|quipufac}#code=<código>`.
+4. Asociaciones RUC → estudio ambiguas mediante `set_client_company_studio` (admin/superadmin).
+5. `client-login` no limita intentos por RUC/IP (observado en esta integración); recomendable antes de producción.
+6. Destino del formulario público `/request` y despliegue del frontend.

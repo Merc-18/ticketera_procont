@@ -243,11 +243,11 @@ function App() {
         <Route path="/tracking" element={<RequestTracking />} />
         {/* Portal de clientes Quipu/QuipuFac (sesión propia, separada del personal interno). */}
         <Route path="/cliente" element={<ClientHome />} />
-        <Route path="/cliente/acceso" element={<ClientLaunch />} />
+        <Route path="/cliente/acceso/:provider" element={<ClientLaunch />} />
         <Route element={<ClientWorkspace />}>
           <Route path="/cliente/nuevo" element={<ClientNewTicket />} />
           <Route path="/cliente/tickets" element={<MyTickets />} />
-          <Route path="/cliente/tickets/:number" element={<ClientTicketDetail />} />
+          <Route path="/cliente/tickets/:id" element={<ClientTicketDetail />} />
         </Route>
         <Route
           path="/"

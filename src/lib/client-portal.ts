@@ -1,65 +1,54 @@
-// Adaptador del portal de clientes (acceso Quipu / QuipuFac) — contrato de Codex (M13).
+// Portal de clientes (Quipu / QuipuFac) sobre el contrato REAL de Codex (M13):
+// contracts/client-access-client.mjs → Edge Function `client-login` y RPC `client_*`.
 //
-// ESTADO: PROVISIONAL. Los nombres de RPC/Edge Function, argumentos y formas de respuesta de
-// CLIENT_PORTAL_CONTRACT son los del plan aprobado (19/11/2026) y se ajustarán SOLO en este
-// archivo cuando Codex publique el contrato definitivo. Si el backend aún no existe, cada
-// operación devuelve `pending_contract` y la interfaz muestra «acceso aún no habilitado»;
-// nunca se inventan datos.
+// Este módulo no reimplementa backend: envuelve `createClientAccess` y solo
+// 1) valida en el navegador lo mínimo (formularios, coherencia de la sesión),
+// 2) traduce los códigos del contrato a mensajes comprensibles, sin detalles internos,
+// 3) desambigua el código 42501 del servidor, que M13 usa tanto para «sesión inválida» como
+//    para «producto no permitido» o «ticket ajeno»: antes de cerrar la sesión se consulta
+//    `client_session_info`; si sigue vigente, el error es del recurso, no de la sesión.
 //
-// Reglas de seguridad del lado del cliente (el servidor las vuelve a validar):
-// - La contraseña solo viaja en el cuerpo de `client-login`; no se guarda ni se devuelve.
-// - El token de sesión es opaco; se envía en el cuerpo de las RPC, nunca en la URL.
-// - Los productos disponibles vienen del backend; el frontend no tiene una lista propia,
-//   solo rechaza sesiones incoherentes con las cuatro reglas aprobadas.
-// - Las respuestas se filtran por lista blanca de campos: nada interno llega a la vista.
+// Seguridad: la contraseña solo viaja en el cuerpo de `client-login`; el token de sesión
+// (64 hex, capacidad de 256 bits) va en el cuerpo de las RPC, nunca en la URL; las respuestas
+// se reducen a una lista blanca de campos antes de llegar a la vista.
 
+import { createClientAccess } from '../../contracts/client-access-client.mjs'
+import type {
+  ClientAccessApi, ClientAccessTransport, ClientSession as BackendSession,
+} from '../../contracts/client-access-client.d.mts'
 import type { RpcAttempt } from './rpc-attempt.ts'
 import type { SubmissionReceipt } from './operations.ts'
 import { isGeneralStatus, type GeneralStatus } from './request-status.ts'
 
-export const CLIENT_PORTAL_CONTRACT = {
-  status: 'provisional',
-  /** Edge Function: valida RUC/usuario/contraseña contra la API del tipo de ingreso. */
-  login: 'client-login',
-  /** RPC anon: canjea el código temporal del acceso desde plataforma. */
-  exchangeLaunch: 'exchange_client_launch',
-  /** RPC anon: sesión actual (empresa, identidad, origen, productos permitidos). */
-  session: 'get_client_session',
-  /** RPC anon: crea el ticket; empresa y estudio los deriva el servidor desde la sesión. */
-  submit: 'submit_authenticated_client_request',
-  /** RPC anon: tickets de la identidad autenticada. */
-  list: 'list_my_client_requests',
-  /** RPC anon: detalle autorizado (ajeno o inexistente → null). */
-  detail: 'get_my_client_request',
-  /** RPC anon: cierra la sesión. */
-  logout: 'end_client_session',
-} as const
-
 /** Tipo de autenticación (y, en el acceso desde plataforma, producto de origen). */
 export type AuthType = 'quipu' | 'quipufac'
 export const AUTH_TYPE_LABEL: Record<AuthType, string> = { quipu: 'Quipu', quipufac: 'QuipuFac' }
+export const isAuthType = (v: unknown): v is AuthType => v === 'quipu' || v === 'quipufac'
 
-/** Producto seleccionable (fila de catalog_systems devuelta por el backend). */
-export interface ClientProduct { id: string; name: string; client_key: AuthType | null }
+/** Producto permitido por el servidor para la sesión (client_products). */
+export interface ClientProduct { id: string; name: string }
 
 export type ClientIdentity =
   | { kind: 'individual'; username: string; display_name: string | null }
   | { kind: 'company_account' }
 
 export interface ClientSession {
-  company_name: string
+  ruc: string
+  studio_id: string | null
+  /** 'required': la empresa aún no tiene estudio asociado; no puede crear tickets. */
+  studio_mapping: 'resolved' | 'required'
   auth_type: AuthType
-  /** null = acceso directo desde la web; 'quipu' | 'quipufac' = abierto desde esa plataforma. */
+  /** null = acceso directo desde la web; proveedor = abierto desde esa plataforma (producto fijo). */
   origin: AuthType | null
   identity: ClientIdentity
-  /** Productos permitidos para Nuevo ticket, calculados por el servidor. */
   products: ClientProduct[]
   expires_at: string
 }
 
 export interface ClientTicketSummary {
+  id: string
   request_number: string
-  product_name: string
+  system_id: string
   title: string
   created_at: string
   status: GeneralStatus
@@ -67,7 +56,6 @@ export interface ClientTicketSummary {
   requester_name: string
 }
 export interface ClientTicketDetail extends ClientTicketSummary {
-  request_type: string | null
   description: string
   urgent_requested: boolean
   /** Motivo público de rechazo (solo si el estado es rechazado). */
@@ -82,18 +70,22 @@ export interface ClientTicketInput {
   requester_name: string; system_id: string; request_type_id: string
   title: string; description: string; urgent_requested: boolean
 }
+export interface AttachmentGrant { bucket: string; path: string; size_bytes: number; mime_type: string; expires_at: string }
+export interface ClientDeliveryItem { file: File; uploadKey: string }
+export interface ClientDeliveryResult { uploaded: string[]; failed: string[]; error: string | null }
 
 export type ClientPortalErrorCode =
-  | 'pending_contract' | 'invalid_input' | 'invalid_credentials' | 'rate_limited'
-  | 'session_expired' | 'invalid_launch' | 'unavailable' | 'invalid_response'
+  | 'pending_contract' | 'invalid_input' | 'invalid_credentials' | 'session_expired'
+  | 'invalid_launch' | 'studio_mapping_required' | 'product_unavailable' | 'unavailable' | 'invalid_response'
 
 const MESSAGES: Record<ClientPortalErrorCode, string> = {
-  pending_contract: 'El acceso de clientes aún no está habilitado. Intenta más tarde.',
+  pending_contract: 'El ingreso todavía no está habilitado. Intenta más tarde o comunícate con Procont.',
   invalid_input: 'Revisa los datos ingresados.',
   invalid_credentials: 'No pudimos validar los datos. Revisa e inténtalo nuevamente.',
-  rate_limited: 'Demasiados intentos seguidos. Espera unos minutos e inténtalo de nuevo.',
   session_expired: 'Tu sesión terminó. Ingresa nuevamente.',
   invalid_launch: 'El enlace de acceso no es válido o ya fue utilizado. Vuelve a abrir Ticketera desde tu sistema.',
+  studio_mapping_required: 'Tu empresa aún no está habilitada para registrar tickets en Ticketera. El equipo de Procont debe completar su asociación; comunícate con nosotros.',
+  product_unavailable: 'Ese producto no está disponible para este acceso.',
   unavailable: 'El servicio no está disponible en este momento. Intenta más tarde.',
   invalid_response: 'El servidor devolvió una respuesta no válida. Intenta nuevamente.',
 }
@@ -109,19 +101,11 @@ export class ClientPortalError extends Error {
 export const isClientPortalError = (e: unknown, code?: ClientPortalErrorCode): e is ClientPortalError =>
   e instanceof ClientPortalError && (code === undefined || e.code === code)
 
-/** Transporte inyectable: Supabase en la app, simulado en pruebas. */
-export interface ClientTransport {
-  rpc(name: string, args: Record<string, unknown>): PromiseLike<{ data: any; error: unknown }>
-  /** Edge Function. `status` = código HTTP, o null si no hubo respuesta (red). */
-  invoke(name: string, body: Record<string, unknown>): Promise<{ data: any; status: number | null; error: unknown }>
-}
-
 // ─── Validaciones ────────────────────────────────────────────────────────────
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 const REQ = /^REQ\d{2}-\d{3,}$/
-const TOKEN = /^[A-Za-z0-9._~-]{32,512}$/
-const LAUNCH_CODE = /^[A-Za-z0-9_-]{32,256}$/
-const AUTH_TYPES: readonly AuthType[] = ['quipu', 'quipufac']
+const TOKEN = /^[0-9a-f]{64}$/            // client_token_hash (M13) exige 64 hex
+const ENTRY_CODE = /^[0-9a-f]{64}$/       // código de entrada de un solo uso (client-login)
 
 export const RUC_PATTERN = /^\d{11}$/
 export function validateLogin(input: ClientLoginInput): Record<string, string> {
@@ -130,70 +114,64 @@ export function validateLogin(input: ClientLoginInput): Record<string, string> {
   if (input.auth_type === 'quipu') {
     const user = input.username.trim()
     if (!user) errors.username = 'Ingresa tu usuario.'
-    else if (user.length > 100) errors.username = 'El usuario es demasiado largo.'
+    else if (user.length > 256) errors.username = 'El usuario es demasiado largo.'
   }
   if (!input.password) errors.password = 'Ingresa tu contraseña.'
-  else if (input.password.length > 256) errors.password = 'La contraseña es demasiado larga.'
+  else if (input.password.length > 1024) errors.password = 'La contraseña es demasiado larga.'
   return errors
 }
 
 const text = (v: unknown, max = 20000): v is string => typeof v === 'string' && v.trim().length > 0 && v.length <= max
-const isAuthType = (v: unknown): v is AuthType => typeof v === 'string' && (AUTH_TYPES as readonly string[]).includes(v)
 const validDate = (v: unknown): v is string => typeof v === 'string' && !Number.isNaN(Date.parse(v))
 function fail(): never { throw new ClientPortalError('invalid_response') }
 
 /**
- * Normaliza la sesión y comprueba que sea coherente con las cuatro reglas aprobadas:
- * - Desde plataforma Quipu/QuipuFac: exactamente un producto, el de esa plataforma (fijo).
- * - Ingreso con QuipuFac: nunca incluye Quipu.
- * - Quipu identifica a un usuario; QuipuFac a la cuenta empresarial.
- * Si algo no cuadra se descarta la sesión entera (falla cerrada).
+ * Une `client_session_info` y `client_products` y comprueba su coherencia:
+ * Quipu = usuario individual, QuipuFac = cuenta empresarial; acceso desde plataforma = como
+ * máximo un producto (el de esa plataforma). Las reglas completas las aplica PostgreSQL.
  */
-export function parseSession(raw: any): ClientSession {
-  if (!raw || typeof raw !== 'object') fail()
-  if (!text(raw.company_name, 300) || !isAuthType(raw.auth_type) || !validDate(raw.expires_at)) fail()
-  const origin = raw.origin ?? null
-  if (origin !== null && !isAuthType(origin)) fail()
+export function parseSession(raw: BackendSession | any, rawProducts: unknown): ClientSession {
+  if (!raw || typeof raw !== 'object' || !validDate(raw.expires_at)) fail()
+  const id = raw.identity, company = raw.company
+  if (!id || !isAuthType(id.provider) || !company || !RUC_PATTERN.test(company.ruc ?? '')) fail()
+  if (raw.entry_context !== 'direct' && raw.entry_context !== 'platform') fail()
+  if (company.studio_mapping !== 'resolved' && company.studio_mapping !== 'required') fail()
+  if (company.studio_mapping === 'resolved' && !UUID.test(company.studio_id ?? '')) fail()
 
   let identity: ClientIdentity
-  const id = raw.identity
-  if (raw.auth_type === 'quipu') {
-    if (id?.kind !== 'individual' || !text(id.username, 100)) fail()
-    identity = { kind: 'individual', username: id.username, display_name: text(id.display_name, 200) ? id.display_name : null }
+  if (id.provider === 'quipu') {
+    if (id.kind !== 'user' || !text(id.username, 256)) fail()
+    identity = { kind: 'individual', username: id.username,
+      display_name: id.name_verified === true && text(id.verified_name, 300) ? id.verified_name : null }
   } else {
-    if (id?.kind !== 'company_account') fail()
+    if (id.kind !== 'company') fail()
     identity = { kind: 'company_account' }
   }
 
-  if (!Array.isArray(raw.products) || raw.products.length === 0) fail()
-  const products: ClientProduct[] = raw.products.map((p: any) => {
+  if (!Array.isArray(rawProducts)) fail()
+  const products: ClientProduct[] = (rawProducts as any[]).map(p => {
     if (!p || !UUID.test(p.id ?? '') || !text(p.name, 200)) fail()
-    const key = p.client_key ?? null
-    if (key !== null && !isAuthType(key)) fail()
-    return { id: p.id, name: p.name, client_key: key }
+    return { id: p.id, name: p.name }
   })
   if (new Set(products.map(p => p.id)).size !== products.length) fail()
+  const origin: AuthType | null = raw.entry_context === 'platform' ? id.provider : null
+  if (origin !== null && products.length > 1) fail()
 
-  if (origin !== null) {
-    if (origin !== raw.auth_type) fail()
-    if (products.length !== 1 || products[0].client_key !== origin) fail()
-  }
-  if (raw.auth_type === 'quipufac' && products.some(p => p.client_key === 'quipu')) fail()
-
-  return { company_name: raw.company_name, auth_type: raw.auth_type, origin, identity, products, expires_at: raw.expires_at }
+  return { ruc: company.ruc, studio_id: company.studio_mapping === 'resolved' ? company.studio_id : null,
+    studio_mapping: company.studio_mapping, auth_type: id.provider, origin, identity, products, expires_at: raw.expires_at }
 }
 
 function parseSummary(raw: any): ClientTicketSummary {
-  if (!raw || !REQ.test(raw.request_number ?? '') || !text(raw.product_name, 200) || !text(raw.title, 300)
-      || !validDate(raw.created_at) || !isGeneralStatus(raw.status) || !text(raw.requester_name, 200)) fail()
-  return { request_number: raw.request_number, product_name: raw.product_name, title: raw.title,
-    created_at: raw.created_at, status: raw.status, requester_name: raw.requester_name }
+  if (!raw || !UUID.test(raw.id ?? '') || !REQ.test(raw.request_number ?? '') || !UUID.test(raw.system_id ?? '')
+      || !text(raw.title, 300) || !validDate(raw.created_at) || !isGeneralStatus(raw.general_status)
+      || !text(raw.requester_name, 200)) fail()
+  return { id: raw.id, request_number: raw.request_number, system_id: raw.system_id, title: raw.title,
+    created_at: raw.created_at, status: raw.general_status, requester_name: raw.requester_name }
 }
 function parseDetail(raw: any): ClientTicketDetail {
   const base = parseSummary(raw)
   if (!text(raw.description) || typeof raw.urgent_requested !== 'boolean') fail()
-  return { ...base, request_type: text(raw.request_type, 1000) ? raw.request_type : null,
-    description: raw.description, urgent_requested: raw.urgent_requested,
+  return { ...base, description: raw.description, urgent_requested: raw.urgent_requested,
     rejection_reason: base.status === 'rejected' && text(raw.rejection_reason, 5000) ? raw.rejection_reason : null }
 }
 
@@ -209,33 +187,56 @@ export function identityLabel(session: ClientSession) {
     : 'Cuenta empresarial QuipuFac'
 }
 
-// ─── Errores del servidor ────────────────────────────────────────────────────
-// PROVISIONAL: códigos SQLSTATE esperados del contrato de Codex.
-//   PGRST202 / 42883 → RPC no publicada · 28000 → sesión inválida o vencida
-//   22023 / 23514    → validación (el mensaje del servidor es apto para el usuario)
-function rpcError(error: unknown, fallback: ClientPortalErrorCode): ClientPortalError {
-  const e = (error ?? {}) as { code?: string; message?: string }
-  if (e.code === 'PGRST202' || e.code === '42883') return new ClientPortalError('pending_contract')
-  if (e.code === '28000') return new ClientPortalError('session_expired')
-  if ((e.code === '22023' || e.code === '23514') && typeof e.message === 'string' && e.message.length <= 300)
-    return new ClientPortalError('invalid_input', e.message)
-  return new ClientPortalError(fallback)
+// ─── Códigos del contrato de Codex → errores de la interfaz ──────────────────
+const code = (e: unknown) => (e as { code?: unknown })?.code
+const LOGIN_ERRORS: Record<string, ClientPortalErrorCode> = {
+  provider_contract_pending: 'pending_contract',
+  invalid_credentials: 'invalid_credentials',
+  invalid_credentials_input: 'invalid_credentials',
+  provider_identity_mismatch: 'invalid_credentials',
+}
+function loginError(e: unknown) {
+  const c = code(e)
+  if (c === 'invalid_ruc') return new ClientPortalError('invalid_input', 'El RUC debe tener 11 dígitos.')
+  return new ClientPortalError(typeof c === 'string' && LOGIN_ERRORS[c] ? LOGIN_ERRORS[c] : 'unavailable')
 }
 
-function parseAuthResult(data: any) {
-  if (!data || typeof data.session_token !== 'string' || !TOKEN.test(data.session_token)) fail()
-  return { token: data.session_token as string, session: parseSession(data.session) }
+export interface ClientPortalOptions {
+  /** Subida de un archivo a la ruta reservada (uploadReservedTicketAttachment con el cliente Supabase). */
+  upload: (grant: AttachmentGrant, file: File) => Promise<unknown>
+  /** Metadatos del archivo para la reserva (attachmentMetadata del adaptador de adjuntos). */
+  metadata: (file: File, uploadKey: string) => { upload_key: string; file_name: string; size_bytes: number; mime_type: string }
 }
 
-export function createClientPortal(transport: ClientTransport) {
-  async function call(name: string, args: Record<string, unknown>, fallback: ClientPortalErrorCode = 'unavailable') {
-    let result
-    try { result = await transport.rpc(name, args) } catch { throw new ClientPortalError('unavailable') }
-    if (result.error) throw rpcError(result.error, fallback)
-    return result.data
+export function createClientPortal(transport: ClientAccessTransport, options: ClientPortalOptions) {
+  const api: ClientAccessApi = createClientAccess(transport)
+
+  const requireToken = (token: string) => { if (!TOKEN.test(token)) throw new ClientPortalError('session_expired') }
+
+  /** ¿La sesión sigue vigente? Distingue 42501 de sesión frente a 42501 del recurso. */
+  async function sessionAlive(token: string) {
+    try { await api.session(token); return true }
+    catch (e) {
+      if (code(e) === 'client_authentication_required') return false
+      throw new ClientPortalError('unavailable')
+    }
   }
-  const requireToken = (token: string) => {
-    if (!TOKEN.test(token)) throw new ClientPortalError('session_expired')
+  /** Error RPC genérico: sesión → session_expired; validación → invalid_input; resto → unavailable. */
+  function rpcError(e: unknown) {
+    const c = code(e)
+    if (c === 'client_authentication_required') return new ClientPortalError('session_expired')
+    if (c === 'studio_mapping_required') return new ClientPortalError('studio_mapping_required')
+    if (c === 'invalid_request' || c === 'client_request_rejected') return new ClientPortalError('invalid_input')
+    return new ClientPortalError('unavailable')
+  }
+  async function loadSession(token: string) {
+    try {
+      const [session, products] = await Promise.all([api.session(token), api.products(token)])
+      return parseSession(session, products)
+    } catch (e) {
+      if (e instanceof ClientPortalError) throw e
+      throw rpcError(e)
+    }
   }
 
   return {
@@ -243,54 +244,60 @@ export function createClientPortal(transport: ClientTransport) {
     async login(input: ClientLoginInput) {
       const errors = validateLogin(input)
       if (Object.keys(errors).length) throw new ClientPortalError('invalid_input', Object.values(errors)[0])
-      const body = input.auth_type === 'quipu'
-        ? { auth_type: 'quipu', ruc: input.ruc.trim(), username: input.username.trim(), password: input.password }
-        : { auth_type: 'quipufac', ruc: input.ruc.trim(), password: input.password }
-      let response
-      try { response = await transport.invoke(CLIENT_PORTAL_CONTRACT.login, body) } catch { throw new ClientPortalError('unavailable') }
-      const { status, data, error } = response
-      if (status === 404) throw new ClientPortalError('pending_contract')
-      if (status === 400 || status === 401 || status === 403) throw new ClientPortalError('invalid_credentials')
-      if (status === 429) throw new ClientPortalError('rate_limited')
-      if (error || status === null || status >= 300) throw new ClientPortalError('unavailable')
-      return parseAuthResult(data)
+      let receipt
+      try {
+        receipt = await api.login(input.auth_type === 'quipu'
+          ? { provider: 'quipu', ruc: input.ruc.trim(), username: input.username.trim(), password: input.password }
+          : { provider: 'quipufac', ruc: input.ruc.trim(), password: input.password })
+      } catch (e) { throw loginError(e) }
+      if (!TOKEN.test(receipt?.session_token ?? '')) fail()
+      const session = await loadSession(receipt.session_token)
+      if (session.auth_type !== input.auth_type || session.origin !== null || session.ruc !== input.ruc.trim()) fail()
+      return { token: receipt.session_token, session }
     },
 
-    /** Acceso desde plataforma: canjea el código temporal (un solo uso). La sesión queda con producto fijo. */
-    async exchangeLaunch(code: string) {
-      if (!LAUNCH_CODE.test(code)) throw new ClientPortalError('invalid_launch')
-      let data
-      try { data = await call(CLIENT_PORTAL_CONTRACT.exchangeLaunch, { p_code: code }, 'invalid_launch') }
-      catch (err) {
-        // Código vencido, usado o rechazado: siempre «enlace no válido» (no hay sesión que «termine»).
-        if (isClientPortalError(err, 'pending_contract') || isClientPortalError(err, 'unavailable')) throw err
-        throw new ClientPortalError('invalid_launch')
+    /** Acceso desde plataforma: canjea el código de un solo uso. La sesión queda con producto fijo. */
+    async exchangeLaunch(provider: string, entryCode: string) {
+      if (!isAuthType(provider) || !ENTRY_CODE.test(entryCode)) throw new ClientPortalError('invalid_launch')
+      let receipt
+      try { receipt = await api.exchange(provider, entryCode) }
+      catch (e) {
+        const c = code(e)
+        if (c === 'invalid_entry_code' || c === 'client_authentication_required' || c === 'invalid_request' || c === 'invalid_provider')
+          throw new ClientPortalError('invalid_launch')
+        throw new ClientPortalError('unavailable')
       }
-      if (data === null) throw new ClientPortalError('invalid_launch')
-      const result = parseAuthResult(data)
-      if (result.session.origin === null) fail()
-      return result
+      if (!TOKEN.test(receipt?.session_token ?? '')) fail()
+      const session = await loadSession(receipt.session_token)
+      if (session.origin !== provider) fail()
+      return { token: receipt.session_token, session }
     },
 
     async currentSession(token: string) {
       requireToken(token)
-      const data = await call(CLIENT_PORTAL_CONTRACT.session, { p_session_token: token })
-      if (data === null) throw new ClientPortalError('session_expired')
-      return parseSession(data)
+      return loadSession(token)
     },
 
-    /** Crea el ticket. El producto debe estar entre los permitidos por la sesión (el servidor lo revalida). */
+    /** Crea el ticket (client_submit_request reutiliza submit_client_request). Estudio y empresa los fija el servidor. */
     async submitTicket(token: string, session: ClientSession, input: ClientTicketInput, attempt: RpcAttempt): Promise<SubmissionReceipt> {
       requireToken(token)
-      if (!session.products.some(p => p.id === input.system_id)) throw new ClientPortalError('invalid_input', 'Selecciona un producto disponible.')
+      if (session.studio_mapping === 'required') throw new ClientPortalError('studio_mapping_required')
+      if (!session.products.some(p => p.id === input.system_id)) throw new ClientPortalError('product_unavailable')
       if (!input.requester_name.trim()) throw new ClientPortalError('invalid_input', 'Ingresa el nombre del solicitante.')
       if (!input.title.trim() || !input.description.trim()) throw new ClientPortalError('invalid_input', 'Completa el título y la descripción.')
       if (!UUID.test(input.request_type_id)) throw new ClientPortalError('invalid_input', 'Selecciona el tipo de solicitud.')
       const payload = { requester_name: input.requester_name.trim(), system_id: input.system_id,
         request_type_id: input.request_type_id, title: input.title.trim(), description: input.description.trim(),
         urgent_requested: input.urgent_requested }
-      return attempt.run(CLIENT_PORTAL_CONTRACT.submit, { p_session_token: token, p_payload: payload }, async args => {
-        const receipt = await call(CLIENT_PORTAL_CONTRACT.submit, args)
+      return attempt.run('client_submit_request', { p_session_token: token, p_payload: payload }, async args => {
+        let receipt
+        try { receipt = await api.submit(token, payload, String(args.p_idempotency_key)) }
+        catch (e) {
+          if (code(e) === 'client_authentication_required') {
+            throw new ClientPortalError(await sessionAlive(token) ? 'product_unavailable' : 'session_expired')
+          }
+          throw rpcError(e)
+        }
         if (!receipt || !UUID.test(receipt.id ?? '') || !UUID.test(receipt.tracking_token ?? '') || !REQ.test(receipt.request_number ?? '')) {
           throw new Error('No se recibió una constancia válida. Reintenta sin cambiar los datos de la solicitud.')
         }
@@ -298,26 +305,60 @@ export function createClientPortal(transport: ClientTransport) {
       })
     },
 
+    /**
+     * Adjuntos del ticket propio: reserva atómica del lote con la sesión (client_reserve_attachments,
+     * mismos límites 4 archivos / 2.500.000 bytes) y subida a las rutas asignadas por el servidor.
+     */
+    async deliverAttachments(token: string, requestId: string, items: ClientDeliveryItem[]): Promise<ClientDeliveryResult> {
+      if (items.length === 0) return { uploaded: [], failed: [], error: null }
+      let grants: AttachmentGrant[]
+      try {
+        requireToken(token)
+        grants = await api.reserveAttachments(token, requestId, items.map(i => options.metadata(i.file, i.uploadKey)))
+        if (!Array.isArray(grants) || grants.length !== items.length) fail()
+      } catch (e) {
+        const authIssue = code(e) === 'client_authentication_required' || isClientPortalError(e, 'session_expired')
+        const message = authIssue
+          ? (await sessionAlive(token).catch(() => false) ? 'La ventana para adjuntar archivos a este ticket ya no está disponible.' : MESSAGES.session_expired)
+          : 'No se autorizaron los adjuntos. Revisa la cantidad y el tamaño de los archivos.'
+        return { uploaded: [], failed: items.map(i => i.file.name), error: message }
+      }
+      const uploaded: string[] = [], failed: string[] = []
+      for (const [index, grant] of grants.entries()) {
+        const file = items[index].file
+        try { await options.upload(grant, file); uploaded.push(file.name) } catch { failed.push(file.name) }
+      }
+      return { uploaded, failed, error: failed.length ? 'Algunos adjuntos no se pudieron subir.' : null }
+    },
+
     async listMyTickets(token: string): Promise<ClientTicketSummary[]> {
       requireToken(token)
-      const data = await call(CLIENT_PORTAL_CONTRACT.list, { p_session_token: token })
+      let data
+      try { data = await api.tickets(token, { limit: 100, offset: 0 }) } catch (e) { throw rpcError(e) }
       if (!Array.isArray(data)) fail()
-      return (data as unknown[]).map(parseSummary)
+      return data.map(parseSummary)
     },
 
-    /** Detalle autorizado. Ajeno o inexistente → null (misma respuesta en ambos casos). */
-    async ticketDetail(token: string, requestNumber: string): Promise<ClientTicketDetail | null> {
+    /** Detalle autorizado por UUID. Ajeno o inexistente → null (misma respuesta en ambos casos). */
+    async ticketDetail(token: string, requestId: string): Promise<ClientTicketDetail | null> {
       requireToken(token)
-      const normalized = requestNumber.trim().toUpperCase()
-      if (!REQ.test(normalized)) return null
-      const data = await call(CLIENT_PORTAL_CONTRACT.detail, { p_session_token: token, p_request_number: normalized })
-      return data === null ? null : parseDetail(data)
+      if (!UUID.test(requestId)) return null
+      let data
+      try { data = await api.detail(token, requestId) }
+      catch (e) {
+        if (code(e) === 'client_authentication_required') {
+          if (await sessionAlive(token)) return null
+          throw new ClientPortalError('session_expired')
+        }
+        throw rpcError(e)
+      }
+      return parseDetail(data)
     },
 
-    /** Cierra la sesión en el servidor. Los errores no impiden limpiar la sesión local. */
+    /** Revoca la sesión en el servidor (idempotente). Los errores no impiden limpiar la sesión local. */
     async logout(token: string) {
       if (!TOKEN.test(token)) return
-      try { await transport.rpc(CLIENT_PORTAL_CONTRACT.logout, { p_session_token: token }) } catch { /* se limpia igual */ }
+      try { await api.logout(token) } catch { /* se limpia igual */ }
     },
   }
 }

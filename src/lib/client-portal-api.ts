@@ -1,16 +1,15 @@
 import { supabase } from './supabase'
-import { createClientPortal, type ClientTransport } from './client-portal'
+import { createClientPortal } from './client-portal'
+import type { ClientAccessTransport } from '../../contracts/client-access-client.d.mts'
+import { attachmentMetadata, uploadReservedTicketAttachment } from '../../contracts/ticket-security-client.mjs'
 
-/** Transporte real: RPC de PostgREST y Edge Function de Supabase (contrato de Codex). */
-const supabaseTransport: ClientTransport = {
-  rpc: (name, args) => supabase.rpc(name, args),
-  async invoke(name, body) {
-    const { data, error } = await supabase.functions.invoke(name, { body })
-    if (!error) return { data, status: 200, error: null }
-    // FunctionsHttpError trae la respuesta HTTP en `context`; los errores de red no.
-    const status = (error as { context?: { status?: unknown } }).context?.status
-    return { data: null, status: typeof status === 'number' ? status : null, error }
-  },
+/**
+ * Transporte real: cliente Supabase anónimo de la app (RPC client_* y Edge Function client-login).
+ * La sesión del cliente es una capacidad propia; nunca se usa auth.signIn ni setSession.
+ */
+const supabaseTransport: ClientAccessTransport = {
+  rpc: (name, args) => supabase.rpc(name, args) as unknown as ReturnType<ClientAccessTransport['rpc']>,
+  functions: { invoke: (name, options) => supabase.functions.invoke(name, options) },
 }
 
 /**
@@ -18,11 +17,15 @@ const supabaseTransport: ClientTransport = {
  * VITE_CLIENT_PORTAL_MOCK=1. En el build de producción esta rama se elimina.
  */
 const useMock = import.meta.env.DEV && import.meta.env.VITE_CLIENT_PORTAL_MOCK === '1'
-let mockTransport: Promise<ClientTransport> | undefined
+let mockTransport: Promise<ClientAccessTransport> | undefined
 const lazyMock = () => (mockTransport ??= import('../dev/client-portal-mock').then(m => m.createMockClientTransport()))
-const transport: ClientTransport = useMock
-  ? { rpc: async (n, a) => (await lazyMock()).rpc(n, a), invoke: async (n, b) => (await lazyMock()).invoke(n, b) }
+const transport: ClientAccessTransport = useMock
+  ? { rpc: async (n, a) => (await lazyMock()).rpc(n, a),
+      functions: { invoke: async (n, o) => (await lazyMock()).functions.invoke(n, o) } }
   : supabaseTransport
 
-export const clientPortal = createClientPortal(transport)
+export const clientPortal = createClientPortal(transport, {
+  metadata: (file, key) => attachmentMetadata(file, key),
+  upload: useMock ? async () => undefined : (grant, file) => uploadReservedTicketAttachment(supabase, grant, file),
+})
 export const CLIENT_PORTAL_MOCK = useMock
