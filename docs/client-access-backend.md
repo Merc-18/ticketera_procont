@@ -4,6 +4,19 @@ Base `main@35b9726`; rama aislada `codex/client-access-m13`. Migración nueva
 `20261119000100_client_access.sql`. Las doce migraciones anteriores permanecen
 intactas. No se aplicó SQL remoto, no se desplegó la función ni se fusionó main.
 
+## Distinción de errores antes de activar
+
+M13 usa `PT401` para sesión inválida/vencida, `PT403` para producto no permitido
+y `PT404` para ticket ajeno/inexistente. El contrato traduce respectivamente a
+`client_authentication_required`, `client_product_unavailable` y
+`client_ticket_unavailable`. `42501` se conserva como `client_request_forbidden`
+para otros permisos/ventana de adjuntos; no indica expiración de sesión.
+Los códigos HTTP personalizados siguen el [contrato oficial de PostgREST](https://docs.postgrest.org/en/stable/references/errors.html).
+
+El ingreso está deshabilitado por defecto también en frontend
+(`VITE_CLIENT_LOGIN_ENABLED=0`). El build conserva el seguimiento público por REQ;
+la función `client-login` no se despliega en esta activación.
+
 ## Entrega para Claude
 
 Contrato TypeScript: [`client-access-client.d.mts`](../contracts/client-access-client.d.mts).

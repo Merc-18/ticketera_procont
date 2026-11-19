@@ -1,7 +1,7 @@
 // ⚠ DATOS FICTICIOS — uso exclusivo en pruebas (tests/client-portal.test.mjs) y en la vista
 // de desarrollo aislada (VITE_CLIENT_PORTAL_MOCK=1 con `vite`, nunca en el build).
 // Simula el contrato de Codex (contracts/client-access-client.mjs, M13): Edge Function
-// `client-login` (login/exchange) y RPC client_* con los mismos SQLSTATE (42501 sesión, producto
+// `client-login` (login/exchange) y RPC client_* con SQLSTATE distintos (PT401 sesión, PT403 producto
 // o ticket ajeno; 23514 asociación de estudio; 22023 validación). No representa clientes reales.
 
 import type { ClientAccessTransport } from '../../contracts/client-access-client.d.mts'
@@ -118,10 +118,10 @@ export function createMockClientTransport(): ClientAccessTransport & { tickets: 
     },
     async rpc(name: string, args: Record<string, unknown>): Promise<RpcResult> {
       const token = String(args.p_session_token ?? '')
-      if (!/^[0-9a-f]{64}$/.test(token)) return pg('42501')
+      if (!/^[0-9a-f]{64}$/.test(token)) return pg('PT401')
       if (name === 'client_logout') { const s = sessions.get(token); if (s) s.revoked = true; return ok(null) }
       const s = sessions.get(token)
-      if (!s || s.revoked) return pg('42501')
+      if (!s || s.revoked) return pg('PT401')
       const own = (id: unknown) => tickets.find(t => t.identity === s.identity && t.id === id)
       switch (name) {
         case 'client_session_info': return ok(info(s))
@@ -131,11 +131,11 @@ export function createMockClientTransport(): ClientAccessTransport & { tickets: 
         case 'client_ticket_detail': {
           const t = own(args.p_request_id)
           return t ? ok({ ...summary(t), description: t.description, urgent_requested: t.urgent_requested,
-            rejection_reason: t.status === 'rejected' ? t.rejection_reason : null, timeline: [] }) : pg('42501')
+            rejection_reason: t.status === 'rejected' ? t.rejection_reason : null, timeline: [] }) : pg('PT404')
         }
         case 'client_submit_request': {
           const p = args.p_payload as Record<string, any>
-          if (!products(s).some(x => x.id === p.system_id)) return pg('42501')
+          if (!products(s).some(x => x.id === p.system_id)) return pg('PT403')
           if (s.ruc !== MOCK_RUC) return pg('23514')
           const id = crypto.randomUUID(), request_number = `REQ26-${++reqSeq}`
           tickets.push({ identity: s.identity, id, request_number, system_id: p.system_id, title: p.title,
@@ -145,7 +145,7 @@ export function createMockClientTransport(): ClientAccessTransport & { tickets: 
         }
         case 'client_reserve_attachments': {
           const t = own(args.p_request_id)
-          if (!t) return pg('42501')
+          if (!t) return pg('PT404')
           const files = args.p_files as { upload_key: string; file_name: string; size_bytes: number; mime_type: string }[]
           const bytes = files.reduce((n, f) => n + f.size_bytes, 0)
           if (t.files + files.length > 4 || t.bytes + bytes > 2_500_000) return pg('23514')

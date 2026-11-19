@@ -4,9 +4,7 @@
 // Este módulo no reimplementa backend: envuelve `createClientAccess` y solo
 // 1) valida en el navegador lo mínimo (formularios, coherencia de la sesión),
 // 2) traduce los códigos del contrato a mensajes comprensibles, sin detalles internos,
-// 3) desambigua el código 42501 del servidor, que M13 usa tanto para «sesión inválida» como
-//    para «producto no permitido» o «ticket ajeno»: antes de cerrar la sesión se consulta
-//    `client_session_info`; si sigue vigente, el error es del recurso, no de la sesión.
+// 3) distingue los códigos explícitos de sesión, producto y ticket sin consultas adicionales.
 //
 // Seguridad: la contraseña solo viaja en el cuerpo de `client-login`; el token de sesión
 // (64 hex, capacidad de 256 bits) va en el cuerpo de las RPC, nunca en la URL; las respuestas
@@ -202,6 +200,8 @@ function loginError(e: unknown) {
 }
 
 export interface ClientPortalOptions {
+  /** Activación explícita después de validar los contratos reales. */
+  enabled?: boolean
   /** Subida de un archivo a la ruta reservada (uploadReservedTicketAttachment con el cliente Supabase). */
   upload: (grant: AttachmentGrant, file: File) => Promise<unknown>
   /** Metadatos del archivo para la reserva (attachmentMetadata del adaptador de adjuntos). */
@@ -213,18 +213,11 @@ export function createClientPortal(transport: ClientAccessTransport, options: Cl
 
   const requireToken = (token: string) => { if (!TOKEN.test(token)) throw new ClientPortalError('session_expired') }
 
-  /** ¿La sesión sigue vigente? Distingue 42501 de sesión frente a 42501 del recurso. */
-  async function sessionAlive(token: string) {
-    try { await api.session(token); return true }
-    catch (e) {
-      if (code(e) === 'client_authentication_required') return false
-      throw new ClientPortalError('unavailable')
-    }
-  }
   /** Error RPC genérico: sesión → session_expired; validación → invalid_input; resto → unavailable. */
   function rpcError(e: unknown) {
     const c = code(e)
     if (c === 'client_authentication_required') return new ClientPortalError('session_expired')
+    if (c === 'client_product_unavailable') return new ClientPortalError('product_unavailable')
     if (c === 'studio_mapping_required') return new ClientPortalError('studio_mapping_required')
     if (c === 'invalid_request' || c === 'client_request_rejected') return new ClientPortalError('invalid_input')
     return new ClientPortalError('unavailable')
@@ -242,6 +235,7 @@ export function createClientPortal(transport: ClientAccessTransport, options: Cl
   return {
     /** Acceso directo: Quipu (RUC + usuario + contraseña) o QuipuFac (RUC + contraseña). */
     async login(input: ClientLoginInput) {
+      if (options.enabled === false) throw new ClientPortalError('pending_contract')
       const errors = validateLogin(input)
       if (Object.keys(errors).length) throw new ClientPortalError('invalid_input', Object.values(errors)[0])
       let receipt
@@ -258,6 +252,7 @@ export function createClientPortal(transport: ClientAccessTransport, options: Cl
 
     /** Acceso desde plataforma: canjea el código de un solo uso. La sesión queda con producto fijo. */
     async exchangeLaunch(provider: string, entryCode: string) {
+      if (options.enabled === false) throw new ClientPortalError('pending_contract')
       if (!isAuthType(provider) || !ENTRY_CODE.test(entryCode)) throw new ClientPortalError('invalid_launch')
       let receipt
       try { receipt = await api.exchange(provider, entryCode) }
@@ -292,12 +287,7 @@ export function createClientPortal(transport: ClientAccessTransport, options: Cl
       return attempt.run('client_submit_request', { p_session_token: token, p_payload: payload }, async args => {
         let receipt
         try { receipt = await api.submit(token, payload, String(args.p_idempotency_key)) }
-        catch (e) {
-          if (code(e) === 'client_authentication_required') {
-            throw new ClientPortalError(await sessionAlive(token) ? 'product_unavailable' : 'session_expired')
-          }
-          throw rpcError(e)
-        }
+        catch (e) { throw rpcError(e) }
         if (!receipt || !UUID.test(receipt.id ?? '') || !UUID.test(receipt.tracking_token ?? '') || !REQ.test(receipt.request_number ?? '')) {
           throw new Error('No se recibió una constancia válida. Reintenta sin cambiar los datos de la solicitud.')
         }
@@ -317,9 +307,10 @@ export function createClientPortal(transport: ClientAccessTransport, options: Cl
         grants = await api.reserveAttachments(token, requestId, items.map(i => options.metadata(i.file, i.uploadKey)))
         if (!Array.isArray(grants) || grants.length !== items.length) fail()
       } catch (e) {
-        const authIssue = code(e) === 'client_authentication_required' || isClientPortalError(e, 'session_expired')
-        const message = authIssue
-          ? (await sessionAlive(token).catch(() => false) ? 'La ventana para adjuntar archivos a este ticket ya no está disponible.' : MESSAGES.session_expired)
+        const expired = code(e) === 'client_authentication_required' || isClientPortalError(e, 'session_expired')
+        const message = expired ? MESSAGES.session_expired
+          : code(e) === 'client_ticket_unavailable' ? 'El ticket ya no está disponible para este acceso.'
+          : code(e) === 'client_request_forbidden' ? 'La ventana para adjuntar archivos a este ticket ya no está disponible.'
           : 'No se autorizaron los adjuntos. Revisa la cantidad y el tamaño de los archivos.'
         return { uploaded: [], failed: items.map(i => i.file.name), error: message }
       }
@@ -346,10 +337,7 @@ export function createClientPortal(transport: ClientAccessTransport, options: Cl
       let data
       try { data = await api.detail(token, requestId) }
       catch (e) {
-        if (code(e) === 'client_authentication_required') {
-          if (await sessionAlive(token)) return null
-          throw new ClientPortalError('session_expired')
-        }
+        if (code(e) === 'client_ticket_unavailable') return null
         throw rpcError(e)
       }
       return parseDetail(data)

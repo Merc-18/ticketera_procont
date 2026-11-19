@@ -1,4 +1,7 @@
 export type ClientProvider = 'quipu' | 'quipufac'
+/** PT401=session; PT403=product; PT404=foreign/missing ticket; 42501=other permission/window. */
+export type ClientAccessResourceError = 'client_authentication_required' | 'client_product_unavailable'
+  | 'client_ticket_unavailable' | 'client_request_forbidden'
 export type ClientLoginInput =
   | { provider: 'quipu'; ruc: string; username: string; password: string }
   | { provider: 'quipufac'; ruc: string; password: string }

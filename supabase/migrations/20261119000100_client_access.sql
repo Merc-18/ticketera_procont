@@ -78,7 +78,7 @@ CREATE FUNCTION app_private.client_token_hash(p_token text) RETURNS text
 LANGUAGE plpgsql IMMUTABLE SET search_path='' AS $$
 BEGIN
   IF p_token IS NULL OR p_token !~ '^[0-9a-f]{64}$' THEN
-    RAISE EXCEPTION 'Client session unavailable' USING ERRCODE='42501';
+    RAISE EXCEPTION 'Client session unavailable' USING ERRCODE='PT401';
   END IF;
   RETURN encode(sha256(convert_to(p_token,'UTF8')),'hex');
 END $$;
@@ -88,7 +88,7 @@ DECLARE s app_private.client_sessions;
 BEGIN
   SELECT * INTO s FROM app_private.client_sessions WHERE token_hash=app_private.client_token_hash(p_token)
     AND revoked_at IS NULL AND expires_at>clock_timestamp();
-  IF NOT FOUND THEN RAISE EXCEPTION 'Client session unavailable' USING ERRCODE='42501'; END IF;
+  IF NOT FOUND THEN RAISE EXCEPTION 'Client session unavailable' USING ERRCODE='PT401'; END IF;
   RETURN s;
 END $$;
 CREATE FUNCTION app_private.client_identity(p_provider text,p_ruc text,p_subject text,
@@ -227,7 +227,7 @@ BEGIN
   END IF;
   IF NOT EXISTS(SELECT 1 FROM jsonb_array_elements(public.client_products(p_session_token)) p
       WHERE p->>'id'=p_payload->>'system_id') THEN
-    RAISE EXCEPTION 'Product unavailable for this entry context' USING ERRCODE='42501'; END IF;
+    RAISE EXCEPTION 'Product unavailable for this entry context' USING ERRCODE='PT403'; END IF;
   study:=app_private.client_studio(i.company_id);
   IF study IS NULL THEN RAISE EXCEPTION 'Explicit study mapping required' USING ERRCODE='23514'; END IF;
   input:=p_payload||jsonb_build_object('studio_id',study);
@@ -255,7 +255,7 @@ BEGIN
   SELECT a.tracking_token INTO tracking FROM app_private.client_request_links l
     JOIN app_private.request_access a ON a.request_id=l.request_id
     WHERE l.request_id=p_request_id AND l.identity_id=s.identity_id;
-  IF tracking IS NULL THEN RAISE EXCEPTION 'Client ticket unavailable' USING ERRCODE='42501'; END IF;
+  IF tracking IS NULL THEN RAISE EXCEPTION 'Client ticket unavailable' USING ERRCODE='PT404'; END IF;
   RETURN public.reserve_request_attachments(p_request_id,tracking,p_files);
 END $$;
 CREATE FUNCTION public.client_list_tickets(p_session_token text,p_limit integer DEFAULT 50,p_offset integer DEFAULT 0) RETURNS jsonb
@@ -285,7 +285,7 @@ BEGIN
     INTO result FROM public.requests r JOIN app_private.client_request_links l ON l.request_id=r.id
     WHERE r.id=p_request_id AND l.identity_id=s.identity_id
       AND NOT EXISTS(SELECT 1 FROM public.projects WHERE id=r.project_id AND status='deleted');
-  IF result IS NULL THEN RAISE EXCEPTION 'Client ticket unavailable' USING ERRCODE='42501'; END IF;
+  IF result IS NULL THEN RAISE EXCEPTION 'Client ticket unavailable' USING ERRCODE='PT404'; END IF;
   RETURN result;
 END $$;
 

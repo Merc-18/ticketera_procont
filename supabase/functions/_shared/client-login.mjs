@@ -120,7 +120,7 @@ export function clientLoginHandler({ client, providerUrls = {}, providerContract
     async function rpc(name, args) {
       const { data, error } = await client.rpc(name, args)
       if (error) {
-        if (error.code === '42501') reject(401, 'client_authentication_required')
+        if (['PT401', '42501'].includes(error.code)) reject(401, 'client_authentication_required')
         if (error.code === '22023') reject(400, 'invalid_request')
         reject(503, 'client_backend_unavailable')
       }

@@ -3,7 +3,10 @@ export function createClientAccess(client) {
   async function rpc(name, args) {
     const { data, error } = await client.rpc(name, args)
     if (error) {
-      const code = error.code === '42501' ? 'client_authentication_required'
+      const code = error.code === 'PT401' ? 'client_authentication_required'
+        : error.code === 'PT403' ? 'client_product_unavailable'
+        : error.code === 'PT404' ? 'client_ticket_unavailable'
+        : error.code === '42501' ? 'client_request_forbidden'
         : error.code === '23514' ? name === 'client_submit_request' ? 'studio_mapping_required' : 'client_request_rejected'
         : error.code === '22023' ? 'invalid_request' : 'client_backend_unavailable'
       throw Object.assign(new Error(code), { code })

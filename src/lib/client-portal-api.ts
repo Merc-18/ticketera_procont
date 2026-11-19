@@ -17,6 +17,7 @@ const supabaseTransport: ClientAccessTransport = {
  * VITE_CLIENT_PORTAL_MOCK=1. En el build de producción esta rama se elimina.
  */
 const useMock = import.meta.env.DEV && import.meta.env.VITE_CLIENT_PORTAL_MOCK === '1'
+export const CLIENT_PORTAL_LOGIN_ENABLED = useMock || import.meta.env.VITE_CLIENT_LOGIN_ENABLED === '1'
 let mockTransport: Promise<ClientAccessTransport> | undefined
 const lazyMock = () => (mockTransport ??= import('../dev/client-portal-mock').then(m => m.createMockClientTransport()))
 const transport: ClientAccessTransport = useMock
@@ -25,6 +26,7 @@ const transport: ClientAccessTransport = useMock
   : supabaseTransport
 
 export const clientPortal = createClientPortal(transport, {
+  enabled: CLIENT_PORTAL_LOGIN_ENABLED,
   metadata: (file, key) => attachmentMetadata(file, key),
   upload: useMock ? async () => undefined : (grant, file) => uploadReservedTicketAttachment(supabase, grant, file),
 })

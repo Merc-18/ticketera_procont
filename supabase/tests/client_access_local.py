@@ -143,7 +143,7 @@ try:
     assert [p['id'] for p in products(platform['quipufac'])]==[fac]
     passed('all four product-selection cases are filtered in PostgreSQL')
     for token, product in [(company,quipu),(platform['quipu'],fac),(platform['quipufac'],quipu)]:
-        denied(f"SELECT public.client_submit_request('{token}',{data(ticket_payload(product))},gen_random_uuid())")
+        denied(f"SELECT public.client_submit_request('{token}',{data(ticket_payload(product))},gen_random_uuid())",'PT403')
     passed('forged product id cannot bypass entry-context restrictions')
 
     idem=q('SELECT gen_random_uuid()')
@@ -168,7 +168,7 @@ try:
     assert all(x['requester_name_verified'] is False for x in j(rpc('client_list_tickets',company)))
     passed('My tickets isolates individual users and shares only the RUC company account; declared names stay unverified')
     for token, rid in [(a,tb['id']),(a,c1['id']),(company,ta['id']),(b,legacy['id']),(a,'00000000-0000-0000-0000-000000000000')]:
-        denied(rpc('client_ticket_detail',token,rid))
+        denied(rpc('client_ticket_detail',token,rid),'PT404')
     passed('changing request id cannot read foreign, legacy-unlinked or nonexistent tickets')
     detail=j(rpc('client_ticket_detail',a,ta['id']))
     assert detail['general_status']=='received' and detail['timeline'] and detail['description']=='Fictitious request only'
@@ -183,7 +183,7 @@ try:
     q(f"INSERT INTO storage.objects(bucket_id,name,metadata) VALUES('request-attachments',{lit(grants[0]['path'])},'{json.dumps({'size':12,'mimetype':'application/pdf'})}'::jsonb)",'anon')
     assert q(f"SELECT count(*) FROM storage.objects WHERE name={lit(grants[0]['path'])}")=='1'
     denied(f"SELECT public.reserve_request_attachments('{ta['id']}','{tb['tracking_token']}',{data(files)})")
-    denied(f"SELECT public.client_reserve_attachments('{b}','{ta['id']}',{data(files)})")
+    denied(f"SELECT public.client_reserve_attachments('{b}','{ta['id']}',{data(files)})",'PT404')
     passed('existing private attachment reservation, final Storage write and cross-ticket capability checks work')
 
     amb=session(ruc='20000000002',subject='ambiguous',username='Ambiguous')
@@ -194,7 +194,7 @@ try:
     assert info(amb)['company']['studio_id']==ambiguous[1]
     amb_ticket=submit(amb)
     assert q(f"SELECT studio_id FROM public.requests WHERE id='{amb_ticket['id']}'")==ambiguous[1]
-    denied(rpc('client_ticket_detail',a,amb_ticket['id']))
+    denied(rpc('client_ticket_detail',a,amb_ticket['id']),'PT404')
     passed('ambiguous RUC blocks creation until explicit staff mapping; other companies remain isolated')
     missing=session(ruc='20000000003',subject='unmapped',username='Unmapped')
     assert info(missing)['company']['studio_id'] is None
@@ -215,9 +215,9 @@ try:
         for expression in [rpc('client_session_info',token),rpc('client_products',token),rpc('client_list_tickets',token),
                            rpc('client_ticket_detail',token,ta['id']),f"SELECT public.client_submit_request({lit(token)},{data(ticket_payload())},gen_random_uuid())",
                            f"SELECT public.client_reserve_attachments({lit(token)},'{ta['id']}',{data(files)})"]:
-            denied(expression)
+            denied(expression,'PT401')
     q(rpc('client_logout',b),'anon'); q(rpc('client_logout',b),'anon')
-    denied(rpc('client_session_info',b)); denied(rpc('client_ticket_detail',b,tb['id']))
+    denied(rpc('client_session_info',b),'PT401'); denied(rpc('client_ticket_detail',b,tb['id']),'PT401')
     passed('malformed, missing, expired and revoked sessions fail before returning data or replaying a ticket')
     for table in ['client_companies','client_identities','client_sessions','client_entry_codes','client_product_bindings','client_request_links']:
         assert q(f"SELECT relrowsecurity FROM pg_class WHERE oid='app_private.{table}'::regclass")=='t'

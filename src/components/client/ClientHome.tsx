@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import BrandLogo from '../ui/BrandLogo'
 import MockBanner from './MockBanner'
 import { BRAND } from '../../theme/brand'
-import { clientPortal } from '../../lib/client-portal-api'
+import { clientPortal, CLIENT_PORTAL_LOGIN_ENABLED } from '../../lib/client-portal-api'
 import { clientSessionStore } from '../../lib/client-session-store'
 import { validateLogin, type AuthType, type ClientLoginInput } from '../../lib/client-portal'
 import { operations } from '../../lib/api'
@@ -32,7 +32,7 @@ export default function ClientHome() {
       <MockBanner />
       <nav className="w-full px-4 sm:px-6 py-4 flex items-center justify-between gap-4 border-b border-white/10">
         <BrandLogo tone="light" size={44} />
-        {hasSession && (
+        {hasSession && CLIENT_PORTAL_LOGIN_ENABLED && (
           <button onClick={() => navigate('/cliente/nuevo')}
             className="shrink-0 bg-white/10 text-white border border-white/30 px-3 py-2 rounded-lg text-sm font-medium hover:bg-white/20 transition">
             Ir a mi espacio →
@@ -51,13 +51,18 @@ export default function ClientHome() {
           {notice && (
             <p role="status" className="mb-6 bg-accent-50 border border-accent-300 text-gray-800 px-4 py-3 rounded-lg text-sm text-center">{notice}</p>
           )}
+          {!CLIENT_PORTAL_LOGIN_ENABLED && (
+            <p role="status" className="mb-6 bg-white rounded-lg p-4 text-center text-gray-800">
+              El ingreso todavía no está habilitado. El seguimiento por número REQ sigue disponible.
+            </p>
+          )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6" role="group" aria-label="Tipo de ingreso">
             {CARDS.map(card => {
               const selected = type === card.type
               const dimmed = type !== null && !selected
               return (
-                <button key={card.type} type="button" aria-pressed={selected} onClick={() => setType(card.type)}
+                <button key={card.type} type="button" disabled={!CLIENT_PORTAL_LOGIN_ENABLED} aria-pressed={selected} onClick={() => setType(card.type)}
                   className={`group relative bg-white rounded-2xl p-6 sm:p-8 text-left shadow-xl transition-all duration-200 border-b-4
                     ${selected ? 'border-accent-400 ring-4 ring-accent-400/60 -translate-y-1' : 'border-transparent hover:border-accent-400 hover:-translate-y-1 hover:shadow-2xl'}
                     ${dimmed ? 'opacity-60 hover:opacity-100' : ''}`}>
@@ -79,7 +84,7 @@ export default function ClientHome() {
             })}
           </div>
 
-          {type && <LoginForm key={type} type={type} onChange={() => setType(null)}
+          {type && CLIENT_PORTAL_LOGIN_ENABLED && <LoginForm key={type} type={type} onChange={() => setType(null)}
             onSuccess={() => navigate('/cliente/nuevo')} />}
 
           <PublicSearch />

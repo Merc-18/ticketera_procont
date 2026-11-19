@@ -37,11 +37,16 @@ Mensajes por código: `provider_contract_pending` → «El ingreso todavía no e
 `studio_mapping_required` (o `company.studio_mapping:'required'`) → «Tu empresa aún no está
 habilitada…», sin datos internos; resto → «servicio no disponible».
 
-**Desambiguación 42501.** M13 usa 42501 para sesión inválida, producto no permitido y ticket ajeno;
-el adaptador de Codex los convierte todos en `client_authentication_required`. Antes de expulsar al
-usuario se consulta `client_session_info`: si la sesión sigue vigente, el error se trata como
-«producto no disponible», «no encontrado» o «ventana de adjuntos cerrada». Sugerencia a Codex:
-códigos distintos para recurso y sesión.
+**Errores distintos antes de activar M13.** `PT401` → sesión inválida/vencida;
+`PT403` → producto no permitido; `PT404` → ticket ajeno o inexistente (misma respuesta).
+El contrato devuelve códigos de recurso distintos y el frontend conserva una sesión
+vigente al rechazar un producto o un ticket. No se consulta otra vez la sesión para
+adivinar el motivo. `42501` queda como permiso/ventana de adjuntos, sin expulsar al cliente.
+
+El ingreso real está deshabilitado por defecto (`VITE_CLIENT_LOGIN_ENABLED=0`):
+no muestra el formulario de contraseña ni canjea códigos. La vista ficticia sigue
+limitada a DEV. Solo se habilitará tras confirmar los contratos y un despliegue autorizado
+de `client-login`; el seguimiento público por REQ continúa disponible.
 
 Diferencias con el diseño previo: el contrato no expone nombre de empresa (la cabecera muestra el
 estudio asociado o «RUC …») ni el tipo de solicitud en el detalle (no se muestra).
@@ -52,7 +57,7 @@ Solo en `tests/client-portal.test.mjs` y en la vista de desarrollo aislada
 (`src/dev/client-portal-mock.ts`, simula el contrato de Codex con sus SQLSTATE), activada únicamente
 con `vite` y `VITE_CLIENT_PORTAL_MOCK=1`. Eliminada del build (verificado).
 
-## Validación de la integración (19/11/2026)
+## Validación anterior de la integración (19/11/2026)
 
 - `node --test tests/client-portal.test.mjs tests/client-login.test.mjs tests/ticket-attachment-limits.test.mjs tests/attachment-integration.test.mjs`: 44/44.
 - Contrato TypeScript de Codex (`tests/client-access-contract.types.mts`) y `tsc` del proyecto: sin errores; `npm run build` correcto.
@@ -63,7 +68,8 @@ con `vite` y `VITE_CLIENT_PORTAL_MOCK=1`. Eliminada del build (verificado).
 - Supabase `xsxdpaiivklqeudgqoqf`: `migration list` 12/12 aplicadas, solo `20261119000100` pendiente;
   `db push --remote --dry-run` → solo `20261119000100_client_access.sql`. Precondiciones (solo
   lectura): `Quipu` y `Quipu_Fac` activos, `requests.public_rejection_reason`, `submit_client_request`
-  y `reserve_request_attachments` presentes, ninguna tabla `app_private.client_*` previa. M13 **no aplicada**.
+  y `reserve_request_attachments` presentes, ninguna tabla `app_private.client_*` previa. M13 **no aplicada en esa comprobación anterior**. La activación vigente se registra en
+  [client-m13-activation.json](validation/client-m13-activation.json).
 
 ## Pendiente para operar con clientes reales
 
@@ -76,4 +82,4 @@ con `vite` y `VITE_CLIENT_PORTAL_MOCK=1`. Eliminada del build (verificado).
    y que el integrador abra `https://<ticketera>/cliente/acceso/{quipu|quipufac}#code=<código>`.
 4. Asociaciones RUC → estudio ambiguas mediante `set_client_company_studio` (admin/superadmin).
 5. `client-login` no limita intentos por RUC/IP (observado en esta integración); recomendable antes de producción.
-6. Destino del formulario público `/request` y despliegue del frontend.
+6. Habilitar explícitamente `VITE_CLIENT_LOGIN_ENABLED=1` solo después de esos contratos y del despliegue autorizado. El despliegue del frontend queda fuera de esta activación.

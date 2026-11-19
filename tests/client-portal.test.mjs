@@ -98,7 +98,7 @@ test('regla 4 — desde plataforma QuipuFac: solo QuipuFac, fijo', async () => {
 test('el servidor valida la misma regla: producto fuera de la sesión se rechaza sin cerrar la sesión', async () => {
   const p = portal()
   const { token, session } = await p.login(quipufac())
-  // Aunque la interfaz fuera manipulada para incluir Quipu, client_submit_request responde 42501.
+  // Aunque la interfaz fuera manipulada para incluir Quipu, client_submit_request responde PT403.
   const forged = { ...session, products: [...session.products, { id: MOCK_PRODUCTS[0].id, name: 'Quipu' }] }
   await rejects(p.submitTicket(token, forged, ticket(MOCK_PRODUCTS[0].id), createRpcAttempt()), 'product_unavailable')
   assert.ok(await p.currentSession(token))   // la sesión sigue vigente
@@ -243,4 +243,27 @@ test('almacenamiento: solo el token opaco; tolera storage bloqueado', async () =
   store.clear(); assert.equal(store.get(), null)
   const blocked = createClientSessionStore(() => { throw new Error('blocked') })
   blocked.set(token); assert.equal(blocked.get(), token); blocked.clear(); assert.equal(blocked.get(), null)
+})
+
+test('PT403 y PT404 no expulsan ni consultan otra vez la sesión; PT401 sí indica expiración', async () => {
+  const { calls, transport } = spyTransport()
+  const p = createClientPortal(transport, options)
+  const { token, session } = await p.login(quipufac())
+  const count = () => calls.filter(c => c.name === 'client_session_info').length
+  const before = count()
+  const forged = { ...session, products: [...session.products, MOCK_PRODUCTS[0]] }
+  await rejects(p.submitTicket(token, forged, ticket(MOCK_PRODUCTS[0].id), createRpcAttempt()), 'product_unavailable')
+  assert.equal(await p.ticketDetail(token, MOCK_TICKET_IDS.ana), null)
+  assert.equal(count(), before)
+  await p.logout(token)
+  await rejects(p.listMyTickets(token), 'session_expired')
+  assert.equal(count(), before)
+})
+
+test('ingreso deshabilitado: no recoge ni envía credenciales ni canjea códigos', async () => {
+  const { calls, transport } = spyTransport()
+  const p = createClientPortal(transport, { ...options, enabled: false })
+  await rejects(p.login(quipu()), 'pending_contract')
+  await rejects(p.exchangeLaunch('quipu', MOCK_ENTRY.quipu), 'pending_contract')
+  assert.equal(calls.length, 0)
 })
