@@ -1,4 +1,6 @@
 import { supabase } from './supabase'
+import { createClient } from '@supabase/supabase-js'
+import { readClientLoginDevOrigin, readSupabaseConfig } from './supabase-config'
 import { createClientPortal } from './client-portal'
 import type { ClientAccessTransport } from '../../contracts/client-access-client.d.mts'
 import { attachmentMetadata, uploadReservedTicketAttachment } from '../../contracts/ticket-security-client.mjs'
@@ -7,9 +9,18 @@ import { attachmentMetadata, uploadReservedTicketAttachment } from '../../contra
  * Transporte real: cliente Supabase anónimo de la app (RPC client_* y Edge Function client-login).
  * La sesión del cliente es una capacidad propia; nunca se usa auth.signIn ni setSession.
  */
+// Local execution of the same Edge handler; RPCs keep their configured M13 backend.
+const developmentLoginOrigin = import.meta.env.DEV ? readClientLoginDevOrigin(import.meta.env) : null
+let developmentLoginClient: ReturnType<typeof createClient> | undefined
+const loginFunctions = () => {
+  if (!developmentLoginOrigin) return supabase.functions
+  developmentLoginClient ??= createClient(developmentLoginOrigin, readSupabaseConfig(import.meta.env).key,
+    { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false } })
+  return developmentLoginClient.functions
+}
 const supabaseTransport: ClientAccessTransport = {
   rpc: (name, args) => supabase.rpc(name, args) as unknown as ReturnType<ClientAccessTransport['rpc']>,
-  functions: { invoke: (name, options) => supabase.functions.invoke(name, options) },
+  functions: { invoke: (name, options) => loginFunctions().invoke(name, options) },
 }
 
 /**

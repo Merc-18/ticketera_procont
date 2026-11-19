@@ -20,3 +20,16 @@ export function readSupabaseConfig(env: Record<string, unknown>) {
   }
   return { url: parsed.origin, key }
 }
+
+/** Optional development-only origin of the existing client-login function. */
+export function readClientLoginDevOrigin(env: Record<string, unknown>) {
+  const value = String(env.VITE_CLIENT_LOGIN_DEV_ORIGIN ?? '').trim()
+  if (!value) return null
+  const invalid = () => new Error('VITE_CLIENT_LOGIN_DEV_ORIGIN requiere un origen localhost válido.')
+  let url: URL
+  try { url = new URL(value) } catch { throw invalid() }
+  if (!['localhost', '127.0.0.1', '[::1]'].includes(url.hostname) ||
+      !['http:', 'https:'].includes(url.protocol) || url.username || url.password ||
+      url.pathname !== '/' || url.search || url.hash) throw invalid()
+  return url.origin
+}

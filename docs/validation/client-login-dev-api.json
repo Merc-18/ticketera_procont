@@ -1,0 +1,59 @@
+{
+  "date": "2026-11-19",
+  "base_commit": "940191a",
+  "environment": "development",
+  "quipu": {
+    "url": "https://api-gestion-test.quipufac.com/api/users/auth",
+    "post_attempts": 1,
+    "http_status": 200,
+    "root_type": "object",
+    "observed_fields": {
+      "username": { "type": "string", "nonempty": true, "matches_requested_username": true },
+      "token": { "type": "string", "nonempty": true, "value_printed_or_saved": false }
+    },
+    "unknown_fields_omitted": 4,
+    "schema_exhaustive": false,
+    "success_rule": "HTTP success AND JSON AND exact requested username AND nonempty token",
+    "stable_user_id_confirmed": false,
+    "identity_policy": "existing exact-username fallback, scoped by requested RUC",
+    "returned_ruc_confirmed": false,
+    "verified_name_confirmed": false,
+    "real_error_fields_confirmed": false
+  },
+  "quipufac": {
+    "url": "https://api-dev.quipufac.com/auth/login",
+    "post_attempts": 1,
+    "http_request_sent": false,
+    "http_status": null,
+    "error": "dns_unavailable",
+    "agent_dns_error_type": "gaierror",
+    "agent_dns_error_code": -2,
+    "normal_ubuntu_wsl_dns_check": {
+      "transport": "Orca normal terminal, no authentication request",
+      "command": "getent ahosts api-dev.quipufac.com",
+      "addresses_returned": false,
+      "exit_code": 2
+    },
+    "contract_confirmed": false,
+    "next_action": "API owner must confirm development DNS; retain the supplied URL"
+  },
+  "validation": {
+    "node_login_and_portal_tests_passed": 42,
+    "python_probe_tests_passed": 5,
+    "typescript_contract": "passed",
+    "deno_edge_check": "passed",
+    "build": "passed",
+    "development_function_origin_absent_from_build": true,
+    "session_and_portal_check": "synthetic provider values and RPC storage; real handler and portal",
+    "real_ticketera_session_created": false,
+    "real_browser_login_verified": false,
+    "previous_sql_audits_repeated": false
+  },
+  "credentials_saved": false,
+  "upstream_tokens_printed_or_saved": false,
+  "complete_provider_responses_saved": false,
+  "real_tickets_created": false,
+  "migrations_modified": false,
+  "deployments": false,
+  "push_or_merge": false
+}

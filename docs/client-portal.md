@@ -57,8 +57,12 @@ adivinar el motivo. `42501` queda como permiso/ventana de adjuntos, sin expulsar
 
 El ingreso real está deshabilitado por defecto (`VITE_CLIENT_LOGIN_ENABLED=0`):
 no muestra el formulario de contraseña ni canjea códigos. La vista ficticia sigue
-limitada a DEV. Solo se habilitará tras confirmar los contratos y un despliegue autorizado
-de `client-login`; el seguimiento público por REQ continúa disponible.
+limitada a DEV. Quipu ya dispone de contrato mínimo de desarrollo. Para probar sin
+desplegar, la misma función puede ejecutarse localmente con
+`VITE_CLIENT_LOGIN_DEV_ORIGIN=http://localhost:8000` (solo DEV, solo loopback);
+las RPC conservan el backend M13 configurado. Véanse las variables privadas y
+pendientes en [client-login-development.md](client-login-development.md).
+El seguimiento público por REQ continúa disponible.
 
 Diferencias con el diseño previo: el contrato no expone nombre de empresa (la cabecera muestra el
 estudio asociado o «RUC …») ni el tipo de solicitud en el detalle (no se muestra).
@@ -85,13 +89,16 @@ con `vite` y `VITE_CLIENT_PORTAL_MOCK=1`. Eliminada del build (verificado).
 
 ## Pendiente para operar con clientes reales
 
-1. **Contrato de respuesta de las API externas** (Quipu y QuipuFac): sin `QUIPU_AUTH_RESPONSE_CONTRACT`
-   / `QUIPUFAC_AUTH_RESPONSE_CONTRACT` verificados, `client-login` responde `provider_contract_pending`
-   y la interfaz muestra «El ingreso todavía no está habilitado». No se hicieron llamadas reales.
+1. **Contratos de desarrollo:** Quipu ya tiene un contrato mínimo confirmado
+   (`username` exacto + `token` no vacío). QuipuFac sigue con `provider_contract_pending`
+   porque su dominio tampoco resuelve desde Ubuntu WSL normal. Una llamada de Quipu,
+   sin repetir autenticaciones: [resultado y pendientes](client-login-development.md).
 2. Desplegar la Edge Function `client-login` con `PROCONT_ALLOWED_ORIGINS` = origen del frontend
    (si falta, el navegador recibe `origin_denied` → «servicio no disponible»).
 3. Acceso desde plataforma: secretos `QUIPU_PLATFORM_ENTRY_SECRET` / `QUIPUFAC_PLATFORM_ENTRY_SECRET`
    y que el integrador abra `https://<ticketera>/cliente/acceso/{quipu|quipufac}#code=<código>`.
 4. Asociaciones RUC → estudio ambiguas mediante `set_client_company_studio` (admin/superadmin).
 5. `client-login` no limita intentos por RUC/IP (observado en esta integración); recomendable antes de producción.
-6. Habilitar explícitamente `VITE_CLIENT_LOGIN_ENABLED=1` solo después de esos contratos y del despliegue autorizado. El despliegue del frontend queda fuera de esta activación.
+6. Habilitar explícitamente `VITE_CLIENT_LOGIN_ENABLED=1` con la función disponible
+   localmente o tras despliegue autorizado. Quipu no depende del contrato pendiente
+   de QuipuFac. El despliegue del frontend queda fuera de esta activación.

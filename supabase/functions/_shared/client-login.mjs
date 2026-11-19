@@ -1,4 +1,4 @@
-/** Server-only provider adapter. No real response schema is assumed or bundled. */
+/** Server-only provider adapter. Contracts require reviewed provider evidence. */
 const providers = new Set(['quipu', 'quipufac'])
 const rucPattern = /^\d{11}$/
 const tokenPattern = /^[a-f0-9]{64}$/
@@ -54,7 +54,10 @@ function pathValue(value, path) {
  */
 export function validateProviderContract(contract, provider) {
   if (!object(contract) || contract.version !== 1 || contract.provider !== provider ||
-      !bounded(contract.verifiedReference, 300) || !object(contract.success) ||
+      !bounded(contract.verifiedReference, 300) || !object(contract.success)) reject(503, 'provider_contract_pending')
+  const matchesInput = Object.hasOwn(contract.success, 'equalsInput')
+  if (matchesInput ? provider !== 'quipu' || contract.success.equalsInput !== 'username' ||
+      Object.hasOwn(contract.success, 'equals') :
       !['boolean', 'string', 'number'].includes(typeof contract.success.equals)) reject(503, 'provider_contract_pending')
   pathValue({}, contract.success.path)
   pathValue({}, contract.tokenPath)
@@ -68,7 +71,9 @@ export function validateProviderContract(contract, provider) {
 export function adaptProviderResponse(provider, body, input, contract) {
   validateProviderContract(contract, provider)
   const providerToken = pathValue(body, contract.tokenPath)
-  if (!object(body) || pathValue(body, contract.success.path) !== contract.success.equals ||
+  const expected = contract.success.equalsInput ? input.username : contract.success.equals
+  if (contract.success.equalsInput && (!bounded(expected, 256) || !expected.trim())) reject(401, 'invalid_credentials')
+  if (!object(body) || pathValue(body, contract.success.path) !== expected ||
       !bounded(providerToken, 16384) || !providerToken.trim()) reject(401, 'invalid_credentials')
   if (contract.rucPath && pathValue(body, contract.rucPath) !== input.ruc) reject(401, 'provider_identity_mismatch')
   const name = contract.namePath ? pathValue(body, contract.namePath) : null
