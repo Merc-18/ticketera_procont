@@ -1,0 +1,193 @@
+# Acceso de clientes: backend M13 preparado
+
+Base `main@35b9726`; rama aislada `codex/client-access-m13`. Migración nueva
+`20261119000100_client_access.sql`. Las doce migraciones anteriores permanecen
+intactas. No se aplicó SQL remoto, no se desplegó la función ni se fusionó main.
+
+## Entrega para Claude
+
+Contrato TypeScript: [`client-access-client.d.mts`](../contracts/client-access-client.d.mts).
+Adaptador ejecutable: [`client-access-client.mjs`](../contracts/client-access-client.mjs).
+Usar `createClientAccess(client)` con un cliente Supabase anónimo independiente del
+cliente de las cuentas internas. No usar `auth.signIn`, roles internos, metadatos de
+Auth ni `setSession` de Supabase para la sesión del cliente.
+
+La sesión es una capacidad aleatoria de 256 bits (`session_token`), independiente
+de un JWT de Supabase. Conservarla en memoria durante la sesión de la interfaz,
+enviarla solamente por HTTPS en el cuerpo RPC y descartarla al cerrar/expirar.
+No colocar sesiones, contraseñas ni tokens de seguimiento en URL, logs o analítica.
+La base guarda únicamente SHA-256 de la capacidad; el token del proveedor se descarta.
+Duración: ocho horas, sin renovación automática; `client_logout` revoca de forma idempotente.
+
+| Método del adaptador | Transporte | Resultado |
+|---|---|---|
+| `login(input)` | Edge `client-login`, `action: login` | `ClientSessionReceipt` |
+| `exchange(provider, code)` | Edge `client-login`, `action: exchange` | `ClientSessionReceipt` |
+| `session(token)` | `client_session_info` | Identidad, empresa, expiración y asociación de estudio |
+| `products(token)` | `client_products` | Productos activos permitidos por el servidor |
+| `submit(token, payload, key)` | `client_submit_request` | `{id, request_number, tracking_token}` |
+| `tickets(token, {limit, offset})` | `client_list_tickets` | Lista filtrada por identidad en PostgreSQL |
+| `detail(token, requestId)` | `client_ticket_detail` | Detalle y cronología pública autorizada |
+| `reserveAttachments(token, requestId, files)` | `client_reserve_attachments` | Reservas privadas existentes |
+| `logout(token)` | `client_logout` | Revocación; luego descartar token local |
+
+Los nombres de parámetros RPC y tipos exactos están en el adaptador y `.d.mts`.
+El error `studio_mapping_required` exige asociación administrativa; la interfaz no
+debe elegir un estudio arbitrario ni mandar `studio_id`. `client_authentication_required`
+exige descartar la sesión y volver al acceso. `provider_contract_pending` significa
+que falta validar/configurar la respuesta real del proveedor, no credenciales inválidas.
+
+## Login de servidor y contrato externo pendiente
+
+`POST /functions/v1/client-login`, JSON:
+
+- Quipu: `{action:'login', provider:'quipu', ruc:string, username:string, password:string}`.
+- QuipuFac: `{action:'login', provider:'quipufac', ruc:string, password:string}`.
+
+Quipu envía al proveedor `{ruc, username, password}` por POST a
+`https://api-gestion-test.quipufac.com/api/users/auth`.
+QuipuFac envía `{username:ruc, password}` por POST a
+`https://api-dev.quipufac.com/auth/login`.
+Se pueden cambiar mediante `QUIPU_AUTH_URL` y `QUIPUFAC_AUTH_URL`, solo en servidor.
+HTTPS obligatorio, sin redirecciones, timeout de diez segundos, entrada de 16 KiB
+y respuesta de 64 KiB. No se registran cuerpos, contraseñas, tokens o errores crudos.
+
+**No se recibió una respuesta válida de ninguna API externa. No se afirma haber
+confirmado su formato ni un login real.** No se efectuaron solicitudes de prueba
+a los productos externos. El login queda cerrado con HTTP 503 `provider_contract_pending`
+hasta configurar un contrato basado en respuestas reales válidas y fallidas.
+Los fixtures de las pruebas usan una estructura deliberadamente inventada para
+simular al proveedor; no son valores predeterminados ni documentación de sus API.
+
+El adaptador acepta un manifiesto privado por proveedor, en
+`QUIPU_AUTH_RESPONSE_CONTRACT` o `QUIPUFAC_AUTH_RESPONSE_CONTRACT`, con este tipo:
+
+```ts
+interface ProviderResponseContract {
+  version: 1
+  provider: 'quipu' | 'quipufac'
+  verifiedReference: string // Referencia a la evidencia revisada; sin secretos.
+  success: { path: string[]; equals: boolean | string | number }
+  tokenPath: string[]
+  rucPath?: string[]
+  subjectPath?: string[]
+  namePath?: string[]
+  allowUsernameFallback?: boolean
+}
+```
+
+Las rutas se deben obtener de las respuestas auténticas; no se suministran rutas
+reales supuestas. El marcador de éxito debe coincidir exactamente, el token debe
+ser una cadena no vacía y, si hay `rucPath`, debe coincidir con el RUC autenticado.
+Si el proveedor no devuelve RUC, la revisión debe confirmar que la autenticación
+vincula las credenciales al RUC enviado. Un HTTP 200 por sí solo nunca crea sesión.
+
+Quipu usa `subjectPath` como identificador estable si el proveedor lo tiene. Si
+no existe, se requiere `allowUsernameFallback:true` explícito; la identidad queda
+separada por **RUC + username exacto**, sin minúsculas ni fusiones automáticas.
+Si luego el usuario cambia de nombre o se habilita un identificador estable, no
+se migra ni fusiona su historia automáticamente. QuipuFac usa una sola identidad
+empresarial por RUC. Un nombre declarado al crear un ticket sigue siendo declarado
+(`requester_name_verified:false`), separado de `identity.verified_name` procedente
+del contrato del proveedor o del servidor de plataforma autorizado.
+
+## Productos y estudios
+
+| Entrada autenticada | Selector y creación permitidos |
+|---|---|
+| Directa Quipu | Todos los productos activos |
+| Directa QuipuFac | Todos los activos excepto Quipu |
+| Plataforma Quipu | Solo Quipu activo |
+| Plataforma QuipuFac | Solo QuipuFac activo |
+
+La sesión guarda el contexto; el navegador no puede escogerlo. PostgreSQL filtra
+el selector y vuelve a validar `system_id` antes de crear. Se usan dos asociaciones
+globales con UUID del catálogo existente (`Quipu`, `Quipu_Fac`), conservadas aunque
+cambie el nombre. No existe una matriz producto/empresa. Negmin puede aparecer como
+producto activo por la regla general, pero no tiene proveedor ni integración de entrada.
+
+El RUC identifica empresa; se reutiliza `public.studios`. Si existe exactamente un
+estudio activo con ese RUC, se usa su UUID. Cero o varios candidatos dejan
+`company.studio_mapping:'required'` y bloquean la creación, sin elegir al azar.
+Un superadmin/admin existente puede asociar explícitamente mediante
+`set_client_company_studio(p_ruc text,p_studio_id uuid)`: el estudio debe estar activo
+y tener el mismo RUC o no tenerlo registrado. No se cambia el catálogo ni se
+reescriben estudios de tickets existentes.
+
+## Solicitudes, aislamiento y adjuntos
+
+`client_submit_request` recibe nombre declarado obligatorio, producto, tipo, título,
+descripción y urgencia; el estudio, empresa, identidad y método se fijan en servidor.
+Reutiliza `submit_client_request`: validación M11, número REQ, eventos y capacidad
+de seguimiento. La asociación privada se inserta en la misma transacción. Reintentos
+usan una UUID estable por identidad y payload; no comparten el caché anónimo de otras
+identidades. Incluso al reintentar se comprueba que la sesión sigue vigente.
+
+Quipu lista únicamente los tickets de ese usuario; otro usuario del mismo RUC no
+los ve. Todas las sesiones QuipuFac del RUC comparten la identidad empresarial y
+sus tickets QuipuFac, sin absorber solicitudes de usuarios individuales Quipu.
+Detalle, lista y reserva de adjuntos comparan la identidad del token con la asociación
+del ticket. Cambiar el UUID de la solicitud no concede acceso. Los tickets anteriores
+sin asociación no se reasignan ni se incorporan al historial de un cliente.
+
+El detalle muestra título, descripción, urgencia, estado general y cronología pública.
+No devuelve comentarios internos, identidad de empleados, clasificación interna,
+tokens ni motivos de rechazo administrativos; solo `public_rejection_reason`.
+Se conserva el seguimiento público existente por REQ y el contrato anterior con token.
+
+Para adjuntos, comprimir imágenes con la lógica actual; conservar documentos sin
+alterar. Preparar metadatos con `attachmentMetadata` del adaptador existente,
+llamar `reserveAttachments` y subir con `uploadReservedTicketAttachment` usando las
+reservas devueltas. Se mantienen 4 archivos / 2.500.000 bytes combinados, bucket
+privado, claves por archivo, verificación de bytes/MIME y ventana original de treinta
+minutos para solicitudes pendientes. Las capacidades ya emitidas conservan su
+caducidad original; la reserva nueva exige sesión vigente y titularidad del ticket.
+El recibo de creación sigue siendo compatible con los adaptadores públicos anteriores.
+
+## Entrada automática: contrato para el integrador de plataformas
+
+Cada servidor de plataforma debe autenticar a su usuario antes de solicitar un
+código. Se configura un secreto aleatorio independiente, de al menos 32 caracteres,
+en `QUIPU_PLATFORM_ENTRY_SECRET` o `QUIPUFAC_PLATFORM_ENTRY_SECRET`. Es exclusivo
+de los dos servidores; no se incorpora al frontend ni al enlace. Rotarlo invalida
+futuras emisiones, sin modificar el producto externo desde esta tarea.
+
+1. Servidor de plataforma → `POST client-login`, header `Authorization: Bearer` con
+   su secreto y JSON `{action:'issue_code', provider, ruc, verified_name?}`.
+   Quipu añade `subject`, `subject_source:'provider_id'|'username'` y `username`;
+   usar la misma política de identidad validada que el acceso directo. Para fallback,
+   `subject` debe ser exactamente `username`. QuipuFac no manda datos individuales.
+2. Ticketera devuelve `{code, provider, expires_at}`. Código aleatorio de 256 bits,
+   sesenta segundos, hash únicamente en base de datos, un solo canje atómico.
+3. Abrir Ticketera por su ruta de cliente con el código en el **fragmento** del enlace
+   (`#code=...`), nunca una contraseña, secreto de integración o token del proveedor.
+   La ruta concreta la elige Claude; quitar inmediatamente el fragmento tras leerlo.
+4. Interfaz → `exchange(provider,code)`. Solo después del canje se recibe sesión
+   `entry_context:'platform'`; no se permite elevarla a directa ni cambiar de proveedor.
+
+El productor rechaza peticiones con Origin de navegador y secretos de otra plataforma.
+El canje comprueba proveedor, vencimiento y consumo; dos canjes concurrentes tienen
+un único ganador. La integración del enlace en Quipu/QuipuFac queda a cargo de la
+otra persona; aquí no se modificó ninguno de esos sistemas.
+
+## Verificación local y límites de la entrega
+
+- Node: pruebas nuevas de ambos adaptadores de login con respuestas simuladas,
+  fallo cerrado, errores sin secretos, productores/canje y transporte del frontend.
+- PostgreSQL 17.12 aislado: M1–M12 solo como preparación del fixture; pruebas nuevas
+  de M13 con identidades, solicitudes y Storage ficticios. No se repitieron las suites anteriores.
+- Contrato TypeScript compilado con un consumidor de prueba sin contraseñas literales.
+- Evidencia: [client-access-local.json](validation/client-access-local.json).
+
+Comandos de estas pruebas, sin acceso remoto:
+
+```bash
+node --test tests/client-login.test.mjs
+tsc --noEmit --strict --target ES2022 --module NodeNext --moduleResolution NodeNext --lib ES2022,DOM tests/client-access-contract.types.mts
+python3 -B supabase/tests/client_access_local.py --pg-bin /ruta/postgresql/17/bin --runtime-lib /ruta/runtime/lib
+```
+
+Pendiente para un login real: contrato de respuesta de cada proveedor verificado y
+configuración privada correspondiente. La asociación de RUC ambiguos se realiza
+explícitamente cuando proceda. Aplicación de M13, despliegue, integración frontend y
+merge no se ejecutan en esta entrega.
