@@ -1,0 +1,30 @@
+{
+  "at_utc": "2026-11-19T13:56:02.462953+00:00",
+  "project": "ticketera-procont",
+  "ref": "xsxdpaiivklqeudgqoqf",
+  "status": "blocked_database_authentication",
+  "applied": false,
+  "previous_dry_run_commit": "83b148e",
+  "recovery_commits_verified": [
+    "17c8c19",
+    "6a4bce5",
+    "83b148e",
+    "1ba71b2"
+  ],
+  "build": "passed",
+  "activation_guard_tests": 4,
+  "backend_74_repeated": false,
+  "claude_sql_26_repeated": false,
+  "previous_frontend_suites_repeated": false,
+  "remote_history_count": null,
+  "remote_rpc_permissions_verified": false,
+  "main_merged": false,
+  "credentials_saved": false,
+  "pushed": false,
+  "frontend_deployed": false,
+  "original_branch": "integration/board-operations",
+  "original_main": "94bd8fd17972d0e7a96137f7a3a7d72c8b4cb445",
+  "file_1_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "authentication_diagnostic": "native CLI reaches PostgreSQL; password authentication rejected without credentials",
+  "next_step": "Run scripts/activate_board_m12.py --execute --finalize-main in normal Ubuntu; hidden password entry, never saved."
+}
