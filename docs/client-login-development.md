@@ -59,47 +59,65 @@ Frontend, M13, productos y separación de identidades sin modificaciones.
 - Deno `check` y `npm run build` (incluye TypeScript): correctos.
 - No se repitieron suites generales ni auditorías SQL.
 
-Los tests de sesión/portal usan RPC simuladas. No se creó una sesión remota ni se
-verificó el navegador con la función real. Las cuatro reglas de productos y la
-separación de identidades permanecen intactas.
+En la entrega `ae26716`, los tests de sesión/portal usaron RPC simuladas y todavía
+no se verificó el navegador con la función real. La integración siguiente completa
+esa comprobación sin cambiar las reglas de productos ni la separación de identidades.
 
-## Único procedimiento para probar ambos ingresos desde el navegador local
+## Integración localhost completada
 
-Falta configurar `SUPABASE_SERVICE_ROLE_KEY`, que no estaba disponible. La clave
-de servidor corresponde al proyecto `ticketera-procont` y solo se usa en la función.
-Las contraseñas de proveedores se introducen después en los formularios existentes.
-La configuración pública de Supabase ya existe en `.env.local` del checkout original.
+Se recuperó `main` directamente del repositorio local, todavía `940191a`, y se
+creó `integration/client-login-local` desde esa referencia. La integración hasta
+`ae26716` fue un avance directo: conserva los commits y el historial de ambos agentes.
+No se modificó `main` ni el checkout original.
 
-1. En un terminal normal de Ubuntu, preparar los archivos privados. La clave se
-   introduce oculta; el historial no contiene su valor:
+El arranque ahora usa `scripts/run_client_login_local.py`, reutilizando la misma
+función Deno, el mismo Vite y los mismos contratos. Fija el proyecto
+`xsxdpaiivklqeudgqoqf`, exige entrada oculta para la clave y la pasa únicamente al
+entorno del proceso Deno. No guarda archivos con ella ni la pasa en argumentos.
+Vite recibe solo la configuración publicable seleccionada y los flags de desarrollo;
+el modo ficticio está desactivado. Rechaza claves de servidor anon o de otro proyecto
+cuando su JWT permite comprobarlo. No modifica variables privadas existentes.
 
-   ```bash
-   cd /home/procont/projects/ticketera-procont/.supabase-local/workspaces/client-login-dev-20261119
-   set +x
-   umask 077
-   mkdir -p .supabase-local
-   read -rsp 'SUPABASE_SERVICE_ROLE_KEY de ticketera-procont (oculta): ' ticketera_dev_key
-   printf '\n'
-   printf '%s\n' 'SUPABASE_URL=https://xsxdpaiivklqeudgqoqf.supabase.co' "SUPABASE_SERVICE_ROLE_KEY=$ticketera_dev_key" 'PROCONT_ALLOWED_ORIGINS=http://localhost:5173' 'QUIPUFAC_AUTH_URL=https://dev.quipufac.com/auth/login' > .supabase-local/client-login.env
-   unset ticketera_dev_key
-   cp /home/procont/projects/ticketera-procont/.env.local .env.local
-   printf '\nVITE_CLIENT_LOGIN_ENABLED=1\nVITE_CLIENT_PORTAL_MOCK=0\nVITE_CLIENT_LOGIN_DEV_ORIGIN=http://localhost:8000\n' >> .env.local
-   chmod 600 .env.local .supabase-local/client-login.env
-   ```
+Vite quedó iniciado en `http://localhost:5173/cliente`. Chromium local verificó
+la selección, ambos formularios, contraseñas ocultas, vista móvil sin desbordamiento
+y redirección de Nuevo ticket/Mis tickets al ingreso sin sesión. El navegador de
+Orca no estaba disponible; se usó Chromium local como alternativa. No se hicieron
+POST de autenticación ni escrituras de tickets en esas comprobaciones.
 
-2. Arrancar la misma función con el Deno ya disponible en esta máquina:
+La clave no estaba en la configuración disponible. El usuario arrancó el servidor
+mediante entrada oculta; OPTIONS local confirmó HTTP 204 y CORS para localhost:5173.
+No fue necesario pegarla en el chat ni guardarla. La función queda en el puerto 8000
+y Vite en 5173, ambos corriendo al finalizar.
 
-   ```bash
-   DENO_DIR=/tmp/procont-m13-deno /tmp/procont-m13-npm-cache/_npx/05b6ef7b13673c57/node_modules/deno/deno run --cached-only --allow-env --allow-net --env-file=.supabase-local/client-login.env supabase/functions/client-login/index.ts
-   ```
+Chromium verificó una autenticación real por proveedor desde localhost:
 
-3. En otro terminal, desde esa misma copia, ejecutar
-   `npm run dev -- --host localhost --port 5173 --strictPort` y abrir
-   `http://localhost:5173/cliente`. Ambos formularios usan la función local y las RPC
-   siguen contra M13 del proyecto configurado. No hace falta desplegar.
-   Si aparece `studio_mapping:'required'`, Mis tickets está disponible; un administrador
-   debe completar la asociación existente RUC → estudio para permitir crear en Nuevo ticket.
-   No se comprobó ni modificó esa asociación durante esta entrega.
+| Comprobación | Quipu | QuipuFac |
+|---|---|---|
+| `client-login` local | HTTP 200, sesión opaca válida | HTTP 200, sesión opaca válida |
+| Identidad/contexto | Usuario individual, directa | Cuenta empresarial, directa |
+| Selector del servidor | Los siete productos activos | Los seis activos excepto Quipu |
+| Mis tickets | Carga correcta; cero tickets | Carga correcta; cero tickets |
+| Nuevo ticket | Aviso de asociación pendiente | Aviso de asociación pendiente |
+| Cierre de sesión | Regreso al ingreso tras logout del servidor | Logout del servidor y token local eliminado |
 
-No ejecutar otra vez el diagnóstico en este cierre: ambas respuestas ya están
-verificadas. `scripts/probe_client_login.py` queda para otra prueba autorizada.
+En ambos casos M13 devolvió `studio_mapping:'required'`: el RUC de prueba no tiene
+estudio asociado. Se observó el aviso existente y se bloqueó la creación sin inventar
+asociaciones. No se envió ningún ticket, no se modificaron solicitudes ni REQ26-001.
+La autenticación y consulta funcionan; solo queda la asociación administrativa si se
+quiere habilitar la creación en otro momento.
+
+Esta continuación añadió solo cuatro pruebas de arranque/aislamiento, todas correctas,
+y ejecutó el build. No repitió las pruebas de contratos ni las auditorías anteriores.
+Evidencia actual: [client-login-local-integration.json](validation/client-login-local-integration.json).
+
+No hace falta ejecutar más comandos ahora: abrir `http://localhost:5173/cliente`.
+Para otra sesión, cuando ambos servicios estén detenidos, un único comando arranca
+los mismos procesos y solicita la clave oculta:
+
+```bash
+python3 -B /home/procont/projects/ticketera-procont/.supabase-local/workspaces/client-login-dev-20261119/scripts/run_client_login_local.py
+```
+
+Si solo se detuvo la función, el mismo comando con `--server-only` conserva Vite.
+El arranque comprueba puertos sin detener procesos ajenos. Ctrl+C termina los procesos
+iniciados por ese comando y descarta la clave al terminar Deno.
