@@ -97,6 +97,12 @@ export async function digestToken(token) {
   const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(token))
   return [...new Uint8Array(digest)].map(byte => byte.toString(16).padStart(2, '0')).join('')
 }
+/** Best-effort client address for the per-IP bucket; the subject bucket is the primary guard. */
+function clientAddress(request) {
+  const forwarded = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+  const value = forwarded || request.headers.get('cf-connecting-ip') || request.headers.get('x-real-ip') || 'unknown'
+  return value.slice(0, 128)
+}
 function randomToken() {
   return [...crypto.getRandomValues(new Uint8Array(32))].map(byte => byte.toString(16).padStart(2, '0')).join('')
 }
@@ -111,10 +117,13 @@ async function equalSecret(received, expected) {
 /** All options and provider contracts are private Edge environment configuration.
  * @param {{ client: any, providerUrls?: Record<string, string | undefined>,
  * providerContracts?: Record<string, unknown>, platformSecrets?: Record<string, string | undefined>,
- * allowedOrigins?: string[], fetchImpl?: typeof fetch, now?: () => number, timeoutMs?: number }} options
+ * allowedOrigins?: string[], fetchImpl?: typeof fetch, now?: () => number, timeoutMs?: number,
+ * throttle?: boolean }} options
+ * `throttle` (M14): count each login attempt in PostgreSQL before contacting the provider;
+ * over the limit → 429 rate_limited; if the counter is unavailable the login fails closed.
  */
 export function clientLoginHandler({ client, providerUrls = {}, providerContracts = {}, platformSecrets = {},
-  allowedOrigins = [], fetchImpl = fetch, now = () => Date.now(), timeoutMs = 10000 }) {
+  allowedOrigins = [], fetchImpl = fetch, now = () => Date.now(), timeoutMs = 10000, throttle = false }) {
   return async request => {
     const origin = request.headers.get('origin')
     const cors = { Vary: 'Origin', 'Cache-Control': 'no-store', 'Content-Type': 'application/json' }
@@ -183,6 +192,13 @@ export function clientLoginHandler({ client, providerUrls = {}, providerContract
       let url
       try { url = new URL(providerUrls[provider]) } catch { reject(503, 'provider_configuration_required') }
       if (url.protocol !== 'https:' || url.username || url.password || url.hash || url.search) reject(503, 'provider_configuration_required')
+      if (throttle) {
+        // Only SHA-256 keys leave the function: never the RUC, username, address or password.
+        const subject = provider === 'quipu' ? `quipu:${input.ruc}:${input.username}` : `quipufac:${input.ruc}`
+        const allowed = await rpc('client_login_throttle', { p_subject_key: await digestToken('subject:' + subject),
+          p_ip_key: await digestToken('ip:' + clientAddress(request)) })
+        if (allowed !== true) reject(429, 'rate_limited')
+      }
       const controller = new AbortController()
       const timer = setTimeout(() => controller.abort(), timeoutMs)
       let identity
@@ -208,7 +224,10 @@ export function clientLoginHandler({ client, providerUrls = {}, providerContract
       return await sessionReply(token)
     } catch (error) {
       // Never serialize exception messages, upstream bodies, credentials or tokens.
-      if (error instanceof Rejected) return reply(error.status, { error: error.code })
+      if (error instanceof Rejected) {
+        if (error.status === 429) cors['Retry-After'] = '900'
+        return reply(error.status, { error: error.code })
+      }
       return reply(503, { error: 'client_backend_unavailable' })
     }
   }

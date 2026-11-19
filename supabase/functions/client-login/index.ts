@@ -29,4 +29,6 @@ Deno.serve(clientLoginHandler({ client,
     quipufac: Deno.env.get('QUIPUFAC_PLATFORM_ENTRY_SECRET'),
   },
   allowedOrigins: (Deno.env.get('PROCONT_ALLOWED_ORIGINS') ?? '').split(',').map(s => s.trim()).filter(Boolean),
+  // M14 (20261119000200_client_login_throttle.sql) must be applied before deploying this function.
+  throttle: true,
 }))

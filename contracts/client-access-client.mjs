@@ -24,7 +24,7 @@ export function createClientAccess(client) {
       const safeCodes = new Set(['provider_contract_pending', 'invalid_credentials', 'invalid_credentials_input',
         'provider_identity_mismatch', 'provider_response_invalid', 'provider_unavailable', 'provider_configuration_required',
         'invalid_ruc', 'invalid_provider', 'invalid_request', 'invalid_entry_code', 'client_authentication_required',
-        'origin_denied', 'client_backend_unavailable', 'body_too_large'])
+        'origin_denied', 'client_backend_unavailable', 'body_too_large', 'rate_limited'])
       const code = safeCodes.has(failure) ? failure : 'client_login_failed'
       throw Object.assign(new Error(code), { code })
     }
