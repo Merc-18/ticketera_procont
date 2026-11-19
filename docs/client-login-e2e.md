@@ -38,7 +38,27 @@ autorizados; los nombres declarados son «QA E2E Quipu» y «QA E2E QuipuFac».
 La ubicación interna correspondiente al estado inicial es **Requests → Pendientes**.
 El Kanban contiene proyectos tras aprobar una solicitud; estos dos tickets QA
 se conservan pendientes, con `project_id:null`, sin inventar clasificación ni aprobación.
-La verificación visual de la bandeja interna está pendiente de la credencial interna.
+
+## Cierre de la verificación (Claude Code, 19/11/2026)
+
+Continuación de la ejecución de Codex detenida en `waiting_internal_admin`, sin
+crear tickets nuevos ni repetir las comprobaciones del navegador ya registradas.
+
+- **Tablero interno (nivel de datos, solo lectura en `xsxdpaiivklqeudgqoqf`).** La
+  bandeja interna (`useRequests`: `requests` ordenadas por `created_at` desc, límite
+  200; pestaña Pendientes = `status='pending'`) contiene REQ26-003 en la posición 1
+  y REQ26-002 en la 2, ambos `pending`, dentro de los 200; la lectura del personal
+  usa la política `member_read` (authenticated + rol interno). No se usó la
+  contraseña superadmin: la comprobación visual con sesión interna queda como
+  confirmación opcional y no cambia el resultado.
+- **Duplicados.** Exactamente dos solicitudes con el prefijo `[QA-E2E-20261119-`.
+- **Cierre de sesión.** Todas las sesiones de ambas identidades están revocadas en el
+  servidor (Quipu 3/3, QuipuFac 2/2; ninguna activa): `client_logout` operó en cada
+  salida del recorrido.
+- **REQ26-001.** Sin cambios (`approved`, última modificación 18/11/2026).
+- **Pruebas afectadas.** 80 pruebas Node (portal, ambos logins, adjuntos, consumidores)
+  y 9 Python (arranque local y sonda), correctas; contrato TypeScript y `npm run build`
+  correctos. Sin defectos que corregir.
 
 ## Pruebas y Git
 
@@ -47,7 +67,7 @@ correctas. `npm run build` correcto, incluidas las comprobaciones TypeScript.
 Solo se revisó el circuito afectado, sin repetir auditorías SQL completas.
 
 Evidencia depurada: [client-login-e2e-20261119.json](validation/client-login-e2e-20261119.json).
-La integración a main local se completará al cerrar la comprobación interna,
+La integración a main se realizó tras cerrar esta comprobación,
 conservando los commits de ambos agentes, los worktrees, cambios pendientes y el
 archivo no versionado `1`. El mecanismo preparado usa fetch local sin force y
 no cambia el checkout activo.

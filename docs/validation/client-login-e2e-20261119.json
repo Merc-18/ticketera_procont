@@ -142,7 +142,7 @@
         "no_private_data_visible": true
       }
     },
-    "stage": "waiting_internal_admin",
+    "stage": "complete_client_flow",
     "quipufac_excludes_quipu": true
   },
   "automated_checks": {
@@ -153,5 +153,46 @@
   "migrations_applied": false,
   "provider_platforms_changed": false,
   "credentials_or_tokens_saved": false,
-  "push_or_deploy": false
+  "push_or_deploy": false,
+  "closure": {
+    "by": "claude-code",
+    "date": "2026-11-19",
+    "internal_inbox": {
+      "method": "read_only_query_matching_useRequests",
+      "tab": "Requests → Pendientes",
+      "positions": {
+        "REQ26-003": 1,
+        "REQ26-002": 2
+      },
+      "within_limit_200": true,
+      "staff_select_policy": "member_read",
+      "superadmin_password_used": false,
+      "visual_check_with_internal_session": "optional_not_executed"
+    },
+    "qa_requests_total": 2,
+    "logout_server_side": {
+      "quipu": {
+        "sessions": 3,
+        "revoked": 3,
+        "active": 0
+      },
+      "quipufac": {
+        "sessions": 2,
+        "revoked": 2,
+        "active": 0
+      }
+    },
+    "req26_001_unchanged": {
+      "status": "approved",
+      "updated_at": "2026-11-18T23:43:56Z"
+    },
+    "tests": {
+      "node": 80,
+      "python": 9,
+      "contract_types": "passed",
+      "build": "passed"
+    },
+    "defects_fixed": []
+  },
+  "completed": true
 }
