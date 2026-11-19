@@ -135,7 +135,7 @@ def query(run, name, sql, url, env, readonly=True):
         return C.query(url, path, env)
     # Used exclusively by the smoke test below: one transaction, no DML, ROLLBACK.
     C.cli_run(['db', 'query', f'--remote={url}', '--file', str(path), '--output', 'json',
-               '--agent', 'no'], env, stage=name)
+               '--agent', 'no', '--yes'], env, stage=name)
     return {'passed': True}
 
 
@@ -224,6 +224,114 @@ def smoke_sql():
     sql += '\n'.join(reject(call, '42501') for call, _ in calls)
     sql += '\nRESET ROLE; END $probe$; ROLLBACK;'
     return sql
+
+
+def readonly_smoke_sql():
+    """Read snapshot and check actor denials; never enter a mutator's locking path."""
+    calls = [
+        f"public.get_board_ticket('{MISSING}')",
+        f"public.operate_board_ticket('{MISSING}','set_priority','{{\"priority\":\"medium\"}}',gen_random_uuid())",
+        f"public.operate_board_tickets(ARRAY['{MISSING}']::uuid[],'set_priority','{{\"priority\":\"medium\"}}',gen_random_uuid())",
+        f"public.reserve_board_evidence('{MISSING}',gen_random_uuid(),'activation-probe.pdf',1,'application/pdf')"]
+    sql = """BEGIN READ ONLY;
+    DO $probe$ DECLARE actor uuid; pid uuid; snap jsonb; BEGIN
+      SELECT id INTO actor FROM public.users WHERE is_active AND role IN ('superadmin','admin','developer') ORDER BY id LIMIT 1;
+      IF actor IS NULL THEN RAISE EXCEPTION 'No existing editor for read smoke'; END IF;
+      SELECT id INTO pid FROM public.projects WHERE status<>'deleted' ORDER BY id LIMIT 1;
+      PERFORM set_config('request.jwt.claim.sub','',true);
+      PERFORM set_config('request.jwt.claims','{}',true);
+      SET LOCAL ROLE authenticated;
+    """
+    for call in calls:
+        sql += f"BEGIN PERFORM {call}; RAISE EXCEPTION 'Unexpected RPC success without actor'; EXCEPTION WHEN SQLSTATE '42501' THEN NULL; END;\n"
+    sql += """PERFORM set_config('request.jwt.claim.sub',actor::text,true);
+      IF pid IS NOT NULL THEN
+        snap:=public.get_board_ticket(pid);
+        IF snap->>'project_id' IS DISTINCT FROM pid::text OR NOT (snap ?& ARRAY['flows','pending_fingerprint','pending_items'])
+          THEN RAISE EXCEPTION 'Invalid board snapshot'; END IF;
+      END IF;
+      RESET ROLE;
+    END $probe$;
+    SELECT jsonb_build_object('passed',true,'transaction_read_only',current_setting('transaction_read_only'),
+      'existing_project_read',EXISTS(SELECT 1 FROM public.projects WHERE status<>'deleted'),
+      'rpc_missing_actor_denials',4,'business_writes_attempted',false) AS checks;
+    ROLLBACK;
+    """
+    return sql
+
+
+def query_existing_session_readonly(run, name, sql, *, explicit_transaction=False):
+    """Management API query using the existing login; no DB password or temporary role."""
+    if explicit_transaction:
+        C.require(sql.startswith('BEGIN READ ONLY;\n') and sql.rstrip().endswith('ROLLBACK;'),
+                  'La comprobación RPC exige transacción READ ONLY y ROLLBACK.')
+    C.ROOT, C.PRIVATE = SOURCE, PRIVATE
+    target = C.read_private_json(PRIVATE / 'target.json')
+    C.require(target.get('project_ref') == REF and target.get('expected_name') == NAME, 'Destino inválido.')
+    C.saved_link_route(target)
+    token_path = Path.home() / '.supabase/access-token'
+    C.require(token_path.is_file() and not token_path.is_symlink(), 'Falta la sesión CLI existente; no se solicitarán credenciales.')
+    path = run / (name + '.sql')
+    A.private_text(path, sql)
+    env = C.cli_environment('')
+    env['SUPABASE_ACCESS_TOKEN'] = token_path.read_text().strip()
+    try:
+        # The CLI --read-only path uses supabase_read_only_user, which deliberately
+        # cannot execute these RPCs. PostgreSQL enforces READ ONLY in the explicit
+        # transaction instead; --yes confirms only this fixed diagnostic SQL.
+        flags = ['--yes'] if explicit_transaction else ['--read-only']
+        output = C.cli_run(['db', 'query', f'--remote={REF}', '--file', str(path),
+                            *flags, '--output', 'json', '--agent', 'no'], env, stage=name)
+    finally:
+        env.pop('SUPABASE_ACCESS_TOKEN', None)
+    rows = json.loads(output)
+    C.require(isinstance(rows, list) and len(rows) == 1 and len(rows[0]) == 1, 'Formato remoto inesperado.')
+    value = next(iter(rows[0].values()))
+    value = json.loads(value) if isinstance(value, str) else value
+    C.require(isinstance(value, dict), 'Falta el resultado de lectura.')
+    C.save_private(run / (name + '.json'), value)
+    return value
+
+
+def resume_verification():
+    """Only the uncompleted checks. This mode cannot apply, prompt for a secret, or merge."""
+    path = ROOT / 'docs/validation/board-m12-rpc-smoke-diagnosis.json'
+    C.require(not path.exists(), 'Ya existe el diagnóstico final; no repetir verificaciones completadas.')
+    runs = [p for p in (PRIVATE / 'recovery/applications').glob('m12-*') if p.is_dir() and (p / 'after.json').is_file()]
+    C.require(len(runs) == 1, 'Se requiere una única captura posterior M12 para continuar.')
+    previous = runs[0]
+    before = C.read_private_json(previous / 'before.json')
+    after = C.read_private_json(previous / 'after.json')
+    files = sorted((ROOT / 'supabase/migrations').glob('*.sql'))
+    C.require(len(files) == 12 and files[-1].name == FILE
+              and hashlib.sha256(files[-1].read_bytes()).hexdigest() == SHA, 'M12 local cambió.')
+    validate_history(after['history'], files)
+    C.require(after['history'][:-1] == before['history']
+              and after['business_digests'] == before['business_digests'], 'Capturas de aplicación incompatibles.')
+    # Preserve the failed activation receipt exactly; never overwrite its SQL or snapshots.
+    run = previous / ('verification-' + datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%f'))
+    C.private_directory(run)
+    A.private_text(run / 'original-activation-evidence.json', EVIDENCE.read_text())
+    checks = query_existing_session_readonly(run, 'permissions_readonly', permissions_sql())
+    C.require(checks and all(v is True for v in checks.values()), 'Permisos remotos incompatibles; detenerse.')
+    smoke = query_existing_session_readonly(run, 'rpc_smoke_readonly', readonly_smoke_sql(), explicit_transaction=True)
+    C.require(smoke.get('passed') is True and smoke.get('transaction_read_only') == 'on', 'Smoke de lectura no confirmado.')
+    final = query_existing_session_readonly(run, 'final_readonly', snapshot_sql())
+    validate_history(final['history'], files)
+    for key in ['database_oid', 'history', 'business_digests', 'functions', 'constraints', 'column_acl']:
+        C.require(final[key] == after[key], 'El estado remoto cambió respecto de la captura posterior M12.')
+    summary = {'at_utc': datetime.now(timezone.utc).isoformat(), 'project': NAME, 'ref': REF,
+               'status': 'applied_verified_readonly', 'history_count': 12, 'migration': FILE,
+               'previous_eleven_unchanged': True, 'business_data_unchanged': True,
+               'permissions': checks, 'rpc_smoke': smoke,
+               'rpc_scope': 'read existing project if available; four missing-actor denials; no editor mutations',
+               'original_failure': 'CLI confirmation required: --yes omitted; original rpc_smoke SQL did not execute',
+               'original_run': previous.name, 'verification_run': run.name,
+               'migration_resent': False, 'password_requested': False, 'credentials_saved': False,
+               'tests_repeated': False, 'main_merged': False, 'pushed': False, 'frontend_deployed': False}
+    # Append-only local receipts: a rerun must not erase prior diagnosis.
+    path.write_text(json.dumps(summary, indent=2, ensure_ascii=False) + '\n')
+    print('M12 confirmada 12/12. Permisos y smoke de solo lectura correctos; datos intactos. Sin migración, contraseña ni merge.')
 
 
 def execute(files, route):
@@ -317,7 +425,12 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--execute', action='store_true', help='Aplicar M12 y verificar; contraseña oculta en Ubuntu.')
     parser.add_argument('--finalize-main', action='store_true', help='Tras verificar, build, pruebas nuevas, evidencia y merge local autorizado.')
+    parser.add_argument('--resume-verification', action='store_true', help='Continuar solo verificaciones de lectura con sesión CLI existente; sin migración, contraseña ni merge.')
     args = parser.parse_args()
+    if args.resume_verification:
+        C.require(not args.execute and not args.finalize_main, '--resume-verification no admite aplicación ni merge.')
+        resume_verification()
+        return
     C.require(not args.finalize_main or args.execute, '--finalize-main requiere --execute.')
     files, route = validate_local()
     if not args.execute:

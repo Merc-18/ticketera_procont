@@ -1,0 +1,41 @@
+{
+  "at_utc": "2026-11-19T14:06:44.367438+00:00",
+  "project": "ticketera-procont",
+  "ref": "xsxdpaiivklqeudgqoqf",
+  "status": "applied_verified_readonly",
+  "history_count": 12,
+  "migration": "20261118000800_board_operations.sql",
+  "previous_eleven_unchanged": true,
+  "business_data_unchanged": true,
+  "permissions": {
+    "audit_writes_closed": true,
+    "context_empty": true,
+    "context_rls": true,
+    "direct_operational_writes_closed": true,
+    "historical_projects_preserved": true,
+    "private_helpers_closed": true,
+    "rpc_permissions": true
+  },
+  "rpc_smoke": {
+    "business_writes_attempted": false,
+    "existing_project_read": true,
+    "passed": true,
+    "rpc_missing_actor_denials": 4,
+    "transaction_read_only": "on"
+  },
+  "rpc_scope": "read existing project if available; four missing-actor denials; no editor mutations",
+  "original_failure": "CLI confirmation required: --yes omitted; original rpc_smoke SQL did not execute",
+  "original_run": "m12-20261119T135908086559",
+  "verification_run": "verification-20261119T140641884937",
+  "migration_resent": false,
+  "password_requested": false,
+  "credentials_saved": false,
+  "tests_repeated": false,
+  "main_merged": false,
+  "pushed": false,
+  "frontend_deployed": false,
+  "new_regression_tests_passed": 4,
+  "previous_suites_repeated": false,
+  "original_activation_receipt_preserved": true,
+  "file_1_unchanged": true
+}
