@@ -4,9 +4,10 @@ Fecha: 20/11/2026. Base `6533b27`, rama `feat/ticketera-ux-ui-four-areas`.
 La lista incluye el rediseño aprobado previo y sus evidencias, no solo la optimización.
 En esta etapa final cambian solo dos archivos de aplicación: `src/App.tsx` y `src/components/requests/RequestInbox.tsx`; ver `optimization-scope.json`.
 Los nuevos helpers de pruebas miden descarga diferida y amplían la galería; la documentación registra resultados y excepciones.
+Los 20 logs referenciados se incorporan explícitamente porque Git ignora `*.log` por defecto. Se preserva su formato de consola.
 Se excluye `.taste-skill/` del commit, conservándolo intacto en el worktree.
 
-## Archivos versionados modificados (40)
+## Archivos existentes modificados (40)
 
 - `index.html`
 - `src/App.tsx`
@@ -49,15 +50,20 @@ Se excluye `.taste-skill/` del commit, conservándolo intacto en el worktree.
 - `tailwind.config.ts`
 - `tests/ui/portal-navigation.ui.test.mjs`
 
-## Archivos nuevos (291)
+## Archivos nuevos (311)
 
 - `docs/validation/ux-ui-final-adjustments-20261120.md`
 - `docs/validation/ux-ui-final-adjustments-20261120/README.md`
+- `docs/validation/ux-ui-final-adjustments-20261120/budget-base-build.log`
+- `docs/validation/ux-ui-final-adjustments-20261120/build.log`
 - `docs/validation/ux-ui-final-adjustments-20261120/bundle-comparison.json`
 - `docs/validation/ux-ui-final-adjustments-20261120/changed-files.md`
+- `docs/validation/ux-ui-final-adjustments-20261120/chromium-build.log`
+- `docs/validation/ux-ui-final-adjustments-20261120/chromium-existing.log`
 - `docs/validation/ux-ui-final-adjustments-20261120/gallery-check.json`
 - `docs/validation/ux-ui-final-adjustments-20261120/gallery-manifest.json`
 - `docs/validation/ux-ui-final-adjustments-20261120/links-check.json`
+- `docs/validation/ux-ui-final-adjustments-20261120/node.log`
 - `docs/validation/ux-ui-final-adjustments-20261120/protected-files.json`
 - `docs/validation/ux-ui-final-adjustments-20261120/scope.json`
 - `docs/validation/ux-ui-final-adjustments-20261120/screenshots/desktop-01-portal.png`
@@ -148,10 +154,15 @@ Se excluye `.taste-skill/` del commit, conservándolo intacto en el worktree.
 - `docs/validation/ux-ui-final-adjustments-20261120/validation-summary.json`
 - `docs/validation/ux-ui-four-areas-20261120.md`
 - `docs/validation/ux-ui-four-areas/README.md`
+- `docs/validation/ux-ui-four-areas/build.log`
 - `docs/validation/ux-ui-four-areas/bundle-comparison.json`
 - `docs/validation/ux-ui-four-areas/changed-files.md`
+- `docs/validation/ux-ui-four-areas/chromium-targeted.log`
+- `docs/validation/ux-ui-four-areas/chromium.log`
 - `docs/validation/ux-ui-four-areas/delivery-status.json`
+- `docs/validation/ux-ui-four-areas/node.log`
 - `docs/validation/ux-ui-four-areas/performance.json`
+- `docs/validation/ux-ui-four-areas/performance.log`
 - `docs/validation/ux-ui-four-areas/scope.json`
 - `docs/validation/ux-ui-four-areas/screenshots/desktop-01-portal.png`
 - `docs/validation/ux-ui-four-areas/screenshots/desktop-02-modal-personal.png`
@@ -218,15 +229,23 @@ Se excluye `.taste-skill/` del commit, conservándolo intacto en el worktree.
 - `docs/validation/ux-ui-four-areas/screenshots/tablet-13-gantt.png`
 - `docs/validation/ux-ui-four-areas/screenshots/tablet-14-roadmap.png`
 - `docs/validation/ux-ui-four-areas/screenshots/tablet-15-modal-ticket.png`
+- `docs/validation/ux-ui-four-areas/taste-gate.log`
 - `docs/validation/ux-ui-performance-close-20261120.md`
 - `docs/validation/ux-ui-performance-close-20261120/README.md`
 - `docs/validation/ux-ui-performance-close-20261120/browser-bundle.json`
+- `docs/validation/ux-ui-performance-close-20261120/build.log`
 - `docs/validation/ux-ui-performance-close-20261120/bundle-comparison.json`
 - `docs/validation/ux-ui-performance-close-20261120/changed-files.md`
+- `docs/validation/ux-ui-performance-close-20261120/chromium-build.log`
+- `docs/validation/ux-ui-performance-close-20261120/chromium-equipo-targeted.log`
+- `docs/validation/ux-ui-performance-close-20261120/chromium-existing-first-attempt.log`
+- `docs/validation/ux-ui-performance-close-20261120/chromium-existing.log`
+- `docs/validation/ux-ui-performance-close-20261120/dependencies.log`
 - `docs/validation/ux-ui-performance-close-20261120/gallery-check.json`
 - `docs/validation/ux-ui-performance-close-20261120/gallery-manifest.json`
 - `docs/validation/ux-ui-performance-close-20261120/gate-state.json`
 - `docs/validation/ux-ui-performance-close-20261120/links-check.json`
+- `docs/validation/ux-ui-performance-close-20261120/node.log`
 - `docs/validation/ux-ui-performance-close-20261120/optimization-scope.json`
 - `docs/validation/ux-ui-performance-close-20261120/protected-files.json`
 - `docs/validation/ux-ui-performance-close-20261120/scope.json`
@@ -323,7 +342,9 @@ Se excluye `.taste-skill/` del commit, conservándolo intacto en el worktree.
 - `docs/validation/ux-ui-performance-close-20261120/screenshots/tablet-17-quipu-cargando.png`
 - `docs/validation/ux-ui-performance-close-20261120/screenshots/tablet-17-quipufac-cargando.png`
 - `docs/validation/ux-ui-performance-close-20261120/taste-performance-after.json`
+- `docs/validation/ux-ui-performance-close-20261120/taste-performance-after.log`
 - `docs/validation/ux-ui-performance-close-20261120/taste-performance-before.json`
+- `docs/validation/ux-ui-performance-close-20261120/taste-performance-before.log`
 - `docs/validation/ux-ui-performance-close-20261120/typechecks.json`
 - `docs/validation/ux-ui-performance-close-20261120/validation-summary.json`
 - `docs/validation/ux-ui-performance-close-20261120/vite-manifest.json`

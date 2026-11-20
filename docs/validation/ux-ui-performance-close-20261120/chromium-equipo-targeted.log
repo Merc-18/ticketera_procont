@@ -1,0 +1,13 @@
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✔ [escritorio] 12. Acceso interno independiente: cuatro roles con sus pestañas aprobadas (3485.941132ms)
+✔ [movil] 12. Acceso interno independiente: cuatro roles con sus pestañas aprobadas (2672.942331ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6592.634638

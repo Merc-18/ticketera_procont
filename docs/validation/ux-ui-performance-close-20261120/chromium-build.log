@@ -1,0 +1,30 @@
+✔ [UX desktop] carga de ambos ingresos sin cambiar su comportamiento (6543.032004ms)
+✔ [UX desktop] portal, proveedores y accesibilidad de ingreso (1537.517059ms)
+✔ [UX desktop] nuevo ticket, adjuntos, lista privada, detalle y seguimiento (1235.654055ms)
+✔ [UX desktop] panel Enterprise, bandeja, ocho fases y las cuatro vistas (2583.304823ms)
+✔ [UX laptop] carga de ambos ingresos sin cambiar su comportamiento (971.655323ms)
+✔ [UX laptop] portal, proveedores y accesibilidad de ingreso (1508.776394ms)
+✔ [UX laptop] nuevo ticket, adjuntos, lista privada, detalle y seguimiento (1214.267398ms)
+✔ [UX laptop] panel Enterprise, bandeja, ocho fases y las cuatro vistas (2502.451182ms)
+✔ [UX tablet] carga de ambos ingresos sin cambiar su comportamiento (948.943552ms)
+✔ [UX tablet] portal, proveedores y accesibilidad de ingreso (1417.570813ms)
+✔ [UX tablet] nuevo ticket, adjuntos, lista privada, detalle y seguimiento (1197.172821ms)
+✔ [UX tablet] panel Enterprise, bandeja, ocho fases y las cuatro vistas (2561.253942ms)
+✔ [UX movil] carga de ambos ingresos sin cambiar su comportamiento (957.034631ms)
+✔ [UX movil] portal, proveedores y accesibilidad de ingreso (1418.391079ms)
+✔ [UX movil] nuevo ticket, adjuntos, lista privada, detalle y seguimiento (1137.442765ms)
+✔ [UX movil] panel Enterprise, bandeja, ocho fases y las cuatro vistas (2413.190727ms)
+✔ UX motion: hover, pulsación, teclado y reduced-motion no alteran el contenido (461.155617ms)
+✔ UX Kanban: arrastre real y cancelación no envían una operación de negocio (1162.525297ms)
+✔ UX métricas: ausencia de registros, contrato no disponible y error son estados distintos (1090.006417ms)
+✔ UX seguimiento: cada respuesta pública muestra exclusivamente su número y estado actual (608.130194ms)
+✔ [UX desktop] presupuesto real y carga diferida de vistas internas y Planner (3851.704883ms)
+✔ [UX movil] presupuesto real y carga diferida de vistas internas y Planner (3771.137797ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 41526.080268

@@ -9,5 +9,8 @@
   "taste_instances": 19,
   "justified_exceptions": 12,
   "false_positives": 7,
-  "notes": "Solo validación local, sin HTTP remoto y sin reiniciar el gate; no sustituye un lint completo de Markdown."
+  "notes": "Solo validación local, sin HTTP remoto y sin reiniciar el gate; no sustituye un lint completo de Markdown.",
+  "tracked_local_targets_checked": 330,
+  "untracked_local_targets": 0,
+  "raw_console_logs_format_preserved": 20
 }

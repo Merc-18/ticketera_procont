@@ -1,0 +1,28 @@
+✔ [UX desktop] carga de ambos ingresos sin cambiar su comportamiento (6372.397546ms)
+✔ [UX desktop] portal, proveedores y accesibilidad de ingreso (1523.288544ms)
+✔ [UX desktop] nuevo ticket, adjuntos, lista privada, detalle y seguimiento (1301.121771ms)
+✔ [UX desktop] panel Enterprise, bandeja, ocho fases y las cuatro vistas (2516.537114ms)
+✔ [UX laptop] carga de ambos ingresos sin cambiar su comportamiento (1010.881575ms)
+✔ [UX laptop] portal, proveedores y accesibilidad de ingreso (1520.26346ms)
+✔ [UX laptop] nuevo ticket, adjuntos, lista privada, detalle y seguimiento (1265.285743ms)
+✔ [UX laptop] panel Enterprise, bandeja, ocho fases y las cuatro vistas (2551.969023ms)
+✔ [UX tablet] carga de ambos ingresos sin cambiar su comportamiento (967.211006ms)
+✔ [UX tablet] portal, proveedores y accesibilidad de ingreso (1398.409318ms)
+✔ [UX tablet] nuevo ticket, adjuntos, lista privada, detalle y seguimiento (1211.207569ms)
+✔ [UX tablet] panel Enterprise, bandeja, ocho fases y las cuatro vistas (2481.314058ms)
+✔ [UX movil] carga de ambos ingresos sin cambiar su comportamiento (1017.930579ms)
+✔ [UX movil] portal, proveedores y accesibilidad de ingreso (1422.695724ms)
+✔ [UX movil] nuevo ticket, adjuntos, lista privada, detalle y seguimiento (1156.361207ms)
+✔ [UX movil] panel Enterprise, bandeja, ocho fases y las cuatro vistas (2445.64684ms)
+✔ UX motion: hover, pulsación, teclado y reduced-motion no alteran el contenido (475.17531ms)
+✔ UX Kanban: arrastre real y cancelación no envían una operación de negocio (1183.852344ms)
+✔ UX métricas: ausencia de registros, contrato no disponible y error son estados distintos (1120.98671ms)
+✔ UX seguimiento: cada respuesta pública muestra exclusivamente su número y estado actual (643.008932ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 33944.785653

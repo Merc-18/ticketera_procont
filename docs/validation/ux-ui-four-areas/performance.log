@@ -1,0 +1,54 @@
+
+perf /127.0.0.1:5189/portal @ 1440px
+  PASS  host CPU load (before/after)               1/1 %          
+  PASS  total transfer                             387.7 KiB      html 1.1K  css 11K  js 317.3K  font 51.1K  img 3K  other 4.1K
+  PASS  requests                                   8              7 by load
+  PASS  images bytes                               3 KiB          1 files
+  PASS  largest image                              3 KiB          brand/procont-logo.png
+  FAIL  JS parsed                                  1045 KiB       1 files, 317.3K gz
+  PASS  CSS                                        11 KiB         1 files
+  PASS  font families                              2              Host Grotesk, JetBrains Mono
+  PASS  font files                                 2              51.1K
+  PASS  font bytes                                 51.1 KiB       
+  PASS  images without width+height                0              
+  PASS  below-fold images not lazy                 0              
+  PASS  oversized images (natural > 2.2x shown)    0              
+  PASS  WebGL live at load                         0              
+  PASS  WebGL live at bottom                       0              
+  PASS  WebGL peak live                            0              0 contexts made in all
+  PASS  long tasks                                 0              runs 3, 0..0, max 0ms
+  PASS  blocking time                              0 ms           runs 3, 0..0 ms; at load 0ms
+  PASS  FCP (CPU, relative)                        64 ms          runs 3, 64..76
+  PASS  LCP (CPU, relative)                        64 ms          runs 3, 64..76, h1
+  PASS  layout shift                               0.000          runs 3, 0.000..0.000; at load 0.000
+  PASS  modules loaded, never mounted              0              
+  PASS  broken requests                            0              
+  PASS  page height                                1 screens      DOM 63 nodes
+
+perf /127.0.0.1:5189/portal @ 390px
+  PASS  host CPU load (before/after)               1/1 %          
+  PASS  total transfer                             384.7 KiB      html 1.1K  css 11K  js 317.3K  font 51.1K  img 3K  other 1.1K
+  PASS  requests                                   7              6 by load
+  PASS  images bytes                               3 KiB          1 files
+  PASS  largest image                              3 KiB          brand/procont-logo.png
+  FAIL  JS parsed                                  1045 KiB       1 files, 317.3K gz
+  PASS  CSS                                        11 KiB         1 files
+  PASS  font families                              2              Host Grotesk, JetBrains Mono
+  PASS  font files                                 2              51.1K
+  PASS  font bytes                                 51.1 KiB       
+  PASS  images without width+height                0              
+  PASS  below-fold images not lazy                 0              
+  PASS  oversized images (natural > 2.2x shown)    0              
+  PASS  WebGL live at load                         0              
+  PASS  WebGL live at bottom                       0              
+  PASS  WebGL peak live                            0              0 contexts made in all
+  PASS  long tasks                                 0              runs 3, 0..0, max 0ms
+  PASS  blocking time                              0 ms           runs 3, 0..0 ms; at load 0ms
+  PASS  FCP (CPU, relative)                        60 ms          runs 3, 60..60
+  PASS  LCP (CPU, relative)                        60 ms          runs 3, 60..60, p
+  PASS  layout shift                               0.000          runs 3, 0.000..0.000; at load 0.000
+  PASS  modules loaded, never mounted              0              
+  PASS  broken requests                            0              
+  PASS  page height                                1.6 screens    DOM 63 nodes
+
+SUMMARY /127.0.0.1:5189/portal: 2 FAIL, 0 WARN  -> FAIL

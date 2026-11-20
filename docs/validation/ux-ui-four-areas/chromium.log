@@ -1,0 +1,63 @@
+
+> ticketera-controlling@1.0.0 test:ui
+> node --test tests/ui/*.ui.test.mjs
+
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✔ [escritorio] 1. /portal muestra Nueva Solicitud, Mis tickets, Rastrear y el ingreso del personal (1222.202459ms)
+✔ [escritorio] 2. Nueva Solicitud navega a /cliente (selección Quipu/QuipuFac) (345.80898ms)
+✔ [escritorio] 3. /request no abre el formulario público y redirige al ingreso (245.048547ms)
+✔ [escritorio] 4-5. Quipu pide RUC, usuario y contraseña; QuipuFac solo RUC y contraseña (512.348262ms)
+✔ [escritorio] 6. Login desactivado: estado inequívocamente no operativo (628.101207ms)
+✔ [escritorio] 7. Login válido conduce a /cliente/nuevo con productos de la sesión; Salir cierra (680.222238ms)
+✔ [escritorio] 8-9. Sin sesión no se entra a /cliente/nuevo ni a /cliente/tickets; tras ingresar vuelve al destino (807.862172ms)
+✔ [escritorio] 10. Mis tickets y detalle: solo la identidad autenticada; ajeno no visible (529.130577ms)
+✔ [escritorio] 11. Rastrear Solicitud es público y muestra solo número y estado (430.78775ms)
+✔ [movil] 1. /portal muestra Nueva Solicitud, Mis tickets, Rastrear y el ingreso del personal (258.257164ms)
+✔ [movil] 2. Nueva Solicitud navega a /cliente (selección Quipu/QuipuFac) (314.809766ms)
+✔ [movil] 3. /request no abre el formulario público y redirige al ingreso (245.662193ms)
+✔ [movil] 4-5. Quipu pide RUC, usuario y contraseña; QuipuFac solo RUC y contraseña (459.821136ms)
+✔ [movil] 6. Login desactivado: estado inequívocamente no operativo (447.917146ms)
+✔ [movil] 7. Login válido conduce a /cliente/nuevo con productos de la sesión; Salir cierra (638.224447ms)
+✔ [movil] 8-9. Sin sesión no se entra a /cliente/nuevo ni a /cliente/tickets; tras ingresar vuelve al destino (809.843739ms)
+✔ [movil] 10. Mis tickets y detalle: solo la identidad autenticada; ajeno no visible (474.36462ms)
+✔ [movil] 11. Rastrear Solicitud es público y muestra solo número y estado (371.208337ms)
+✔ [escritorio] 12. Acceso interno independiente: cuatro roles con sus pestañas aprobadas (3047.12353ms)
+✔ [movil] 12. Acceso interno independiente: cuatro roles con sus pestañas aprobadas (3079.763524ms)
+✔ 13. Exportaciones sin métricas SLA ficticias; datos por ticket del servidor y ausencias explícitas (753.78344ms)
+✔ 14. No se disparan alertas SLA heredadas (sin inserciones de notificaciones al cargar el tablero) (2074.224236ms)
+✔ 13A. Cero terminados (1.500 registros sin terminar): mensaje correcto y sin descarga (1505.614454ms)
+✔ 13C/D. Más de 1.000 registros con terminados fuera de la primera página: no se omiten (1550.995764ms)
+✔ 13E/G/H. 1.200 sin terminar + 2.500 terminados: tres páginas ordenadas, sin duplicados ni pérdidas; null intactos (1801.995029ms)
+✔ 13F. Error en la segunda página: no se descarga un CSV parcial y se informa el error (1511.069888ms)
+✔ [escritorio] integración: formulario crea Quipu y QuipuFac con adjunto simulado y separa Mis tickets (940.692775ms)
+✔ [movil] integración: formulario crea Quipu y QuipuFac con adjunto simulado y separa Mis tickets (947.758857ms)
+✔ integración: Planner procesa Excel real y conserva payload/acuse de la RPC interna (1008.448696ms)
+✔ [escritorio] Versión de la compilación visible y estable en todas las pantallas (1835.715252ms)
+✔ [movil] Versión de la compilación visible y estable en todas las pantallas (1822.97236ms)
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✔ [UX desktop] portal, proveedores y accesibilidad de ingreso (2188.297066ms)
+✔ [UX desktop] nuevo ticket, adjuntos, lista privada, detalle y seguimiento (1650.728102ms)
+✔ [UX desktop] panel Enterprise, bandeja, ocho fases y las cuatro vistas (2914.383043ms)
+✔ [UX laptop] portal, proveedores y accesibilidad de ingreso (1383.002009ms)
+✔ [UX laptop] nuevo ticket, adjuntos, lista privada, detalle y seguimiento (1585.790061ms)
+✔ [UX laptop] panel Enterprise, bandeja, ocho fases y las cuatro vistas (2779.912522ms)
+✔ [UX tablet] portal, proveedores y accesibilidad de ingreso (1268.228901ms)
+✔ [UX tablet] nuevo ticket, adjuntos, lista privada, detalle y seguimiento (1558.213599ms)
+✔ [UX tablet] panel Enterprise, bandeja, ocho fases y las cuatro vistas (2795.782419ms)
+✔ [UX movil] portal, proveedores y accesibilidad de ingreso (1294.012369ms)
+✔ [UX movil] nuevo ticket, adjuntos, lista privada, detalle y seguimiento (1526.239964ms)
+✔ [UX movil] panel Enterprise, bandeja, ocho fases y las cuatro vistas (2739.261152ms)
+✔ UX motion: hover, pulsación, teclado y reduced-motion no alteran el contenido (629.198277ms)
+✔ UX Kanban: arrastre real y cancelación no envían una operación de negocio (1502.154723ms)
+ℹ tests 45
+ℹ suites 0
+ℹ pass 45
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 31767.876554

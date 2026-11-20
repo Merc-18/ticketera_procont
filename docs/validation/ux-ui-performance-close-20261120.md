@@ -194,6 +194,9 @@ los worktrees originales, main y el archivo sin seguimiento `1` del checkout com
 La lista de [archivos de la rama](ux-ui-performance-close-20261120/changed-files.md)
 incluye el rediseño previamente aprobado, sus evidencias y esta optimización; no se
 presenta como si toda la lista hubiese cambiado durante esta última etapa.
+Se incorporan explícitamente los 20 logs referenciados que `*.log` ignora por defecto.
+Conservan el formato original de consola, incluido su relleno de espacios; la validación
+de enlaces también comprueba que los destinos estén en el índice Git, no solo en disco.
 
 Con las pruebas y el presupuesto final conformes, el usuario autoriza **commit local en
 la misma rama**, conservando historial y excepciones. El SHA corresponde al commit que
