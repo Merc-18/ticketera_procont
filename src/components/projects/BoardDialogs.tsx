@@ -1,9 +1,10 @@
+import ModalFocus from '../ui/ModalFocus'
 import { useEffect, useState } from 'react'
 import { PHASE_LABELS } from '../../lib/constants'
 import { reopenTargets, type BoardFlow, type PendingItem } from '../../lib/board'
 
-const shell = 'fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-[70]'
-const card = 'bg-white rounded-xl max-w-lg w-full shadow-2xl max-h-[90vh] overflow-y-auto'
+const shell = 'modal-backdrop fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-[70]'
+const card = 'modal-panel bg-white rounded-xl max-w-lg w-full shadow-2xl max-h-[90vh] overflow-y-auto'
 
 /**
  * Confirmación explícita para pasar a Done con tareas pendientes del checklist. Muestra la lista
@@ -17,6 +18,7 @@ export function DoneConfirmDialog({ title, pending, busy, onConfirm, onCancel }:
   return (
     <div className={shell} role="dialog" aria-modal="true" aria-labelledby="done-confirm-title">
       <div className={card}>
+        <ModalFocus onDismiss={() => { if (!busy) onCancel() }} />
         <div className="px-5 py-4 border-b bg-amber-50">
           <h3 id="done-confirm-title" className="font-bold text-amber-900">⚠️ Tareas pendientes antes de Done</h3>
           <p className="text-sm text-amber-800 mt-1">«{title}» tiene {pending.length} tarea{pending.length !== 1 ? 's' : ''} sin completar.</p>
@@ -56,6 +58,7 @@ export function BlockDialog({ initial, busy, onConfirm, onCancel }: {
   return (
     <div className={shell} role="dialog" aria-modal="true" aria-labelledby="block-title">
       <div className={card}>
+        <ModalFocus onDismiss={() => { if (!busy) onCancel() }} />
         <div className="px-5 py-4 border-b bg-red-50">
           <h3 id="block-title" className="font-bold text-red-900">🚫 {initial ? 'Corregir motivo del bloqueo' : 'Bloquear ticket'}</h3>
           <p className="text-sm text-red-800 mt-1">El ticket conserva su fase y responsable. Mientras esté bloqueado no puede cambiar de fase ni terminarse; sí admite comentarios, checklist y evidencias.</p>
@@ -92,6 +95,7 @@ export function ReopenDialog({ flows, busy, onConfirm, onCancel }: {
   return (
     <div className={shell} role="dialog" aria-modal="true" aria-labelledby="reopen-title">
       <div className={card}>
+        <ModalFocus onDismiss={() => { if (!busy) onCancel() }} />
         <div className="px-5 py-4 border-b bg-orange-50">
           <h3 id="reopen-title" className="font-bold text-orange-900">↩️ Reabrir ticket</h3>
           <p className="text-sm text-orange-800 mt-1">El ticket vuelve a trabajo activo. El cierre anterior se conserva en el historial.</p>

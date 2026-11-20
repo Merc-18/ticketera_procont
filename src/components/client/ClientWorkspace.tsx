@@ -1,3 +1,4 @@
+import ControlLabel from '../ui/ControlLabel'
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import BrandLogo from '../ui/BrandLogo'
@@ -68,8 +69,8 @@ export default function ClientWorkspace() {
   if (!token) return null
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-brand-700 via-brand-800 to-brand-950 flex items-center justify-center p-4">
-        <div role="alert" className="max-w-md w-full bg-white rounded-2xl shadow-2xl p-8 text-center border-t-4 border-accent-400">
+      <div className="app-surface flex items-center justify-center p-4">
+        <div role="alert" className="tracking-panel max-w-md w-full text-center">
           <p className="text-gray-700 mb-6">{error}</p>
           <button onClick={() => { clientSessionStore.clear(); navigate('/cliente', { replace: true }) }}
             className="w-full bg-accent-400 hover:bg-accent-300 text-gray-900 py-3 rounded-lg font-bold transition">
@@ -91,20 +92,20 @@ export default function ClientWorkspace() {
     `px-4 py-2 rounded-md font-medium text-sm transition ${isActive ? 'bg-brand-700 text-white shadow-sm' : 'text-gray-600 hover:text-brand-700 hover:bg-white'}`
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="app-surface">
       <MockBanner />
-      <header className="sticky top-0 z-10 shadow-md">
-        <div className="bg-brand-700 border-b-4 border-accent-400">
+      <header className="workspace-header">
+        <div className="border-b">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
-            <BrandLogo tone="light" size={40} className="hidden sm:flex" />
-            <BrandLogo tone="light" size={36} showName={false} className="sm:hidden" />
+            <BrandLogo tone="dark" size={40} className="hidden sm:flex" />
+            <BrandLogo tone="dark" size={36} showName={false} className="sm:hidden" />
             <div className="flex items-center gap-3 min-w-0">
               <div className="text-right min-w-0">
-                <p className="font-semibold text-white leading-tight truncate" title={companyLabel}>{companyLabel}</p>
-                <p className="text-xs text-accent-300 truncate">{identityLabel(session)}</p>
+                <p className="font-medium text-brand-700 leading-tight truncate" title={companyLabel}>{companyLabel}</p>
+                <p className="text-xs text-gray-600 truncate">{identityLabel(session)}</p>
               </div>
               <button onClick={() => void logout()}
-                className="shrink-0 px-3 sm:px-4 py-2 bg-white/10 text-white border border-white/30 rounded-lg hover:bg-white/20 transition text-sm font-medium">
+                className="ui-button ui-button-secondary shrink-0">
                 Salir
               </button>
             </div>
@@ -113,8 +114,8 @@ export default function ClientWorkspace() {
         <nav className="bg-white border-b border-gray-200" aria-label="Secciones del cliente">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-2">
             <div className="flex gap-1 bg-gray-100 p-1 rounded-lg">
-              <NavLink to="/cliente/nuevo" className={tab}>📝 Nuevo ticket</NavLink>
-              <NavLink to="/cliente/tickets" className={tab}>📋 Mis tickets</NavLink>
+              <NavLink to="/cliente/nuevo" className={tab}><ControlLabel>📝 Nuevo ticket</ControlLabel></NavLink>
+              <NavLink to="/cliente/tickets" className={tab}><ControlLabel>📋 Mis tickets</ControlLabel></NavLink>
             </div>
             {session.origin && (
               <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-accent-50 text-accent-700 border border-accent-200">
@@ -124,7 +125,7 @@ export default function ClientWorkspace() {
           </div>
         </nav>
       </header>
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-6">
+      <main id="main-content" tabIndex={-1} className="workspace-main max-w-5xl mx-auto px-4 sm:px-6">
         <ClientContext.Provider value={{ session, token, handleError, productName }}>
           <Outlet />
         </ClientContext.Provider>

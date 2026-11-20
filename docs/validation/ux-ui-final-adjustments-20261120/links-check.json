@@ -1,0 +1,10 @@
+{
+  "documents_checked": 6,
+  "local_links_checked": 186,
+  "broken_links": 0,
+  "markdown_structural_checks": "PASS: encabezado, espacios finales, fences equilibrados",
+  "gallery_images_checked": 84,
+  "source_integrity": "PASS",
+  "taste_instances": 19,
+  "notes": "Validación local; sin consultas HTTP, sin nueva ejecución del gate Taste. No sustituye un lint completo de Markdown."
+}

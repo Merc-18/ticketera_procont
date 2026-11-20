@@ -1,3 +1,4 @@
+import ModalFocus from '../ui/ModalFocus'
 import { useEffect, useRef, useState } from 'react'
 import type { Request, User } from '../../types/database.types'
 import type { useCatalogs } from '../../hooks/useCatalogs'
@@ -108,14 +109,15 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
   const decided = r.status !== 'pending'
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" onClick={onClose}>
-      <div className="bg-white rounded-xl max-w-3xl w-full max-h-[92vh] overflow-y-auto shadow-2xl" onClick={e => e.stopPropagation()}>
+    <div className="modal-backdrop fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" onClick={onClose}>
+      <div role="dialog" aria-modal="true" aria-label="Validación de solicitud" className="modal-panel bg-white rounded-xl max-w-3xl w-full max-h-[92vh] overflow-y-auto shadow-2xl" onClick={e => e.stopPropagation()}>
+        <ModalFocus onDismiss={onClose} />
         <div className="flex items-center justify-between px-6 py-4 border-b bg-brand-700 rounded-t-xl">
           <div>
             <p className="font-mono text-accent-300 text-sm">{r.request_number}</p>
             <h2 className="text-lg font-bold text-white">{r.title || r.request_type}</h2>
           </div>
-          <button onClick={onClose} className="text-white/70 hover:text-white text-2xl leading-none">✕</button>
+          <button aria-label="Cerrar" onClick={onClose} className="text-white/70 hover:text-white text-2xl leading-none">✕</button>
         </div>
 
         <div className="p-6 space-y-6">
@@ -269,7 +271,7 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
 
               {missing && <p className="text-xs text-amber-700">{missing}</p>}
               <div className="flex gap-3">
-                <button onClick={onClose} className="flex-1 bg-gray-100 text-gray-700 py-2.5 rounded-lg font-semibold hover:bg-gray-200">Cancelar</button>
+                <button aria-label="Cerrar" onClick={onClose} className="flex-1 bg-gray-100 text-gray-700 py-2.5 rounded-lg font-semibold hover:bg-gray-200">Cancelar</button>
                 <button onClick={() => void decide()} disabled={busy || !!missing}
                   className={`flex-1 py-2.5 rounded-lg font-semibold text-white disabled:opacity-50 ${mode === 'approve' ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'}`}>
                   {busy ? 'Guardando...' : mode === 'approve' ? 'Aceptar y crear trabajo' : 'Confirmar rechazo'}

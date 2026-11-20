@@ -1,0 +1,58 @@
+{
+  "base": "6533b277e9022bf3bb9a64bff02d2e4cdbfc52d5",
+  "branch": "feat/ticketera-ux-ui-four-areas",
+  "version": "Versión 202611201553",
+  "node": {
+    "passed": 171,
+    "failed": 0,
+    "skipped": 0
+  },
+  "existing_ui_final": {
+    "passed": 31,
+    "failed": 0,
+    "skipped": 0
+  },
+  "compiled_ui_final": {
+    "passed": 22,
+    "failed": 0,
+    "skipped": 0
+  },
+  "existing_ui_first_attempt": {
+    "passed": 29,
+    "failed": 2,
+    "reason": "Suspense amplio ocultaba subtabs de Equipo; corregido con límites por contenido"
+  },
+  "equipo_targeted_after_fix": {
+    "passed": 2,
+    "failed": 0
+  },
+  "screenshots": 92,
+  "initial_JS_bytes": 443011,
+  "deferred_emitted_JS_bytes": 635586,
+  "total_emitted_JS_bytes": 1078597,
+  "taste_perf_original": {
+    "fail": 0,
+    "warn": 0,
+    "status": "PASS",
+    "widths": [
+      1440,
+      390
+    ],
+    "runs_per_width": 3
+  },
+  "taste_composition_gate": "OPEN 19 histórico, sin reiniciar ni modificar",
+  "manual_taste_classification": {
+    "justified_exceptions": 12,
+    "false_positives": 7,
+    "demonstrated_UX_defects_pending": 0
+  },
+  "protected_files_identical": 128,
+  "typechecks": "PASS",
+  "build": "PASS",
+  "remote_operations": false,
+  "push": false,
+  "merge": false,
+  "deploy": false,
+  "local_commit_authorized": true,
+  "commit_reference": "Commit que incorpora este documento; consultar git log -1 -- docs/validation/ux-ui-performance-close-20261120.md"
+}

@@ -1,3 +1,5 @@
+import ControlLabel from '../ui/ControlLabel'
+import ScrollHint from '../ui/ScrollHint'
 import type { Project, ProjectFlow } from '../../types/database.types'
 import { PRIORITY_BAR, PHASE_LABELS } from '../../lib/constants'
 
@@ -127,9 +129,10 @@ export default function GanttView({ projects, boardType, onProjectClick, loading
   const LEFT_W = 220
 
   return (
-    <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
+    <div className="data-view overflow-hidden">
+      <ScrollHint>Desliza horizontalmente para recorrer el timeline completo.</ScrollHint>
       {/* Legend */}
-      <div className="flex items-center gap-4 px-4 py-2 border-b bg-gray-50 text-xs text-gray-500">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 border-b bg-gray-50 text-xs text-gray-600">
         <span className="font-semibold">Leyenda:</span>
         {Object.entries(PRIORITY_LABEL).map(([k, icon]) => (
           <span key={k} className="flex items-center gap-1">
@@ -141,7 +144,7 @@ export default function GanttView({ projects, boardType, onProjectClick, loading
         </span>
       </div>
 
-      <div className="overflow-x-auto">
+      <div role="region" aria-label="Cronograma Gantt, desplazamiento horizontal" tabIndex={0} className="overflow-x-auto">
         <div style={{ minWidth: `${LEFT_W + totalMonths * 80}px` }}>
 
           {/* Month headers */}
@@ -227,13 +230,13 @@ export default function GanttView({ projects, boardType, onProjectClick, loading
         </div>
       </div>
 
-      <div className="px-4 py-2 bg-gray-50 border-t text-xs text-gray-500 flex items-center justify-between">
+      <div className="px-4 py-3 bg-gray-50 border-t text-xs text-gray-600 flex flex-wrap gap-3 items-center justify-between">
         <span>{items.length} proyecto{items.length !== 1 ? 's' : ''} · Arrastra horizontalmente para ver el timeline completo</span>
         <button
           onClick={() => exportGanttCSV(items)}
           className="px-3 py-1 bg-white border border-gray-200 text-gray-600 rounded text-xs hover:bg-gray-100 transition"
         >
-          ⬇ Exportar CSV
+          <ControlLabel>⬇ Exportar CSV</ControlLabel>
         </button>
       </div>
     </div>

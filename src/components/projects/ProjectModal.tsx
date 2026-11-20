@@ -1,3 +1,5 @@
+import ControlLabel from '../ui/ControlLabel'
+import ModalFocus from '../ui/ModalFocus'
 import { useEffect, useState } from 'react'
 import type { Project, ProjectFlow } from '../../types/database.types'
 import CommentsSection from './CommentsSection'
@@ -111,8 +113,9 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
 
   return (
     <>
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-4 z-50" onClick={onClose}>
-      <div className="bg-white rounded-lg max-w-4xl w-full max-h-[94vh] overflow-hidden flex flex-col" onClick={e => e.stopPropagation()}>
+    <div className="modal-backdrop fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-4 z-50" onClick={onClose}>
+      <div role="dialog" aria-modal="true" aria-label="Detalle del ticket" className="modal-panel bg-white rounded-lg max-w-4xl w-full max-h-[94vh] overflow-hidden flex flex-col" onClick={e => e.stopPropagation()}>
+        <ModalFocus onDismiss={onClose} />
         {/* ── HEADER ── */}
         <div className={`shrink-0 border-b px-4 sm:px-6 py-4 flex items-start justify-between gap-3 ${blocked ? 'bg-red-50' : 'bg-gray-50'}`}>
           <div className="flex-1 min-w-0">
@@ -177,7 +180,7 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
           {([['details', '📋 Detalles'], ['checklist', '✅ Checklist'], ['comments', '💬 Comentarios'], ['evidence', '📎 Evidencias'], ['history', '🕐 Historial']] as [Tab, string][]).map(([id, label]) => (
             <button key={id} role="tab" aria-selected={tab === id} onClick={() => setTab(id)}
               className={`px-3 sm:px-4 py-3 font-medium text-sm border-b-2 whitespace-nowrap transition ${tab === id ? 'border-primary text-primary' : 'border-transparent text-gray-600 hover:text-gray-900'}`}>
-              {label}
+              <ControlLabel>{label}</ControlLabel>
             </button>
           ))}
         </div>
@@ -345,11 +348,11 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
                 )}
                 {(ticket.project_status === 'active' || ticket.project_status === 'completed') && (
                   <button onClick={() => { if (confirm('¿Archivar este ticket? Se conserva su historial y puede restaurarse.')) void run(() => board.archive(project.id, actionKey()), 'Ticket archivado') }} disabled={busy}
-                    className="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-300 disabled:opacity-50">📦 Archivar</button>
+                    className="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-300 disabled:opacity-50"><ControlLabel>📦 Archivar</ControlLabel></button>
                 )}
                 {(ticket.project_status === 'archived' || (ticket.project_status === 'deleted' && canManage)) && (
                   <button onClick={() => { void run(() => board.restore(project.id, actionKey()), 'Ticket restaurado') }} disabled={busy}
-                    className="px-3 py-2 bg-brand-100 text-brand-700 rounded-lg text-sm font-medium hover:bg-brand-200 disabled:opacity-50">↺ Restaurar</button>
+                    className="px-3 py-2 bg-brand-100 text-brand-700 rounded-lg text-sm font-medium hover:bg-brand-200 disabled:opacity-50"><ControlLabel>↺ Restaurar</ControlLabel></button>
                 )}
               </>
             )}
@@ -363,7 +366,7 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
               </>
             ) : (
               <>
-                {editable && <button onClick={() => { setEditData(blank()); setEditMode(true) }} className="px-4 py-2 bg-brand-100 text-brand-700 rounded-lg text-sm font-medium hover:bg-brand-200">✏️ Editar</button>}
+                {editable && <button onClick={() => { setEditData(blank()); setEditMode(true) }} className="px-4 py-2 bg-brand-100 text-brand-700 rounded-lg text-sm font-medium hover:bg-brand-200"><ControlLabel>✏️ Editar</ControlLabel></button>}
                 <button onClick={onClose} className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 text-sm">Cerrar</button>
               </>
             )}

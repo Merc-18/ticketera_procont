@@ -1,3 +1,4 @@
+import ControlLabel from '../ui/ControlLabel'
 import { Droppable, Draggable } from '@hello-pangea/dnd'
 import ProjectCard from './ProjectCard'
 import type { Project, ProjectFlow, User } from '../../types/database.types'
@@ -20,12 +21,12 @@ interface Props {
 
 export default function BoardColumn({ phase, projects, onProjectClick, users = [], onAssign, canManage, selectedIds, onSelect }: Props) {
   return (
-    <div className="flex-shrink-0 w-72">
+    <div className="board-column flex-shrink-0 w-72">
       {/* Column Header */}
-      <div className={`rounded-t-lg p-3 ${phase.color}`}>
+      <div className={`board-column-header ${phase.color}`}>
         <div className="flex items-center justify-between">
           <h2 className="font-semibold text-white text-sm">
-            {phase.title}
+            <ControlLabel>{phase.title}</ControlLabel>
           </h2>
           <span className="bg-white bg-opacity-30 text-white text-xs font-bold px-2 py-1 rounded">
             {projects.length}
@@ -39,7 +40,7 @@ export default function BoardColumn({ phase, projects, onProjectClick, users = [
           <div
             ref={provided.innerRef}
             {...provided.droppableProps}
-            className={`bg-gray-50 rounded-b-lg p-3 min-h-[500px] ${
+            className={`board-column-body ${
               snapshot.isDraggingOver ? 'bg-brand-50 ring-2 ring-primary' : ''
             }`}
           >
@@ -55,7 +56,7 @@ export default function BoardColumn({ phase, projects, onProjectClick, users = [
                     ref={provided.innerRef}
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
-                    className={snapshot.isDragging ? 'opacity-50' : ''}
+                    className={snapshot.isDragging ? 'opacity-75' : ''}
                   >
                     <ProjectCard
                       project={item.project}

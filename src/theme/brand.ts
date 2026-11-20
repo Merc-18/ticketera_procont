@@ -2,38 +2,24 @@
 // Fuente única de colores y textos de marca. Consumida por tailwind.config.ts
 // (clases `brand-*`, `accent-*`, `primary`) y por los componentes React.
 //
-// Referencia oficial: https://procontbusiness.com/ (revisada 18/11/2026).
+// Logo y textos de referencia: https://procontbusiness.com/ (revisada 18/11/2026).
 //   [V-CSS]  valor presente en el CSS publicado (assets/index-*.css)
 //   [V-JS]   valor literal en el bundle JS publicado
 //   [V-LOGO] color de píxel medido en /logo.png publicado
 //   [D]      derivado (tinte/sombra interpolado); no es un color oficial
 // Detalle en docs/frontend-identidad-procont.md.
 
-/** Azul corporativo (escala usada como `brand-*`). */
+/** Escala visual aprobada para Ticketera (20/11/2026), derivada de #173D66. */
 export const BRAND_NAVY = {
-  50:  '#EEF2FA', // [D]
-  100: '#DCE4F5', // [D]
-  200: '#B9C8EB', // [D]
-  300: '#8AA1DA', // [D]
-  400: '#5574C2', // [D]
-  500: '#2F4FA3', // [D]
-  600: '#1E3A8A', // [V-CSS] clase bg-blue-900 del sitio: navbar, footer y secciones del sitio
-  700: '#01257B', // [V-LOGO] fondo del logotipo
-  800: '#001E64', // [V-LOGO] cara sombreada del logotipo
-  900: '#001652', // [D]
-  950: '#000E38', // [D]
+  50: '#EDF3F9', 100: '#DFE8F2', 200: '#C4D4E5', 300: '#9AAFC6',
+  400: '#6D8FAF', 500: '#36648E', 600: '#173D66', 700: '#173D66',
+  800: '#123252', 900: '#102C49', 950: '#0C243D',
 } as const
 
-/** Amarillo/dorado corporativo (escala usada como `accent-*`). */
+/** Dorado Procont aprobado; los tonos claros se reservan a superficies y énfasis. */
 export const BRAND_GOLD = {
-  50:  '#FFF9E5', // [D]
-  100: '#FFF1BF', // [D]
-  200: '#FCE08A', // [D]
-  300: '#F2CE52', // [V-CSS] brand-secondary-300 (hover de CTA)
-  400: '#EEBB31', // [V-CSS] brand-secondary-400 (CTA y etiquetas)
-  500: '#FFCC2A', // [V-LOGO] base amarilla del logotipo
-  600: '#C9930E', // [D]
-  700: '#8A6400', // [D] texto dorado sobre fondo claro (contraste AA)
+  50: '#FAF5E9', 100: '#F1E7CF', 200: '#E8D6AB', 300: '#DFBF78',
+  400: '#D5AE54', 500: '#BB9139', 600: '#92702B', 700: '#72551F',
 } as const
 
 /** Otros valores verificados del sitio (no se exponen como escala propia). */

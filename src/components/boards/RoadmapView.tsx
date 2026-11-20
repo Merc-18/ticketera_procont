@@ -102,7 +102,7 @@ export default function RoadmapView({ projects, onProjectClick, loading }: Props
           return (
             <div
               key={q.label}
-              className={`bg-white rounded-xl border shadow-sm overflow-hidden flex flex-col ${isCurrent ? 'ring-2 ring-primary/30' : ''}`}
+              className={`roadmap-quarter overflow-hidden flex flex-col ${isCurrent ? 'ring-2 ring-primary/30' : ''}`}
             >
               {/* Quarter header */}
               <div className={`px-4 py-3 flex items-center justify-between border-b ${

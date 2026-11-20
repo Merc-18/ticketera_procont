@@ -27,7 +27,7 @@ export default function MyTickets() {
   }, [token, handleError])
 
   return (
-    <section>
+    <section className="my-tickets">
       <div className="mb-5">
         <h1 className="text-2xl font-bold text-brand-700">Mis tickets</h1>
         <p className="text-sm text-gray-600 mt-1">
@@ -51,7 +51,7 @@ export default function MyTickets() {
       ) : (
         <>
           {/* Escritorio: tabla */}
-          <div className="hidden md:block bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+          <div className="ticket-table hidden md:block overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-brand-50 text-brand-800 text-left">
                 <tr>
@@ -92,9 +92,9 @@ export default function MyTickets() {
               return (
                 <li key={t.id}>
                   <Link to={`/cliente/tickets/${t.id}`}
-                    className="block bg-white rounded-xl border border-gray-200 p-4 shadow-sm hover:border-accent-400 transition">
+                    className="ticket-mobile-card hover:border-brand-400">
                     <div className="flex items-center justify-between gap-2 mb-1">
-                      <span className="font-bold text-brand-700">{t.request_number}</span>
+                      <span className="font-mono text-brand-700">{t.request_number}</span>
                       <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full border ${s.tone}`}>{s.icon} {s.label}</span>
                     </div>
                     <p className="text-gray-900 font-medium">{t.title}</p>

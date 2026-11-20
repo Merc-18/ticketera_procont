@@ -1,3 +1,4 @@
+import Icon from '../ui/Icon'
 import { useState, useRef, useEffect } from 'react'
 import { canEdit } from '../../lib/access'
 import type { Project, ProjectFlow, User } from '../../types/database.types'
@@ -65,16 +66,16 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
   return (
     <div
       onClick={onClick}
-      className={`relative rounded-lg shadow-sm border p-3.5 mb-3 hover:shadow-md transition-shadow cursor-pointer group/card ${
+      className={`project-card relative border mb-3 cursor-pointer group/card ${
         project.is_blocked ? 'bg-red-50 border-l-4 border-l-red-500' : 'bg-white'
       } ${selected ? 'border-brand-400 ring-1 ring-brand-200' : project.is_blocked ? 'border-red-200' : 'border-gray-200'}`}
     >
       {onSelect && (
         <div
-          className={`absolute top-2 right-2 z-10 transition-opacity ${selected ? 'opacity-100' : 'opacity-0 group-hover/card:opacity-100'}`}
+          className={`card-select absolute top-2 right-2 z-10 transition-opacity ${selected ? 'opacity-100' : 'opacity-0 group-hover/card:opacity-100'}`}
           onClick={e => { e.stopPropagation(); onSelect(project.id) }}
         >
-          <input type="checkbox" checked={selected ?? false} readOnly className="w-4 h-4 cursor-pointer accent-brand-600" />
+          <input aria-label={`Seleccionar ${project.title}`} type="checkbox" checked={selected ?? false} readOnly className="w-4 h-4 cursor-pointer accent-brand-600" />
         </div>
       )}
       {/* Título + blocked */}
@@ -101,7 +102,7 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
         )}
         {showRequester && (
           <span className="px-1.5 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200">
-            👤 {requesterName}
+            <Icon name="user" size={14} className="inline-block mr-1" />{requesterName}
           </span>
         )}
         {project.project_type === 'dual' && (
@@ -117,10 +118,10 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
       </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-between text-xs text-gray-400">
+      <div className="project-card-footer flex flex-col gap-3 text-xs text-gray-600">
         <span className="flex items-center gap-2">
           {requestNumber
-            ? <span className="font-mono text-gray-500">{requestNumber}</span>
+            ? <span className="font-mono text-gray-600 whitespace-nowrap">{requestNumber}</span>
             : <span className="px-1.5 py-0.5 rounded bg-gray-100 text-gray-400 text-[10px] font-medium">Interno</span>
           }
           {checkTotal > 0 && (
@@ -153,14 +154,15 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
               <button
                 onClick={e => { e.stopPropagation(); setShowAssign(v => !v) }}
                 title="Asignar responsable"
-                className="w-5 h-5 rounded-full bg-gray-100 hover:bg-brand-100 text-gray-400 hover:text-brand-600 flex items-center justify-center text-[10px] font-bold transition"
+                aria-label="Asignar responsable" aria-expanded={showAssign}
+                className="assign-toggle w-5 h-5 rounded-full bg-gray-100 hover:bg-brand-100 text-gray-400 hover:text-brand-600 flex items-center justify-center text-[10px] font-bold transition"
               >
-                {assignedUsers.length > 0 ? '✎' : '+'}
+                <Icon name={assignedUsers.length > 0 ? 'edit' : 'plus'} size={14} />
               </button>
 
               {showAssign && (
                 <div
-                  className="absolute bottom-7 right-0 bg-white border border-gray-200 rounded-lg shadow-lg z-20 py-1 min-w-[160px]"
+                  className="assign-menu absolute bottom-7 right-0 bg-white border border-gray-200 rounded-lg shadow-lg z-20 py-1 min-w-[160px]"
                   onClick={e => e.stopPropagation()}
                 >
                   <p className="px-3 py-1 text-[10px] text-gray-400 font-semibold uppercase tracking-wide border-b border-gray-100 mb-1">

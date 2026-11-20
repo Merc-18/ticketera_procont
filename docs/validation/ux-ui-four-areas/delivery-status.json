@@ -1,0 +1,22 @@
+{
+  "branch": "feat/ticketera-ux-ui-four-areas",
+  "base_and_current_HEAD": "6533b277e9022bf3bb9a64bff02d2e4cdbfc52d5",
+  "new_commit": null,
+  "reason": "La autorización condicionó el commit a que todas las validaciones pasen; Gate Taste OPEN 19 y presupuesto JS por encima del umbral de la skill.",
+  "internal_links_checked": 79,
+  "broken_links": [],
+  "protected_paths_unchanged": [
+    "supabase",
+    "contracts",
+    "scripts",
+    "src/lib",
+    "src/hooks",
+    "src/types",
+    "package.json",
+    "package-lock.json",
+    "vite.config.ts",
+    "vercel.json"
+  ],
+  "screenshots": 65,
+  "remote_operations": "Ninguna operación de Supabase, Vercel, push, merge o despliegue."
+}

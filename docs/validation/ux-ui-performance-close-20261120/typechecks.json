@@ -1,0 +1,14 @@
+{
+  "application": {
+    "command": "./node_modules/.bin/tsc --noEmit",
+    "exit_code": 0
+  },
+  "strict_contract": {
+    "command": "./node_modules/.bin/tsc --noEmit --strict --target ES2022 --module NodeNext --moduleResolution NodeNext --lib ES2022,DOM tests/client-access-contract.types.mts",
+    "exit_code": 0
+  },
+  "build": {
+    "command": "npm run build -- --outDir /tmp/ticketera-ux-ui-performance-20261120/approved-build --manifest",
+    "exit_code": 0
+  }
+}

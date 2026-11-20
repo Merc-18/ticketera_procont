@@ -1,11 +1,15 @@
-import { useState } from 'react'
+import ControlLabel from '../ui/ControlLabel'
+import { lazy, Suspense, useState } from 'react'
 import { useRequests } from '../../hooks/useRequests'
 import { useUsers } from '../../hooks/useUsers'
 import { useAuth } from '../../hooks/useAuth'
 import type { Request } from '../../types/database.types'
-import PlannerImportModal from './PlannerImportModal'
+import ModalFocus from '../ui/ModalFocus'
 import { useCatalogs } from '../../hooks/useCatalogs'
 import RequestValidationModal from './RequestValidationModal'
+
+// XLSX solo forma parte de la descarga iniciada al abrir el importador.
+const PlannerImportModal = lazy(() => import('./PlannerImportModal'))
 
 const isUrgent = (r: Request) => !!r.urgent_requested || !!r.observations?.startsWith('🔴 URGENTE')
 
@@ -81,7 +85,7 @@ export default function RequestInbox() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="request-inbox space-y-6">
       {/* Import button */}
       {canManage && (
         <div className="flex justify-end">
@@ -89,16 +93,16 @@ export default function RequestInbox() {
             onClick={() => setShowImportModal(true)}
             className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition flex items-center gap-2 shadow-sm"
           >
-            📥 Importar Planner
+            <ControlLabel>📥 Importar Planner</ControlLabel>
           </button>
         </div>
       )}
 
       {/* Filtro Estudio (independiente del área) */}
       {catalogs.studios.length > 0 && (
-        <div className="flex items-center gap-2">
-          <label className="text-sm text-gray-600">Estudio</label>
-          <select value={studioFilter} onChange={e => setStudioFilter(e.target.value)}
+        <div className="inbox-toolbar flex flex-wrap items-center gap-2">
+          <label htmlFor="inbox-studio" className="text-sm text-gray-600">Estudio</label>
+          <select id="inbox-studio" value={studioFilter} onChange={e => setStudioFilter(e.target.value)}
             className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-primary outline-none">
             <option value="all">Todos</option>
             {catalogs.studios.map(st => <option key={st.id} value={st.id}>{st.name}</option>)}
@@ -108,7 +112,7 @@ export default function RequestInbox() {
       )}
 
       {/* Tabs */}
-      <div className="flex gap-2 border-b overflow-x-auto">
+      <div className="request-tabs flex overflow-x-auto">
         {([
           { key: 'pending',  label: 'Pendientes',  count: pendingRequests.length,  dot: 'bg-yellow-400' },
           { key: 'approved', label: 'Aprobadas',   count: approvedRequests.length, dot: 'bg-green-500' },
@@ -116,6 +120,7 @@ export default function RequestInbox() {
         ] as const).map(tab => (
           <button
             key={tab.key}
+            aria-pressed={activeTab === tab.key}
             onClick={() => setActiveTab(tab.key)}
             className={`px-4 py-2.5 text-sm font-medium border-b-2 transition flex items-center gap-2 whitespace-nowrap shrink-0 ${
               activeTab === tab.key
@@ -149,7 +154,7 @@ export default function RequestInbox() {
               return (
                 <div
                   key={request.id}
-                  className={`bg-white border rounded-lg p-4 hover:shadow-md transition cursor-pointer ${urgent ? 'border-red-300' : ''}`}
+                  className={`request-card border cursor-pointer ${urgent ? 'border-red-300' : ''}`}
                   onClick={() => open(request, 'view')}
                 >
                   <div className="flex items-start justify-between mb-3">
@@ -207,7 +212,7 @@ export default function RequestInbox() {
               return (
                 <div
                   key={request.id}
-                  className={`bg-white border rounded-lg p-4 hover:shadow-md transition cursor-pointer ${projectDeleted ? 'border-gray-200 opacity-75' : 'border-green-100'}`}
+                  className={`request-card border cursor-pointer ${projectDeleted ? 'border-gray-200 opacity-75' : 'border-green-100'}`}
                   onClick={() => open(request, 'view')}
                 >
                   <div className="flex items-start justify-between mb-3">
@@ -254,7 +259,7 @@ export default function RequestInbox() {
             rejectedRequests.map(request => (
               <div
                 key={request.id}
-                className="bg-white border border-red-100 rounded-lg p-4 hover:shadow-md transition cursor-pointer"
+                className="request-card border border-red-100 cursor-pointer"
                 onClick={() => open(request, 'view')}
               >
                 <div className="flex items-start justify-between mb-3">
@@ -304,7 +309,17 @@ export default function RequestInbox() {
 
       {/* Planner Import Modal */}
       {showImportModal && (
+        <Suspense fallback={
+          <div className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div role="dialog" aria-modal="true" aria-label="Importar desde Planner" className="modal-panel bg-white rounded-2xl p-6 max-w-lg w-full">
+              <ModalFocus onDismiss={() => setShowImportModal(false)} />
+              <p role="status" className="text-sm text-gray-600">Cargando importador de Planner…</p>
+              <button onClick={() => setShowImportModal(false)} className="ui-button ui-button-secondary mt-4">Cancelar</button>
+            </div>
+          </div>
+        }>
         <PlannerImportModal onClose={() => { setShowImportModal(false) }} />
+        </Suspense>
       )}
     </div>
   )

@@ -48,16 +48,16 @@ export default function ClientLaunch() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-700 via-brand-800 to-brand-950 flex flex-col">
+    <div className="app-surface flex flex-col">
       <MockBanner />
-      <div className="flex-1 flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl p-8 border-t-4 border-accent-400">
+      <main id="main-content" tabIndex={-1} className="flex-1 flex items-center justify-center p-4 py-12">
+        <div className="max-w-md w-full tracking-panel">
           <BrandLogo size={44} className="justify-center mb-6" />
           {error ? (
             <div role="alert" className="text-center">
               <p className="text-gray-700 mb-6">{error}</p>
               <button onClick={() => navigate('/cliente', { replace: true })}
-                className="w-full bg-accent-400 hover:bg-accent-300 text-gray-900 py-3 rounded-lg font-bold transition">
+                className="ui-button ui-button-primary w-full">
                 Ir al ingreso de Ticketera
               </button>
             </div>
@@ -74,7 +74,7 @@ export default function ClientLaunch() {
               </dl>
               <p className="text-xs text-gray-500 mb-6">Si estos datos no son tuyos, elige «No soy yo».</p>
               <div className="space-y-3">
-                <button onClick={confirm} className="w-full bg-accent-400 hover:bg-accent-300 text-gray-900 py-3 rounded-lg font-bold transition">
+                <button onClick={confirm} className="ui-button ui-button-primary w-full">
                   Continuar
                 </button>
                 <button onClick={() => void reject()} className="w-full bg-gray-100 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-200 transition">
@@ -84,7 +84,7 @@ export default function ClientLaunch() {
             </div>
           )}
         </div>
-      </div>
+      </main>
     </div>
   )
 }

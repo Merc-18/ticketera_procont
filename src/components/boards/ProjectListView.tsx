@@ -52,7 +52,7 @@ export default function ProjectListView({ projects, boardType, onProjectClick, s
             <div
               key={project.id}
               onClick={() => onProjectClick({ project, flow })}
-              className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow cursor-pointer"
+              className="project-list-card border border-gray-200 cursor-pointer"
             >
               {/* Título */}
               <h3 className="font-semibold text-gray-900 text-sm mb-2 line-clamp-2">

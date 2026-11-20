@@ -1,3 +1,5 @@
+import ControlLabel from '../ui/ControlLabel'
+import ScrollHint from '../ui/ScrollHint'
 import { useState } from 'react'
 import type { Project, ProjectFlow } from '../../types/database.types'
 import { PRIORITY_COLORS, PHASE_LABELS, PRIORITY_LABEL } from '../../lib/constants'
@@ -126,8 +128,9 @@ export default function TableView({ projects, boardType, onProjectClick, loading
   const today = new Date().toISOString().slice(0, 10)
 
   return (
-    <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
-      <div className="overflow-x-auto">
+    <div className="data-view overflow-hidden">
+      <ScrollHint>Desliza para ver más columnas: fase, checklist y fechas.</ScrollHint>
+      <div role="region" aria-label="Tabla de proyectos, desplazamiento horizontal" tabIndex={0} className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="bg-gray-50 border-b">
             <tr>
@@ -208,7 +211,7 @@ export default function TableView({ projects, boardType, onProjectClick, loading
           onClick={() => exportTableCSV(sorted)}
           className="px-3 py-1 bg-white border border-gray-200 text-gray-600 rounded text-xs hover:bg-gray-100 transition"
         >
-          ⬇ Exportar CSV
+          <ControlLabel>⬇ Exportar CSV</ControlLabel>
         </button>
       </div>
     </div>

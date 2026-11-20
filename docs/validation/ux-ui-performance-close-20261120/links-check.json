@@ -1,0 +1,13 @@
+{
+  "documents_checked": 8,
+  "local_links_checked": 330,
+  "broken_links": 0,
+  "markdown_structure": "PASS: encabezados, fences equilibrados, sin whitespace final",
+  "gallery_images_checked": 92,
+  "one_version": "Versión 202611201553",
+  "source_and_asset_integrity": "PASS",
+  "taste_instances": 19,
+  "justified_exceptions": 12,
+  "false_positives": 7,
+  "notes": "Solo validación local, sin HTTP remoto y sin reiniciar el gate; no sustituye un lint completo de Markdown."
+}

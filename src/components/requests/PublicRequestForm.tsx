@@ -8,10 +8,11 @@ import type { RpcAttempt } from '../../lib/rpc-attempt'
 import type { ClientProduct, ClientTicketInput } from '../../lib/client-portal'
 import type { PreparationResult } from '../../lib/attachment-prep'
 import AttachmentPicker from './AttachmentPicker'
+import Icon from '../ui/Icon'
 import { BRAND } from '../../theme/brand'
 
 const EMPTY = { requester_name: '', system_id: '', request_type_id: '', title: '', description: '' }
-const field = 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none bg-white'
+const field = 'ui-input focus:ring-2 focus:ring-primary'
 
 /** Sesión de cliente autenticado (portal Quipu/QuipuFac): sin estudio; producto desde la sesión. */
 export interface ClientFormConfig {
@@ -97,13 +98,13 @@ export default function PublicRequestForm({ client }: { client: ClientFormConfig
   if (receipt) {
     return (
       <div className="flex justify-center">
-        <div className="max-w-md w-full bg-white rounded-2xl p-8 text-center border-t-4 border-accent-400 shadow-lg border border-gray-200">
-          <div className="text-6xl mb-4">✅</div>
+        <div className="ticket-receipt">
+          <div className="mx-auto mb-6 icon-tile text-green-700"><Icon name="check" size={28} /></div>
           <h2 className="text-2xl font-bold text-brand-700 mb-2">¡Solicitud enviada!</h2>
           <p className="text-gray-600 mb-6">Tu solicitud fue registrada y será revisada por el {BRAND.teamLabel}.</p>
           <div className="bg-brand-50 border-2 border-brand-200 rounded-lg p-4 mb-6">
             <p className="text-sm text-gray-600 mb-2">Número de seguimiento:</p>
-            <p className="text-3xl font-bold text-primary">{receipt.request_number}</p>
+            <p className="text-3xl font-mono text-primary">{receipt.request_number}</p>
           </div>
           {pendingDelivery.length > 0 && (
             <div className="text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4 text-left space-y-2">
@@ -137,15 +138,15 @@ export default function PublicRequestForm({ client }: { client: ClientFormConfig
       {text} {required && <span className="text-red-500">*</span>}
     </label>
   )
-  const section = 'font-semibold text-brand-700 border-b pb-2'
+  const section = 'font-medium text-brand-700'
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-200">
-        <div className="mb-8">
+    <div className="max-w-4xl mx-auto">
+      <div className="ticket-form">
+        <header>
           <h1 className="text-2xl font-bold text-brand-700 mb-1">Nuevo ticket</h1>
           <p className="text-gray-600 text-sm">Completa el formulario para enviar tu solicitud al {BRAND.teamLabel}.</p>
-        </div>
+        </header>
 
         {catalogs.loading ? (
           <p className="text-center text-gray-400 py-8">Cargando formulario...</p>
@@ -154,7 +155,7 @@ export default function PublicRequestForm({ client }: { client: ClientFormConfig
         ) : (
           <form onSubmit={handleSubmit} className="space-y-8">
             <section className="space-y-4">
-              <h3 className={section}>Datos del solicitante</h3>
+              <h2 className={section}>Datos del solicitante</h2>
               <div>
                 {label('ticket-requester', 'Nombre del solicitante')}
                 <input id="ticket-requester" required maxLength={200} value={form.requester_name} placeholder="Nombre y apellido"
@@ -167,12 +168,12 @@ export default function PublicRequestForm({ client }: { client: ClientFormConfig
             </section>
 
             <section className="space-y-4">
-              <h3 className={section}>¿Para qué producto es la solicitud?</h3>
+              <h2 className={section}>¿Para qué producto es la solicitud?</h2>
               {client.fixedProduct ? (
                 <div>
                   {label('ticket-product', 'Producto')}
                   <p id="ticket-product" className={`${field} bg-gray-50 text-gray-800 flex items-center gap-2`} aria-readonly="true">
-                    <span aria-hidden="true">🔒</span>{client.products[0]?.name}
+                    <Icon name="lock" size={18} />{client.products[0]?.name}
                   </p>
                   <p className="text-xs text-gray-500 mt-1">Ingresaste desde esta plataforma: el ticket se registra para este producto.</p>
                 </div>
@@ -188,7 +189,7 @@ export default function PublicRequestForm({ client }: { client: ClientFormConfig
             </section>
 
             <section className="space-y-4">
-              <h3 className={section}>¿Qué necesitas?</h3>
+              <h2 className={section}>¿Qué necesitas?</h2>
               <div>
                 {label('ticket-type', 'Tipo de solicitud')}
                 <select id="ticket-type" required value={form.request_type_id} onChange={e => set({ request_type_id: e.target.value })} className={field}>
@@ -220,7 +221,7 @@ export default function PublicRequestForm({ client }: { client: ClientFormConfig
             {error && <p role="alert" className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">{error}</p>}
 
             <button type="submit" disabled={loading || !prepared || !prepared.ok}
-              className="w-full bg-accent-400 hover:bg-accent-300 text-gray-900 py-3.5 rounded-lg font-bold transition disabled:opacity-50">
+              className="ui-button ui-button-primary w-full">
               {loading ? 'Enviando...' : 'Enviar solicitud'}
             </button>
           </form>

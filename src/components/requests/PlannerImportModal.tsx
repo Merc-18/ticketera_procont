@@ -1,3 +1,5 @@
+import ControlLabel from '../ui/ControlLabel'
+import ModalFocus from '../ui/ModalFocus'
 import { useState, useRef } from 'react'
 import * as XLSX from 'xlsx'
 import { useRequests } from '../../hooks/useRequests'
@@ -192,8 +194,9 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
   // ── Done screen ──
   if (done) {
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full text-center">
+      <div className="modal-backdrop fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div role="dialog" aria-modal="true" aria-label="Importar desde Planner" className="modal-panel bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full text-center">
+        <ModalFocus onDismiss={onClose} />
           <div className="text-5xl mb-4">✅</div>
           <h2 className="text-xl font-bold text-gray-900 mb-2">{imported} solicitudes confirmadas</h2>
           {failures.length > 0 && <div role="alert" className="text-red-700 text-sm mb-4">
@@ -215,18 +218,19 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+    <div className="modal-backdrop fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div role="dialog" aria-modal="true" aria-label="Importar desde Planner" className="modal-panel bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+        <ModalFocus onDismiss={onClose} />
 
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b shrink-0">
           <div>
-            <h2 className="text-lg font-bold text-gray-900">📥 Importar desde Planner</h2>
+            <h2 className="text-lg font-bold text-gray-900"><ControlLabel>📥 Importar desde Planner</ControlLabel></h2>
             <p className="text-xs text-gray-500 mt-0.5">
               Las tareas importadas quedarán como solicitudes <strong>pendientes</strong> con prioridad <strong>baja</strong>
             </p>
           </div>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl">✕</button>
+          <button aria-label="Cerrar" onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl">✕</button>
         </div>
 
         {/* Step: upload */}
@@ -367,7 +371,7 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
                       Importando...
                     </>
                   ) : (
-                    `📥 Importar ${selected.size} solicitud${selected.size !== 1 ? 'es' : ''}`
+                    <ControlLabel>{`📥 Importar ${selected.size} solicitud${selected.size !== 1 ? 'es' : ''}`}</ControlLabel>
                   )}
                 </button>
               </div>

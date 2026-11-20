@@ -129,8 +129,8 @@ export default function PapeleraView() {
 
       {/* Confirm restore */}
       {confirmRestore && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-sm w-full p-6 shadow-2xl">
+        <div className="modal-backdrop fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="modal-panel bg-white rounded-lg max-w-sm w-full p-6 shadow-2xl">
             <h3 className="text-lg font-bold text-gray-900 mb-2">↩ Restaurar proyecto</h3>
             <p className="text-sm text-gray-600 mb-6">
               El ticket volverá a los boards (activo, o terminado si ya estaba en su fase final). Queda registrado en el historial.

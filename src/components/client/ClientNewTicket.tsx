@@ -1,3 +1,4 @@
+import Icon from '../ui/Icon'
 import { Link, useNavigate } from 'react-router-dom'
 import PublicRequestForm from '../requests/PublicRequestForm'
 import { useClientSession } from './ClientWorkspace'
@@ -18,7 +19,7 @@ export default function ClientNewTicket() {
   if (session.studio_mapping === 'required' || products.length === 0) {
     return (
       <div className="max-w-2xl mx-auto bg-white rounded-2xl border border-gray-200 shadow-sm p-8 text-center">
-        <div className="text-5xl mb-4" aria-hidden="true">🏢</div>
+        <div className="icon-tile mx-auto mb-4"><Icon name="building" size={28} /></div>
         <h1 className="text-xl font-bold text-brand-700 mb-2">
           {session.studio_mapping === 'required' ? 'Tu empresa aún no está habilitada' : 'No hay productos disponibles'}
         </h1>

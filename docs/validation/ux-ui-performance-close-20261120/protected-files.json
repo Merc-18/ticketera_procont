@@ -1,0 +1,536 @@
+{
+  "base": "6533b277e9022bf3bb9a64bff02d2e4cdbfc52d5",
+  "protected_prefixes": [
+    "supabase",
+    "contracts",
+    "scripts",
+    "src/lib",
+    "src/hooks",
+    "src/types",
+    "package.json",
+    "package-lock.json",
+    "vite.config.ts",
+    "vercel.json",
+    "src/dev"
+  ],
+  "files_verified": 128,
+  "changed": 0,
+  "new_protected_files": 0,
+  "files": [
+    {
+      "path": "contracts/board-operations-client.d.mts",
+      "sha256": "6c73c1a3019868ab1f3234c457f5c0895550c4bbfa83252dc3720a6eca334a0a"
+    },
+    {
+      "path": "contracts/board-operations-client.mjs",
+      "sha256": "9c209a99e2d7280fccc2a1aaa26fd0be646419a5b45ecf68025af0a1808afb11"
+    },
+    {
+      "path": "contracts/client-access-client.d.mts",
+      "sha256": "dfbadae153f6ff362c1f067dfc19b8b3196131815f311c1fdb7b0f5a1f309185"
+    },
+    {
+      "path": "contracts/client-access-client.mjs",
+      "sha256": "b7932cd346d8333802f97cc1369bd43a012aa7e91fa13099bdd208c822b17271"
+    },
+    {
+      "path": "contracts/ticket-metrics-client.d.mts",
+      "sha256": "65b616e1e9e0738cf267f5aa6261a7293bb00d12f563b0ca86839bf13d258fe7"
+    },
+    {
+      "path": "contracts/ticket-metrics-client.mjs",
+      "sha256": "f59aae766c1d208dd70bcaf816a11b5e44ffe7ab15e8639e2697609411c60b3c"
+    },
+    {
+      "path": "contracts/ticket-security-client.d.mts",
+      "sha256": "5627adac1269f69bc000392542339f2debc9b822d8c701114fbb84c502e1f224"
+    },
+    {
+      "path": "contracts/ticket-security-client.mjs",
+      "sha256": "64cf9484898148e91ccd3af38906dbfd7b6cf44fcae8d78be6dcb949db535548"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "dd17abe69176c5d9fea3d159c64f0e030630f9222d0f5e72aa6486ebdf3c2abc"
+    },
+    {
+      "path": "package.json",
+      "sha256": "8c97efdbcc7ae331f879631d3ab4b0dd4bb9861548e17424cd296000498d2f72"
+    },
+    {
+      "path": "scripts/activate_board_m12.py",
+      "sha256": "d089ff1d5258f67f028a012032c38d0b7c7e0305bd86f183e7053071ded94328"
+    },
+    {
+      "path": "scripts/activate_client_m13.py",
+      "sha256": "c8dd690b53962fbd03f7761580916d5b14433261938b5c16c1e5df5d9f188306"
+    },
+    {
+      "path": "scripts/apply_account_administration.py",
+      "sha256": "34e1253d012e9b5696898c241dea483469175356a7f9203d5c9e2ab6296d0739"
+    },
+    {
+      "path": "scripts/apply_areas.py",
+      "sha256": "3b45db87262c9a8f638fc70caf850a2e19de99ba0ed098608c5a9b6fb18c6760"
+    },
+    {
+      "path": "scripts/apply_supabase_migrations.py",
+      "sha256": "ffc145fe452cb69d541e50c4995d98ae7510367c19d808d161f09c872bd5a99e"
+    },
+    {
+      "path": "scripts/bootstrap_auth_identity.mjs",
+      "sha256": "4ba5fef7077e4faf83a8fbf36ac98327264c1dc6bae1fba75049e68087554989"
+    },
+    {
+      "path": "scripts/bootstrap_superadmin.py",
+      "sha256": "2e4dddd8e580a54c0ee23238c66837c5ad4998d05f18552c4757db96f0a7e3e8"
+    },
+    {
+      "path": "scripts/build_migration_recovery.py",
+      "sha256": "39cd75afeafb4a0989bcc2910ac8a29022792f284513306874c64a63b5301b0b"
+    },
+    {
+      "path": "scripts/check_board_m12_dry_run.py",
+      "sha256": "2d38b6c3782b527bc9513c85d5512cba7b71ff78f95c03fd6a90215a41b32910"
+    },
+    {
+      "path": "scripts/close_account_admin.py",
+      "sha256": "1260d8996a4955f928c2b53998e24922e5f0f8f7260bfb1274138f73a480a4a2"
+    },
+    {
+      "path": "scripts/close_supabase_preparation.py",
+      "sha256": "20334ae58d97477f919ad3adb4d48b50a514148e750b276638e05ff2b080be86"
+    },
+    {
+      "path": "scripts/connect_supabase_cli.py",
+      "sha256": "c2ce2c3b5df9ab9f43ef7bde89432ac2eac674bb0701797689b4ac08ed0772f6"
+    },
+    {
+      "path": "scripts/import_supabase_inventory.py",
+      "sha256": "3d9f9cb9222b894e01ea7329f2c88285c8d636901bee02db6335e4401ef2496f"
+    },
+    {
+      "path": "scripts/prepare_supabase_local.py",
+      "sha256": "e51b949ee3c3aff8f1993c1f3f3c3861742c401d694d58cad116c9253d3bb85e"
+    },
+    {
+      "path": "scripts/probe_client_login.py",
+      "sha256": "f477db89359b2a4016b4135b97751d1cbce784cf181847889a1c7e101c77c6c8"
+    },
+    {
+      "path": "scripts/run_client_login_local.py",
+      "sha256": "814fc67861ffc4ae1e7d233d99f7807d8b42532856a574def850018536552a0e"
+    },
+    {
+      "path": "src/dev/client-portal-mock.ts",
+      "sha256": "142071402b5db2f1f9b66663af27bdfab7f1609d3bbc678f90fa180bfc5cdb93"
+    },
+    {
+      "path": "src/hooks/useAreas.ts",
+      "sha256": "75d3d22f09e80d60b375f33eeaab5097cf6fa72ebeada4bb2f82231bbfe5cf43"
+    },
+    {
+      "path": "src/hooks/useAuth.ts",
+      "sha256": "1c05909c02e2a17e8145feb48a78ea5585b207f21b34a75c7dd89183eaa8c1f8"
+    },
+    {
+      "path": "src/hooks/useBoardTicket.ts",
+      "sha256": "75b0b69f34add810e9d7298cb37eb79526d3ce1179e04c9b897c63d99014db39"
+    },
+    {
+      "path": "src/hooks/useCatalogs.ts",
+      "sha256": "e7524be1921ec1ebb173509774ba23cdd9498c81b3d6afb563045d0e5aaf1a9c"
+    },
+    {
+      "path": "src/hooks/useChecklist.ts",
+      "sha256": "1d3459422b0b551ca7d7ca18bb80bd43f4fea5ac9f3a18516b0b66aee0bd13fa"
+    },
+    {
+      "path": "src/hooks/useDashboardData.ts",
+      "sha256": "867f9682d475f5a9a4112836805cab2ccc8e3c70f7124fd6005a71fc6fd5203b"
+    },
+    {
+      "path": "src/hooks/useNotifications.ts",
+      "sha256": "e0c1ced5fc3ca063becf026f0a03591a04294251c0f6f1ba79a323c7c5544165"
+    },
+    {
+      "path": "src/hooks/usePendingCount.ts",
+      "sha256": "6c4ee6c549875012be1be734a3725877ee592057d74b5bb1f7d3a4630bd129c5"
+    },
+    {
+      "path": "src/hooks/useProjects.ts",
+      "sha256": "3e28fb102a26353ada42c4d55ba7f47002170e8260a545aff4c014aca8fe5b38"
+    },
+    {
+      "path": "src/hooks/useRequests.ts",
+      "sha256": "c3687dff94536cef2925b0dad67dd715edd74a14ff877c9d943f67c298fbb5d0"
+    },
+    {
+      "path": "src/hooks/useUsers.ts",
+      "sha256": "68bd8547c6d406fb0cfa3f42e896366ebfbd02b35861fdb0a6a7c0dd675774e1"
+    },
+    {
+      "path": "src/lib/access.ts",
+      "sha256": "8a6d1403197bd989b22d5f65ebb3724a47a3fe7b10e6a6a166f672e8fefe6a53"
+    },
+    {
+      "path": "src/lib/account-admin.ts",
+      "sha256": "a3a5f6f3dd78b41b1aa3570326ff05ef401321e837e28fca2868888167042c17"
+    },
+    {
+      "path": "src/lib/api.ts",
+      "sha256": "5db59c8951fa68d82766b1c6e57d6380d24b7d89f8976b58e5dc445eb251ebbd"
+    },
+    {
+      "path": "src/lib/attachment-delivery.ts",
+      "sha256": "7e915c7014755d271d5d069027a4947b235cace6192dc4b5fc8e6a50c9a1a874"
+    },
+    {
+      "path": "src/lib/attachment-prep.ts",
+      "sha256": "bd70bb00222f6d8b14d9dd0e0e34d27f62e66540c42821c46359915cc1c6d367"
+    },
+    {
+      "path": "src/lib/attachments.ts",
+      "sha256": "db99cc789d3e505d840956bb2f2a8282cad2509d7468280f50060a43d30bf6f0"
+    },
+    {
+      "path": "src/lib/auth-controller.ts",
+      "sha256": "f4e17552ed25392fbe9e8ed0e5ee6125bc58620938ad38da81ff2c7d3bec90d1"
+    },
+    {
+      "path": "src/lib/board.ts",
+      "sha256": "4080decd226b4760b9897410a2f76af587164607ed750bcd3b1d4e6bfd003b59"
+    },
+    {
+      "path": "src/lib/build-version.ts",
+      "sha256": "0faa1586d89f63c498a52f66ca1871356df3a369c24bbb3ef85c423442ef5289"
+    },
+    {
+      "path": "src/lib/checklist-defaults.ts",
+      "sha256": "c789b1e8ccd4a2f8d1245e67ee97929873ca3f09798d0fd17af049267b149193"
+    },
+    {
+      "path": "src/lib/client-portal-api.ts",
+      "sha256": "02fbfe99d3fa24245468c0065e0a72bc1cbf139b19b91a5bd0a9bfeb12f4849c"
+    },
+    {
+      "path": "src/lib/client-portal.ts",
+      "sha256": "3a526855a331f0a5cc199407c98830fa4805da3072fcbfde38fe772260e1ba12"
+    },
+    {
+      "path": "src/lib/client-session-store.ts",
+      "sha256": "283a9c2554df49737c650c076c04037b562d29bdb6ebe2a9586dbfa30d23bfb2"
+    },
+    {
+      "path": "src/lib/constants.ts",
+      "sha256": "b62d3f8d7c9a5cb6dc0f2b43eecd68b8423ee1f4732221a8141954a383e52c5e"
+    },
+    {
+      "path": "src/lib/metrics-adapter.ts",
+      "sha256": "416a8b090ff0b2c69f6543b50a98bb90a2be137bffdb3b3018954aa628313e22"
+    },
+    {
+      "path": "src/lib/notifications.ts",
+      "sha256": "b9b5748fbe470b59c13b36a3f5a7a4fe930027b5cb79a40c7f9211820ccfdd54"
+    },
+    {
+      "path": "src/lib/operations.ts",
+      "sha256": "82d004e5d8c9ffa374a84c5f4c55715ae416e9d70fd8e7a72d08f48cedb18e09"
+    },
+    {
+      "path": "src/lib/request-status.ts",
+      "sha256": "e1ded648c5cff43a6dc6979802b7d8a04f8cf00c2b5b753b6b74213d1597eb32"
+    },
+    {
+      "path": "src/lib/rpc-attempt.ts",
+      "sha256": "a31c36d7ece8560c98db66eb590e5f235b3b9d7ea9a2c4eca514ade1d3c53f79"
+    },
+    {
+      "path": "src/lib/supabase-config.ts",
+      "sha256": "d9c9455e7d1a5077356a8e52a809b174e56a19e1004d28886dee9fe0f988cbae"
+    },
+    {
+      "path": "src/lib/supabase-errors.ts",
+      "sha256": "0edfb860e17393bbc4e687940bb532f7d7bd065adbb44d0c10faeb2602e54038"
+    },
+    {
+      "path": "src/lib/supabase.ts",
+      "sha256": "5aac8c8684d4ac5325a36d7a63b9b25b57d4184834440d8a94e906ab2fa8c161"
+    },
+    {
+      "path": "src/lib/ticket-export.ts",
+      "sha256": "894a19bed9e99b077d2f2f3587043a75814aef117f6f5867f2e067058324bfa4"
+    },
+    {
+      "path": "src/lib/toast.ts",
+      "sha256": "e983fae3830483a2c6a2d3f1b0c89766962f92b01022e1f03ac24b98ee18d965"
+    },
+    {
+      "path": "src/lib/tracking-handoff.ts",
+      "sha256": "d0147f5acdeec90671469538b8c526861b3bd0cf288665b7c808684c082e603c"
+    },
+    {
+      "path": "src/types/database.types.ts",
+      "sha256": "9ed4bc72ca5fa6ba150db2dd871dc4126a0f6d487fc0a44aec20637207c316c6"
+    },
+    {
+      "path": "supabase/.gitignore",
+      "sha256": "507699eb91144818edf61d3a079212cacf31d8db520eae428e3b48fcf0d6919c"
+    },
+    {
+      "path": "supabase/README.md",
+      "sha256": "d4c1a70910bc1873969798422967b6c1a721cb075c176f1352a6d35fefd03282"
+    },
+    {
+      "path": "supabase/bootstrap/superadmin_dashboard.sql",
+      "sha256": "e126eb6eaf0a7e69110fb58a0a8f26b8290eae92c6fac2a2249293ab471afc5c"
+    },
+    {
+      "path": "supabase/config.toml",
+      "sha256": "474f6cbd6158ecc9fe533b4f6bb6f2f479d4bb835f6148ff580a6e0203288f3a"
+    },
+    {
+      "path": "supabase/functions/_shared/account-admin.mjs",
+      "sha256": "3bb31e0526b9921d379ca9312ad2f16f730433a6a64f63d0e4a10064d23fc68b"
+    },
+    {
+      "path": "supabase/functions/_shared/client-login-config.mjs",
+      "sha256": "bd55ca7af161b87b12523b892b09d6a85ebdbfaee503281464e11c353e6fa1ae"
+    },
+    {
+      "path": "supabase/functions/_shared/client-login.mjs",
+      "sha256": "a9e90ff9a8805c36a155ab1d892a8a8879d6bbcc7fa38b477f83f31eae74c322"
+    },
+    {
+      "path": "supabase/functions/_shared/client-provider-contracts.mjs",
+      "sha256": "42240e4f518ea6eccbe6aa0fc3284f604e32360babcb779689ae4c626ec1663a"
+    },
+    {
+      "path": "supabase/functions/admin-users/index.ts",
+      "sha256": "a533255a30213c38f5bcc62926eb9464335ee45e2000cb87eae0ee7130732a37"
+    },
+    {
+      "path": "supabase/functions/client-login/.env.example",
+      "sha256": "2f5672df8ca3147b526432afc8f43c9176fb914ad224e8296e0ae89ca6ec3595"
+    },
+    {
+      "path": "supabase/functions/client-login/index.ts",
+      "sha256": "f97d3538269fc0793f949f91256c1aa9da3640218a7e6d10d59c12f406d89aba"
+    },
+    {
+      "path": "supabase/migrations/20261117000100_schema.sql",
+      "sha256": "4cc433c7eb91278abf020b82d9e40ddc39052642630db267e0753bf2c4f5fbcd"
+    },
+    {
+      "path": "supabase/migrations/20261117000200_security.sql",
+      "sha256": "669171a4a000c4dbfeb78ca53e4c58df3b7ba9473c7735ef4d024047d5bf8cf5"
+    },
+    {
+      "path": "supabase/migrations/20261117000300_operations.sql",
+      "sha256": "06b2bf5b0d5275c1e3d95b1848983c4242610f45d28a611fca256e3e696d206a"
+    },
+    {
+      "path": "supabase/migrations/20261117000400_reference_checklists.sql",
+      "sha256": "2ae7b98b460a040319e0c2007809c1842374e97cb2ee4ac140a8fdfc48b0b145"
+    },
+    {
+      "path": "supabase/migrations/20261118000100_account_administration.sql",
+      "sha256": "66f0a0df721c29152bf2a7fe8e4e4a1c269a36f3dacb66e650d0f578a725f16e"
+    },
+    {
+      "path": "supabase/migrations/20261118000200_areas.sql",
+      "sha256": "e5c8d8f6f68ead3fb9088ccde36b1d3460dd54ff8de71d011e3586366923d16a"
+    },
+    {
+      "path": "supabase/migrations/20261118000300_ticket_catalogs.sql",
+      "sha256": "cfa7af9868184011cb2fa08d45dcba54d1559146b39f7e38bac6974af3b747b1"
+    },
+    {
+      "path": "supabase/migrations/20261118000400_request_intake.sql",
+      "sha256": "92bc5dd2dcee53ccfcdcb61ec63e1dd6f1db30e060e087dcbe2b84d8936bdc06"
+    },
+    {
+      "path": "supabase/migrations/20261118000500_ticket_security.sql",
+      "sha256": "af982fb3388d1dd1ae4f9ee02b2aa843ec107e087f2b30b318cc34a99805094b"
+    },
+    {
+      "path": "supabase/migrations/20261118000600_request_tracking.sql",
+      "sha256": "089c1764f3e54ac689063ab3b8ba3092e154bdb3ae51c11ec58c374746528635"
+    },
+    {
+      "path": "supabase/migrations/20261118000700_business_metrics.sql",
+      "sha256": "e1241afcdfd28649612a139efb5f2ab1fe6991b40f32c137e7d6695ec7d03a66"
+    },
+    {
+      "path": "supabase/migrations/20261118000800_board_operations.sql",
+      "sha256": "66995addf02ce4af8d53b6794fd030f4369ed88a02284d8815afe99e0dafc6be"
+    },
+    {
+      "path": "supabase/migrations/20261119000100_client_access.sql",
+      "sha256": "9a90e6d9b3c2185fb9a71c48e8e92972a77039b2a618a776c43b396853821718"
+    },
+    {
+      "path": "supabase/migrations/20261119000200_client_login_throttle.sql",
+      "sha256": "9021b2a7e5d2010d7f756c5c16b9d939c2418f6054c100f6c166a98fe222ccb9"
+    },
+    {
+      "path": "supabase/migrations/20261119000300_security_request_creation.sql",
+      "sha256": "ca8612aee78beb13be331571934a694647f8f0febcf61c0dc6ec77cafdd69d1f"
+    },
+    {
+      "path": "supabase/recovery/account_admin_check.sql",
+      "sha256": "47b9bd94145073930aa2151dc4f8f70b2266fcc65a8140ff53ee39b7946ec60d"
+    },
+    {
+      "path": "supabase/recovery/areas_check.sql",
+      "sha256": "712a1822c6934325f1576ca337f370bd055f82daec236ea0b96aa4e10afa1483"
+    },
+    {
+      "path": "supabase/recovery/business_metrics_check.sql",
+      "sha256": "b2f1832ea559b024b03baaa428ba11a16233cfd8eb02008453261ba00cf8afea"
+    },
+    {
+      "path": "supabase/recovery/cli-root-ca.pem",
+      "sha256": "50a69ecbd3fe8efbb341d1148db9d672be0ce0397be679bf9c9b19de5fcdb139"
+    },
+    {
+      "path": "supabase/recovery/compensate_01.sql",
+      "sha256": "0e433e4079be8eb2f2ed7dc8d5efce0b96cbbed55d7beec866a139d7b2f1f4b0"
+    },
+    {
+      "path": "supabase/recovery/compensate_02.sql",
+      "sha256": "90a07f689ff0235388b578b51c3dc2bdefd1eeef45cf62a211fa11eae75cb3ec"
+    },
+    {
+      "path": "supabase/recovery/compensate_03.sql",
+      "sha256": "d38aad498041666bb837fe77a516375862a49906d7aaf42ead78abd0ba26d9ac"
+    },
+    {
+      "path": "supabase/recovery/compensate_04.sql",
+      "sha256": "07f6dd6c01df984824fa79ee360712bd710e10cb4f71cb3e43b4aeb07842c4ec"
+    },
+    {
+      "path": "supabase/recovery/connection_check.sql",
+      "sha256": "6af5ae62e875ea47ea69d757e7c74a7c9405402d820d6d7432a0fa78e9c1febf"
+    },
+    {
+      "path": "supabase/recovery/inventory.sql",
+      "sha256": "c8bd96229d4233f723938c146dd2c693db94d04e63717a1554a8a329a4cc6d0c"
+    },
+    {
+      "path": "supabase/recovery/request_intake_check.sql",
+      "sha256": "4ed9b1584934e4061fdba08be7dca605e5f1a2889c6760533cf01ecb453ff299"
+    },
+    {
+      "path": "supabase/recovery/request_tracking_check.sql",
+      "sha256": "965bab0dcc340ebc08d19518d24e0621a2216fb927bf2047bf5e6e84b2f929ab"
+    },
+    {
+      "path": "supabase/recovery/scope.json",
+      "sha256": "028f4c4ed8a171c968c0361217d17657847b24828ca078c35950eaec94888217"
+    },
+    {
+      "path": "supabase/recovery/ticket_catalogs_check.sql",
+      "sha256": "dfd05231ce745abb0e45bc7def83b263fc3d5daa7a06c31cf633432a1d51938a"
+    },
+    {
+      "path": "supabase/recovery/ticket_security_check.sql",
+      "sha256": "304d3a77c1a5b07d8f2b1b7b196dc155ec034e4fa89658e092cb08657b6874ba"
+    },
+    {
+      "path": "supabase/tests/account_admin_local.py",
+      "sha256": "718df7b23995f747b4740a2898d7dc39ef72bac0347b5c68b81840290b735542"
+    },
+    {
+      "path": "supabase/tests/areas_local.py",
+      "sha256": "4f134bff3137432dd32f94aac3d5a30ab647cf6abf1327dbf900704e56fa028d"
+    },
+    {
+      "path": "supabase/tests/behavior.sql",
+      "sha256": "4ff0cebc72d3fdec8bd32d827c208a8cd7ad11bd78b26f48d5d2728999d91982"
+    },
+    {
+      "path": "supabase/tests/blockers_local.py",
+      "sha256": "8334b64546dd73b9e0f5b02edcdbfbc6a742e61d710eefb5140e3256e24bd66c"
+    },
+    {
+      "path": "supabase/tests/board_frontend_local.py",
+      "sha256": "b3261c0bc7944f74e5f104ffe3ed1490c51e121210f63183e9ff6d338d3c9da6"
+    },
+    {
+      "path": "supabase/tests/board_operations_local.py",
+      "sha256": "0def8f3aefc0735f5b7bedd954fd66d515eda48b40d4e7ea56e2e3ffa6d55751"
+    },
+    {
+      "path": "supabase/tests/business_metrics_local.py",
+      "sha256": "8daef7fdac2f0dec88c7750ba734a4f0a2f837484b6b51996463913955571a9a"
+    },
+    {
+      "path": "supabase/tests/client_access_local.py",
+      "sha256": "5afb36a3a1c276130b5037d50b5215f7c23f6e0289905beaec4aa7032ceb9472"
+    },
+    {
+      "path": "supabase/tests/client_login_throttle_local.py",
+      "sha256": "8a58383e1ab3733a52591ae5ce3a310fe71bc8172dc2c909b756eb563b654112"
+    },
+    {
+      "path": "supabase/tests/integrated_security_client_flow_local.py",
+      "sha256": "40160fd4fa3b5ef87bb13143baa30f413a5c74a6ab7d3778a7d2aa1d75fa3233"
+    },
+    {
+      "path": "supabase/tests/metrics_cohort_local.py",
+      "sha256": "955b351d323e2b809e833cc20f3b1f95d7acc355b79fe8f42a1b3c142d2c6bbe"
+    },
+    {
+      "path": "supabase/tests/recovery_local.py",
+      "sha256": "b9d3a1806ee575a2ec0c3b3bb717d4f04bf1d12b35dc37489eec5a92493d2b9c"
+    },
+    {
+      "path": "supabase/tests/request_intake_local.py",
+      "sha256": "423c27164615ab5f97acffde02b79298227ff1fa3816f6d7aad125348222fe99"
+    },
+    {
+      "path": "supabase/tests/request_tracking_local.py",
+      "sha256": "38c376f623ed00e89c28096975cdc3d8229f7179a1099175df6263d7930e0fea"
+    },
+    {
+      "path": "supabase/tests/run_local.py",
+      "sha256": "18620c8736e4d09d9f7605c3b32ecf7a6ad7f9fb3d23afbbfb19c537acadcbe1"
+    },
+    {
+      "path": "supabase/tests/security_request_creation_local.py",
+      "sha256": "96bffcc01bb0b73fb014a2f66b42b01092af98d285509e2cc9da5d03b3cb2bd8"
+    },
+    {
+      "path": "supabase/tests/support/auth_stub.sql",
+      "sha256": "3274aad7d67dfcdcf55327b9b176ba9778040d79b4b701369aaf5ad336f368ee"
+    },
+    {
+      "path": "supabase/tests/support/pgrst_watchers_2b3d.sql",
+      "sha256": "fa2bab6cd1877020a47a381991fdf69234e98c793eb36f8faf21ac8f67550277"
+    },
+    {
+      "path": "supabase/tests/ticket_attachment_limits_local.py",
+      "sha256": "9c6ea556abe5ccf3b48c652001733289440464ab4004a1a1f952f0f13d208acd"
+    },
+    {
+      "path": "supabase/tests/ticket_catalogs_local.py",
+      "sha256": "33a4490e1645add6477208f5ce50d7f4371be2365284f763ad1be12fd9cbb1ad"
+    },
+    {
+      "path": "supabase/tests/ticket_security_local.py",
+      "sha256": "dfa356e035cc1993b12d8fc35e716aae52ebdbddfd69d9c548b887f3341bc9ee"
+    },
+    {
+      "path": "vercel.json",
+      "sha256": "3c1a82a9ce93f245ba71715b2ff07a8ba04f2ac78b80eff65eaad97884622e87"
+    },
+    {
+      "path": "vite.config.ts",
+      "sha256": "4c36c17aefeb23aadb19bc5dfae6879cb34afaffe1704f63ff893afdb94cb13c"
+    }
+  ],
+  "verification_date": "2026-11-20",
+  "previous_84_images_unchanged": true,
+  "taste_state_unchanged": true
+}
