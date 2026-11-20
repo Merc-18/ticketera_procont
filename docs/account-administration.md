@@ -1,4 +1,14 @@
-# Administración de cuentas — activa en Supabase
+# Administración de cuentas
+
+> **Revisión documental 20/11/2026 · base `c857a727c8e7640bbce8daada940f973acbf013e` · clasificación: REQUIERE ACTUALIZACIÓN.**
+> Fuente oficial: [PRODUCT_REQUIREMENTS](specs/PRODUCT_REQUIREMENTS.md); estado operativo: [PROJECT_STATUS](PROJECT_STATUS.md).
+> admin-users actual v4. M1–M15 aplicadas; existe perfil superadmin. No repetir bootstrap. Invitaciones/callback/SMTP no acreditados; Site URL remota aún localhost. El backend exige perfil activo y último superadmin protegido.
+
+## Alcance del documento anterior
+
+El contenido siguiente conserva sus fechas y evidencias originales. Los estados de activación o contratos sustituidos no se consideran vigentes; prevalecen las especificaciones enlazadas arriba.
+
+Título original conservado como contexto: **Administración de cuentas — activa en Supabase**.
 
 **Estado 18/11/2026:** primer superadmin: ver [procedimiento Dashboard](#primer-superadministrador--procedimiento-recomendado-dashboard).  migración `20261118000100` aplicada y verificada con
 `scripts/apply_account_administration.py` (historial 5/5, RLS y permisos, 0 cuentas)

@@ -1,5 +1,13 @@
 # FASE 2A — PostgreSQL, migraciones y seguridad
 
+> **Revisión documental 20/11/2026 · base `c857a727c8e7640bbce8daada940f973acbf013e` · clasificación: HISTÓRICO.**
+> Fuente oficial: [PRODUCT_REQUIREMENTS](specs/PRODUCT_REQUIREMENTS.md); estado operativo: [PROJECT_STATUS](PROJECT_STATUS.md).
+> Informe histórico de una fase ya cerrada; sus estados «pendiente», conteos parciales y comandos corresponden a su fecha. M1–M15 están aplicadas según evidencia del 20/11. No repetir preparación, bootstrap, compensaciones o consultas antiguas para operar el sistema actual.
+
+## Alcance del documento anterior
+
+El contenido siguiente conserva sus fechas y evidencias originales. Los estados de activación o contratos sustituidos no se consideran vigentes; prevalecen las especificaciones enlazadas arriba.
+
 **Actualización técnica 2B.3D:** [resolución de bloqueos](fase-2b3d-resolucion-bloqueos.md)
 sustituye los triggers de perfil en Auth por provisión privada explícita y
 actualiza recuperación/historial. La evidencia de 72 pruebas es histórica; no

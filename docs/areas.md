@@ -1,4 +1,14 @@
-# Catálogo de áreas — activo en Supabase
+# Catálogo de áreas
+
+> **Revisión documental 20/11/2026 · base `c857a727c8e7640bbce8daada940f973acbf013e` · clasificación: SUPERADO.**
+> Fuente oficial: [PRODUCT_REQUIREMENTS](specs/PRODUCT_REQUIREMENTS.md); estado operativo: [PROJECT_STATUS](PROJECT_STATUS.md).
+> M7 sustituyó el catálogo inicial vacío y añadió jerarquía/estudio. Equipo → Catálogos es la UI vigente; áreas se administran por superadmin. No mantener el contador 6/6 como estado remoto actual.
+
+## Alcance del documento anterior
+
+El contenido siguiente conserva sus fechas y evidencias originales. Los estados de activación o contratos sustituidos no se consideran vigentes; prevalecen las especificaciones enlazadas arriba.
+
+Título original conservado como contexto: **Catálogo de áreas — activo en Supabase**.
 
 18/11/2026. Migración nueva [`20261118000200_areas.sql`](../supabase/migrations/20261118000200_areas.sql)
 (las cinco anteriores no cambian). **Aplicada y verificada** el 18/11/2026 con

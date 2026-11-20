@@ -1,5 +1,13 @@
 # Acceso de clientes: M13 activa, historial 13/13
 
+> **Revisión documental 20/11/2026 · base `c857a727c8e7640bbce8daada940f973acbf013e` · clasificación: ACTUAL.**
+> Fuente oficial: [PRODUCT_REQUIREMENTS](specs/PRODUCT_REQUIREMENTS.md); estado operativo: [PROJECT_STATUS](PROJECT_STATUS.md).
+> M13–M15 aplicadas; client-login ACTIVE v3 según GET actual. Dos identidades y cuatro contextos de productos conservados. Helper antiguo cerrado; wrapper M13 permanece autorizado por capacidad, no por Auth interno.
+
+## Alcance del documento anterior
+
+El contenido siguiente conserva sus fechas y evidencias originales. Los estados de activación o contratos sustituidos no se consideran vigentes; prevalecen las especificaciones enlazadas arriba.
+
 Base `main@35b9726`; rama aislada `codex/client-access-m13`. Migración nueva
 `20261119000100_client_access.sql`. Las doce migraciones anteriores permanecen
 intactas. M13 se aplicó una sola vez bajo autorización de activación. Historial, RPC

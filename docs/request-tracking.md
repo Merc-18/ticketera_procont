@@ -1,4 +1,14 @@
-# Trazabilidad y seguimiento de tickets — activo
+# Trazabilidad y seguimiento de tickets
+
+> **Revisión documental 20/11/2026 · base `c857a727c8e7640bbce8daada940f973acbf013e` · clasificación: ACTUAL.**
+> Fuente oficial: [PRODUCT_REQUIREMENTS](specs/PRODUCT_REQUIREMENTS.md); estado operativo: [PROJECT_STATUS](PROJECT_STATUS.md).
+> M10 aplicada dentro de 15/15 y seguimiento real REQ26-002/003 comprobado después de M15: solo número/estado. Motivo de rechazo solo en detalle autenticado/capacidad privada, nunca búsqueda pública REQ.
+
+## Alcance del documento anterior
+
+El contenido siguiente conserva sus fechas y evidencias originales. Los estados de activación o contratos sustituidos no se consideran vigentes; prevalecen las especificaciones enlazadas arriba.
+
+Título original conservado como contexto: **Trazabilidad y seguimiento de tickets — activo**.
 
 Migración [`20261118000600_request_tracking.sql`](../supabase/migrations/20261118000600_request_tracking.sql),
 aplicada con Supabase CLI (historial 10/10). Evidencia: [local](validation/request-tracking-local.json) ·

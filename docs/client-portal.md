@@ -1,4 +1,14 @@
-# Portal de clientes Quipu / QuipuFac — frontend
+# Portal de clientes Quipu / QuipuFac
+
+> **Revisión documental 20/11/2026 · base `c857a727c8e7640bbce8daada940f973acbf013e` · clasificación: ACTUAL.**
+> Fuente oficial: [PRODUCT_REQUIREMENTS](specs/PRODUCT_REQUIREMENTS.md); estado operativo: [PROJECT_STATUS](PROJECT_STATUS.md).
+> Portal publicado, flag habilitado y client-login v3. /request redirige al cliente; creación usa exclusivamente client_submit_request. M14 limita intentos y M15 cierra RPC antigua. Los apartados de ingreso pendiente son antecedentes, no estado actual.
+
+## Alcance del documento anterior
+
+El contenido siguiente conserva sus fechas y evidencias originales. Los estados de activación o contratos sustituidos no se consideran vigentes; prevalecen las especificaciones enlazadas arriba.
+
+Título original conservado como contexto: **Portal de clientes Quipu / QuipuFac — frontend**.
 
 19/11/2026. Rama de integración `integration/client-portal` (base `main@35b9726`) =
 backend de Codex `codex/client-access-m13@77fe593` (M13 + Edge Function `client-login`) +

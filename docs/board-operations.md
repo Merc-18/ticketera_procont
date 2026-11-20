@@ -1,4 +1,14 @@
-# Reglas operativas del tablero — M12 activa, historial 12/12
+# Reglas operativas del tablero
+
+> **Revisión documental 20/11/2026 · base `c857a727c8e7640bbce8daada940f973acbf013e` · clasificación: ACTUAL.**
+> Fuente oficial: [PRODUCT_REQUIREMENTS](specs/PRODUCT_REQUIREMENTS.md); estado operativo: [PROJECT_STATUS](PROJECT_STATUS.md).
+> M12 permanece aplicada dentro de 15/15. Nuevos proyectos solo Development de ocho fases; históricos preservados; Done/reapertura/bloqueos y progresos separados. Operación autenticada alojada completa post-M15 pendiente.
+
+## Alcance del documento anterior
+
+El contenido siguiente conserva sus fechas y evidencias originales. Los estados de activación o contratos sustituidos no se consideran vigentes; prevalecen las especificaciones enlazadas arriba.
+
+Título original conservado como contexto: **Reglas operativas del tablero — M12 activa, historial 12/12**.
 
 Base `main@94bd8fd`, con once migraciones aplicadas según el estado confirmado.
 Rama `codex/board-operations`, en copia Git aislada dentro de

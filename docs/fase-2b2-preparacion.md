@@ -1,5 +1,13 @@
 # FASE 2B.2 — Preparación de Supabase
 
+> **Revisión documental 20/11/2026 · base `c857a727c8e7640bbce8daada940f973acbf013e` · clasificación: HISTÓRICO.**
+> Fuente oficial: [PRODUCT_REQUIREMENTS](specs/PRODUCT_REQUIREMENTS.md); estado operativo: [PROJECT_STATUS](PROJECT_STATUS.md).
+> Informe histórico de una fase ya cerrada; sus estados «pendiente», conteos parciales y comandos corresponden a su fecha. M1–M15 están aplicadas según evidencia del 20/11. No repetir preparación, bootstrap, compensaciones o consultas antiguas para operar el sistema actual.
+
+## Alcance del documento anterior
+
+El contenido siguiente conserva sus fechas y evidencias originales. Los estados de activación o contratos sustituidos no se consideran vigentes; prevalecen las especificaciones enlazadas arriba.
+
 **Aplicación remota verificada:** las versiones `20261117000100`, `20261117000200`, `20261117000300` y `20261117000400` quedaron registradas en ticketera-procont. Se comprobaron las cuatro transiciones con el alcance de recuperación, 13 tablas propias con RLS y 35 pasos genéricos de checklist. No se crearon cuentas ni superadmin. Las compensaciones se generaron solo en privado, sin ejecutarlas. La evidencia vigente está en `docs/validation/continuacion-af3259f-baseline.json`. Los estados NO APTO anteriores de estos informes son antecedentes, superados para este conjunto. Siguiente paso: definir con el propietario las áreas y la provisión inicial de acceso, bajo autorización separada.
 
 **Estado posterior a la conexión correcta:** baseline nativo, identidad, destino

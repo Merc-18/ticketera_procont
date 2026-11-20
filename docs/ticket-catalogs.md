@@ -1,4 +1,14 @@
-# Catálogos y clasificación de tickets — activos en Supabase
+# Catálogos y clasificación de tickets
+
+> **Revisión documental 20/11/2026 · base `c857a727c8e7640bbce8daada940f973acbf013e` · clasificación: ACTUAL.**
+> Fuente oficial: [PRODUCT_REQUIREMENTS](specs/PRODUCT_REQUIREMENTS.md); estado operativo: [PROJECT_STATUS](PROJECT_STATUS.md).
+> M7 aplicada; el cliente actual no elige estudio/subproyecto/área. Estudio deriva de M13; clasificación de admin/superadmin. RUC ambiguo requiere asociación explícita y no fusiona estudios. Reglas de catálogos permanecen vigentes.
+
+## Alcance del documento anterior
+
+El contenido siguiente conserva sus fechas y evidencias originales. Los estados de activación o contratos sustituidos no se consideran vigentes; prevalecen las especificaciones enlazadas arriba.
+
+Título original conservado como contexto: **Catálogos y clasificación de tickets — activos en Supabase**.
 
 18/11/2026. Migración nueva [`20261118000300_ticket_catalogs.sql`](../supabase/migrations/20261118000300_ticket_catalogs.sql).
 Las seis migraciones previas no cambian. **Aplicada y verificada** el 18/11/2026 con Supabase CLI:

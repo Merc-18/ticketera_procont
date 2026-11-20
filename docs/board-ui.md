@@ -1,5 +1,13 @@
 # Tablero operativo: integración del frontend (M12)
 
+> **Revisión documental 20/11/2026 · base `c857a727c8e7640bbce8daada940f973acbf013e` · clasificación: ACTUAL.**
+> Fuente oficial: [PRODUCT_REQUIREMENTS](specs/PRODUCT_REQUIREMENTS.md); estado operativo: [PROJECT_STATUS](PROJECT_STATUS.md).
+> Frontend integrado en main c857a72. El estado global es 15/15, no 12/12; todas las mutaciones operativas usan M12. Requests y panel interno tienen reglas de rol distintas de cuentas cliente.
+
+## Alcance del documento anterior
+
+El contenido siguiente conserva sus fechas y evidencias originales. Los estados de activación o contratos sustituidos no se consideran vigentes; prevalecen las especificaciones enlazadas arriba.
+
 Fuente de integración: `integration/board-operations-recovery`, descendiente de `main@94bd8fd`
 y del backend de Codex `1ba71b2`. Conserva el trabajo de Claude en `17c8c19` y sus
 correcciones en `6a4bce5`.

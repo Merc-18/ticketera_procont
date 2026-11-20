@@ -1,5 +1,13 @@
 # Login de desarrollo — 19/11/2026
 
+> **Revisión documental 20/11/2026 · base `c857a727c8e7640bbce8daada940f973acbf013e` · clasificación: HISTÓRICO.**
+> Fuente oficial: [PRODUCT_REQUIREMENTS](specs/PRODUCT_REQUIREMENTS.md); estado operativo: [PROJECT_STATUS](PROJECT_STATUS.md).
+> Informe histórico de pruebas con APIs de desarrollo. Ahora existe piloto público expresamente autorizado con esas mismas APIs; no son producción externa. Se eliminaron fallbacks implícitos en f7f29a8 y se corrigieron errores 400/500 en c857a72. No repetir passwords ni pruebas por este documento.
+
+## Alcance del documento anterior
+
+El contenido siguiente conserva sus fechas y evidencias originales. Los estados de activación o contratos sustituidos no se consideran vigentes; prevalecen las especificaciones enlazadas arriba.
+
 Continuación de `940191a`, `e584f11` y `704102c`, rama `codex/client-login-dev-contracts`.
 La copia aislada está en `.supabase-local/workspaces/client-login-dev-20261119`.
 El checkout original queda intacto: su `.git` está en solo lectura para el agente.

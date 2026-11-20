@@ -1,4 +1,14 @@
-# Frontend — identidad corporativa Procont Business
+# Frontend
+
+> **Revisión documental 20/11/2026 · base `c857a727c8e7640bbce8daada940f973acbf013e` · clasificación: ACTUAL.**
+> Fuente oficial: [PRODUCT_REQUIREMENTS](specs/PRODUCT_REQUIREMENTS.md); estado operativo: [PROJECT_STATUS](PROJECT_STATUS.md).
+> La marca/tema se conserva en src/theme/brand.ts. Pie global muestra versión fijada al build en Lima. No asumir que los pendientes organizacionales históricos siguen bloqueando el piloto.
+
+## Alcance del documento anterior
+
+El contenido siguiente conserva sus fechas y evidencias originales. Los estados de activación o contratos sustituidos no se consideran vigentes; prevalecen las especificaciones enlazadas arriba.
+
+Título original conservado como contexto: **Frontend — identidad corporativa Procont Business**.
 
 18/11/2026. Base `5c19523`. Solo frontend: sin cambios de backend, migraciones,
 Supabase remoto, usuarios ni despliegue.

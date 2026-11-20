@@ -1,4 +1,14 @@
-# Formulario del cliente y validación interna — activos (con M9)
+# Formulario del cliente y validación interna
+
+> **Revisión documental 20/11/2026 · base `c857a727c8e7640bbce8daada940f973acbf013e` · clasificación: SUPERADO.**
+> Fuente oficial: [PRODUCT_REQUIREMENTS](specs/PRODUCT_REQUIREMENTS.md); estado operativo: [PROJECT_STATUS](PROJECT_STATUS.md).
+> Contrato cliente M8 SUPERADO por M13/M15: no elegir estudio ni crear anónimamente. Formulario autenticado con nombre/producto/tipo/título/descripción/urgencia/archivos. Aprobación solo Development y responsable; seguimiento REQ solo número/estado. Cuota final 4 archivos/2500000 bytes.
+
+## Alcance del documento anterior
+
+El contenido siguiente conserva sus fechas y evidencias originales. Los estados de activación o contratos sustituidos no se consideran vigentes; prevalecen las especificaciones enlazadas arriba.
+
+Título original conservado como contexto: **Formulario del cliente y validación interna — activos (con M9)**.
 
 **M9 integrada en `main` y aplicada en Supabase (historial 9/9):** la
 migración `20261118000500_ticket_security.sql` de Codex añade reserva de adjuntos autorizada

@@ -1,5 +1,13 @@
 # Prueba E2E del portal — 19/11/2026
 
+> **Revisión documental 20/11/2026 · base `c857a727c8e7640bbce8daada940f973acbf013e` · clasificación: HISTÓRICO.**
+> Fuente oficial: [PRODUCT_REQUIREMENTS](specs/PRODUCT_REQUIREMENTS.md); estado operativo: [PROJECT_STATUS](PROJECT_STATUS.md).
+> Evidencia real anterior a M15: REQ26-002/003 conservados. No acredita creación, adjuntos ni recorrido autenticado posterior a M15. La bandeja se verificó a nivel de datos, no con sesión visual interna.
+
+## Alcance del documento anterior
+
+El contenido siguiente conserva sus fechas y evidencias originales. Los estados de activación o contratos sustituidos no se consideran vigentes; prevalecen las especificaciones enlazadas arriba.
+
 Proyecto exclusivo: `ticketera-procont` (`xsxdpaiivklqeudgqoqf`). Rama
 `integration/client-login-local`, base `2e39953`. Autorización expresa para dos
 tickets ficticios y posterior fast-forward a main local. Sin push, despliegue ni

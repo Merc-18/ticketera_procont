@@ -1,4 +1,14 @@
-# Reglas y métricas de tickets — backend preparado, pendiente de aplicar
+# Reglas y métricas de tickets
+
+> **Revisión documental 20/11/2026 · base `c857a727c8e7640bbce8daada940f973acbf013e` · clasificación: ACTUAL.**
+> Fuente oficial: [PRODUCT_REQUIREMENTS](specs/PRODUCT_REQUIREMENTS.md); estado operativo: [PROJECT_STATUS](PROJECT_STATUS.md).
+> M11 aplicada. Cycle/Lead provienen de eventos del servidor; cohorte paired_complete y nulls preservados. Exportación completados paginada en servidor, proyectos por lotes de 100; sin snapshot transaccional único. No hay política SLA oficial.
+
+## Alcance del documento anterior
+
+El contenido siguiente conserva sus fechas y evidencias originales. Los estados de activación o contratos sustituidos no se consideran vigentes; prevalecen las especificaciones enlazadas arriba.
+
+Título original conservado como contexto: **Reglas y métricas de tickets — backend preparado, pendiente de aplicar**.
 
 Base `main@f526283`. Rama `codex/business-metrics` en copia Git aislada
 `.supabase-local/workspaces/business-metrics/` (el worktree de Orca está fuera de

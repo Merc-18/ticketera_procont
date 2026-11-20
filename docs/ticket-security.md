@@ -1,4 +1,14 @@
-# Correcciones de seguridad de tickets — activas en Supabase
+# Correcciones de seguridad de tickets
+
+> **Revisión documental 20/11/2026 · base `c857a727c8e7640bbce8daada940f973acbf013e` · clasificación: ACTUAL.**
+> Fuente oficial: [PRODUCT_REQUIREMENTS](specs/PRODUCT_REQUIREMENTS.md); estado operativo: [PROJECT_STATUS](PROJECT_STATUS.md).
+> M9/M12/M13/M15 vigentes. Cuota definitiva 4 y 2500000 bytes, bucket privado y reserva por propiedad/actor. Cliente usa client_reserve_attachments; no hay creación anónima. Subida Storage alojado post-M15 sigue NO VERIFICADA.
+
+## Alcance del documento anterior
+
+El contenido siguiente conserva sus fechas y evidencias originales. Los estados de activación o contratos sustituidos no se consideran vigentes; prevalecen las especificaciones enlazadas arriba.
+
+Título original conservado como contexto: **Correcciones de seguridad de tickets — activas en Supabase**.
 
 **Integración (Claude, rama `integration/attachments-security`):** fusionada sin conflictos
 sobre `c85b624`; el frontend usa este contrato (compresión → reserva por lote con token →

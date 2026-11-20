@@ -1,5 +1,13 @@
 # Corrección del flujo de clientes y restos SLA — evidencia (19/11/2026)
 
+> **Revisión documental 20/11/2026 · base `c857a727c8e7640bbce8daada940f973acbf013e` · clasificación: HISTÓRICO.**
+> Fuente oficial: [PRODUCT_REQUIREMENTS](../specs/PRODUCT_REQUIREMENTS.md); estado operativo: [PROJECT_STATUS](../PROJECT_STATUS.md).
+> Informe histórico de una fase ya cerrada; sus estados «pendiente», conteos parciales y comandos corresponden a su fecha. M1–M15 están aplicadas según evidencia del 20/11. No repetir preparación, bootstrap, compensaciones o consultas antiguas para operar el sistema actual.
+
+## Alcance del documento anterior
+
+El contenido siguiente conserva sus fechas y evidencias originales. Los estados de activación o contratos sustituidos no se consideran vigentes; prevalecen las especificaciones enlazadas arriba.
+
 Rama `fix/ticketera-client-flow-ui` desde `main@44cebeb`. Solo frontend y pruebas: sin migraciones,
 Edge Functions, Supabase remoto ni Vercel. `VITE_CLIENT_LOGIN_ENABLED=0` en Vercel no se cambió.
 
@@ -71,6 +79,7 @@ primera respuesta se omitían, o el CSV decía «No hay tickets terminados». La
 (`.in('id', …)` con todos los ids en una consulta) tenía el mismo límite.
 
 **Algoritmo (`src/lib/ticket-export.ts`), misma RPC y argumentos, sin cambios en M11:**
+
 1. `get_ticket_performance` devuelve `TABLE`; PostgREST admite filtros, orden y rango sobre su
    resultado. Cada petición: `general_status=eq.done` (filtro en el servidor, antes del límite),
    `order=request_id.asc` (clave única por fila → orden determinista), `offset/limit` (página de 1.000)

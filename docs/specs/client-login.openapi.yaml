@@ -1,0 +1,461 @@
+# Revisión documental 20/11/2026; sin valores de secretos.
+openapi: 3.1.0
+info:
+  title: Ticketera Procont — client-login
+  version: c857a72
+  description: Revisión 20/11/2026, commit c857a727c8e7640bbce8daada940f973acbf013e. Contrato propio verificado
+    por código. Piloto con proveedores de desarrollo autorizados. No especifica esquema completo externo ni garantiza
+    E2E post-M15.
+servers:
+- url: https://xsxdpaiivklqeudgqoqf.supabase.co
+paths:
+  /functions/v1/client-login:
+    post:
+      operationId: clientLogin
+      summary: Login, canje de código o emisión privada de código
+      description: POST JSON <=16384 bytes. Origin debe estar permitido cuando existe. issue_code exige Authorization
+        Bearer del secreto del proveedor y ausencia de Origin; login no requiere sesión Auth interna. SessionReceipt
+        es forma raw anidada; productos se piden por RPC aparte. Limitaciones y validaciones semánticas en API_CONTRACTS.md.
+      security:
+      - publicApiKey: []
+      parameters:
+      - name: Origin
+        in: header
+        required: false
+        schema:
+          type: string
+        description: El navegador lo envía; issue_code no admite este header.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            examples:
+              quipu:
+                value:
+                  action: login
+                  provider: quipu
+                  ruc: '20000000000'
+                  username: UsuarioQA
+                  password: CONTRASEÑA_FICTICIA
+              quipufac:
+                value:
+                  action: login
+                  provider: quipufac
+                  ruc: '20000000000'
+                  password: CONTRASEÑA_FICTICIA
+      responses:
+        '200':
+          description: 'login/exchange: sesión raw; issue_code: código temporal. Nunca token upstream.'
+          headers:
+            Access-Control-Allow-Origin: &id001
+              description: Solo origen exacto permitido. Ausente si es ajeno.
+              schema:
+                type: string
+            Vary: &id002
+              schema:
+                const: Origin
+            Cache-Control: &id003
+              schema:
+                const: no-store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '400':
+          description: JSON, proveedor, acción o datos inválidos.
+          headers:
+            Access-Control-Allow-Origin: *id001
+            Vary: *id002
+            Cache-Control: *id003
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Credenciales/identidad/código o sesión rechazados según contrato.
+          headers:
+            Access-Control-Allow-Origin: *id001
+            Vary: *id002
+            Cache-Control: *id003
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Origen no autorizado o emisión desde navegador.
+          headers:
+            Access-Control-Allow-Origin: *id001
+            Vary: *id002
+            Cache-Control: *id003
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '405':
+          description: Método distinto de POST/OPTIONS.
+          headers:
+            Access-Control-Allow-Origin: *id001
+            Vary: *id002
+            Cache-Control: *id003
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '413':
+          description: Cuerpo mayor de 16384 bytes.
+          headers:
+            Access-Control-Allow-Origin: *id001
+            Vary: *id002
+            Cache-Control: *id003
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '415':
+          description: Content-Type no application/json.
+          headers:
+            Access-Control-Allow-Origin: *id001
+            Vary: *id002
+            Cache-Control: *id003
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Límite M14 de intentos.
+          headers:
+            Access-Control-Allow-Origin: *id001
+            Vary: *id002
+            Cache-Control: *id003
+            Retry-After:
+              schema:
+                const: '900'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '502':
+          description: Proveedor no disponible o respuesta inválida.
+          headers:
+            Access-Control-Allow-Origin: *id001
+            Vary: *id002
+            Cache-Control: *id003
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Configuración/contrato/backend pendientes o no disponibles.
+          headers:
+            Access-Control-Allow-Origin: *id001
+            Vary: *id002
+            Cache-Control: *id003
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-security-by-action:
+        login: Validación de proveedor, contrato explícito y throttle.
+        exchange: Código de un uso, proveedor y vigencia.
+        issue_code: Además de gateway, platformBearer requerido y Origin prohibido.
+    options:
+      operationId: clientLoginPreflight
+      summary: Preflight de origen
+      parameters:
+      - name: Origin
+        in: header
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Origen autorizado; POST, OPTIONS.
+          headers:
+            Access-Control-Allow-Origin: *id001
+            Vary: *id002
+            Cache-Control: *id003
+            Access-Control-Allow-Methods:
+              schema:
+                const: POST, OPTIONS
+            Access-Control-Allow-Headers:
+              schema:
+                const: authorization, apikey, content-type, x-client-info
+        '403':
+          description: Origen denegado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  securitySchemes:
+    publicApiKey:
+      type: apiKey
+      in: header
+      name: apikey
+      description: Clave pública del gateway Supabase, no una credencial privada de servidor.
+    platformBearer:
+      type: http
+      scheme: bearer
+      description: Secreto del proveedor, solo issue_code servidor-servidor; 32..4096 caracteres. No JWT del cliente
+        ni credencial de servidor Supabase.
+  schemas:
+    LoginQuipu:
+      type: object
+      additionalProperties: false
+      properties:
+        action:
+          const: login
+        provider:
+          const: quipu
+        ruc: &id004
+          type: string
+          pattern: ^[0-9]{11}$
+          description: Solo formato de once dígitos; no valida dígito SUNAT.
+        username: &id006
+          type: string
+          minLength: 1
+          maxLength: 256
+          description: Exacto y sensible a mayúsculas; sin espacios extremos. No normalizar.
+        password: &id005
+          type: string
+          minLength: 1
+          maxLength: 4096
+          writeOnly: true
+          description: Solo entrada. No registrar ni guardar.
+      required:
+      - action
+      - provider
+      - ruc
+      - username
+      - password
+    LoginQuipuFac:
+      type: object
+      additionalProperties: false
+      properties:
+        action:
+          const: login
+        provider:
+          const: quipufac
+        ruc: *id004
+        password: *id005
+      required:
+      - action
+      - provider
+      - ruc
+      - password
+    Exchange:
+      type: object
+      additionalProperties: false
+      properties:
+        action:
+          const: exchange
+        provider: &id007
+          type: string
+          enum:
+          - quipu
+          - quipufac
+        code:
+          type: string
+          pattern: ^[a-f0-9]{64}$
+          writeOnly: true
+      required:
+      - action
+      - provider
+      - code
+    IssueQuipu:
+      type: object
+      additionalProperties: false
+      properties:
+        action:
+          const: issue_code
+        provider:
+          const: quipu
+        ruc: *id004
+        subject:
+          type: string
+          minLength: 1
+          maxLength: 256
+        subject_source:
+          enum:
+          - provider_id
+          - username
+        username: *id006
+        verified_name:
+          type: string
+          minLength: 1
+          maxLength: 300
+      required:
+      - action
+      - provider
+      - ruc
+      - subject
+      - subject_source
+      - username
+      description: Solo servidor sin Origin y con secreto Bearer del proveedor. Si subject_source=username, subject
+        debe coincidir exactamente con username.
+    IssueQuipuFac:
+      type: object
+      additionalProperties: false
+      properties:
+        action:
+          const: issue_code
+        provider:
+          const: quipufac
+        ruc: *id004
+        verified_name:
+          type: string
+          minLength: 1
+          maxLength: 300
+      required:
+      - action
+      - provider
+      - ruc
+      description: Solo servidor sin Origin y con secreto Bearer. No admite subject, subject_source ni username.
+    LoginRequest:
+      oneOf:
+      - $ref: '#/components/schemas/LoginQuipu'
+      - $ref: '#/components/schemas/LoginQuipuFac'
+      - $ref: '#/components/schemas/Exchange'
+      - $ref: '#/components/schemas/IssueQuipu'
+      - $ref: '#/components/schemas/IssueQuipuFac'
+    Identity:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: uuid
+        provider: *id007
+        kind:
+          enum:
+          - user
+          - company
+        username:
+          type:
+          - string
+          - 'null'
+        subject_source:
+          enum:
+          - provider_id
+          - username
+          - company
+        verified_name:
+          type:
+          - string
+          - 'null'
+        name_verified:
+          type: boolean
+      required:
+      - id
+      - provider
+      - kind
+      - username
+      - subject_source
+      - verified_name
+      - name_verified
+    Company:
+      type: object
+      additionalProperties: false
+      properties:
+        ruc: *id004
+        studio_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        studio_mapping:
+          enum:
+          - resolved
+          - required
+      required:
+      - ruc
+      - studio_id
+      - studio_mapping
+    ClientSession:
+      type: object
+      additionalProperties: false
+      properties:
+        expires_at:
+          type: string
+          format: date-time
+        entry_context:
+          enum:
+          - direct
+          - platform
+        identity:
+          $ref: '#/components/schemas/Identity'
+        company:
+          $ref: '#/components/schemas/Company'
+      required:
+      - expires_at
+      - entry_context
+      - identity
+      - company
+    SessionReceipt:
+      type: object
+      additionalProperties: false
+      properties:
+        session_token:
+          type: string
+          pattern: ^[a-f0-9]{64}$
+          readOnly: true
+          description: Capacidad de 256 bits propia de Ticketera. Guardar solo hash en servidor; no es JWT ni token
+            upstream.
+        session:
+          $ref: '#/components/schemas/ClientSession'
+      required:
+      - session_token
+      - session
+    EntryCodeReceipt:
+      type: object
+      additionalProperties: false
+      properties:
+        code:
+          type: string
+          pattern: ^[a-f0-9]{64}$
+          readOnly: true
+        provider: *id007
+        expires_at:
+          type: string
+          format: date-time
+      required:
+      - code
+      - provider
+      - expires_at
+    Success:
+      oneOf:
+      - $ref: '#/components/schemas/SessionReceipt'
+      - $ref: '#/components/schemas/EntryCodeReceipt'
+    Error:
+      type: object
+      additionalProperties: false
+      properties:
+        error:
+          type: string
+          enum:
+          - body_too_large
+          - client_authentication_required
+          - client_backend_unavailable
+          - invalid_action
+          - invalid_credentials
+          - invalid_credentials_input
+          - invalid_entry_code
+          - invalid_identity
+          - invalid_json
+          - invalid_provider
+          - invalid_request
+          - invalid_ruc
+          - json_required
+          - method_not_allowed
+          - origin_denied
+          - platform_authentication_required
+          - platform_server_required
+          - provider_configuration_required
+          - provider_contract_pending
+          - provider_identity_mismatch
+          - provider_response_invalid
+          - provider_unavailable
+          - rate_limited
+      required:
+      - error

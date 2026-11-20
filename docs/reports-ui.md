@@ -1,4 +1,14 @@
-# Reportes y panel visual — interfaz integrada con métricas de Codex
+# Reportes y panel visual
+
+> **Revisión documental 20/11/2026 · base `c857a727c8e7640bbce8daada940f973acbf013e` · clasificación: ACTUAL.**
+> Fuente oficial: [PRODUCT_REQUIREMENTS](specs/PRODUCT_REQUIREMENTS.md); estado operativo: [PROJECT_STATUS](PROJECT_STATUS.md).
+> Reportes consumen M11, sin alertas SLA automáticas. Completados usan ticket-export con filtro done antes del límite, paginación y lotes 100. Sin snapshot único. Véase especificación oficial de métricas.
+
+## Alcance del documento anterior
+
+El contenido siguiente conserva sus fechas y evidencias originales. Los estados de activación o contratos sustituidos no se consideran vigentes; prevalecen las especificaciones enlazadas arriba.
+
+Título original conservado como contexto: **Reportes y panel visual — interfaz integrada con métricas de Codex**.
 
 18/11/2026. Solo frontend; sin migraciones ni cambios de modelo. Las métricas se obtienen del
 backend de Codex mediante un adaptador tipado; el frontend no las calcula.
