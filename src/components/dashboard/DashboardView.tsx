@@ -1,3 +1,4 @@
+import ControlLabel from '../ui/ControlLabel'
 import { useEffect, useRef, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useDashboardData } from '../../hooks/useDashboardData'
@@ -10,6 +11,7 @@ import type { MetricResult, TimeAverages } from '../../lib/metrics-adapter'
 import { averageLabel } from '../../lib/metrics-adapter'
 import UrgencyStatsPanel from '../metrics/UrgencyStatsPanel'
 import { buildCompletedExport, ExportError, type ExportClient } from '../../lib/ticket-export'
+import Icon from '../ui/Icon'
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -82,10 +84,10 @@ function StatCard({ label, value, color, icon }: {
   label: string; value: number | string; color: string; icon: string
 }) {
   return (
-    <div className={`bg-white rounded-xl border-l-4 ${color} p-5 shadow-sm flex items-center gap-4`}>
-      <span className="text-3xl">{icon}</span>
+    <div className={`stat-card border-t-2 ${color}`}>
+      <span className="stat-icon" aria-hidden="true"><Icon name={icon === '🔄' || label.includes('Time') ? 'clock' : icon === '🚫' ? 'block' : icon === '✅' ? 'check' : 'chart'} size={22} /></span>
       <div>
-        <p className={`font-bold ${typeof value === 'string' && value.length > 6 ? 'text-base text-gray-400' : 'text-3xl text-gray-900'}`}>{value}</p>
+        <p className={`font-bold ${typeof value === 'string' && value.length > 6 ? 'text-base text-gray-400' : 'stat-value text-gray-900'}`}>{value}</p>
         <p className="text-sm text-gray-500 mt-0.5">{label}</p>
       </div>
     </div>
@@ -98,15 +100,15 @@ function HBarChart({ title, items }: {
 }) {
   const max = Math.max(...items.map(i => i.value), 1)
   return (
-    <div className="bg-white rounded-xl border p-5 shadow-sm">
+    <div className="metric-chart">
       <h3 className="font-semibold text-gray-800 mb-4 text-sm uppercase tracking-wide">{title}</h3>
       <div className="space-y-3">
         {items.map(item => (
           <div key={item.label} className="flex items-center gap-3">
-            <span className="text-xs text-gray-600 w-24 shrink-0 truncate">{item.label}</span>
+            <span className="text-xs text-gray-600 w-24 shrink-0 truncate"><ControlLabel>{item.label}</ControlLabel></span>
             <div className="flex-1 bg-gray-100 rounded-full h-5 overflow-hidden">
               <div
-                className={`h-full rounded-full transition-all duration-500 ${item.color}`}
+                className={`h-full rounded-full ${item.color}`}
                 style={{ width: `${(item.value / max) * 100}%` }}
               />
             </div>
@@ -202,14 +204,14 @@ export default function DashboardView() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">📈 Dashboard</h2>
+          <h2 className="text-2xl font-bold text-gray-900"><ControlLabel>📈 Dashboard</ControlLabel></h2>
           <p className="text-sm text-gray-500 mt-1">
             {typeFilter === 'development' ? 'Vista: solo proyectos de Development' : typeFilter === 'administrative' ? 'Vista: solo proyectos Administrativos' : 'Vista global — todos los proyectos'}
           </p>
         </div>
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="dashboard-toolbar flex items-center gap-2 flex-wrap">
           {/* Filtro de período */}
-          <div className="flex items-center bg-gray-100 rounded-lg p-1 gap-1">
+          <div className="dashboard-segment flex items-center bg-gray-100 rounded-lg p-1 gap-1">
             {PERIOD_OPTIONS.map(opt => (
               <button
                 key={String(opt.value)}
@@ -220,13 +222,13 @@ export default function DashboardView() {
                     : 'text-gray-500 hover:text-gray-700'
                 }`}
               >
-                {opt.label}
+                <ControlLabel>{opt.label}</ControlLabel>
               </button>
             ))}
           </div>
 
           {/* Filtro por tipo (vista) */}
-          <div className="flex items-center bg-gray-100 rounded-lg p-1 gap-1">
+          <div className="dashboard-segment flex items-center bg-gray-100 rounded-lg p-1 gap-1">
             {TYPE_VIEW_OPTIONS.map(opt => (
               <button
                 key={String(opt.value)}
@@ -237,14 +239,14 @@ export default function DashboardView() {
                     : 'text-gray-500 hover:text-gray-700'
                 }`}
               >
-                {opt.label}
+                <ControlLabel>{opt.label}</ControlLabel>
               </button>
             ))}
           </div>
 
           {/* Filtro de área */}
           <select
-            value={areaFilter ?? ''}
+            aria-label="Filtrar métricas por área" value={areaFilter ?? ''}
             onChange={e => setAreaFilter(e.target.value || null)}
             className={`px-3 py-2 border rounded-lg text-sm outline-none transition cursor-pointer ${
               areaFilter ? 'border-brand-400 bg-brand-50 text-brand-700' : 'border-gray-200 bg-white text-gray-600'
@@ -259,7 +261,7 @@ export default function DashboardView() {
             {/* Filtro por Estudio (independiente del área) */}
             {studios.length > 0 && (
               <select
-                value={studioFilter ?? ''}
+                aria-label="Filtrar métricas por estudio" value={studioFilter ?? ''}
                 onChange={e => setStudioFilter(e.target.value || null)}
                 className={`px-3 py-2 border rounded-lg text-sm outline-none transition cursor-pointer ${studioFilter ? 'border-brand-400 bg-brand-50 text-brand-700' : 'border-gray-200 bg-white text-gray-600'}`}
               >
@@ -273,26 +275,26 @@ export default function DashboardView() {
             disabled={exporting !== null}
             className="px-4 py-2 bg-brand-600 text-white rounded-lg text-sm font-medium hover:bg-brand-700 transition shadow-sm disabled:opacity-50"
           >
-            {exporting === 'active' ? '⏳ Exportando...' : '⬇ Activos CSV'}
+            <ControlLabel>{exporting === 'active' ? '⏳ Exportando...' : '⬇ Activos CSV'}</ControlLabel>
           </button>
           <button
             onClick={handleExportCompleted}
             disabled={exporting !== null}
             className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 transition shadow-sm disabled:opacity-50"
           >
-            {exporting === 'completed' ? '⏳ Exportando...' : '⬇ Completados CSV'}
+            <ControlLabel>{exporting === 'completed' ? '⏳ Exportando...' : '⬇ Completados CSV'}</ControlLabel>
           </button>
           <button
             onClick={reload}
             className="px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-lg text-sm hover:bg-gray-50 transition shadow-sm"
           >
-            ↺ Actualizar
+            <ControlLabel>↺ Actualizar</ControlLabel>
           </button>
         </div>
       </div>
 
       {/* Stat Cards — proyectos (siempre todo el tiempo) */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
         <StatCard label="Total"       value={stats.total}             icon="📊" color="border-brand-500" />
         <StatCard label="Activos"     value={stats.byStatus.active}   icon="🟢" color="border-green-500" />
         <StatCard label="Completados" value={stats.byStatus.completed} icon="✅" color="border-emerald-500" />
@@ -331,7 +333,7 @@ export default function DashboardView() {
       {canSeeUrgency && <UrgencyStatsPanel />}
 
       {/* Status breakdown */}
-      <div className="bg-white rounded-xl border p-5 shadow-sm">
+      <div className="metric-chart">
         <h3 className="font-semibold text-gray-800 mb-4 text-sm uppercase tracking-wide">Estado de proyectos</h3>
         <div className="flex gap-4 flex-wrap">
           {[

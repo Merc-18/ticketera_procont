@@ -1,0 +1,37 @@
+{
+  "base": {
+    "files": [
+      {
+        "name": "index-DIxiDl-O.js",
+        "bytes": 1070962,
+        "gzip_bytes": 320688,
+        "sha256": "2d649d3c01db7f378912abf713fd1179688439b983326c5f1ca1a121d5d2610e"
+      }
+    ],
+    "bytes": 1070962
+  },
+  "final": {
+    "files": [
+      {
+        "name": "index-BLmphZwO.js",
+        "bytes": 1074248,
+        "gzip_bytes": 323227,
+        "sha256": "3661c8783df3a6f89c3f53eb30a5b41889bb7f8acbea323e73fac7fe2cf8a46a"
+      }
+    ],
+    "bytes": 1074248
+  },
+  "base_commit": "6533b277e9022bf3bb9a64bff02d2e4cdbfc52d5",
+  "mode": "production",
+  "settings": {
+    "VITE_SUPABASE_URL": "http://127.0.0.1:41927",
+    "VITE_SUPABASE_PUBLISHABLE_KEY": "valor ficticio de pruebas, sin credencial real",
+    "VITE_CLIENT_PORTAL_MOCK": "0",
+    "VITE_CLIENT_LOGIN_ENABLED": "1"
+  },
+  "delta_bytes": 3286,
+  "limit_bytes": 921600,
+  "status": "FAIL",
+  "over_budget_bytes": 152648,
+  "measurement": "bytes UTF-8 sin comprimir en disco; mismo entorno Node/Vite/dependencias; builds locales sin servicios remotos"
+}

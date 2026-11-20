@@ -1,0 +1,26 @@
+
+> ticketera-controlling@1.0.0 build
+> tsc && vite build --outDir /tmp/ticketera-ux-ui-final-adjustments-20261120/release-build --manifest
+
+vite v5.4.21 building for production...
+transforming...
+✓ 230 modules transformed.
+rendering chunks...
+computing gzip size...
+../ticketera-ux-ui-final-adjustments-20261120/release-build/.vite/manifest.json            0.19 kB │ gzip:   0.14 kB
+../ticketera-ux-ui-final-adjustments-20261120/release-build/index.html                     0.90 kB │ gzip:   0.46 kB
+../ticketera-ux-ui-final-adjustments-20261120/release-build/assets/index-DoaGMh84.css     57.94 kB │ gzip:  11.09 kB
+../ticketera-ux-ui-final-adjustments-20261120/release-build/assets/index-BLmphZwO.js   1,072.48 kB │ gzip: 325.51 kB
+✓ built in 1.92s
+
+(!) outDir /tmp/ticketera-ux-ui-final-adjustments-20261120/release-build is not inside project root and will not be emptied.
+Use --emptyOutDir to override.
+
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.

@@ -1,0 +1,14 @@
+{
+  "base": {
+    "javascript_bytes": 1067876,
+    "gzip_bytes": 319964
+  },
+  "ux_ui": {
+    "javascript_bytes": 1070120,
+    "gzip_bytes": 321999
+  },
+  "difference": {
+    "javascript_bytes": 2244,
+    "gzip_bytes": 2035
+  }
+}

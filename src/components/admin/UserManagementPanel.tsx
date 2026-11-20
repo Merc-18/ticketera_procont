@@ -294,8 +294,8 @@ export default function UserManagementPanel() {
 
       {/* Confirm Delete Modal */}
       {confirmDelete && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl shadow-2xl p-6 max-w-sm w-full">
+        <div className="modal-backdrop fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="modal-panel bg-white rounded-xl shadow-2xl p-6 max-w-sm w-full">
             <h3 className="text-lg font-bold text-gray-900 mb-2">🗑 Eliminar usuario</h3>
             <p className="text-gray-600 text-sm mb-1">
               ¿Estás seguro que deseas eliminar a <strong>{confirmDelete.full_name}</strong>?

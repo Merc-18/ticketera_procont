@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import Icon from '../ui/Icon'
+import PasswordField from '../ui/PasswordField'
 import BrandLogo from '../ui/BrandLogo'
 import MockBanner from './MockBanner'
 import { BRAND } from '../../theme/brand'
@@ -15,7 +17,7 @@ const CARDS: { type: AuthType; title: string; subtitle: string; detail: string; 
   { type: 'quipu', title: 'Quipu', subtitle: 'Ingreso con usuario', detail: 'RUC, usuario y contraseña', icon: '👤' },
   { type: 'quipufac', title: 'QuipuFac', subtitle: 'Ingreso empresarial', detail: 'RUC y contraseña', icon: '🏢' },
 ]
-const field = 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none bg-white transition'
+const field = 'ui-input focus:ring-2 focus:ring-primary'
 
 /**
  * Página pública del cliente: selección del TIPO DE AUTENTICACIÓN (Quipu o QuipuFac), formulario
@@ -31,31 +33,33 @@ export default function ClientHome() {
   const [hasSession] = useState(() => clientSessionStore.get() !== null)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-700 via-brand-800 to-brand-950 flex flex-col">
+    <div className="app-surface">
       <MockBanner />
-      <nav className="w-full px-4 sm:px-6 py-4 flex items-center justify-between gap-4 border-b border-white/10">
+      <nav className="public-nav">
+        <div className="wrap page-wrap">
         <div className="flex items-center gap-4 min-w-0">
-          <BrandLogo tone="light" size={44} />
+          <BrandLogo size={40} />
         </div>
         <div className="flex items-center gap-2 shrink-0">
-        <Link to="/portal" className="text-sm font-medium text-white/80 hover:text-white px-3 py-2 rounded-lg hover:bg-white/10 transition">
+        <Link to="/portal" className="ui-button ui-button-quiet">
           ← Inicio
         </Link>
         {hasSession && CLIENT_PORTAL_LOGIN_ENABLED && (
           <button onClick={() => navigate(destination)}
-            className="shrink-0 bg-white/10 text-white border border-white/30 px-3 py-2 rounded-lg text-sm font-medium hover:bg-white/20 transition">
+            className="ui-button ui-button-secondary">
             Ir a mi espacio →
           </button>
         )}
         </div>
+        </div>
       </nav>
 
-      <main className="flex-1 px-4 py-10 sm:py-14">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-10">
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-3">¿Qué producto utilizas para ingresar?</h1>
-            <div className="mx-auto mb-4 h-1 w-16 rounded-full bg-accent-400" aria-hidden="true" />
-            <p className="text-brand-100">
+      <main id="main-content" tabIndex={-1} className="wrap page-wrap client-main">
+        <div>
+          <div className="portal-heading">
+            <h1 className="text-brand-700">¿Qué producto utilizas para ingresar?</h1>
+
+            <p className="text-gray-600">
               {goToTickets ? 'Ingresa para consultar tus tickets.' : 'Elige cómo inicias sesión. Luego podrás registrar y consultar tus tickets.'}
             </p>
           </div>
@@ -73,30 +77,17 @@ export default function ClientHome() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6" role="group" aria-label="Tipo de ingreso">
             {CARDS.map(card => {
               const selected = type === card.type
-              const dimmed = type !== null && !selected
               return (
                 <button key={card.type} type="button" disabled={!CLIENT_PORTAL_LOGIN_ENABLED} aria-pressed={selected} onClick={() => setType(card.type)}
-                  className={`group relative rounded-2xl p-6 sm:p-8 text-left transition-all duration-200 border-b-4
-                    ${!CLIENT_PORTAL_LOGIN_ENABLED
-                      ? 'bg-white/60 border-transparent shadow-none cursor-not-allowed grayscale opacity-70'
-                      : `bg-white shadow-xl ${selected ? 'border-accent-400 ring-4 ring-accent-400/60 -translate-y-1' : 'border-transparent hover:border-accent-400 hover:-translate-y-1 hover:shadow-2xl'}
-                    ${dimmed ? 'opacity-60 hover:opacity-100' : ''}`}`}>
-                  <div className="flex items-start gap-4">
-                    <span className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-xl text-3xl ${selected ? 'bg-accent-100' : 'bg-brand-50'}`} aria-hidden="true">
-                      {card.icon}
-                    </span>
-                    <div className="min-w-0">
-                      <h2 className="text-2xl font-extrabold text-brand-700 tracking-tight">{card.title}</h2>
-                      <p className="font-semibold text-gray-800">{card.subtitle}</p>
-                      <p className="text-sm text-gray-500 mt-1">{card.detail}</p>
-                    </div>
+                  className="provider-card">
+                  <span className="icon-tile"><Icon name={card.type === 'quipu' ? 'user' : 'building'} size={24} /></span>
+                  <div className="min-w-0">
+                    <h2>{card.title}</h2>
+                    <span className="block font-medium text-gray-800">{card.subtitle}</span>
+                    <span className="block text-sm text-gray-600 mt-1">{card.detail}</span>
+                    {!CLIENT_PORTAL_LOGIN_ENABLED && <span className="block text-sm text-gray-600 mt-2">No disponible</span>}
                   </div>
-                  {selected && (
-                    <span className="absolute top-4 right-4 text-xs font-bold bg-accent-400 text-gray-900 px-2 py-0.5 rounded-full">Seleccionado</span>
-                  )}
-                  {!CLIENT_PORTAL_LOGIN_ENABLED && (
-                    <span className="absolute top-4 right-4 text-xs font-bold bg-gray-200 text-gray-700 px-2 py-0.5 rounded-full">No disponible</span>
-                  )}
+                  <span className="provider-indicator" aria-hidden="true">{selected && <Icon name="check" size={16} />}</span>
                 </button>
               )
             })}
@@ -107,7 +98,7 @@ export default function ClientHome() {
 
           <PublicSearch />
 
-          <p className="text-center text-brand-200 text-xs mt-10">© {new Date().getFullYear()} {BRAND.company}</p>
+          <p className="public-footer">© {new Date().getFullYear()} {BRAND.company}</p>
         </div>
       </main>
     </div>
@@ -151,12 +142,12 @@ function LoginForm({ type, onChange, onSuccess }: { type: AuthType; onChange: ()
 
   return (
     <form onSubmit={submit} noValidate aria-label={`Ingreso con ${label}`}
-      className="client-reveal mt-6 bg-white rounded-2xl shadow-2xl p-6 sm:p-8 border-t-4 border-accent-400">
-      <div className="flex items-center justify-between gap-3 mb-6">
+      className="client-login-form">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
         <h2 className="text-xl font-bold text-brand-700">
           {type === 'quipu' ? 'Ingreso con usuario Quipu' : 'Ingreso empresarial QuipuFac'}
         </h2>
-        <button type="button" onClick={onChange} className="text-sm text-gray-500 hover:text-brand-700 transition whitespace-nowrap">
+        <button type="button" onClick={onChange} className="ui-button ui-button-quiet !px-0">
           ← Cambiar tipo
         </button>
       </div>
@@ -182,7 +173,7 @@ function LoginForm({ type, onChange, onSuccess }: { type: AuthType; onChange: ()
         )}
         <div>
           <label htmlFor="client-password" className="block text-sm font-medium text-gray-700 mb-1.5">Contraseña</label>
-          <input id="client-password" type="password" autoComplete="current-password" maxLength={256} value={password}
+          <PasswordField id="client-password" autoComplete="current-password" maxLength={256} value={password}
             aria-invalid={!!errors.password} aria-describedby={errors.password ? 'password-error' : undefined}
             onChange={e => setPassword(e.target.value)} disabled={loading}
             className={`${field} ${errors.password ? 'border-red-400' : ''}`} />
@@ -193,7 +184,7 @@ function LoginForm({ type, onChange, onSuccess }: { type: AuthType; onChange: ()
       {error && <p role="alert" className="mt-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">{error}</p>}
 
       <button type="submit" disabled={loading}
-        className="mt-6 w-full bg-accent-400 hover:bg-accent-300 text-gray-900 py-3.5 rounded-lg font-bold transition disabled:opacity-50">
+        className="ui-button ui-button-primary mt-6 w-full">
         {loading ? 'Validando…' : 'Ingresar'}
       </button>
       <p className="mt-3 text-xs text-gray-500 text-center">Usa las mismas credenciales de {label}.</p>
@@ -226,14 +217,14 @@ function PublicSearch() {
   const status = result ? GENERAL_STATUS[result.status] : null
 
   return (
-    <section aria-labelledby="public-search" className="mt-10 rounded-2xl bg-white/10 border border-white/15 p-5 sm:p-6 backdrop-blur-sm">
-      <h2 id="public-search" className="text-white font-semibold mb-1">Consultar estado de un ticket</h2>
-      <p className="text-brand-100 text-sm mb-4">Ingresa el número REQ. Solo se muestra el número y el estado general.</p>
+    <section aria-labelledby="public-search" className="public-search">
+      <h2 id="public-search" className="font-medium">Consultar estado de un ticket</h2>
+      <p className="text-gray-600 text-sm mb-4">Ingresa el número REQ. Solo se muestra el número y el estado general.</p>
       <form onSubmit={search} className="flex flex-col sm:flex-row gap-3">
         <input value={value} onChange={e => setValue(e.target.value)} placeholder={`${CURRENT_PREFIX}001`}
-          aria-label="Número de ticket" className="flex-1 px-4 py-3 rounded-lg outline-none focus:ring-2 focus:ring-accent-400" />
+          aria-label="Número de ticket" className="ui-input flex-1 min-w-0" />
         <button type="submit" disabled={loading || !value.trim()}
-          className="px-6 py-3 bg-accent-400 hover:bg-accent-300 text-gray-900 rounded-lg font-bold transition disabled:opacity-50">
+          className="ui-button ui-button-secondary">
           {loading ? 'Buscando…' : 'Buscar'}
         </button>
       </form>
@@ -243,8 +234,8 @@ function PublicSearch() {
           <span className={`text-sm font-semibold px-3 py-1 rounded-full border ${status.tone}`}>{status.icon} {status.label}</span>
         </div>
       )}
-      {notFound && <p role="status" className="mt-4 text-sm text-white">No se encontró un ticket con ese número.</p>}
-      {error && <p role="alert" className="mt-4 text-sm text-red-100 bg-red-900/40 rounded-lg px-3 py-2">{error}</p>}
+      {notFound && <p role="status" className="mt-4 text-sm text-gray-700">No se encontró un ticket con ese número.</p>}
+      {error && <p role="alert" className="mt-4 text-sm text-red-700 bg-red-50 rounded-lg px-3 py-2">{error}</p>}
     </section>
   )
 }

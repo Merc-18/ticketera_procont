@@ -1,0 +1,149 @@
+{
+  "_AreaInput-lflWdDuP.js": {
+    "file": "assets/AreaInput-lflWdDuP.js",
+    "name": "AreaInput",
+    "imports": [
+      "index.html",
+      "_useAreas-CO2dvJSk.js"
+    ]
+  },
+  "_MetricState-C6Uwr030.js": {
+    "file": "assets/MetricState-C6Uwr030.js",
+    "name": "MetricState",
+    "imports": [
+      "index.html"
+    ]
+  },
+  "_RequestInbox-CAuvFF29.js": {
+    "file": "assets/RequestInbox-CAuvFF29.js",
+    "name": "RequestInbox",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html",
+      "_useUsers-BK8VOMSX.js",
+      "_RequestTimeline-xrpOB-ZN.js",
+      "_MetricState-C6Uwr030.js"
+    ],
+    "dynamicImports": [
+      "src/components/requests/PlannerImportModal.tsx"
+    ]
+  },
+  "_RequestTimeline-xrpOB-ZN.js": {
+    "file": "assets/RequestTimeline-xrpOB-ZN.js",
+    "name": "RequestTimeline",
+    "imports": [
+      "index.html",
+      "_useUsers-BK8VOMSX.js"
+    ]
+  },
+  "_useAreas-CO2dvJSk.js": {
+    "file": "assets/useAreas-CO2dvJSk.js",
+    "name": "useAreas",
+    "imports": [
+      "index.html"
+    ]
+  },
+  "_useUsers-BK8VOMSX.js": {
+    "file": "assets/useUsers-BK8VOMSX.js",
+    "name": "useUsers",
+    "imports": [
+      "index.html"
+    ]
+  },
+  "index.html": {
+    "file": "assets/index-BgWXSNJH.js",
+    "name": "index",
+    "src": "index.html",
+    "isEntry": true,
+    "dynamicImports": [
+      "src/components/dashboard/DashboardView.tsx",
+      "src/components/boards/KanbanBoard.tsx",
+      "_RequestInbox-CAuvFF29.js",
+      "src/components/admin/UserManagementPanel.tsx",
+      "src/components/admin/WorkloadView.tsx",
+      "src/components/admin/PapeleraView.tsx",
+      "src/components/admin/CatalogsPanel.tsx"
+    ],
+    "css": [
+      "assets/index-DilbYeqz.css"
+    ]
+  },
+  "src/components/admin/CatalogsPanel.tsx": {
+    "file": "assets/CatalogsPanel-DjPk2_7M.js",
+    "name": "CatalogsPanel",
+    "src": "src/components/admin/CatalogsPanel.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html",
+      "_useAreas-CO2dvJSk.js"
+    ]
+  },
+  "src/components/admin/PapeleraView.tsx": {
+    "file": "assets/PapeleraView-BsVLSJT8.js",
+    "name": "PapeleraView",
+    "src": "src/components/admin/PapeleraView.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html"
+    ]
+  },
+  "src/components/admin/UserManagementPanel.tsx": {
+    "file": "assets/UserManagementPanel-BF0GF10O.js",
+    "name": "UserManagementPanel",
+    "src": "src/components/admin/UserManagementPanel.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html",
+      "_useUsers-BK8VOMSX.js"
+    ]
+  },
+  "src/components/admin/WorkloadView.tsx": {
+    "file": "assets/WorkloadView-Bo9NzitZ.js",
+    "name": "WorkloadView",
+    "src": "src/components/admin/WorkloadView.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html",
+      "_useUsers-BK8VOMSX.js"
+    ]
+  },
+  "src/components/boards/KanbanBoard.tsx": {
+    "file": "assets/KanbanBoard-BVHAX5wN.js",
+    "name": "KanbanBoard",
+    "src": "src/components/boards/KanbanBoard.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html",
+      "_useUsers-BK8VOMSX.js",
+      "_RequestTimeline-xrpOB-ZN.js",
+      "_AreaInput-lflWdDuP.js",
+      "_useAreas-CO2dvJSk.js"
+    ]
+  },
+  "src/components/dashboard/DashboardView.tsx": {
+    "file": "assets/DashboardView-CuGc96fU.js",
+    "name": "DashboardView",
+    "src": "src/components/dashboard/DashboardView.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html",
+      "_useAreas-CO2dvJSk.js",
+      "_MetricState-C6Uwr030.js"
+    ]
+  },
+  "src/components/requests/PlannerImportModal.tsx": {
+    "file": "assets/PlannerImportModal-Crdu8Myi.js",
+    "name": "PlannerImportModal",
+    "src": "src/components/requests/PlannerImportModal.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html",
+      "_RequestInbox-CAuvFF29.js",
+      "_AreaInput-lflWdDuP.js",
+      "_useUsers-BK8VOMSX.js",
+      "_RequestTimeline-xrpOB-ZN.js",
+      "_MetricState-C6Uwr030.js",
+      "_useAreas-CO2dvJSk.js"
+    ]
+  }
+}

@@ -1,19 +1,11 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import { useState, useEffect } from 'react'
+import { lazy, Suspense, useState, useEffect } from 'react'
 import { useAuth } from './hooks/useAuth'
 import LoginForm from './components/auth/LoginForm'
 import ProtectedRoute from './components/auth/ProtectedRoute'
-import KanbanBoard from './components/boards/KanbanBoard'
 import BoardSelector from './components/boards/BoardSelector'
-import DashboardView from './components/dashboard/DashboardView'
 import RequestTracking from './components/requests/RequestTracking'
 import PublicLanding from './components/requests/PublicLanding'
-import RequestInbox from './components/requests/RequestInbox'
-import UserManagementPanel from './components/admin/UserManagementPanel'
-import WorkloadView from './components/admin/WorkloadView'
-
-import PapeleraView from './components/admin/PapeleraView'
-import CatalogsPanel from './components/admin/CatalogsPanel'
 import ClientHome from './components/client/ClientHome'
 import ClientLaunch from './components/client/ClientLaunch'
 import ClientWorkspace from './components/client/ClientWorkspace'
@@ -22,9 +14,20 @@ import MyTickets from './components/client/MyTickets'
 import ClientTicketDetail from './components/client/ClientTicketDetail'
 import NotificationBell from './components/notifications/NotificationBell'
 import BrandLogo from './components/ui/BrandLogo'
+import ControlLabel from './components/ui/ControlLabel'
 import { usePendingCount } from './hooks/usePendingCount'
 import { errorMessage } from './lib/supabase-errors'
 import { toast } from './lib/toast'
+
+// Las vistas internas se descargan al abrir su sección, sin cambiar rutas ni permisos.
+const DashboardView = lazy(() => import('./components/dashboard/DashboardView'))
+const KanbanBoard = lazy(() => import('./components/boards/KanbanBoard'))
+const RequestInbox = lazy(() => import('./components/requests/RequestInbox'))
+const UserManagementPanel = lazy(() => import('./components/admin/UserManagementPanel'))
+const WorkloadView = lazy(() => import('./components/admin/WorkloadView'))
+const PapeleraView = lazy(() => import('./components/admin/PapeleraView'))
+const CatalogsPanel = lazy(() => import('./components/admin/CatalogsPanel'))
+const viewLoading = <p role="status" className="py-6 text-sm text-gray-600">Cargando vista…</p>
 
 function AdminClock() {
   const [time, setTime] = useState('')
@@ -56,9 +59,9 @@ function Dashboard() {
   const pendingCount = usePendingCount(isAdminOrSuperAdmin)
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="enterprise">
       {/* Header */}
-      <header className="sticky top-0 z-10 shadow-md">
+      <header className="enterprise-header">
         {/* Barra corporativa */}
         <div className="bg-brand-700 border-b-4 border-accent-400">
           <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
@@ -93,7 +96,7 @@ function Dashboard() {
         {/* Navegación */}
         <nav className="bg-white border-b border-gray-200" aria-label="Secciones">
           <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-3">
-            <div className="flex flex-wrap gap-1 bg-gray-100 p-1 rounded-lg">
+            <div className="enterprise-tabs flex flex-wrap gap-1 bg-gray-100 p-1 rounded-lg">
               {([
                 ['dashboard', '📈 Dashboard'],
                 ['boards', '📊 Boards'],
@@ -110,7 +113,7 @@ function Dashboard() {
                       : 'text-gray-600 hover:text-brand-700 hover:bg-white'
                   }`}
                 >
-                  {label}
+                  <ControlLabel>{tab === 'boards' ? '⬛ Boards' : label}</ControlLabel>
                   {tab === 'requests' && pendingCount > 0 && (
                     <span className="min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 leading-none">
                       {pendingCount > 9 ? '9+' : pendingCount}
@@ -132,42 +135,44 @@ function Dashboard() {
       </header>
 
       {/* Main Content */}
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-6">
-        {currentTab === 'dashboard' && <DashboardView />}
+      <main id="main-content" tabIndex={-1} className="enterprise-main max-w-[1600px] mx-auto px-4 sm:px-6">
+        {currentTab === 'dashboard' && <Suspense fallback={viewLoading}><DashboardView /></Suspense>}
 
         {currentTab === 'boards' && (
+          <Suspense fallback={viewLoading}>
           <KanbanBoard
             boardType={currentBoard}
             openProjectId={openProjectId}
             onOpenHandled={() => setOpenProjectId(null)}
           />
+          </Suspense>
         )}
 
         {currentTab === 'requests' && (
           <>
             <div className="mb-6">
               <h2 className="text-2xl font-bold text-brand-700">
-                📬 Inbox de Solicitudes
+                <ControlLabel>📬 Inbox de Solicitudes</ControlLabel>
               </h2>
               <p className="text-gray-600 text-sm mt-1">
                 Revisa y gestiona las solicitudes pendientes
               </p>
             </div>
-            <RequestInbox />
+            <Suspense fallback={viewLoading}><RequestInbox /></Suspense>
           </>
         )}
 
         {currentTab === 'equipo' && canSeeEquipo && (
           <>
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-brand-700">👥 Equipo</h2>
+              <h2 className="text-2xl font-bold text-brand-700"><ControlLabel>👥 Equipo</ControlLabel></h2>
               <p className="text-gray-600 text-sm mt-1">
                 Gestión de usuarios y carga de trabajo del equipo
               </p>
             </div>
 
             {/* Sub-tabs */}
-            <div className="flex gap-1 bg-gray-100 p-1 rounded-lg w-fit mb-6">
+            <div className="flex flex-wrap gap-1 bg-gray-100 p-1 rounded-lg w-fit mb-6">
               <button
                 onClick={() => setAdminSubTab('carga')}
                 className={`px-4 py-2 rounded-md font-medium text-sm transition ${
@@ -176,7 +181,7 @@ function Dashboard() {
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                📊 Carga de Trabajo
+                <ControlLabel>📊 Carga de Trabajo</ControlLabel>
               </button>
               {isAdminOrSuperAdmin && (
                 <button
@@ -187,7 +192,7 @@ function Dashboard() {
                       : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
-                  🔑 Usuarios
+                  <ControlLabel>🔑 Usuarios</ControlLabel>
                 </button>
               )}
 
@@ -200,7 +205,7 @@ function Dashboard() {
                       : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
-                  🗑 Papelera
+                  <ControlLabel>🗑 Papelera</ControlLabel>
                 </button>
               )}
 
@@ -213,19 +218,21 @@ function Dashboard() {
                       : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
-                  🗂 Catálogos
+                  <ControlLabel>🗂 Catálogos</ControlLabel>
                 </button>
               )}
             </div>
 
+            <Suspense fallback={viewLoading}>
             {adminSubTab === 'carga'    && <WorkloadView />}
             {adminSubTab === 'usuarios' && <UserManagementPanel />}
 
             {adminSubTab === 'papelera' && <PapeleraView />}
             {adminSubTab === 'areas' && isSuperAdmin && <CatalogsPanel />}
+            </Suspense>
           </>
         )}
-      </div>
+      </main>
     </div>
   )
 }

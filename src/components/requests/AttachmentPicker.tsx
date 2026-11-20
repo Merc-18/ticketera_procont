@@ -1,3 +1,4 @@
+import Icon from '../ui/Icon'
 import { useEffect, useRef, useState } from 'react'
 import { ATTACHMENT_ACCEPT } from '../../lib/attachments'
 import {
@@ -45,11 +46,14 @@ export default function AttachmentPicker({ onChange, resetKey }: Props) {
   const over = files.length > MAX_ATTACHMENTS || (result !== null && !result.ok)
 
   return (
-    <div className="space-y-2">
-      <input ref={input} type="file" multiple accept={ATTACHMENT_ACCEPT} disabled={files.length >= MAX_ATTACHMENTS}
+    <div className="attachment-picker space-y-3">
+      <input id="ticket-attachments" aria-label="Adjuntar capturas o documentos" ref={input} type="file" multiple accept={ATTACHMENT_ACCEPT} disabled={files.length >= MAX_ATTACHMENTS}
         onChange={e => add(e.target.files)}
-        className="block w-full text-sm text-gray-600 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-brand-50 file:text-brand-700 file:font-medium hover:file:bg-brand-100 disabled:opacity-50" />
-      <p className="text-xs text-gray-400">
+        className="sr-only" />
+      <label htmlFor="ticket-attachments" className="attachment-trigger ui-button ui-button-secondary cursor-pointer">
+        <Icon name="upload" size={18} /> Seleccionar archivos
+      </label>
+      <p className="text-xs text-gray-600">
         Hasta {MAX_ATTACHMENTS} archivos, {formatBytes(MAX_TOTAL_BYTES)} en total. Las imágenes se comprimen automáticamente si es necesario; los documentos se envían sin cambios.
       </p>
 
@@ -58,8 +62,8 @@ export default function AttachmentPicker({ onChange, resetKey }: Props) {
           {files.map((f, i) => {
             const item = result?.items[i]
             return (
-              <div key={`${f.name}-${i}`} className="flex items-center gap-3 px-3 py-2 text-sm">
-                <span>{f.type.startsWith('image/') ? '🖼' : '📄'}</span>
+              <div key={`${f.name}-${i}`} className="attachment-file flex items-center gap-3 px-3 py-2 text-sm">
+                <Icon name="file" />
                 <span className="flex-1 min-w-0 truncate text-gray-800" title={f.name}>{f.name}</span>
                 <span className="text-xs text-gray-500 whitespace-nowrap">
                   {item?.compressed
@@ -79,7 +83,7 @@ export default function AttachmentPicker({ onChange, resetKey }: Props) {
               </span>
             </div>
             <div className="h-1.5 rounded-full bg-gray-100 overflow-hidden">
-              <div className={`h-full ${over ? 'bg-red-500' : 'bg-accent-400'}`} style={{ width: `${pct}%` }} />
+              <div className={`h-full ${over ? 'bg-red-500' : 'bg-accent-400'}`} style={{ width: '100%', transform: `scaleX(${pct / 100})`, transformOrigin: 'left' }} />
             </div>
             {result && result.ok && result.originalBytes > result.totalBytes && (
               <p className="text-xs text-green-700">Imágenes optimizadas: {formatBytes(result.originalBytes)} → {formatBytes(result.totalBytes)}.</p>

@@ -1,0 +1,92 @@
+{
+  "before": {
+    "version": "Versión 202611201512",
+    "initial_bytes": 1074248,
+    "total_emitted_bytes": 1074248,
+    "js_files": 1
+  },
+  "after": {
+    "version": "Versión 202611201553",
+    "initial_bytes": 443011,
+    "deferred_emitted_bytes": 635586,
+    "total_emitted_bytes": 1078597,
+    "js_files": 14
+  },
+  "initial_saved_bytes": 631237,
+  "initial_reduction_percent": 58.7608,
+  "total_emitted_delta_bytes": 4349,
+  "limit_bytes": 921600,
+  "metric": "Network Script sum(decoded || encoded), after load and scroll; see browser-bundle.json and original Taste perf script outputs.",
+  "assets": [
+    {
+      "name": "AreaInput-lflWdDuP.js",
+      "bytes": 639,
+      "sha256": "9528a869490b03c322408fa04aac72e176fca7c10c8144832d4911c6af3f725b"
+    },
+    {
+      "name": "CatalogsPanel-DjPk2_7M.js",
+      "bytes": 12190,
+      "sha256": "2e0d06e11fe852366f158c42cb2d95e8e1074469fa3f46c5cea0348ee499d46e"
+    },
+    {
+      "name": "DashboardView-CuGc96fU.js",
+      "bytes": 19773,
+      "sha256": "4ec1dda1d62dc44057ce5682047b5dd59dd2f18606a36e3e3074234f3933cb3f"
+    },
+    {
+      "name": "KanbanBoard-BVHAX5wN.js",
+      "bytes": 194969,
+      "sha256": "fe006c8f82506673c92467d631f4ca7c2082e536a2bab12732ccc05dcc80d9ac"
+    },
+    {
+      "name": "MetricState-C6Uwr030.js",
+      "bytes": 454,
+      "sha256": "96b04a360d322faa201c681206d12b271ecdccfe3bfd7f31658e554cf93f7512"
+    },
+    {
+      "name": "PapeleraView-BsVLSJT8.js",
+      "bytes": 4505,
+      "sha256": "d97d8c239cba7498e993fbfb2485d058b3c7a7c955fc0607b234d7001d42fe89"
+    },
+    {
+      "name": "PlannerImportModal-Crdu8Myi.js",
+      "bytes": 343286,
+      "sha256": "b84ebc3d0c5cf353f6a09d135e2be23224ce720d1863e75098f8207ffab10284"
+    },
+    {
+      "name": "RequestInbox-CAuvFF29.js",
+      "bytes": 24439,
+      "sha256": "9072ac9af61daa1f63c1405b7ba91734aa3d4b4b9658651dfa4499528a403bd2"
+    },
+    {
+      "name": "RequestTimeline-xrpOB-ZN.js",
+      "bytes": 7834,
+      "sha256": "ee8b85a2e19d464e27c1d20352fb3d5d3a35f363cb08b3741fef2cf2410f7153"
+    },
+    {
+      "name": "UserManagementPanel-BF0GF10O.js",
+      "bytes": 15294,
+      "sha256": "0aad047e314c102fdabbdd070fe6fed9c5b616f5d5d891c0485a3d80af0bac37"
+    },
+    {
+      "name": "WorkloadView-Bo9NzitZ.js",
+      "bytes": 6311,
+      "sha256": "587f7424a0b978079f6f9a441ba87783da0d97b005c9f30b06b0c301d6d83a77"
+    },
+    {
+      "name": "index-BgWXSNJH.js",
+      "bytes": 443011,
+      "sha256": "771c7fd352d3e221d4d1cf1e5dd49e4395aa362af7b608592febab6b31241def"
+    },
+    {
+      "name": "useAreas-CO2dvJSk.js",
+      "bytes": 1290,
+      "sha256": "7243dab7fb415780c1300ea61fb7dd17c0032c6f93a870442da70ddb825c06a8"
+    },
+    {
+      "name": "useUsers-BK8VOMSX.js",
+      "bytes": 4602,
+      "sha256": "cc7be9de39f9e0de9e1967ec28de788ac28805cc6dc7fccf33bd88f39945b496"
+    }
+  ]
+}

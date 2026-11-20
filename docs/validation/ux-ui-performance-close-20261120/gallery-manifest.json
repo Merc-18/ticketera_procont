@@ -1,0 +1,1667 @@
+{
+  "version": "Versión 202611201553",
+  "buildDir": "/tmp/ticketera-ux-ui-performance-20261120/approved-build",
+  "buildMode": "production",
+  "sources": [
+    {
+      "path": "/src/App.tsx",
+      "sha256": "b7396bff815f030e1829d0e35474f1a289830da744c281ab5f121915df9b177a"
+    },
+    {
+      "path": "/src/components/ErrorBoundary.tsx",
+      "sha256": "f32ca398e901a8ba7815622bc2b1ac63f79f57c93de81790020f18a7e4650f0b"
+    },
+    {
+      "path": "/src/components/admin/AreasPanel.tsx",
+      "sha256": "d6f5ccff82ec880c9b9516964b2c87a3e212f7ebbca2e604ff6af1bf67afe739"
+    },
+    {
+      "path": "/src/components/admin/CatalogsPanel.tsx",
+      "sha256": "efbd143364c151764a4ed9631e9b9d070acd4838709715a3f6f2419d5e7ac9e5"
+    },
+    {
+      "path": "/src/components/admin/PapeleraView.tsx",
+      "sha256": "3d6e66c326b68f53de6cc6660cb8bfd7f9ba8d5e3e7f71e54897e5df9b3825d5"
+    },
+    {
+      "path": "/src/components/admin/UserManagementPanel.tsx",
+      "sha256": "9237e49e6746656590441e23bff402e5b8eef0e88fbec594022144e275046aa5"
+    },
+    {
+      "path": "/src/components/admin/UserModal.tsx",
+      "sha256": "d7978905597e002e081d408e03ba3b34168f1e3999172127e9598cf5b384bfca"
+    },
+    {
+      "path": "/src/components/admin/WorkloadView.tsx",
+      "sha256": "fb32a324079f10f87798aa1fea06dee17b6f7845c21c7fcafa2929b0401e88ca"
+    },
+    {
+      "path": "/src/components/auth/LoginForm.tsx",
+      "sha256": "861135bc5d4966c735d942ca02a04035999c1b95624c4749f78960d94b6a250a"
+    },
+    {
+      "path": "/src/components/auth/ProtectedRoute.tsx",
+      "sha256": "a89acd5699a5224b0c92c702217a4b1517fb2016c1f6b9afd551ab677cb5db61"
+    },
+    {
+      "path": "/src/components/boards/BoardColumn.tsx",
+      "sha256": "b44cb1e116fe99d068580236dab00e23507a0e238d7e056437d62daafceb30dc"
+    },
+    {
+      "path": "/src/components/boards/BoardSelector.tsx",
+      "sha256": "31845037fe72024524b2b709f7041bb4d779d15a5da26d7e379213c6d1391e3d"
+    },
+    {
+      "path": "/src/components/boards/GanttView.tsx",
+      "sha256": "65ad140ab1a1f4874532781bead1bea72f918c101aca0a75a83835a86d293e90"
+    },
+    {
+      "path": "/src/components/boards/KanbanBoard.tsx",
+      "sha256": "63fcafff349b992fa0a6be53f0f9214be81a38c6122f9712eb38f1b9e86a60ea"
+    },
+    {
+      "path": "/src/components/boards/ProjectCard.tsx",
+      "sha256": "63798190b1b062434b51bb84d0879c5da6b15703fbe3f273953aae5ded8c7540"
+    },
+    {
+      "path": "/src/components/boards/ProjectListView.tsx",
+      "sha256": "515235398d01590729c34c93effb68a98fe641c018a28eb01a3d4bd88da969ef"
+    },
+    {
+      "path": "/src/components/boards/RoadmapView.tsx",
+      "sha256": "8c849c0aad8b0174f14069a67027d8aa5546278185aecefd890a347a0ec08848"
+    },
+    {
+      "path": "/src/components/boards/TableView.tsx",
+      "sha256": "a20b66083dc73d0da1d3079474c283977b19efc697340dfd26b4116e9026d483"
+    },
+    {
+      "path": "/src/components/client/ClientHome.tsx",
+      "sha256": "b383dfc8785ceca889bb02624e5f0b6c7cf47f4903a5d75c155f1f99ca176166"
+    },
+    {
+      "path": "/src/components/client/ClientLaunch.tsx",
+      "sha256": "d497c67b2c0398551fc63f5035f3df0913af229fa135ace4903e68341c8d88b0"
+    },
+    {
+      "path": "/src/components/client/ClientNewTicket.tsx",
+      "sha256": "a695e1c131b24c8149cef67126ae5c95e967c1ab4c968c557e09ee404082b1a9"
+    },
+    {
+      "path": "/src/components/client/ClientTicketDetail.tsx",
+      "sha256": "55d823c81a031b7df5067137db4836c4744b007334af48389aade42d3fbadd5a"
+    },
+    {
+      "path": "/src/components/client/ClientWorkspace.tsx",
+      "sha256": "03d437297e80a5088d34f8f6f1ebd4377abae31767501f0d2594f8a84371a210"
+    },
+    {
+      "path": "/src/components/client/MockBanner.tsx",
+      "sha256": "b2b889a914220cc28b1efd8606094c674637de4198e7f32f81777716a89b20bf"
+    },
+    {
+      "path": "/src/components/client/MyTickets.tsx",
+      "sha256": "6b32470c42d7811a83250f099ee3ec25094022380d7df453d2fd9655229db137"
+    },
+    {
+      "path": "/src/components/dashboard/DashboardView.tsx",
+      "sha256": "c6b3b1153af69ae57024214108838dafcf5d74434c6d38aec91a53d1a4b3efb9"
+    },
+    {
+      "path": "/src/components/metrics/MetricState.tsx",
+      "sha256": "7f6584126b44dafeb14a50751a071f68ede484f5a50c48acb962e22d14fb2391"
+    },
+    {
+      "path": "/src/components/metrics/RequesterUrgencySummary.tsx",
+      "sha256": "ece3b3b316ee7e07aa4fac770b55dad59e89d801908db589412192a6d963c402"
+    },
+    {
+      "path": "/src/components/metrics/UrgencyStatsPanel.tsx",
+      "sha256": "92d51f8f5db6b18b7f1ebed6ade1ad31cd843fe7577d7694c4ee5d3659350d2e"
+    },
+    {
+      "path": "/src/components/notifications/NotificationBell.tsx",
+      "sha256": "af93734f696513a31f9ea2a5528e47c71df2c9d56fb7b3b3c08a5bbeb561a49a"
+    },
+    {
+      "path": "/src/components/projects/BoardDialogs.tsx",
+      "sha256": "e92496251d6564fd0b02cd37ace1ed1fde63a40144b41cabdef610bc99508250"
+    },
+    {
+      "path": "/src/components/projects/ChecklistSection.tsx",
+      "sha256": "c71148439691546cbe88c39a4d58d69a9f65476874bbb8e4b76e79b9611caccc"
+    },
+    {
+      "path": "/src/components/projects/CommentsSection.tsx",
+      "sha256": "30d803baea232c125d25a77423db5ebebb2cd5bfc971239d06354bcd2bc24405"
+    },
+    {
+      "path": "/src/components/projects/EvidenceSection.tsx",
+      "sha256": "b1d0caaf8eed3da0c0ad5c1cfd862210b401cd927681055e8f64ae29c48d478b"
+    },
+    {
+      "path": "/src/components/projects/NewProjectModal.tsx",
+      "sha256": "62d5c5f2a79e1bb88af5e21edf5603d48175fd29ea4e8c4c535d2ed211a441ee"
+    },
+    {
+      "path": "/src/components/projects/ProjectModal.tsx",
+      "sha256": "14867d4e5b738f81cf7de39d4eb0f0f85886d20e9cfc8dd5c9710edab44ef69d"
+    },
+    {
+      "path": "/src/components/requests/AttachmentPicker.tsx",
+      "sha256": "3b5d55757720d5c6e88a684ef675885d836ade8cf1cb92885bd41d9475681ecb"
+    },
+    {
+      "path": "/src/components/requests/PlannerImportModal.tsx",
+      "sha256": "25be4ef96266382a5f6bb444c3ba48e2e714f401316fee4b264f91541a05a7ae"
+    },
+    {
+      "path": "/src/components/requests/PublicLanding.tsx",
+      "sha256": "a5afd0f37f7c4004d6e43ff4af218bc0d779f169d1c699c8676f5ee95d896548"
+    },
+    {
+      "path": "/src/components/requests/PublicRequestForm.tsx",
+      "sha256": "5bfbd84d5184de59bb94aaf568d2361bec1c46d47f311bfacbe3bdbfde139f29"
+    },
+    {
+      "path": "/src/components/requests/RequestInbox.tsx",
+      "sha256": "f132fdd5db7949f6d8b61f61963207c80e329241fa7367353b6c1c1c3265ad94"
+    },
+    {
+      "path": "/src/components/requests/RequestTimeline.tsx",
+      "sha256": "520bf8a42b7bcdc4271c4e7e436c796ab72db66f5bcee512d7e1e108f24f7d90"
+    },
+    {
+      "path": "/src/components/requests/RequestTracking.tsx",
+      "sha256": "73da86c9e990b7841c18517dbc95044323f9214db95f28bb1a95f85dd6bf7c29"
+    },
+    {
+      "path": "/src/components/requests/RequestValidationModal.tsx",
+      "sha256": "0b5b01963827c06cfb32565d8ec4356a99a5ecc8c84894382623055f0a7ae78c"
+    },
+    {
+      "path": "/src/components/ui/AreaInput.tsx",
+      "sha256": "ee6c964a0533593ac2c7451bb82c4868e52e8a84b6fea4e0f299ea0902fe977f"
+    },
+    {
+      "path": "/src/components/ui/BrandLogo.tsx",
+      "sha256": "6696987b49ab94344ced552b346846fec85059570106083f4a04db0b40cc8cb5"
+    },
+    {
+      "path": "/src/components/ui/BuildVersion.tsx",
+      "sha256": "fc6b073a8d8f861e4e97d9117401b791bcaf03098d97376e265d21b94bdf4711"
+    },
+    {
+      "path": "/src/components/ui/ControlLabel.tsx",
+      "sha256": "1200c27248c37f53e2c18233c777f3260a047b6327740f248e608fc4dc330b98"
+    },
+    {
+      "path": "/src/components/ui/Icon.tsx",
+      "sha256": "f00f4110d26292688538569c19946c326cd7fbe7f05f47dfd4130026b76317fd"
+    },
+    {
+      "path": "/src/components/ui/InteractionMode.tsx",
+      "sha256": "bcc3acda67dec24d0159c91537f71615055169402cea1e68242befff7145d3ae"
+    },
+    {
+      "path": "/src/components/ui/ModalFocus.tsx",
+      "sha256": "650870617001afc342992bfd6cb1aca78ac43781f03fe22074ecc749e39aaaeb"
+    },
+    {
+      "path": "/src/components/ui/PasswordField.tsx",
+      "sha256": "839a36ed1aed68908852db415a5d2d9f9320799e5c303ed059a2057b93029659"
+    },
+    {
+      "path": "/src/components/ui/ScrollHint.tsx",
+      "sha256": "a9d828262f17ec7b6e75324314a0df8032ffe0e3eb548756dc741f58356aa756"
+    },
+    {
+      "path": "/src/components/ui/Toaster.tsx",
+      "sha256": "6fab1b7a1cd73d4a216cb9688d084501655cc9a5b8fdb40050feb24d37036327"
+    },
+    {
+      "path": "/src/dev/client-portal-mock.ts",
+      "sha256": "142071402b5db2f1f9b66663af27bdfab7f1609d3bbc678f90fa180bfc5cdb93"
+    },
+    {
+      "path": "/src/hooks/useAreas.ts",
+      "sha256": "75d3d22f09e80d60b375f33eeaab5097cf6fa72ebeada4bb2f82231bbfe5cf43"
+    },
+    {
+      "path": "/src/hooks/useAuth.ts",
+      "sha256": "1c05909c02e2a17e8145feb48a78ea5585b207f21b34a75c7dd89183eaa8c1f8"
+    },
+    {
+      "path": "/src/hooks/useBoardTicket.ts",
+      "sha256": "75b0b69f34add810e9d7298cb37eb79526d3ce1179e04c9b897c63d99014db39"
+    },
+    {
+      "path": "/src/hooks/useCatalogs.ts",
+      "sha256": "e7524be1921ec1ebb173509774ba23cdd9498c81b3d6afb563045d0e5aaf1a9c"
+    },
+    {
+      "path": "/src/hooks/useChecklist.ts",
+      "sha256": "1d3459422b0b551ca7d7ca18bb80bd43f4fea5ac9f3a18516b0b66aee0bd13fa"
+    },
+    {
+      "path": "/src/hooks/useDashboardData.ts",
+      "sha256": "867f9682d475f5a9a4112836805cab2ccc8e3c70f7124fd6005a71fc6fd5203b"
+    },
+    {
+      "path": "/src/hooks/useNotifications.ts",
+      "sha256": "e0c1ced5fc3ca063becf026f0a03591a04294251c0f6f1ba79a323c7c5544165"
+    },
+    {
+      "path": "/src/hooks/usePendingCount.ts",
+      "sha256": "6c4ee6c549875012be1be734a3725877ee592057d74b5bb1f7d3a4630bd129c5"
+    },
+    {
+      "path": "/src/hooks/useProjects.ts",
+      "sha256": "3e28fb102a26353ada42c4d55ba7f47002170e8260a545aff4c014aca8fe5b38"
+    },
+    {
+      "path": "/src/hooks/useRequests.ts",
+      "sha256": "c3687dff94536cef2925b0dad67dd715edd74a14ff877c9d943f67c298fbb5d0"
+    },
+    {
+      "path": "/src/hooks/useUsers.ts",
+      "sha256": "68bd8547c6d406fb0cfa3f42e896366ebfbd02b35861fdb0a6a7c0dd675774e1"
+    },
+    {
+      "path": "/src/index.css",
+      "sha256": "7885889b0972a5f4a2a911d51b04553b05ffd5ef0b31c0bc2ec52d364dfa69d5"
+    },
+    {
+      "path": "/src/lib/access.ts",
+      "sha256": "8a6d1403197bd989b22d5f65ebb3724a47a3fe7b10e6a6a166f672e8fefe6a53"
+    },
+    {
+      "path": "/src/lib/account-admin.ts",
+      "sha256": "a3a5f6f3dd78b41b1aa3570326ff05ef401321e837e28fca2868888167042c17"
+    },
+    {
+      "path": "/src/lib/api.ts",
+      "sha256": "5db59c8951fa68d82766b1c6e57d6380d24b7d89f8976b58e5dc445eb251ebbd"
+    },
+    {
+      "path": "/src/lib/attachment-delivery.ts",
+      "sha256": "7e915c7014755d271d5d069027a4947b235cace6192dc4b5fc8e6a50c9a1a874"
+    },
+    {
+      "path": "/src/lib/attachment-prep.ts",
+      "sha256": "bd70bb00222f6d8b14d9dd0e0e34d27f62e66540c42821c46359915cc1c6d367"
+    },
+    {
+      "path": "/src/lib/attachments.ts",
+      "sha256": "db99cc789d3e505d840956bb2f2a8282cad2509d7468280f50060a43d30bf6f0"
+    },
+    {
+      "path": "/src/lib/auth-controller.ts",
+      "sha256": "f4e17552ed25392fbe9e8ed0e5ee6125bc58620938ad38da81ff2c7d3bec90d1"
+    },
+    {
+      "path": "/src/lib/board.ts",
+      "sha256": "4080decd226b4760b9897410a2f76af587164607ed750bcd3b1d4e6bfd003b59"
+    },
+    {
+      "path": "/src/lib/build-version.ts",
+      "sha256": "0faa1586d89f63c498a52f66ca1871356df3a369c24bbb3ef85c423442ef5289"
+    },
+    {
+      "path": "/src/lib/checklist-defaults.ts",
+      "sha256": "c789b1e8ccd4a2f8d1245e67ee97929873ca3f09798d0fd17af049267b149193"
+    },
+    {
+      "path": "/src/lib/client-portal-api.ts",
+      "sha256": "02fbfe99d3fa24245468c0065e0a72bc1cbf139b19b91a5bd0a9bfeb12f4849c"
+    },
+    {
+      "path": "/src/lib/client-portal.ts",
+      "sha256": "3a526855a331f0a5cc199407c98830fa4805da3072fcbfde38fe772260e1ba12"
+    },
+    {
+      "path": "/src/lib/client-session-store.ts",
+      "sha256": "283a9c2554df49737c650c076c04037b562d29bdb6ebe2a9586dbfa30d23bfb2"
+    },
+    {
+      "path": "/src/lib/constants.ts",
+      "sha256": "b62d3f8d7c9a5cb6dc0f2b43eecd68b8423ee1f4732221a8141954a383e52c5e"
+    },
+    {
+      "path": "/src/lib/metrics-adapter.ts",
+      "sha256": "416a8b090ff0b2c69f6543b50a98bb90a2be137bffdb3b3018954aa628313e22"
+    },
+    {
+      "path": "/src/lib/notifications.ts",
+      "sha256": "b9b5748fbe470b59c13b36a3f5a7a4fe930027b5cb79a40c7f9211820ccfdd54"
+    },
+    {
+      "path": "/src/lib/operations.ts",
+      "sha256": "82d004e5d8c9ffa374a84c5f4c55715ae416e9d70fd8e7a72d08f48cedb18e09"
+    },
+    {
+      "path": "/src/lib/request-status.ts",
+      "sha256": "e1ded648c5cff43a6dc6979802b7d8a04f8cf00c2b5b753b6b74213d1597eb32"
+    },
+    {
+      "path": "/src/lib/rpc-attempt.ts",
+      "sha256": "a31c36d7ece8560c98db66eb590e5f235b3b9d7ea9a2c4eca514ade1d3c53f79"
+    },
+    {
+      "path": "/src/lib/supabase-config.ts",
+      "sha256": "d9c9455e7d1a5077356a8e52a809b174e56a19e1004d28886dee9fe0f988cbae"
+    },
+    {
+      "path": "/src/lib/supabase-errors.ts",
+      "sha256": "0edfb860e17393bbc4e687940bb532f7d7bd065adbb44d0c10faeb2602e54038"
+    },
+    {
+      "path": "/src/lib/supabase.ts",
+      "sha256": "5aac8c8684d4ac5325a36d7a63b9b25b57d4184834440d8a94e906ab2fa8c161"
+    },
+    {
+      "path": "/src/lib/ticket-export.ts",
+      "sha256": "894a19bed9e99b077d2f2f3587043a75814aef117f6f5867f2e067058324bfa4"
+    },
+    {
+      "path": "/src/lib/toast.ts",
+      "sha256": "e983fae3830483a2c6a2d3f1b0c89766962f92b01022e1f03ac24b98ee18d965"
+    },
+    {
+      "path": "/src/lib/tracking-handoff.ts",
+      "sha256": "d0147f5acdeec90671469538b8c526861b3bd0cf288665b7c808684c082e603c"
+    },
+    {
+      "path": "/src/main.tsx",
+      "sha256": "e3c807023a8494cc644eb9c14744c0f30441dbbd5fb90b6b08a21207e14e835b"
+    },
+    {
+      "path": "/src/theme/brand.ts",
+      "sha256": "db046d6533374b577ba74cfe1c9a05fc9f9905cbb41891c9f7805d7b63e8d461"
+    },
+    {
+      "path": "/src/types/database.types.ts",
+      "sha256": "9ed4bc72ca5fa6ba150db2dd871dc4126a0f6d487fc0a44aec20637207c316c6"
+    },
+    {
+      "path": "/src/vite-env.d.ts",
+      "sha256": "ffbe0533d9062eeda5d5a9ffb40d3eb9a61758e101da52b73ad025c1b8b5f64d"
+    }
+  ],
+  "assets": [
+    {
+      "name": "AreaInput-lflWdDuP.js",
+      "bytes": 639,
+      "sha256": "9528a869490b03c322408fa04aac72e176fca7c10c8144832d4911c6af3f725b"
+    },
+    {
+      "name": "CatalogsPanel-DjPk2_7M.js",
+      "bytes": 12190,
+      "sha256": "2e0d06e11fe852366f158c42cb2d95e8e1074469fa3f46c5cea0348ee499d46e"
+    },
+    {
+      "name": "DashboardView-CuGc96fU.js",
+      "bytes": 19773,
+      "sha256": "4ec1dda1d62dc44057ce5682047b5dd59dd2f18606a36e3e3074234f3933cb3f"
+    },
+    {
+      "name": "KanbanBoard-BVHAX5wN.js",
+      "bytes": 194969,
+      "sha256": "fe006c8f82506673c92467d631f4ca7c2082e536a2bab12732ccc05dcc80d9ac"
+    },
+    {
+      "name": "MetricState-C6Uwr030.js",
+      "bytes": 454,
+      "sha256": "96b04a360d322faa201c681206d12b271ecdccfe3bfd7f31658e554cf93f7512"
+    },
+    {
+      "name": "PapeleraView-BsVLSJT8.js",
+      "bytes": 4505,
+      "sha256": "d97d8c239cba7498e993fbfb2485d058b3c7a7c955fc0607b234d7001d42fe89"
+    },
+    {
+      "name": "PlannerImportModal-Crdu8Myi.js",
+      "bytes": 343286,
+      "sha256": "b84ebc3d0c5cf353f6a09d135e2be23224ce720d1863e75098f8207ffab10284"
+    },
+    {
+      "name": "RequestInbox-CAuvFF29.js",
+      "bytes": 24439,
+      "sha256": "9072ac9af61daa1f63c1405b7ba91734aa3d4b4b9658651dfa4499528a403bd2"
+    },
+    {
+      "name": "RequestTimeline-xrpOB-ZN.js",
+      "bytes": 7834,
+      "sha256": "ee8b85a2e19d464e27c1d20352fb3d5d3a35f363cb08b3741fef2cf2410f7153"
+    },
+    {
+      "name": "UserManagementPanel-BF0GF10O.js",
+      "bytes": 15294,
+      "sha256": "0aad047e314c102fdabbdd070fe6fed9c5b616f5d5d891c0485a3d80af0bac37"
+    },
+    {
+      "name": "WorkloadView-Bo9NzitZ.js",
+      "bytes": 6311,
+      "sha256": "587f7424a0b978079f6f9a441ba87783da0d97b005c9f30b06b0c301d6d83a77"
+    },
+    {
+      "name": "index-BgWXSNJH.js",
+      "bytes": 443011,
+      "sha256": "771c7fd352d3e221d4d1cf1e5dd49e4395aa362af7b608592febab6b31241def"
+    },
+    {
+      "name": "index-DilbYeqz.css",
+      "bytes": 57991,
+      "sha256": "e323ebdb29ff7481068b09d3d8af1ec9cc905e98767ccf28341350b252c2d23c"
+    },
+    {
+      "name": "useAreas-CO2dvJSk.js",
+      "bytes": 1290,
+      "sha256": "7243dab7fb415780c1300ea61fb7dd17c0032c6f93a870442da70ddb825c06a8"
+    },
+    {
+      "name": "useUsers-BK8VOMSX.js",
+      "bytes": 4602,
+      "sha256": "cc7be9de39f9e0de9e1967ec28de788ac28805cc6dc7fccf33bd88f39945b496"
+    }
+  ],
+  "captures": [
+    {
+      "name": "desktop-17-quipu-cargando",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1283.203125,
+        "bottom": 1319.203125
+      },
+      "sha256": "79832d20a7ec738b2368b9d9b3713127a6182ea94e6c4e36a75ed7e6ffe274b9"
+    },
+    {
+      "name": "desktop-17-quipufac-cargando",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1191.203125,
+        "bottom": 1227.203125
+      },
+      "sha256": "e4de0cdf58eb3b767d103743dcbb54550fc78ed94d15eed09d5dab92afab1c43"
+    },
+    {
+      "name": "desktop-01-portal",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 891,
+        "bottom": 927
+      },
+      "sha256": "ea54faac43badf8b2f4a786658e4fd45e028314ff226f9b959f6f4c05fae407e"
+    },
+    {
+      "name": "desktop-02-modal-personal",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 891,
+        "bottom": 927
+      },
+      "sha256": "cdb5b6b43f82308328824725301ac288b53654777420be1a3844a65fd46844e3"
+    },
+    {
+      "name": "desktop-03-quipu-normal",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1283.203125,
+        "bottom": 1319.203125
+      },
+      "sha256": "6462fe32dae5afb141c7306bd1ee0c83d3b8c43ff6911a3f42460020246ec14e"
+    },
+    {
+      "name": "desktop-03-quipu-validacion",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1327.578125,
+        "bottom": 1363.578125
+      },
+      "sha256": "2375d7c98a783576a6dc53f8be0cb39e81b647d1f8e5307d0096a295b7e2ea6e"
+    },
+    {
+      "name": "desktop-03-quipufac-normal",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1191.203125,
+        "bottom": 1227.203125
+      },
+      "sha256": "08cbc4e76b9f8b8f99f06a370ea0184230685afa7e02af2f30ca4542d22a579d"
+    },
+    {
+      "name": "desktop-03-quipufac-validacion",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1213.390625,
+        "bottom": 1249.390625
+      },
+      "sha256": "e645df570ac511bbdbe5774c5c38d0a6404f182d389934a3d98d78bc0b1e388a"
+    },
+    {
+      "name": "desktop-04-nuevo-ticket-adjunto",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1463.828125,
+        "bottom": 1499.828125
+      },
+      "sha256": "1b94d9093fe2d86a5d51ebe658719d1c12cd73df9ff123c8ebe1c5169a68e142"
+    },
+    {
+      "name": "desktop-05-mis-tickets",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 891,
+        "bottom": 927
+      },
+      "sha256": "f523506ca63709efcc15111bb53b92a85258ee593bc8521fd22c231ae67c8bff"
+    },
+    {
+      "name": "desktop-06-detalle",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 891,
+        "bottom": 927
+      },
+      "sha256": "5ad8642314a47e4ef1f032ebe8e6badffbfc681eb43fae9e8fd0d9da5f2ba200"
+    },
+    {
+      "name": "desktop-07-seguimiento-publico",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 891,
+        "bottom": 927
+      },
+      "sha256": "e995b6011aa1375aae627f39e3ccc8d186d807b1ef0a523408d08170228b05e9"
+    },
+    {
+      "name": "desktop-08-dashboard",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1415.9375,
+        "bottom": 1451.9375
+      },
+      "sha256": "2b1b345ccd3aea460c56792e4494ae244a5ee637157fe42cebf5921684874322"
+    },
+    {
+      "name": "desktop-09-bandeja",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1078.1875,
+        "bottom": 1114.1875
+      },
+      "sha256": "2fed5842cbbdd279ff65d9350df34b7ddfdf7734f7902adb11cce1c2100920a7"
+    },
+    {
+      "name": "desktop-10-kanban",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 984.96875,
+        "bottom": 1020.96875
+      },
+      "sha256": "af094661c2689be610f7681d38b39e0e346d787c7b299add1f64cebfcf1929eb"
+    },
+    {
+      "name": "desktop-11-kanban-done",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 984.96875,
+        "bottom": 1020.96875
+      },
+      "sha256": "af094661c2689be610f7681d38b39e0e346d787c7b299add1f64cebfcf1929eb"
+    },
+    {
+      "name": "desktop-12-tabla",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 991.46875,
+        "bottom": 1027.46875
+      },
+      "sha256": "5c3c7e29584d26796b05867a117b3352f840c9cd57858ce51d3cbccf3b71a190"
+    },
+    {
+      "name": "desktop-13-gantt",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 954.15625,
+        "bottom": 990.15625
+      },
+      "sha256": "2eefef370fd72d2ae3b103976bdd6fbc4c3b41d9b8e07a6ccaed9d98c6178d64"
+    },
+    {
+      "name": "desktop-14-roadmap",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 891,
+        "bottom": 927
+      },
+      "sha256": "54b31c9caf4f366e6355cabaa13b720e73f5bd334bba19620c249297a31b8817"
+    },
+    {
+      "name": "desktop-15-modal-ticket",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 984.96875,
+        "bottom": 1020.96875
+      },
+      "sha256": "faffc624f368b2b078270de56ea56844198daadb40bcc79f4a0252c1d49d6c16"
+    },
+    {
+      "name": "laptop-17-quipu-cargando",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 1282.890625,
+        "bottom": 1318.890625
+      },
+      "sha256": "728f9c08d9276fb7e5b9a9eb626ad479838962c70c784c38a6b12a3b9ed34108"
+    },
+    {
+      "name": "laptop-17-quipufac-cargando",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 1190.890625,
+        "bottom": 1226.890625
+      },
+      "sha256": "7e1776b8e0afc9686c4b8c0fc8ee200b4c10a2e775bc733934f033aca7143345"
+    },
+    {
+      "name": "laptop-01-portal",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 818,
+        "bottom": 854
+      },
+      "sha256": "ff909ee121c38fc5df7aade22e1b546fe60f7c64d2b4c1accbe8fb2a6abecbf0"
+    },
+    {
+      "name": "laptop-02-modal-personal",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 818,
+        "bottom": 854
+      },
+      "sha256": "3970fd20a8f0de96f6c66476b4b0864a4c9ad7d5e076403c457dceb5f24a9c6e"
+    },
+    {
+      "name": "laptop-03-quipu-normal",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 1282.890625,
+        "bottom": 1318.890625
+      },
+      "sha256": "1fe8200f96a85e0ce9a32e8d71e65f235bcc6f2af4411e8803b904e0eeb4b481"
+    },
+    {
+      "name": "laptop-03-quipu-validacion",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 1327.265625,
+        "bottom": 1363.265625
+      },
+      "sha256": "6504bcf4eeb1251c26944e445a71c3e7522c4e1bd345c30544b1c70914d2f182"
+    },
+    {
+      "name": "laptop-03-quipufac-normal",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 1190.890625,
+        "bottom": 1226.890625
+      },
+      "sha256": "cd7a9fa5b937a466b6a124714b400c95ea1c75cda6cd5105826b799bd0f22480"
+    },
+    {
+      "name": "laptop-03-quipufac-validacion",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 1213.078125,
+        "bottom": 1249.078125
+      },
+      "sha256": "9c9e6563112f59a7f283cf4f8b9a11d72a1556a24859788bc3c882b2d3705042"
+    },
+    {
+      "name": "laptop-04-nuevo-ticket-adjunto",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 1463.828125,
+        "bottom": 1499.828125
+      },
+      "sha256": "792e837039a8e1c1f5ee0821971c963336fda6501d286df9437323f6c5d2f8cd"
+    },
+    {
+      "name": "laptop-05-mis-tickets",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 759,
+        "bottom": 795
+      },
+      "sha256": "22c9557e85b486bc147877880a4f0b603867cc60f26bbab224de5c81ca64b5d8"
+    },
+    {
+      "name": "laptop-06-detalle",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 759,
+        "bottom": 795
+      },
+      "sha256": "2a30446c1526c1f7472f62f8201debf51531f2e22d4a1f4ce4d1378da9ed93d2"
+    },
+    {
+      "name": "laptop-07-seguimiento-publico",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 759,
+        "bottom": 795
+      },
+      "sha256": "2b741a3d94d6650e79042e74ce5f429075dc73a0076e9d48bacabef3d8eaf3e7"
+    },
+    {
+      "name": "laptop-08-dashboard",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 1415.9375,
+        "bottom": 1451.9375
+      },
+      "sha256": "5e1066a396736a496eae425488b98e2a176c89fb3062f6b9a7b76111def1da1f"
+    },
+    {
+      "name": "laptop-09-bandeja",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 1078.1875,
+        "bottom": 1114.1875
+      },
+      "sha256": "08b09815ad2a2b07901d7ba31a26d8cb26b420a7f9e1212fc66c41938fb1a3c6"
+    },
+    {
+      "name": "laptop-10-kanban",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 984.96875,
+        "bottom": 1020.96875
+      },
+      "sha256": "f22b6aef39f50bd1b84200c5f7ca38af8a9965d868d5a73d88934501ec9b9ca3"
+    },
+    {
+      "name": "laptop-11-kanban-done",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 984.96875,
+        "bottom": 1020.96875
+      },
+      "sha256": "f22b6aef39f50bd1b84200c5f7ca38af8a9965d868d5a73d88934501ec9b9ca3"
+    },
+    {
+      "name": "laptop-12-tabla",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 1011.28125,
+        "bottom": 1047.28125
+      },
+      "sha256": "5db61d4b324251dd8a51f236ff35603f5f45ee33a3c8d99d08518f2f106ec944"
+    },
+    {
+      "name": "laptop-13-gantt",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 954.15625,
+        "bottom": 990.15625
+      },
+      "sha256": "862cbb89a6868bed9614c0836d8f504f4b2dda525c0d44695d02339a5ffe3b3d"
+    },
+    {
+      "name": "laptop-14-roadmap",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 849.96875,
+        "bottom": 885.96875
+      },
+      "sha256": "be29e2a7a03ce071178c6285c599640f7d910b96bf8d051e515f108b1cb7b1fc"
+    },
+    {
+      "name": "laptop-15-modal-ticket",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 984.96875,
+        "bottom": 1020.96875
+      },
+      "sha256": "f7afd4c8430936d6850c0172680a196c7d837bd3a50e8b69f2afb283e07a1562"
+    },
+    {
+      "name": "tablet-17-quipu-cargando",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1268.078125,
+        "bottom": 1304.078125
+      },
+      "sha256": "9717793a24b97502c48124c00332c33afa160c6617fee258e79a6816890803e7"
+    },
+    {
+      "name": "tablet-17-quipufac-cargando",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1176.078125,
+        "bottom": 1212.078125
+      },
+      "sha256": "9c046e9896392aa3dbe9c990b9dc7316505cf5a974383f9f0f3e5d2d68465ef7"
+    },
+    {
+      "name": "tablet-01-portal",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1015,
+        "bottom": 1051
+      },
+      "sha256": "257e71133830645e4228e64f22cc2dec52780f564fa8d8f1d787cbdf62f8b0f4"
+    },
+    {
+      "name": "tablet-02-modal-personal",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1015,
+        "bottom": 1051
+      },
+      "sha256": "53696ade9e9d6e89979b75645c3022194b86933b81340c61d7044ade8c130873"
+    },
+    {
+      "name": "tablet-03-quipu-normal",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1268.078125,
+        "bottom": 1304.078125
+      },
+      "sha256": "81f545216785f86d8b1e1fda3050d3ceef83ebe3a3288eee584c0028cd40a673"
+    },
+    {
+      "name": "tablet-03-quipu-validacion",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1312.453125,
+        "bottom": 1348.453125
+      },
+      "sha256": "2959a78cb2c2300ffe43fee52810c1130d338305caae5fe05ba7ca3ea793aad4"
+    },
+    {
+      "name": "tablet-03-quipufac-normal",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1176.078125,
+        "bottom": 1212.078125
+      },
+      "sha256": "caf4dc69c10e53530d813efb1fe1eee8bd8d90db4c849eb2caa6d8d6421c7e91"
+    },
+    {
+      "name": "tablet-03-quipufac-validacion",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1198.265625,
+        "bottom": 1234.265625
+      },
+      "sha256": "d793b68a05ba71e19872aac51ca4cb298c06b036721e7985ec70de0d0636bbd6"
+    },
+    {
+      "name": "tablet-04-nuevo-ticket-adjunto",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1463.828125,
+        "bottom": 1499.828125
+      },
+      "sha256": "1b7e380d1e3d1e7cd8dbbf3eaaf6737db53e3b145c3ad5a5c1d031ab87776def"
+    },
+    {
+      "name": "tablet-05-mis-tickets",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1015,
+        "bottom": 1051
+      },
+      "sha256": "5b4b56ab8792ea93959036b24cd0ac1699b19512ecd6e6d0c08b8cd94b0a4c38"
+    },
+    {
+      "name": "tablet-06-detalle",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1015,
+        "bottom": 1051
+      },
+      "sha256": "5c7bc3fa3d7e031859bf9fc65844831522ff0243389f579509858d58a1964649"
+    },
+    {
+      "name": "tablet-07-seguimiento-publico",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1015,
+        "bottom": 1051
+      },
+      "sha256": "e4b2661f4b89a739b839a793e6ac21b1076455bafdfc5d8195ffcf4b94e91498"
+    },
+    {
+      "name": "tablet-08-dashboard",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1632.328125,
+        "bottom": 1668.328125
+      },
+      "sha256": "7c13e8957ed1f2757479585ee1918f5d3501419bdcb71df696739d9bae7e0fc1"
+    },
+    {
+      "name": "tablet-09-bandeja",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1078.1875,
+        "bottom": 1114.1875
+      },
+      "sha256": "25960e947d80e4dd67d4a47dcd9d3ec05254f8f41f3047380a2f54e3bee4aa7a"
+    },
+    {
+      "name": "tablet-10-kanban",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1140.96875,
+        "bottom": 1176.96875
+      },
+      "sha256": "446704d651e5fe306f4dbe71123aabee84ca81da881347e538b5a71a24f629a5"
+    },
+    {
+      "name": "tablet-11-kanban-done",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1140.96875,
+        "bottom": 1176.96875
+      },
+      "sha256": "446704d651e5fe306f4dbe71123aabee84ca81da881347e538b5a71a24f629a5"
+    },
+    {
+      "name": "tablet-12-tabla",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1305.96875,
+        "bottom": 1341.96875
+      },
+      "sha256": "e84f58a8d02f41840eac78ca4ec7d1274fb05ecae80937f68252b38963850e08"
+    },
+    {
+      "name": "tablet-13-gantt",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1110.15625,
+        "bottom": 1146.15625
+      },
+      "sha256": "1d1884df8ab105651fe8e8ab7e8c7ae74b2bfbe8c34151737bbb68ce2f9658f4"
+    },
+    {
+      "name": "tablet-14-roadmap",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1155.15625,
+        "bottom": 1191.15625
+      },
+      "sha256": "4ab6404fea7389473805a7aee2eaef4e54fa13fc0669bdcfefb3a73046e464eb"
+    },
+    {
+      "name": "tablet-15-modal-ticket",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1140.96875,
+        "bottom": 1176.96875
+      },
+      "sha256": "2f5e85b2b23f1ff9bccd6b42cd08e55ade6084bdfe9f4c121548728f4eb18ea7"
+    },
+    {
+      "name": "movil-17-quipu-cargando",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1541.46875,
+        "bottom": 1577.46875
+      },
+      "sha256": "c7dd47667b693229c7175ab7fcffb824f62b21935e540bab567e1e3c5457564f"
+    },
+    {
+      "name": "movil-17-quipufac-cargando",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1449.46875,
+        "bottom": 1485.46875
+      },
+      "sha256": "bd7238b9e55c9fab2b053c21a4900f38df57c97258e1442a1b8222e7563d7a12"
+    },
+    {
+      "name": "movil-01-portal",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1317.03125,
+        "bottom": 1353.03125
+      },
+      "sha256": "e50bf1cbd5324aa5806ba46a8ae0582640db6c921b39b3b848307ddcf628e6be"
+    },
+    {
+      "name": "movil-02-modal-personal",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1317.03125,
+        "bottom": 1353.03125
+      },
+      "sha256": "395f64e33d57185400a5b052c14cd1adf1cdddac932197926590c2e916190cb1"
+    },
+    {
+      "name": "movil-03-quipu-normal",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1541.46875,
+        "bottom": 1577.46875
+      },
+      "sha256": "7d1b05d18f8e197a3721fca7b606ee05f1889c03725122a83c7c114320767d5f"
+    },
+    {
+      "name": "movil-03-quipu-validacion",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1585.84375,
+        "bottom": 1621.84375
+      },
+      "sha256": "b97d2cae8af852adf3f02565b435f58a83d21709e2e4c03cb8740446c9a76386"
+    },
+    {
+      "name": "movil-03-quipufac-normal",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1449.46875,
+        "bottom": 1485.46875
+      },
+      "sha256": "dd71d2754ab827b9c8451d95bac724a965e473bff5b421148d68b616d2363331"
+    },
+    {
+      "name": "movil-03-quipufac-validacion",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1471.65625,
+        "bottom": 1507.65625
+      },
+      "sha256": "614e3d441c2e85b5c219a99df323c12e961d2e5d728cb0e2791b3dc34806f793"
+    },
+    {
+      "name": "movil-04-nuevo-ticket-adjunto",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1729.40625,
+        "bottom": 1765.40625
+      },
+      "sha256": "ea16dbad204c6232b495c46d58df85a9d5c0a847060f2e6e2a070705868c2db5"
+    },
+    {
+      "name": "movil-05-mis-tickets",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 835,
+        "bottom": 871
+      },
+      "sha256": "b4a03626bc9b8afa8dae146a5dd09915f2c780774e08bf963f56c06e15fc7697"
+    },
+    {
+      "name": "movil-06-detalle",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1041.46875,
+        "bottom": 1077.46875
+      },
+      "sha256": "90e34ee9e2066ca9f29f19a0c66c9d4e9848b09a1991c408cff66d7557f16234"
+    },
+    {
+      "name": "movil-07-seguimiento-publico",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 835,
+        "bottom": 871
+      },
+      "sha256": "714f573c38ea44621e5cbdb24843fede67a23211af7166b1520950bcb8283ad3"
+    },
+    {
+      "name": "movil-08-dashboard",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 2511.78125,
+        "bottom": 2547.78125
+      },
+      "sha256": "1e795402f1a66b372b422a542d681e38b79a5933574554889ea3916ee667372a"
+    },
+    {
+      "name": "movil-09-bandeja",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1320.375,
+        "bottom": 1356.375
+      },
+      "sha256": "c331d13b4d212e13e55ee6a6a11ea305d97b90ff4500e6d713585d53bb64b3c4"
+    },
+    {
+      "name": "movil-10-kanban",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1462.625,
+        "bottom": 1498.625
+      },
+      "sha256": "5f045bcc250977329be325a3f8a017ead341a97dba2394fecbf7223511d52cde"
+    },
+    {
+      "name": "movil-11-kanban-done",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1462.625,
+        "bottom": 1498.625
+      },
+      "sha256": "f0c9d69c3ac703ab8dee41490ebc51ec8d75fb37a7e9a56c924852cf9563cb46"
+    },
+    {
+      "name": "movil-12-tabla",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1628.625,
+        "bottom": 1664.625
+      },
+      "sha256": "0426bc162e71bd2e5348e96decc9ad127965b84ba2fd179721cf66b045968c8b"
+    },
+    {
+      "name": "movil-13-gantt",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1507.375,
+        "bottom": 1543.375
+      },
+      "sha256": "63ea570cf6da28d0de9afb8d03c62d38540be4407d8e69c68e29530125d2dea6"
+    },
+    {
+      "name": "movil-14-roadmap",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1744.1875,
+        "bottom": 1780.1875
+      },
+      "sha256": "80ed3aa1f4b2679246bf165e7809bec85eaff638ece7b987ff71481aac1c91e9"
+    },
+    {
+      "name": "movil-15-modal-ticket",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1462.625,
+        "bottom": 1498.625
+      },
+      "sha256": "9d747aebb9618952f4301b861c2ffcb796b249929a8871b337ac28a19cf44a7c"
+    },
+    {
+      "name": "desktop-16-arrastre",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 984.96875,
+        "bottom": 1020.96875
+      },
+      "sha256": "d3408db8c6a3045b498950c9f6eb68a9a1ccea93edbd380614210c1c2961d4eb"
+    },
+    {
+      "name": "desktop-18-metricas-sin-registros",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1415.9375,
+        "bottom": 1451.9375
+      },
+      "sha256": "64df5c401c2941b498bc6291d03ddfaef98a8624780faa4494e9705ea0c86f86"
+    },
+    {
+      "name": "desktop-19-metricas-no-disponibles",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1415.9375,
+        "bottom": 1451.9375
+      },
+      "sha256": "49717f368e372d1e2237ae4cfc1e97dbd3cdcf863c3c6ead5dbe8027dc4470c6"
+    },
+    {
+      "name": "desktop-20-metricas-error",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1415.9375,
+        "bottom": 1451.9375
+      },
+      "sha256": "be49ec2a85e2041afb06b47c17775ac1d49e4d71928861647fff23f65e4d2f2c"
+    },
+    {
+      "name": "desktop-21-planner-cargando",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1078.1875,
+        "bottom": 1114.1875
+      },
+      "sha256": "73a01aad1c70967b2606d6e269afbfa38c1f734824be1f36a5be3660e0eba7cb"
+    },
+    {
+      "name": "desktop-22-planner-disponible",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1078.1875,
+        "bottom": 1114.1875
+      },
+      "sha256": "2c20880f93edf441463474a9559e079aa93044e0c51123021b211f852153f90c"
+    },
+    {
+      "name": "desktop-23-planner-excel-leido",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1078.1875,
+        "bottom": 1114.1875
+      },
+      "sha256": "36bd7b16d66c73990fe2260b8bde7a4f257eb894a598bbfe6dcd3cfd6c7b5d4d"
+    },
+    {
+      "name": "desktop-24-equipo-cargando",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 891,
+        "bottom": 927
+      },
+      "sha256": "db5deda492c63d25a1f4857e9dae003cc482cfcb08341c5e9c8e2ca271996794"
+    },
+    {
+      "name": "movil-21-planner-cargando",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1320.375,
+        "bottom": 1356.375
+      },
+      "sha256": "a7c8676876f325f2e841250dc26cbe355bcc3408c552aaea17a1890e4acefd82"
+    },
+    {
+      "name": "movil-22-planner-disponible",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1320.375,
+        "bottom": 1356.375
+      },
+      "sha256": "9cc8f134553d2bc90467511b0ba7551e4dd6c8f2aceb12748ac406ab5c8b1ae8"
+    },
+    {
+      "name": "movil-23-planner-excel-leido",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1320.375,
+        "bottom": 1356.375
+      },
+      "sha256": "0a0ee30e0f734b3391b8af730e0d6159e6a3863113ce62941b02296bace4d5dd"
+    },
+    {
+      "name": "movil-24-equipo-cargando",
+      "version": "Versión 202611201553",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 835,
+        "bottom": 871
+      },
+      "sha256": "0d6ac0aafaad0b3b4115a0728e867a4a822640f55da6e3dd8bb02d0f6688a653"
+    }
+  ],
+  "externalRequests": []
+}

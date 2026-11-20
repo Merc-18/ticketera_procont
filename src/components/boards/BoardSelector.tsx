@@ -1,3 +1,4 @@
+import ControlLabel from '../ui/ControlLabel'
 interface Props {
   currentBoard: 'development' | 'administrative'
   onChange: (board: 'development' | 'administrative') => void
@@ -14,7 +15,7 @@ export default function BoardSelector({ currentBoard, onChange }: Props) {
             : 'text-gray-600 hover:text-gray-900'
         }`}
       >
-        💻 Development
+        <ControlLabel>💻 Development</ControlLabel>
       </button>
       <button
         onClick={() => onChange('administrative')}
@@ -24,7 +25,7 @@ export default function BoardSelector({ currentBoard, onChange }: Props) {
             : 'text-gray-600 hover:text-gray-900'
         }`}
       >
-        📋 Histórico Admin.
+        <ControlLabel>📋 Histórico Admin.</ControlLabel>
       </button>
     </div>
   )

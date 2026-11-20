@@ -1,3 +1,5 @@
+import ControlLabel from '../ui/ControlLabel'
+import ScrollHint from '../ui/ScrollHint'
 import { DragDropContext, DropResult } from '@hello-pangea/dnd'
 import { useState, useEffect } from 'react'
 import BoardColumn from './BoardColumn'
@@ -236,7 +238,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
           {[1, 2, 3].map(i => <div key={i} className="h-8 w-24 bg-gray-100 rounded-full animate-pulse" />)}
           <div className="ml-auto h-8 w-36 bg-gray-200 rounded-lg animate-pulse" />
         </div>
-        <div className="flex gap-4 overflow-x-auto pb-4">
+        <div className="kanban-scroll flex gap-4 overflow-x-auto pb-4">
           {phases.map((phase, ci) => (
             <div key={phase.id} className="flex-shrink-0 w-72">
               <div className={`rounded-t-lg p-3 ${phase.color} opacity-50`}>
@@ -272,7 +274,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
       {/* Header: título + buscador */}
       <div className="flex flex-wrap items-center gap-x-4 gap-y-3 mb-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">{boardTitle}</h2>
+          <h2 className="text-2xl font-bold text-gray-900"><ControlLabel>{boardTitle}</ControlLabel></h2>
           <p className="text-gray-500 text-xs mt-0.5">
             {boardType === 'development'
               ? 'Arrastra los tickets entre fases (se pueden saltar fases). Terminado solo al llegar a Done.'
@@ -281,7 +283,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
         </div>
         <input
           type="text"
-          placeholder="Buscar por título, número o área..."
+          aria-label="Buscar por título, número o área" placeholder="Buscar por título, número o área..."
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
           className="px-4 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary bg-white placeholder-gray-400 w-full sm:w-72"
@@ -289,7 +291,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
       </div>
 
       {/* Fila única: Vista + Filtros + Toggle de modo */}
-      <div className="flex items-center gap-2 mb-4 flex-wrap">
+      <div className="board-toolbar flex items-center gap-2 mb-4 flex-wrap">
         <span className="text-sm text-gray-500 font-medium">Vista:</span>
         {STATUS_OPTIONS.map(opt => (
           <button
@@ -314,7 +316,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
         {statusFilter === 'active' && (
           <>
             <select
-              value={priorityFilter}
+              aria-label="Filtrar por prioridad" value={priorityFilter}
               onChange={e => setPriorityFilter(e.target.value)}
               className={`px-3 py-1.5 rounded-full text-sm font-medium border transition cursor-pointer outline-none ${
                 priorityFilter !== 'all'
@@ -328,7 +330,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
             </select>
 
             <select
-              value={areaFilter}
+              aria-label="Filtrar por área" value={areaFilter}
               onChange={e => setAreaFilter(e.target.value)}
               className={`px-3 py-1.5 rounded-full text-sm font-medium border transition cursor-pointer outline-none ${
                 areaFilter !== 'all'
@@ -345,11 +347,11 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
             {/* Filtro por Estudio (independiente del área) */}
             {studios.length > 0 && (
               <select
-                value={studioFilter}
+                aria-label="Filtrar por estudio" value={studioFilter}
                 onChange={e => setStudioFilter(e.target.value)}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium border transition cursor-pointer outline-none ${studioFilter !== 'all' ? 'border-brand-400 bg-brand-50 text-brand-700' : 'border-gray-200 bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
               >
-                <option value="all">🏢 Estudio</option>
+                <option value="all">Estudio</option>
                 {studios.map(st => <option key={st.id} value={st.id}>{st.name}</option>)}
               </select>
             )}
@@ -357,7 +359,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
             {/* Filtro por Responsable / Usuario */}
             {canManage ? (
               <select
-                value={userFilter}
+                aria-label="Filtrar por responsable" value={userFilter}
                 onChange={e => setUserFilter(e.target.value)}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium border transition cursor-pointer outline-none ${
                   userFilter !== 'all'
@@ -365,8 +367,8 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
                     : 'border-gray-200 bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
-                <option value="all">👤 Todos los responsables</option>
-                <option value="me">👤 Mis proyectos</option>
+                <option value="all">Todos los responsables</option>
+                <option value="me">Mis proyectos</option>
                 <optgroup label="Filtrar por Usuario">
                   {activeUsers.map(u => (
                     <option key={u.id} value={u.id}>
@@ -384,7 +386,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
                     : 'border-gray-200 bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
-                👤 Mis proyectos
+                <ControlLabel>👤 Mis proyectos</ControlLabel>
               </button>
             )}
 
@@ -413,10 +415,11 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
             <span className="text-base leading-none">+</span> Nuevo Proyecto
           </button>
         )}
-        <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
+        <div className="board-view-modes flex items-center gap-1 bg-gray-100 rounded-lg p-1">
           {VIEW_MODES.map(vm => (
             <button
               key={vm.value}
+              aria-pressed={viewMode === vm.value}
               onClick={() => setViewMode(vm.value)}
               title={vm.label}
               className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${
@@ -425,7 +428,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
                   : 'text-gray-500 hover:text-gray-700'
               }`}
             >
-              {vm.icon} {vm.label}
+              <ControlLabel>{`${vm.icon} ${vm.label}`}</ControlLabel>
             </button>
           ))}
         </div>
@@ -477,7 +480,8 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
       {/* ── VISTA KANBAN ── */}
       {viewMode === 'kanban' && statusFilter === 'active' && !(filteredProjects.length === 0 && hasFilters) && (
         <DragDropContext onDragEnd={handleDragEnd}>
-          <div className="flex gap-4 overflow-x-auto pb-4">
+          <ScrollHint>Desliza horizontalmente para ver todas las fases del tablero.</ScrollHint>
+          <div role="region" aria-label="Tablero Kanban, desplazamiento horizontal" tabIndex={0} className="kanban-scroll flex gap-4 overflow-x-auto pb-4">
             {phases.map((phase) => (
               <BoardColumn
                 key={phase.id}
@@ -558,7 +562,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
             }}
             className="text-sm text-orange-600 hover:text-orange-700 font-medium transition"
           >
-            📦 Archivar
+            <ControlLabel>📦 Archivar</ControlLabel>
           </button>
           <button
             onClick={() => setSelectedIds([])}

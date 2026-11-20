@@ -1,3 +1,4 @@
+import ModalFocus from '../ui/ModalFocus'
 import { useState } from 'react'
 import type { User } from '../../types/database.types'
 
@@ -62,15 +63,16 @@ export default function UserModal({ user, currentUserRole, currentUserId, onClos
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50" onClick={onClose}>
-      <div className="bg-white rounded-xl max-w-lg w-full shadow-xl" onClick={e => e.stopPropagation()}>
+    <div className="modal-backdrop fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50" onClick={onClose}>
+      <div role="dialog" aria-modal="true" aria-label="Administrar usuario" className="modal-panel bg-white rounded-xl max-w-lg w-full shadow-xl" onClick={e => e.stopPropagation()}>
+        <ModalFocus onDismiss={onClose} />
 
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b">
           <h2 className="text-xl font-bold text-gray-900">
             {isEdit ? '✏️ Editar Usuario' : '➕ Nuevo Usuario'}
           </h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">✕</button>
+          <button aria-label="Cerrar" onClick={onClose} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">✕</button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-5">

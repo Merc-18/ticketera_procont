@@ -25,9 +25,9 @@ export default function BrandLogo({ size = 40, showName = true, tone = 'dark', c
         style={{ width: size, height: size }}
       />
       {showName && (
-        <div className="leading-tight min-w-0">
-          <p className={`font-extrabold tracking-tight truncate ${title}`}>{BRAND.appName}</p>
-          <p className={`text-xs font-semibold uppercase tracking-wider truncate ${sub}`}>{BRAND.company}</p>
+        <div className="brand-name leading-tight min-w-0">
+          <p className={`font-medium tracking-tight truncate ${title}`}>{BRAND.appName}</p>
+          <p className={`text-xs font-medium truncate ${sub}`}>{BRAND.company}</p>
         </div>
       )}
     </div>

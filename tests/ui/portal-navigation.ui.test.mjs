@@ -188,13 +188,13 @@ for (const [label, viewport] of Object.entries(VIEWPORTS)) {
 }
 
 const TABS = {
-  viewer: ['📈 Dashboard', '📊 Boards', '📬 Requests'],
-  developer: ['📈 Dashboard', '📊 Boards', '📬 Requests', '👥 Equipo'],
-  admin: ['📈 Dashboard', '📊 Boards', '📬 Requests', '👥 Equipo'],
-  superadmin: ['📈 Dashboard', '📊 Boards', '📬 Requests', '👥 Equipo'],
+  viewer: ['Dashboard', 'Boards', 'Requests'],
+  developer: ['Dashboard', 'Boards', 'Requests', 'Equipo'],
+  admin: ['Dashboard', 'Boards', 'Requests', 'Equipo'],
+  superadmin: ['Dashboard', 'Boards', 'Requests', 'Equipo'],
 }
-const EQUIPO = { developer: ['📊 Carga de Trabajo'], admin: ['📊 Carga de Trabajo', '🔑 Usuarios', '🗑 Papelera'],
-  superadmin: ['📊 Carga de Trabajo', '🔑 Usuarios', '🗑 Papelera', '🗂 Catálogos'] }
+const EQUIPO = { developer: ['Carga de Trabajo'], admin: ['Carga de Trabajo', 'Usuarios', 'Papelera'],
+  superadmin: ['Carga de Trabajo', 'Usuarios', 'Papelera', 'Catálogos'] }
 async function staffLogin(page, role) {
   await page.getByRole('button', { name: /Ingreso del personal/ }).click()
   await page.fill('input[type=email]', Object.keys(STAFF).find(e => STAFF[e].role === role))
@@ -212,8 +212,8 @@ for (const [label, viewport] of Object.entries(VIEWPORTS)) {
       const tabs = await page.$$eval('nav[aria-label="Secciones"] button', b => b.map(x => x.textContent.trim().replace(/\d+$/, '').trim()))
       assert.deepEqual(tabs, TABS[role], role)
       if (EQUIPO[role]) {
-        await page.getByRole('button', { name: '👥 Equipo' }).click()
-        for (const sub of ['📊 Carga de Trabajo', '🔑 Usuarios', '🗑 Papelera', '🗂 Catálogos']) {
+        await page.getByRole('button', { name: 'Equipo' }).click()
+        for (const sub of ['Carga de Trabajo', 'Usuarios', 'Papelera', 'Catálogos']) {
           assert.equal(await page.getByRole('button', { name: sub }).count(), EQUIPO[role].includes(sub) ? 1 : 0, `${role} ${sub}`)
         }
       }
@@ -373,7 +373,7 @@ test('integración: Planner procesa Excel real y conserva payload/acuse de la RP
     }, body: JSON.stringify({ id: '00000000-0000-4000-8000-000000009501', request_number: 'REQ26-9501',
       tracking_token: '00000000-0000-4000-8000-000000009502' }) })
   })
-  await page.getByRole('button', { name: '📬 Requests', exact: true }).click()
+  await page.getByRole('button', { name: 'Requests', exact: true }).click()
   await page.getByRole('button', { name: /Importar Planner/ }).click()
   const book = XLSX.utils.book_new()
   XLSX.utils.book_append_sheet(book, XLSX.utils.json_to_sheet([{ 'Task Name': 'Solicitud Planner integrada',
@@ -383,7 +383,7 @@ test('integración: Planner procesa Excel real y conserva payload/acuse de la RP
     buffer: XLSX.write(book, { type: 'buffer', bookType: 'xlsx' }) })
   await page.getByText('Solicitud Planner integrada', { exact: true }).waitFor()
   await page.getByPlaceholder('Área (obligatoria)').fill('Área de fixture')
-  await page.getByRole('button', { name: '📥 Importar 1 solicitud', exact: true }).click()
+  await page.getByRole('button', { name: 'Importar 1 solicitud', exact: true }).click()
   await page.getByRole('heading', { name: '1 solicitudes confirmadas' }).waitFor()
   assert.equal(submitted.p_payload.requester_name, 'Operador ficticio')
   assert.equal(submitted.p_payload.requester_area, 'Área de fixture')

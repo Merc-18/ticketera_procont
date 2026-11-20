@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
+import PasswordField from '../ui/PasswordField'
 import { BRAND } from '../../theme/brand'
 
 export default function LoginForm() {
@@ -28,10 +29,10 @@ export default function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-700 via-brand-800 to-brand-950 px-4">
+    <main id="main-content" tabIndex={-1} className="app-surface flex items-center justify-center px-4 py-12">
       <div className="max-w-md w-full">
         {/* Card */}
-        <div className="bg-white rounded-2xl shadow-2xl p-8 border-t-4 border-accent-400">
+        <div className="tracking-panel">
           {/* Logo/Título */}
           <div className="text-center mb-8">
             <img src={BRAND.logoSrc} alt={`Logotipo de ${BRAND.company}`} className="w-16 h-16 rounded-xl mx-auto mb-4" />
@@ -63,9 +64,8 @@ export default function LoginForm() {
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
                 Contraseña
               </label>
-              <input
+              <PasswordField
                 id="password"
-                type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -98,6 +98,6 @@ export default function LoginForm() {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   )
 }

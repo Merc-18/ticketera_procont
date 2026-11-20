@@ -1,0 +1,17 @@
+{
+  "before_gallery_version": "Versi\u00f3n 202611201512",
+  "application_source_files_changed": 2,
+  "files": [
+    {
+      "path": "/src/App.tsx",
+      "before_sha256": "ca0fafd21815cb39b4136ed17448b530b603b08d5a35ea1d6a647b5568e33146",
+      "after_sha256": "b7396bff815f030e1829d0e35474f1a289830da744c281ab5f121915df9b177a"
+    },
+    {
+      "path": "/src/components/requests/RequestInbox.tsx",
+      "before_sha256": "77219cc1e017cc68ca72c61ebf69b3e170f9947e01e2ec79e6b873a98ee563ef",
+      "after_sha256": "f132fdd5db7949f6d8b61f61963207c80e329241fa7367353b6c1c1c3265ad94"
+    }
+  ],
+  "other_previous_src_files_identical": 94
+}

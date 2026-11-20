@@ -1,0 +1,33 @@
+{
+  "base": "6533b277e9022bf3bb9a64bff02d2e4cdbfc52d5",
+  "branch": "feat/ticketera-ux-ui-four-areas",
+  "build_version": "Versión 202611201512",
+  "node": {
+    "passed": 171,
+    "failed": 0,
+    "skipped": 0
+  },
+  "existing_ui": {
+    "passed": 31,
+    "failed": 0,
+    "skipped": 0
+  },
+  "compiled_build_ui": {
+    "passed": 20,
+    "failed": 0,
+    "skipped": 0
+  },
+  "screenshots": 84,
+  "protected_files_changed": 0,
+  "typecheck": "PASS",
+  "strict_contract_typecheck": "PASS",
+  "build": "PASS with chunk warning",
+  "taste": "OPEN 19 historical; not rerun",
+  "js_budget": "FAIL",
+  "commit_created": false,
+  "reason_no_commit": "Condición del usuario: commit únicamente si pasan validaciones; presupuesto JS pendiente y gate sin PASS.",
+  "push": false,
+  "merge": false,
+  "deploy": false,
+  "remote_operations": false
+}

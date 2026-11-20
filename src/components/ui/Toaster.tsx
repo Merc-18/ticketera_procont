@@ -4,8 +4,8 @@ import { subscribeToast } from '../../lib/toast'
 interface Toast { id: number; type: 'success' | 'error' | 'info'; message: string }
 
 const STYLES: Record<Toast['type'], string> = {
-  success: 'bg-green-600',
-  error:   'bg-red-600',
+  success: 'bg-green-700',
+  error:   'bg-red-700',
   info:    'bg-gray-800',
 }
 
@@ -28,10 +28,11 @@ export default function Toaster() {
   if (!toasts.length) return null
 
   return (
-    <div className="fixed bottom-4 right-4 z-[200] flex flex-col gap-2 pointer-events-none">
+    <div className="fixed bottom-4 right-4 left-4 sm:left-auto max-w-md z-[200] flex flex-col gap-2 pointer-events-none">
       {toasts.map(t => (
         <div
           key={t.id}
+          role={t.type === 'error' ? 'alert' : 'status'}
           className={`flex items-center gap-2.5 px-4 py-3 rounded-lg shadow-xl text-sm font-medium text-white pointer-events-auto ${STYLES[t.type]}`}
         >
           <span className="text-base leading-none">{ICONS[t.type]}</span>

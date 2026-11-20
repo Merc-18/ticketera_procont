@@ -1,3 +1,5 @@
+import ControlLabel from '../ui/ControlLabel'
+import ModalFocus from '../ui/ModalFocus'
 import { useState, useRef } from 'react'
 import { createRpcAttempt, type RpcAttempt } from '../../lib/rpc-attempt'
 import type { InternalProjectInput } from '../../lib/operations'
@@ -55,15 +57,16 @@ export default function NewProjectModal({ onClose, onCreate }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg flex flex-col max-h-[90vh]">
+    <div className="modal-backdrop fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+      <div role="dialog" aria-modal="true" aria-label="Nuevo proyecto" className="modal-panel bg-white rounded-2xl shadow-2xl w-full max-w-lg flex flex-col max-h-[90vh]">
+        <ModalFocus onDismiss={onClose} />
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b">
           <div>
-            <h2 className="text-lg font-bold text-gray-900">➕ Nuevo Proyecto</h2>
+            <h2 className="text-lg font-bold text-gray-900"><ControlLabel>➕ Nuevo Proyecto</ControlLabel></h2>
             <p className="text-xs text-gray-500">Board Development · inicia en Backlog</p>
           </div>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl leading-none">✕</button>
+          <button aria-label="Cerrar" onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl leading-none">✕</button>
         </div>
 
         {/* Body */}

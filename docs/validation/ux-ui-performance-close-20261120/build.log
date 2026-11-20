@@ -1,0 +1,34 @@
+
+> ticketera-controlling@1.0.0 build
+> tsc && vite build --outDir /tmp/ticketera-ux-ui-performance-20261120/approved-build --manifest
+
+vite v5.4.21 building for production...
+transforming...
+✓ 230 modules transformed.
+rendering chunks...
+computing gzip size...
+../ticketera-ux-ui-performance-20261120/approved-build/index.html                                0.90 kB │ gzip:   0.46 kB
+../ticketera-ux-ui-performance-20261120/approved-build/.vite/manifest.json                       4.02 kB │ gzip:   0.70 kB
+../ticketera-ux-ui-performance-20261120/approved-build/assets/index-DilbYeqz.css                57.99 kB │ gzip:  11.10 kB
+../ticketera-ux-ui-performance-20261120/approved-build/assets/MetricState-C6Uwr030.js            0.45 kB │ gzip:   0.31 kB
+../ticketera-ux-ui-performance-20261120/approved-build/assets/AreaInput-lflWdDuP.js              0.64 kB │ gzip:   0.38 kB
+../ticketera-ux-ui-performance-20261120/approved-build/assets/useAreas-CO2dvJSk.js               1.29 kB │ gzip:   0.71 kB
+../ticketera-ux-ui-performance-20261120/approved-build/assets/PapeleraView-BsVLSJT8.js           4.48 kB │ gzip:   1.70 kB
+../ticketera-ux-ui-performance-20261120/approved-build/assets/useUsers-BK8VOMSX.js               4.58 kB │ gzip:   2.19 kB
+../ticketera-ux-ui-performance-20261120/approved-build/assets/WorkloadView-Bo9NzitZ.js           6.30 kB │ gzip:   2.34 kB
+../ticketera-ux-ui-performance-20261120/approved-build/assets/RequestTimeline-xrpOB-ZN.js        7.75 kB │ gzip:   3.12 kB
+../ticketera-ux-ui-performance-20261120/approved-build/assets/CatalogsPanel-DjPk2_7M.js         12.12 kB │ gzip:   3.69 kB
+../ticketera-ux-ui-performance-20261120/approved-build/assets/UserManagementPanel-BF0GF10O.js   15.23 kB │ gzip:   4.45 kB
+../ticketera-ux-ui-performance-20261120/approved-build/assets/DashboardView-CuGc96fU.js         19.66 kB │ gzip:   6.44 kB
+../ticketera-ux-ui-performance-20261120/approved-build/assets/RequestInbox-CAuvFF29.js          24.35 kB │ gzip:   6.63 kB
+../ticketera-ux-ui-performance-20261120/approved-build/assets/KanbanBoard-BVHAX5wN.js          194.62 kB │ gzip:  54.95 kB
+../ticketera-ux-ui-performance-20261120/approved-build/assets/PlannerImportModal-Crdu8Myi.js   342.81 kB │ gzip: 117.31 kB
+../ticketera-ux-ui-performance-20261120/approved-build/assets/index-BgWXSNJH.js                442.56 kB │ gzip: 130.54 kB
+✓ built in 1.94s
+
+(!) outDir /tmp/ticketera-ux-ui-performance-20261120/approved-build is not inside project root and will not be emptied.
+Use --emptyOutDir to override.
+
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme

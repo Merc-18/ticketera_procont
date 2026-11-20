@@ -1,0 +1,62 @@
+gate: checking http://localhost:5188/portal (software); this takes a few minutes on a CPU Chrome
+gate: rounds used up; 19 FAIL open
+  FAIL hero-fill        main#main-content > div.portal-options "Nueva Solicitud"  [1440, 390]
+       the next section shows on the first screen: it starts at 336px on a 900px screen (the hero ends at 288px)
+       fix: let the hero fill the first screen alone (min-height: 100svh, less above it): nothing of the next section on load
+  FAIL flush            main#main-content > div.portal-options > button.portal-option:nth-of-type(1) "Nueva Solici  [1440, 390]
+       its first line sits 0px under the top edge of div.portal-options, where the ground changes
+       fix: give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)
+  FAIL cta              main#main-content > div.portal-heading  [1440, 390]
+       the hero has no button (the nav's does not count)
+       fix: add the action: a button in the hero, one on every priced item, one in the closing section
+  FAIL cta              main#main-content > p.public-footer "© 2026 Procont Business"  [1440, 390]
+       the last section before the footer ends with no button
+       fix: add the action: a button in the hero, one on every priced item, one in the closing section
+  FAIL moment-none      (the page)  [1440]
+       a software page (--type) deals no moment: every kind carries one, two on a long page (moments.md)
+       fix: deal one (moments.mjs pick --page software) and mount it in its own section
+  FAIL hero-screen      main#main-content > div.portal-heading "Ticketera ProcontMesa de solicitudesRegi"  [1440]
+       the hero ends at 288px on a 900px screen, 612px above the fold: it ends at the fold, 1px either way (SR-1)
+       fix: make the hero exactly one screen (height: 100svh, its content fitted inside), never taller or shorter
+  FAIL hero-screen      main#main-content > div.portal-options "Nueva SolicitudIngresa con Quipu o Quipu"  [1440]
+       564px of the next section shows on the first screen (from 336px on a 900px screen): nothing below the hero shows at load (SR-1)
+       fix: end the hero at the fold so nothing of the next section shows at load (hero height: 100svh)
+  FAIL section-height   div#root > footer.build-version.text-xs "Versión 202611201220"  [1440]
+       the section is 36px tall (0 screens), 864px short of one screen (900px): every section after the hero is one screen or two, 2px either way (SR-2)
+       fix: set the section to one screen or two (height: calc(var(--h,1) * 100vh), --h 1 or 2) and cut or split its content to fit
+  FAIL section-height   main#main-content > p.public-footer "© 2026 Procont Business"  [1440]
+       the section is 45px tall (0 screens), 856px short of one screen (900px): every section after the hero is one screen or two, 2px either way (SR-2)
+       fix: set the section to one screen or two (height: calc(var(--h,1) * 100vh), --h 1 or 2) and cut or split its content to fit
+  FAIL section-air      main#main-content > p.public-footer "© 2026 Procont Business"  [1440]
+       the section shows no content: its content fills 0% of its 45px (55% or more) (SR-3)
+       fix: fill the section to 55%: more content, a picture or a background layer, or merge it into the section above as its last block
+  FAIL one-section      main#main-content > div.portal-heading > h1 "Mesa de solicitudes"  [1440]
+       the screen at scroll 0px (stride 0) shows 135px of section 1 and the heading of section 1 whole and the content of 2 sections, over 24px each beside section 2: a screen shows one section (another may peek 8px, 24px WARN)
+       fix: make each section exactly one screen or two, so a screen shows one section and no neighbour peeks
+  FAIL one-heading      main#main-content > div.portal-options > button.portal-option:nth-of-type(2) > h2 "Mis tic  [1440]
+       the section holds 3 h2 headings: one per section, first in its .wrap (SR-5)
+       fix: give each section one h2, first in its .wrap, and the hero only its h1
+  FAIL container-edges  div#root "Saltar al contenidoTicketera ProcontProc"  [1440]
+       a <div> at the top of the page, outside header.nav, main, footer.closing and nav.actionbar (SR-6)
+       fix: build the page as header.nav, a main of sections (each one in-flow .wrap plus background layers) and footer.closing
+  FAIL container-edges  main#main-content > div.portal-heading "Ticketera ProcontMesa de solicitudesRegi"  [1440]
+       the section needs exactly one in-flow child .wrap (it has 3 in-flow children, 0 .wrap) (SR-6)
+       fix: build the page as header.nav, a main of sections (each one in-flow .wrap plus background layers) and footer.closing
+  FAIL container-edges  main#main-content > div.portal-options "Nueva SolicitudIngresa con Quipu o Quipu"  [1440]
+       the section needs exactly one in-flow child .wrap (it has 3 in-flow children, 0 .wrap) (and 2 more like it: "© 2026 Procont Business", "Versión 202611201220") (SR-6)
+       fix: build the page as header.nav, a main of sections (each one in-flow .wrap plus background layers) and footer.closing
+  FAIL container-edges  main#main-content > div.portal-options > button.portal-option:nth-of-type(3) > h2 "Rastrea  [1440]
+       the h2 starts 902px right of the container's left: every h1 and h2 starts on it, 2px either way (SR-6)
+       fix: start the text on the container's left, or on the one split line every split shares
+  FAIL container-edges  main#main-content > div.portal-options > button.portal-option:nth-of-type(2) > h2 "Mis tic  [1440]
+       the h2 starts 468px right of the container's left: every h1 and h2 starts on it, 2px either way (SR-6)
+       fix: start the text on the container's left, or on the one split line every split shares
+  FAIL container-edges  main#main-content > div.portal-options > button.portal-option:nth-of-type(1) > h2 "Nueva S  [1440]
+       the h2 starts 33px right of the container's left: every h1 and h2 starts on it, 2px either way (SR-6)
+       fix: start the text on the container's left, or on the one split line every split shares
+  FAIL no-visual        main#main-content > div.portal-options "Nueva Solicitud"  [390]
+       no picture, effect or mock in this section; a feature section needs a visual
+       fix: give the section a visual: a UI fragment on a ground, real icons, or a photograph that fits
+  4 WARN (not blocking), first: copy-headings main#main-content > div.portal-options >; copy-buttons div.app-surface > nav.public-nav > div.w; copy-actions (the page); share-meta head
+Stop fixing: put these open FAILs and the waivers in your report, then finish.
+GATE: OPEN 19 (rounds used up)

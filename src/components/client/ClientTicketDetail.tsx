@@ -49,10 +49,10 @@ export default function ClientTicketDetail() {
   return (
     <div className="space-y-4">
       {back}
-      <article className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+      <article className="ticket-detail">
         <header className="px-5 sm:px-6 py-5 border-b border-gray-100 flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="text-sm font-bold text-brand-700">{ticket.request_number}</p>
+            <p className="font-mono text-sm text-brand-700 mb-2">{ticket.request_number}</p>
             <h1 className="text-xl font-bold text-gray-900 break-words">{ticket.title}</h1>
           </div>
           <span className={`text-sm font-semibold px-3 py-1 rounded-full border ${status.tone}`}>{status.icon} {status.label}</span>

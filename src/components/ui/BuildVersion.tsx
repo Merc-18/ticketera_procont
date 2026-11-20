@@ -6,7 +6,7 @@
  */
 export default function BuildVersion() {
   return (
-    <footer data-testid="build-version" className="bg-brand-950 text-brand-200 text-xs text-center py-2 px-4 select-all">
+    <footer data-testid="build-version" className="build-version text-xs text-center py-2 px-4 select-all">
       Versión {__BUILD_VERSION__}
     </footer>
   )

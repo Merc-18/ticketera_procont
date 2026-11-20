@@ -1,0 +1,22 @@
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✔ [escritorio] 1. /portal muestra Nueva Solicitud, Mis tickets, Rastrear y el ingreso del personal (1138.497428ms)
+✔ [escritorio] 2. Nueva Solicitud navega a /cliente (selección Quipu/QuipuFac) (272.807366ms)
+✔ [movil] 1. /portal muestra Nueva Solicitud, Mis tickets, Rastrear y el ingreso del personal (238.366548ms)
+✔ [movil] 2. Nueva Solicitud navega a /cliente (selección Quipu/QuipuFac) (276.868417ms)
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✔ [UX desktop] portal, proveedores y accesibilidad de ingreso (2298.600835ms)
+✔ [UX laptop] portal, proveedores y accesibilidad de ingreso (1248.513056ms)
+✔ [UX tablet] portal, proveedores y accesibilidad de ingreso (1182.680426ms)
+✔ [UX movil] portal, proveedores y accesibilidad de ingreso (1233.375925ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6326.041155

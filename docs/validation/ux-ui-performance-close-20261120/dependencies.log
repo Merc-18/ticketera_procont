@@ -1,0 +1,30 @@
+ticketera-controlling@1.0.0 /tmp/ticketera-ux-ui-20261120-worktree
+├─┬ @hello-pangea/dnd@16.6.0
+│ ├── react-dom@18.3.1 deduped
+│ ├─┬ react-redux@8.1.3
+│ │ ├── react-dom@18.3.1 deduped
+│ │ ├── react@18.3.1 deduped
+│ │ └─┬ use-sync-external-store@1.6.0
+│ │   └── react@18.3.1 deduped
+│ ├── react@18.3.1 deduped
+│ └─┬ use-memo-one@1.1.3
+│   └── react@18.3.1 deduped
+├─┬ react-dom@18.3.1
+│ └── react@18.3.1 deduped
+├─┬ react-router-dom@6.30.3
+│ ├── react-dom@18.3.1 deduped
+│ ├─┬ react-router@6.30.3
+│ │ └── react@18.3.1 deduped
+│ └── react@18.3.1 deduped
+├── react@18.3.1
+├─┬ recharts@2.15.4
+│ ├── react-dom@18.3.1 deduped
+│ ├─┬ react-smooth@4.0.4
+│ │ ├── react-dom@18.3.1 deduped
+│ │ ├─┬ react-transition-group@4.4.5
+│ │ │ ├── react-dom@18.3.1 deduped
+│ │ │ └── react@18.3.1 deduped
+│ │ └── react@18.3.1 deduped
+│ └── react@18.3.1 deduped
+└── xlsx@0.18.5
+
