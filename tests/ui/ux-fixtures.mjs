@@ -19,6 +19,7 @@ const visualRequests = [0, 1, 2, 3].map((i) => ({
   id: id(7500 + i), request_number: `REQ26-${7500 + i}`, title: ['Ajuste de formato de comprobante', 'Consulta sobre registro de compras', 'Mejora de exportación mensual', 'Validación de documentos electrónicos'][i],
   requester_name: 'Solicitante ficticio', requester_area: 'Contabilidad', request_type: 'Mejora', needs_code: true,
   status: i < 2 ? 'pending' : i === 2 ? 'approved' : 'rejected', description: 'Datos ficticios para revisar la interfaz local de la bandeja de solicitudes.',
+  requested_priority: ['high','low','medium',null][i],
   urgent_requested: i === 0, studio_id: '00000000-0000-4000-8000-0000000000b1', system_id: '00000000-0000-4000-8000-0000000000a1',
   created_at: '2026-11-19T15:00:00Z', projects: i === 2 ? { status: 'active' } : null,
   public_rejection_reason: i === 3 ? 'Solicitud duplicada según el escenario ficticio.' : null,
@@ -39,13 +40,15 @@ export async function installVisualFixtures(page, fixtureUrl) {
       headers: { 'Access-Control-Allow-Origin': '*' }, body: JSON.stringify(result.error ?? result.data) })
   })
   const send = (route, body) => route.fulfill({ status: 200, contentType: 'application/json', headers: {
-    'Access-Control-Allow-Origin': '*', 'Access-Control-Expose-Headers': 'Content-Range', 'Content-Range': `0-${Math.max(0, (body.length ?? 1) - 1)}/${body.length ?? 1}`,
+    'Access-Control-Allow-Origin': '*', 'Access-Control-Expose-Headers': 'Content-Range', 'Content-Range': `0-${Math.max(0, (body?.length ?? 1) - 1)}/${body?.length ?? 1}`,
   }, body: JSON.stringify(body) })
   await page.route(`${fixtureUrl}/rest/v1/projects?**`, route => {
     const status = new URL(route.request().url()).searchParams.get('status')
     return send(route, status === 'eq.completed' || status === 'eq.archived' ? [] : visualProjects)
   })
   await page.route(`${fixtureUrl}/rest/v1/requests?**`, route => send(route, visualRequests))
+  await page.route(`${fixtureUrl}/storage/v1/object/list/**`, route => send(route, []))
+  await page.route(`${fixtureUrl}/rest/v1/rpc/metrics_requester_urgency`, route => send(route, null))
   await page.route(`${fixtureUrl}/rest/v1/rpc/get_board_ticket`, route => {
     const project = visualProjects.find(p => p.id === route.request().postDataJSON().p_project_id)
     const flow = project.project_flows[0]
@@ -61,4 +64,5 @@ export async function installVisualFixtures(page, fixtureUrl) {
   await page.route(`${fixtureUrl}/rest/v1/rpc/metrics_time_averages`, route => send(route, {
     completed_count: 2, avg_cycle_time_days: 3, avg_lead_time_days: 5, cycle_sample_size: 2, lead_sample_size: 2, excluded_count: 0, cohort: 'paired_complete',
   }))
+  return client
 }

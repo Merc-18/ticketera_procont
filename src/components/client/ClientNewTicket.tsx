@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import Icon from '../ui/Icon'
 import { Link, useNavigate } from 'react-router-dom'
 import PublicRequestForm from '../requests/PublicRequestForm'
@@ -13,8 +14,12 @@ import { productSelection, isClientPortalError } from '../../lib/client-portal'
  */
 export default function ClientNewTicket() {
   const navigate = useNavigate()
-  const { session, token, handleError } = useClientSession()
+  const { session, token, handleError, draft, setDraft, attempt, uncertain, setUncertain } = useClientSession()
   const { fixed, products } = productSelection(session)
+  const loadSubprojects = useCallback(async (systemId: string) => {
+    try { return await clientPortal.subprojects(token, systemId) }
+    catch (err) { handleError(err); throw err }
+  }, [token, handleError])
 
   if (session.studio_mapping === 'required' || products.length === 0) {
     return (
@@ -37,7 +42,7 @@ export default function ClientNewTicket() {
 
   return (
     <PublicRequestForm client={{
-      products,
+      products, identity: session.identity, draft, setDraft, attempt, uncertain, setUncertain, loadSubprojects,
       fixedProduct: fixed,
       onViewMine: () => navigate('/cliente/tickets'),
       submit: async (input, attempt) => {

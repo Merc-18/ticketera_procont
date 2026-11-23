@@ -1,0 +1,31 @@
+✔ validación local: RUC de 11 dígitos, usuario solo en Quipu, contraseña obligatoria (1.184039ms)
+✔ login Quipu y QuipuFac usan client-login con action:login y solo los campos de su tipo (1.853641ms)
+✔ errores del login: contrato del proveedor pendiente ≠ credenciales inválidas; sin detalles internos (15.060384ms)
+✔ regla 1 — web con Quipu: todos los productos activos, incluido QuipuFac (0.348635ms)
+✔ regla 2 — web con QuipuFac: todos excepto Quipu; Quipu_Gestion permitido (0.255281ms)
+✔ regla 3 — desde plataforma Quipu: solo Quipu, fijo (0.36111ms)
+✔ regla 4 — desde plataforma QuipuFac: solo QuipuFac, fijo (0.215369ms)
+✔ el servidor valida la misma regla: producto fuera de la sesión se rechaza sin cerrar la sesión (1.052706ms)
+✔ acceso desde plataforma: código inválido, reutilizado o de otro proveedor no crea sesión (0.453152ms)
+✔ sesiones incoherentes se descartan (falla cerrada) (0.339885ms)
+✔ Nuevo ticket: client_submit_request con token, payload sin estudio/RUC y clave de idempotencia (5.417023ms)
+✔ asociación de estudio pendiente: la sesión lo indica y la creación se bloquea con mensaje comprensible (0.441731ms)
+✔ Mis tickets Quipu: cada usuario ve solo los suyos aunque compartan RUC; ajeno = inexistente (1.226848ms)
+✔ Mis tickets QuipuFac: tickets de la cuenta empresarial con nombre declarado; sin los de usuarios Quipu (0.220166ms)
+✔ detalle y lista: solo campos permitidos; nada interno llega a la vista (0.287154ms)
+✔ adjuntos: reserva con la sesión (client_reserve_attachments) y subida a la ruta asignada (0.7483ms)
+✔ adjuntos: límite 4 archivos / 2.500.000 bytes y ticket ajeno → nada se reserva ni se sube (2.288705ms)
+✔ sesión cerrada o inválida → session_expired; logout revoca en el servidor (0.316096ms)
+✔ almacenamiento: solo el token opaco; tolera storage bloqueado (0.253996ms)
+✔ PT403 y PT404 no expulsan ni consultan otra vez la sesión; PT401 sí indica expiración (0.300447ms)
+✔ ingreso deshabilitado: no recoge ni envía credenciales ni canjea códigos (0.106416ms)
+✔ M16: las cuatro prioridades conservan la urgencia independiente; Quipu omite nombre libre (0.414844ms)
+✔ M16: subproyectos y paginación utilizan únicamente argumentos autenticados del handoff (0.396752ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 118.472545

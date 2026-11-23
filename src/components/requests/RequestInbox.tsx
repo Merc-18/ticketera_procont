@@ -1,3 +1,4 @@
+import RequestedPriority from './RequestedPriority'
 import ControlLabel from '../ui/ControlLabel'
 import { lazy, Suspense, useState } from 'react'
 import { useRequests } from '../../hooks/useRequests'
@@ -170,6 +171,7 @@ export default function RequestInbox() {
                       <p className="font-semibold text-gray-900">{request.title || request.requester_name}</p>
                       {request.title && <p className="text-xs text-gray-500">{request.requester_name}</p>}
                       {meta(request)}
+                      <RequestedPriority value={request.requested_priority} internal />
                     </div>
                     <span className={`px-3 py-1 rounded-full text-xs font-medium border ${statusColors.pending}`}>
                       Pendiente
@@ -233,6 +235,7 @@ export default function RequestInbox() {
                       <p className="font-semibold text-gray-900">{request.title || request.requester_name}</p>
                       {request.title && <p className="text-xs text-gray-500">{request.requester_name}</p>}
                       {meta(request)}
+                      <RequestedPriority value={request.requested_priority} internal />
                     </div>
                     <span className={`px-3 py-1 rounded-full text-xs font-medium border ${statusColors.approved}`}>
                       ✅ Aprobado
@@ -268,6 +271,7 @@ export default function RequestInbox() {
                     <p className="font-semibold text-gray-900">{request.title || request.requester_name}</p>
                       {request.title && <p className="text-xs text-gray-500">{request.requester_name}</p>}
                     {meta(request)}
+                      <RequestedPriority value={request.requested_priority} internal />
                   </div>
                   <span className={`px-3 py-1 rounded-full text-xs font-medium border ${statusColors.rejected}`}>
                     ❌ Rechazado

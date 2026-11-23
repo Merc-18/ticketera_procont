@@ -31,7 +31,7 @@ const spyTransport = () => {
 const portal = () => createClientPortal(createMockClientTransport(), options)
 const rejects = (promise, code) => assert.rejects(promise, e => e instanceof ClientPortalError && e.code === code)
 const ticket = system_id => ({ requester_name: ' Persona Ficticia ', system_id,
-  request_type_id: '00000000-0000-4000-8000-0000000000f1', title: ' Título ', description: ' Detalle ', urgent_requested: true })
+  request_type_id: '00000000-0000-4000-8000-0000000000f1', title: ' Título ', description: ' Detalle ', urgent_requested: true, requested_priority: 'medium', subsystem_id: null })
 const file = (name, size, type = 'application/pdf') => new File([new Uint8Array(size)], name, { type })
 
 // ─── Formularios de ingreso y llamadas al contrato ───────────────────────────
@@ -138,7 +138,7 @@ test('Nuevo ticket: client_submit_request con token, payload sin estudio/RUC y c
   const call = calls.find(c => c.name === 'client_submit_request')
   assert.equal(call.args.p_session_token, token)
   assert.equal(call.args.p_idempotency_key, '00000000-0000-4000-8000-0000000000e1')
-  assert.deepEqual(call.args.p_payload, { requester_name: 'Persona Ficticia', system_id: MOCK_PRODUCTS[2].id,
+  assert.deepEqual(call.args.p_payload, { requested_priority: 'medium', subsystem_id: null, system_id: MOCK_PRODUCTS[2].id,
     request_type_id: '00000000-0000-4000-8000-0000000000f1', title: 'Título', description: 'Detalle', urgent_requested: true })
   assert.deepEqual(await p.submitTicket(token, session, ticket(MOCK_PRODUCTS[2].id), attempt), receipt)
   assert.equal(calls.filter(c => c.name === 'client_submit_request').length, 1)
@@ -181,11 +181,11 @@ test('detalle y lista: solo campos permitidos; nada interno llega a la vista', a
   const { token } = await p.login(quipu('ana'))
   const detail = await p.ticketDetail(token, MOCK_TICKET_IDS.ana)
   assert.deepEqual(Object.keys(detail).sort(), ['created_at', 'description', 'id', 'rejection_reason', 'request_number',
-    'requester_name', 'status', 'system_id', 'title', 'urgent_requested'])
+    'requested_priority', 'requested_subsystem_id', 'requester_name', 'requester_name_source', 'requester_name_verified', 'status', 'system_id', 'title', 'urgent_requested'])
   assert.equal(detail.status, 'in_progress')
   assert.equal((await p.ticketDetail(token, MOCK_TICKET_IDS.anaRejected)).rejection_reason, 'Motivo público ficticio.')
   for (const t of await p.listMyTickets(token)) {
-    assert.deepEqual(Object.keys(t).sort(), ['created_at', 'id', 'request_number', 'requester_name', 'status', 'system_id', 'title'])
+    assert.deepEqual(Object.keys(t).sort(), ['created_at', 'id', 'request_number', 'requested_priority', 'requested_subsystem_id', 'requester_name', 'requester_name_source', 'requester_name_verified', 'status', 'system_id', 'title'])
   }
 })
 
@@ -266,4 +266,31 @@ test('ingreso deshabilitado: no recoge ni envía credenciales ni canjea códigos
   await rejects(p.login(quipu()), 'pending_contract')
   await rejects(p.exchangeLaunch('quipu', MOCK_ENTRY.quipu), 'pending_contract')
   assert.equal(calls.length, 0)
+})
+
+test('M16: las cuatro prioridades conservan la urgencia independiente; Quipu omite nombre libre', async () => {
+  const { calls, transport } = spyTransport()
+  const p = createClientPortal(transport, options)
+  const { token, session } = await p.login(quipu('Ana.Exacta'))
+  for (const requested_priority of ['low','medium','high','urgent']) for (const urgent_requested of [false,true]) {
+    await p.submitTicket(token, session, { ...ticket(MOCK_PRODUCTS[2].id), requested_priority, urgent_requested }, createRpcAttempt())
+    const sent = calls.filter(c => c.name === 'client_submit_request').at(-1).args.p_payload
+    assert.equal(sent.requested_priority, requested_priority)
+    assert.equal(sent.urgent_requested, urgent_requested)
+    assert.equal(Object.hasOwn(sent, 'requester_name'), false)
+  }
+})
+test('M16: subproyectos y paginación utilizan únicamente argumentos autenticados del handoff', async () => {
+  const { calls, transport } = spyTransport()
+  const p = createClientPortal(transport, options)
+  const { token } = await p.login(quipufac())
+  const children = await p.subprojects(token, MOCK_PRODUCTS[1].id)
+  assert.ok(children.length > 0 && children.every(p => p.system_id === MOCK_PRODUCTS[1].id))
+  assert.deepEqual(calls.find(c => c.name === 'client_subprojects').args, { p_session_token: token, p_system_id: MOCK_PRODUCTS[1].id })
+  assert.equal((await p.listMyTickets(token, { limit: 1, offset: 0 })).length, 1)
+  assert.equal((await p.listMyTickets(token, { limit: 1, offset: 1 })).length, 1)
+  assert.equal((await p.listMyTickets(token, { limit: 1, offset: 2 })).length, 0)
+  assert.deepEqual(calls.filter(c => c.name === 'client_list_tickets').map(c => c.args.p_offset), [0,1,2])
+  await rejects(p.listMyTickets(token, { limit: 101, offset: 0 }), 'invalid_input')
+  await rejects(p.listMyTickets(token, { limit: 50, offset: -1 }), 'invalid_input')
 })

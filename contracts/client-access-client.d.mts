@@ -17,8 +17,12 @@ export interface ClientSession {
 }
 export interface ClientSessionReceipt { session_token: string; session: ClientSession }
 export interface ClientProduct { id: string; name: string; requires_subproject: boolean }
+export type RequestedPriority = 'low' | 'medium' | 'high' | 'urgent'
+export interface ClientSubproject { id: string; system_id: string; name: string }
 export interface ClientSubmitPayload {
-  requester_name: string
+  requester_name?: string
+  requested_priority?: RequestedPriority
+  subsystem_id?: string | null
   system_id: string
   request_type_id: string
   title: string
@@ -32,7 +36,10 @@ export type ClientGeneralStatus = 'received' | 'in_review' | 'approved_backlog' 
 export interface ClientTicket {
   id: string; request_number: string; title: string; created_at: string
   status: 'pending' | 'approved' | 'rejected'; general_status: ClientGeneralStatus
-  system_id: string; requester_name: string; requester_name_verified: false
+  system_id: string; requester_name: string; requester_name_verified: boolean
+  requester_name_source: 'verified_name' | 'username' | 'declared' | 'internal_correction' | null
+  requested_priority: RequestedPriority | null
+  requested_subsystem_id: string | null
 }
 export interface ClientTicketDetail extends ClientTicket {
   description: string; urgent_requested: boolean; rejection_reason: string | null
@@ -43,6 +50,7 @@ export interface ClientAccessApi {
   exchange(provider: ClientProvider, code: string): Promise<ClientSessionReceipt>
   session(token: string): Promise<ClientSession>
   products(token: string): Promise<ClientProduct[]>
+  subprojects(token: string, systemId: string): Promise<ClientSubproject[]>
   submit(token: string, payload: ClientSubmitPayload, key: string): Promise<ClientRequestReceipt>
   tickets(token: string, options?: { limit?: number; offset?: number }): Promise<ClientTicket[]>
   detail(token: string, requestId: string): Promise<ClientTicketDetail>

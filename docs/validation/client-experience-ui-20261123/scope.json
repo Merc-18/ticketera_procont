@@ -1,0 +1,51 @@
+{
+  "base": "a61450c93f5180ecd623d945b100424a47a3a5d3",
+  "protected_files_changed": [],
+  "preserved_files": [
+    "src/lib/client-session-store.ts",
+    "src/lib/client-portal-api.ts",
+    "src/components/client/ClientHome.tsx",
+    "src/components/client/ClientLaunch.tsx",
+    "src/hooks/useAuth.ts",
+    "src/lib/operations.ts",
+    "src/App.tsx",
+    "package.json",
+    "package-lock.json",
+    "vite.config.ts"
+  ],
+  "consumer_sha256": {
+    "src/lib/client-portal.ts": "cdd57ac358d93947b366ba654687d82f6d819d4a2feddc26d71ea657793dc13b",
+    "src/lib/client-request-data.ts": "3d3ccdee8cba0901986bd6c9c94a42cef355095827c8f44b7618db8cff6a3d19",
+    "src/lib/rpc-attempt.ts": "a31c36d7ece8560c98db66eb590e5f235b3b9d7ea9a2c4eca514ade1d3c53f79",
+    "src/lib/request-status.ts": "e1ded648c5cff43a6dc6979802b7d8a04f8cf00c2b5b753b6b74213d1597eb32",
+    "contracts/client-access-client.mjs": "82d963aad7a6253f1aec49e49aa3213e2846eedc199bb4d09c98874398602e37",
+    "contracts/client-access-client.d.mts": "55feb44167ba587e2a2f42ca23187821ca769b846b4c075141a94460ede38b0e"
+  },
+  "handoff_path": "/home/procont/projects/ticketera-procont/.agent-coordination/client-experience-contract-handoff.md",
+  "handoff_sha256": "8b02cc9bdb9e088cb1225056bdbee2a11e2b96abf46ea2a48be31be3e7557fa9",
+  "source_files_changed": [
+    "contracts/client-access-client.d.mts",
+    "contracts/client-access-client.mjs",
+    "src/components/client/ClientNewTicket.tsx",
+    "src/components/client/ClientTicketDetail.tsx",
+    "src/components/client/ClientTicketStatus.tsx",
+    "src/components/client/ClientWorkspace.tsx",
+    "src/components/client/MyTickets.tsx",
+    "src/components/client/useSubprojectNames.ts",
+    "src/components/requests/PublicLanding.tsx",
+    "src/components/requests/PublicRequestForm.tsx",
+    "src/components/requests/RequestInbox.tsx",
+    "src/components/requests/RequestValidationModal.tsx",
+    "src/components/requests/RequestedPriority.tsx",
+    "src/dev/client-portal-mock.ts",
+    "src/index.css",
+    "src/lib/client-portal.ts",
+    "src/lib/client-request-data.ts",
+    "src/types/database.types.ts",
+    "tests/client-access-contract.types.mts",
+    "tests/client-portal.test.mjs",
+    "tests/ui/portal-navigation.ui.test.mjs",
+    "tests/ui/ux-fixtures.mjs",
+    "tests/ui/ux-four-areas.ui.test.mjs"
+  ]
+}

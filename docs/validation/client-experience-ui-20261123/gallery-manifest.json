@@ -1,0 +1,2216 @@
+{
+  "version": "Versión 202611231008",
+  "buildDir": "/home/procont/projects/ticketera-procont/.agent-workspaces/agent2/.agent-artifacts/final-production",
+  "buildMode": "production",
+  "sources": [
+    {
+      "path": "/src/App.tsx",
+      "sha256": "b7396bff815f030e1829d0e35474f1a289830da744c281ab5f121915df9b177a"
+    },
+    {
+      "path": "/src/components/ErrorBoundary.tsx",
+      "sha256": "f32ca398e901a8ba7815622bc2b1ac63f79f57c93de81790020f18a7e4650f0b"
+    },
+    {
+      "path": "/src/components/admin/AreasPanel.tsx",
+      "sha256": "d6f5ccff82ec880c9b9516964b2c87a3e212f7ebbca2e604ff6af1bf67afe739"
+    },
+    {
+      "path": "/src/components/admin/CatalogsPanel.tsx",
+      "sha256": "efbd143364c151764a4ed9631e9b9d070acd4838709715a3f6f2419d5e7ac9e5"
+    },
+    {
+      "path": "/src/components/admin/PapeleraView.tsx",
+      "sha256": "3d6e66c326b68f53de6cc6660cb8bfd7f9ba8d5e3e7f71e54897e5df9b3825d5"
+    },
+    {
+      "path": "/src/components/admin/UserManagementPanel.tsx",
+      "sha256": "9237e49e6746656590441e23bff402e5b8eef0e88fbec594022144e275046aa5"
+    },
+    {
+      "path": "/src/components/admin/UserModal.tsx",
+      "sha256": "d7978905597e002e081d408e03ba3b34168f1e3999172127e9598cf5b384bfca"
+    },
+    {
+      "path": "/src/components/admin/WorkloadView.tsx",
+      "sha256": "fb32a324079f10f87798aa1fea06dee17b6f7845c21c7fcafa2929b0401e88ca"
+    },
+    {
+      "path": "/src/components/auth/LoginForm.tsx",
+      "sha256": "861135bc5d4966c735d942ca02a04035999c1b95624c4749f78960d94b6a250a"
+    },
+    {
+      "path": "/src/components/auth/ProtectedRoute.tsx",
+      "sha256": "a89acd5699a5224b0c92c702217a4b1517fb2016c1f6b9afd551ab677cb5db61"
+    },
+    {
+      "path": "/src/components/boards/BoardColumn.tsx",
+      "sha256": "b44cb1e116fe99d068580236dab00e23507a0e238d7e056437d62daafceb30dc"
+    },
+    {
+      "path": "/src/components/boards/BoardSelector.tsx",
+      "sha256": "31845037fe72024524b2b709f7041bb4d779d15a5da26d7e379213c6d1391e3d"
+    },
+    {
+      "path": "/src/components/boards/GanttView.tsx",
+      "sha256": "65ad140ab1a1f4874532781bead1bea72f918c101aca0a75a83835a86d293e90"
+    },
+    {
+      "path": "/src/components/boards/KanbanBoard.tsx",
+      "sha256": "63fcafff349b992fa0a6be53f0f9214be81a38c6122f9712eb38f1b9e86a60ea"
+    },
+    {
+      "path": "/src/components/boards/ProjectCard.tsx",
+      "sha256": "63798190b1b062434b51bb84d0879c5da6b15703fbe3f273953aae5ded8c7540"
+    },
+    {
+      "path": "/src/components/boards/ProjectListView.tsx",
+      "sha256": "515235398d01590729c34c93effb68a98fe641c018a28eb01a3d4bd88da969ef"
+    },
+    {
+      "path": "/src/components/boards/RoadmapView.tsx",
+      "sha256": "8c849c0aad8b0174f14069a67027d8aa5546278185aecefd890a347a0ec08848"
+    },
+    {
+      "path": "/src/components/boards/TableView.tsx",
+      "sha256": "a20b66083dc73d0da1d3079474c283977b19efc697340dfd26b4116e9026d483"
+    },
+    {
+      "path": "/src/components/client/ClientHome.tsx",
+      "sha256": "b383dfc8785ceca889bb02624e5f0b6c7cf47f4903a5d75c155f1f99ca176166"
+    },
+    {
+      "path": "/src/components/client/ClientLaunch.tsx",
+      "sha256": "d497c67b2c0398551fc63f5035f3df0913af229fa135ace4903e68341c8d88b0"
+    },
+    {
+      "path": "/src/components/client/ClientNewTicket.tsx",
+      "sha256": "0ee3d5bb469112f6c811ee14e47d25d8489d2f5df70c07b7394741d455bc0d06"
+    },
+    {
+      "path": "/src/components/client/ClientTicketDetail.tsx",
+      "sha256": "3d0466ef24123f5acb7e95a440b7625065d3e272c17891ed08bf7d96bc4d20af"
+    },
+    {
+      "path": "/src/components/client/ClientTicketStatus.tsx",
+      "sha256": "b72d528fdbe2b92d52f54401396e49f6d15813031116a9ce335b52bbaff08b80"
+    },
+    {
+      "path": "/src/components/client/ClientWorkspace.tsx",
+      "sha256": "3f6abda9e3b65e18a6e7806321d582347882e7085f75c6f7f37bc74e84ac4e7e"
+    },
+    {
+      "path": "/src/components/client/MockBanner.tsx",
+      "sha256": "b2b889a914220cc28b1efd8606094c674637de4198e7f32f81777716a89b20bf"
+    },
+    {
+      "path": "/src/components/client/MyTickets.tsx",
+      "sha256": "8f162d37ccce2a9acaad4b2be9de82e4de9545375e613235e1fade510616414a"
+    },
+    {
+      "path": "/src/components/client/useSubprojectNames.ts",
+      "sha256": "d4e7f3f1f755e5c6cea0723892d25516f156ca4514dd43fdc966d1f1835c288c"
+    },
+    {
+      "path": "/src/components/dashboard/DashboardView.tsx",
+      "sha256": "c6b3b1153af69ae57024214108838dafcf5d74434c6d38aec91a53d1a4b3efb9"
+    },
+    {
+      "path": "/src/components/metrics/MetricState.tsx",
+      "sha256": "7f6584126b44dafeb14a50751a071f68ede484f5a50c48acb962e22d14fb2391"
+    },
+    {
+      "path": "/src/components/metrics/RequesterUrgencySummary.tsx",
+      "sha256": "ece3b3b316ee7e07aa4fac770b55dad59e89d801908db589412192a6d963c402"
+    },
+    {
+      "path": "/src/components/metrics/UrgencyStatsPanel.tsx",
+      "sha256": "92d51f8f5db6b18b7f1ebed6ade1ad31cd843fe7577d7694c4ee5d3659350d2e"
+    },
+    {
+      "path": "/src/components/notifications/NotificationBell.tsx",
+      "sha256": "af93734f696513a31f9ea2a5528e47c71df2c9d56fb7b3b3c08a5bbeb561a49a"
+    },
+    {
+      "path": "/src/components/projects/BoardDialogs.tsx",
+      "sha256": "e92496251d6564fd0b02cd37ace1ed1fde63a40144b41cabdef610bc99508250"
+    },
+    {
+      "path": "/src/components/projects/ChecklistSection.tsx",
+      "sha256": "c71148439691546cbe88c39a4d58d69a9f65476874bbb8e4b76e79b9611caccc"
+    },
+    {
+      "path": "/src/components/projects/CommentsSection.tsx",
+      "sha256": "30d803baea232c125d25a77423db5ebebb2cd5bfc971239d06354bcd2bc24405"
+    },
+    {
+      "path": "/src/components/projects/EvidenceSection.tsx",
+      "sha256": "b1d0caaf8eed3da0c0ad5c1cfd862210b401cd927681055e8f64ae29c48d478b"
+    },
+    {
+      "path": "/src/components/projects/NewProjectModal.tsx",
+      "sha256": "62d5c5f2a79e1bb88af5e21edf5603d48175fd29ea4e8c4c535d2ed211a441ee"
+    },
+    {
+      "path": "/src/components/projects/ProjectModal.tsx",
+      "sha256": "14867d4e5b738f81cf7de39d4eb0f0f85886d20e9cfc8dd5c9710edab44ef69d"
+    },
+    {
+      "path": "/src/components/requests/AttachmentPicker.tsx",
+      "sha256": "3b5d55757720d5c6e88a684ef675885d836ade8cf1cb92885bd41d9475681ecb"
+    },
+    {
+      "path": "/src/components/requests/PlannerImportModal.tsx",
+      "sha256": "25be4ef96266382a5f6bb444c3ba48e2e714f401316fee4b264f91541a05a7ae"
+    },
+    {
+      "path": "/src/components/requests/PublicLanding.tsx",
+      "sha256": "9aa19daf617626d9296d17b67d371a1de179ff857a3e4d5a4b754b6a59fa6a8e"
+    },
+    {
+      "path": "/src/components/requests/PublicRequestForm.tsx",
+      "sha256": "8dc4610152e64b29df711fc322114f7b75b60bf71c7b4172f5450fcccc935460"
+    },
+    {
+      "path": "/src/components/requests/RequestInbox.tsx",
+      "sha256": "1df28c9a86288d429c5b8ada3a0fc2e32acf7577c5c7032dc7b4254182a7a2ad"
+    },
+    {
+      "path": "/src/components/requests/RequestTimeline.tsx",
+      "sha256": "520bf8a42b7bcdc4271c4e7e436c796ab72db66f5bcee512d7e1e108f24f7d90"
+    },
+    {
+      "path": "/src/components/requests/RequestTracking.tsx",
+      "sha256": "73da86c9e990b7841c18517dbc95044323f9214db95f28bb1a95f85dd6bf7c29"
+    },
+    {
+      "path": "/src/components/requests/RequestValidationModal.tsx",
+      "sha256": "13403715559394d569b7f1a5a15b37472edf4a125bfd7bfcfea76fad6f44d87f"
+    },
+    {
+      "path": "/src/components/requests/RequestedPriority.tsx",
+      "sha256": "d4402d9c5b0c4645dbc2585746e141686a6efad2857e1f2647850363573404d0"
+    },
+    {
+      "path": "/src/components/ui/AreaInput.tsx",
+      "sha256": "ee6c964a0533593ac2c7451bb82c4868e52e8a84b6fea4e0f299ea0902fe977f"
+    },
+    {
+      "path": "/src/components/ui/BrandLogo.tsx",
+      "sha256": "6696987b49ab94344ced552b346846fec85059570106083f4a04db0b40cc8cb5"
+    },
+    {
+      "path": "/src/components/ui/BuildVersion.tsx",
+      "sha256": "fc6b073a8d8f861e4e97d9117401b791bcaf03098d97376e265d21b94bdf4711"
+    },
+    {
+      "path": "/src/components/ui/ControlLabel.tsx",
+      "sha256": "1200c27248c37f53e2c18233c777f3260a047b6327740f248e608fc4dc330b98"
+    },
+    {
+      "path": "/src/components/ui/Icon.tsx",
+      "sha256": "f00f4110d26292688538569c19946c326cd7fbe7f05f47dfd4130026b76317fd"
+    },
+    {
+      "path": "/src/components/ui/InteractionMode.tsx",
+      "sha256": "bcc3acda67dec24d0159c91537f71615055169402cea1e68242befff7145d3ae"
+    },
+    {
+      "path": "/src/components/ui/ModalFocus.tsx",
+      "sha256": "650870617001afc342992bfd6cb1aca78ac43781f03fe22074ecc749e39aaaeb"
+    },
+    {
+      "path": "/src/components/ui/PasswordField.tsx",
+      "sha256": "839a36ed1aed68908852db415a5d2d9f9320799e5c303ed059a2057b93029659"
+    },
+    {
+      "path": "/src/components/ui/ScrollHint.tsx",
+      "sha256": "a9d828262f17ec7b6e75324314a0df8032ffe0e3eb548756dc741f58356aa756"
+    },
+    {
+      "path": "/src/components/ui/Toaster.tsx",
+      "sha256": "6fab1b7a1cd73d4a216cb9688d084501655cc9a5b8fdb40050feb24d37036327"
+    },
+    {
+      "path": "/src/dev/client-portal-mock.ts",
+      "sha256": "78729119c3db4440211169912a0f006f46f0498990be07d873db067feb019a51"
+    },
+    {
+      "path": "/src/hooks/useAreas.ts",
+      "sha256": "75d3d22f09e80d60b375f33eeaab5097cf6fa72ebeada4bb2f82231bbfe5cf43"
+    },
+    {
+      "path": "/src/hooks/useAuth.ts",
+      "sha256": "1c05909c02e2a17e8145feb48a78ea5585b207f21b34a75c7dd89183eaa8c1f8"
+    },
+    {
+      "path": "/src/hooks/useBoardTicket.ts",
+      "sha256": "75b0b69f34add810e9d7298cb37eb79526d3ce1179e04c9b897c63d99014db39"
+    },
+    {
+      "path": "/src/hooks/useCatalogs.ts",
+      "sha256": "e7524be1921ec1ebb173509774ba23cdd9498c81b3d6afb563045d0e5aaf1a9c"
+    },
+    {
+      "path": "/src/hooks/useChecklist.ts",
+      "sha256": "1d3459422b0b551ca7d7ca18bb80bd43f4fea5ac9f3a18516b0b66aee0bd13fa"
+    },
+    {
+      "path": "/src/hooks/useDashboardData.ts",
+      "sha256": "867f9682d475f5a9a4112836805cab2ccc8e3c70f7124fd6005a71fc6fd5203b"
+    },
+    {
+      "path": "/src/hooks/useNotifications.ts",
+      "sha256": "e0c1ced5fc3ca063becf026f0a03591a04294251c0f6f1ba79a323c7c5544165"
+    },
+    {
+      "path": "/src/hooks/usePendingCount.ts",
+      "sha256": "6c4ee6c549875012be1be734a3725877ee592057d74b5bb1f7d3a4630bd129c5"
+    },
+    {
+      "path": "/src/hooks/useProjects.ts",
+      "sha256": "3e28fb102a26353ada42c4d55ba7f47002170e8260a545aff4c014aca8fe5b38"
+    },
+    {
+      "path": "/src/hooks/useRequests.ts",
+      "sha256": "c3687dff94536cef2925b0dad67dd715edd74a14ff877c9d943f67c298fbb5d0"
+    },
+    {
+      "path": "/src/hooks/useUsers.ts",
+      "sha256": "68bd8547c6d406fb0cfa3f42e896366ebfbd02b35861fdb0a6a7c0dd675774e1"
+    },
+    {
+      "path": "/src/index.css",
+      "sha256": "f2a9fa6afe5e5675c4a2ab54edb89390af16464f6922f220771a3110187d58f6"
+    },
+    {
+      "path": "/src/lib/access.ts",
+      "sha256": "8a6d1403197bd989b22d5f65ebb3724a47a3fe7b10e6a6a166f672e8fefe6a53"
+    },
+    {
+      "path": "/src/lib/account-admin.ts",
+      "sha256": "a3a5f6f3dd78b41b1aa3570326ff05ef401321e837e28fca2868888167042c17"
+    },
+    {
+      "path": "/src/lib/api.ts",
+      "sha256": "5db59c8951fa68d82766b1c6e57d6380d24b7d89f8976b58e5dc445eb251ebbd"
+    },
+    {
+      "path": "/src/lib/attachment-delivery.ts",
+      "sha256": "7e915c7014755d271d5d069027a4947b235cace6192dc4b5fc8e6a50c9a1a874"
+    },
+    {
+      "path": "/src/lib/attachment-prep.ts",
+      "sha256": "bd70bb00222f6d8b14d9dd0e0e34d27f62e66540c42821c46359915cc1c6d367"
+    },
+    {
+      "path": "/src/lib/attachments.ts",
+      "sha256": "db99cc789d3e505d840956bb2f2a8282cad2509d7468280f50060a43d30bf6f0"
+    },
+    {
+      "path": "/src/lib/auth-controller.ts",
+      "sha256": "f4e17552ed25392fbe9e8ed0e5ee6125bc58620938ad38da81ff2c7d3bec90d1"
+    },
+    {
+      "path": "/src/lib/board.ts",
+      "sha256": "4080decd226b4760b9897410a2f76af587164607ed750bcd3b1d4e6bfd003b59"
+    },
+    {
+      "path": "/src/lib/build-version.ts",
+      "sha256": "0faa1586d89f63c498a52f66ca1871356df3a369c24bbb3ef85c423442ef5289"
+    },
+    {
+      "path": "/src/lib/checklist-defaults.ts",
+      "sha256": "c789b1e8ccd4a2f8d1245e67ee97929873ca3f09798d0fd17af049267b149193"
+    },
+    {
+      "path": "/src/lib/client-portal-api.ts",
+      "sha256": "02fbfe99d3fa24245468c0065e0a72bc1cbf139b19b91a5bd0a9bfeb12f4849c"
+    },
+    {
+      "path": "/src/lib/client-portal.ts",
+      "sha256": "cdd57ac358d93947b366ba654687d82f6d819d4a2feddc26d71ea657793dc13b"
+    },
+    {
+      "path": "/src/lib/client-request-data.ts",
+      "sha256": "3d3ccdee8cba0901986bd6c9c94a42cef355095827c8f44b7618db8cff6a3d19"
+    },
+    {
+      "path": "/src/lib/client-session-store.ts",
+      "sha256": "283a9c2554df49737c650c076c04037b562d29bdb6ebe2a9586dbfa30d23bfb2"
+    },
+    {
+      "path": "/src/lib/constants.ts",
+      "sha256": "b62d3f8d7c9a5cb6dc0f2b43eecd68b8423ee1f4732221a8141954a383e52c5e"
+    },
+    {
+      "path": "/src/lib/metrics-adapter.ts",
+      "sha256": "416a8b090ff0b2c69f6543b50a98bb90a2be137bffdb3b3018954aa628313e22"
+    },
+    {
+      "path": "/src/lib/notifications.ts",
+      "sha256": "b9b5748fbe470b59c13b36a3f5a7a4fe930027b5cb79a40c7f9211820ccfdd54"
+    },
+    {
+      "path": "/src/lib/operations.ts",
+      "sha256": "82d004e5d8c9ffa374a84c5f4c55715ae416e9d70fd8e7a72d08f48cedb18e09"
+    },
+    {
+      "path": "/src/lib/request-status.ts",
+      "sha256": "e1ded648c5cff43a6dc6979802b7d8a04f8cf00c2b5b753b6b74213d1597eb32"
+    },
+    {
+      "path": "/src/lib/rpc-attempt.ts",
+      "sha256": "a31c36d7ece8560c98db66eb590e5f235b3b9d7ea9a2c4eca514ade1d3c53f79"
+    },
+    {
+      "path": "/src/lib/supabase-config.ts",
+      "sha256": "d9c9455e7d1a5077356a8e52a809b174e56a19e1004d28886dee9fe0f988cbae"
+    },
+    {
+      "path": "/src/lib/supabase-errors.ts",
+      "sha256": "0edfb860e17393bbc4e687940bb532f7d7bd065adbb44d0c10faeb2602e54038"
+    },
+    {
+      "path": "/src/lib/supabase.ts",
+      "sha256": "5aac8c8684d4ac5325a36d7a63b9b25b57d4184834440d8a94e906ab2fa8c161"
+    },
+    {
+      "path": "/src/lib/ticket-export.ts",
+      "sha256": "894a19bed9e99b077d2f2f3587043a75814aef117f6f5867f2e067058324bfa4"
+    },
+    {
+      "path": "/src/lib/toast.ts",
+      "sha256": "e983fae3830483a2c6a2d3f1b0c89766962f92b01022e1f03ac24b98ee18d965"
+    },
+    {
+      "path": "/src/lib/tracking-handoff.ts",
+      "sha256": "d0147f5acdeec90671469538b8c526861b3bd0cf288665b7c808684c082e603c"
+    },
+    {
+      "path": "/src/main.tsx",
+      "sha256": "e3c807023a8494cc644eb9c14744c0f30441dbbd5fb90b6b08a21207e14e835b"
+    },
+    {
+      "path": "/src/theme/brand.ts",
+      "sha256": "db046d6533374b577ba74cfe1c9a05fc9f9905cbb41891c9f7805d7b63e8d461"
+    },
+    {
+      "path": "/src/types/database.types.ts",
+      "sha256": "4aa23839f785ef279ebc93eb75772ad62dbf51e417b0c95a7adb131bebbe8062"
+    },
+    {
+      "path": "/src/vite-env.d.ts",
+      "sha256": "ffbe0533d9062eeda5d5a9ffb40d3eb9a61758e101da52b73ad025c1b8b5f64d"
+    }
+  ],
+  "assets": [
+    {
+      "name": "AreaInput-DFmCjTiI.js",
+      "bytes": 639,
+      "sha256": "65fbbcb3b91c322efce3071cca94e254a1384dbb00f66976938300ffd2173559"
+    },
+    {
+      "name": "CatalogsPanel-BuXr04dz.js",
+      "bytes": 12190,
+      "sha256": "45421dca2b2d32f59fbd09bd31e6f2a8f32b55fa5ebb442acf4d8055f9a7d48c"
+    },
+    {
+      "name": "DashboardView-DHVBIcwK.js",
+      "bytes": 19773,
+      "sha256": "cf392f81fa2eef7bb0da798fdabe9fdbcb26f66426bc520ff957c92af7e2d50d"
+    },
+    {
+      "name": "KanbanBoard-DXpZpdtL.js",
+      "bytes": 194969,
+      "sha256": "34d780f3d4027fa4b8f57218f01c82969f0ab474e5fda8882e01bc81ea25a8dc"
+    },
+    {
+      "name": "MetricState-GQ--SQXc.js",
+      "bytes": 454,
+      "sha256": "1910af6991a9a6d41b96a30e21f7d2bb2cc7f4aec382bd2bcee666b195cfdeab"
+    },
+    {
+      "name": "PapeleraView-B6VltFrH.js",
+      "bytes": 4505,
+      "sha256": "23cb4d86f4d27fddb0f0b26a348e72fd62cdd6de4c66c79c71c713b07c65a97a"
+    },
+    {
+      "name": "PlannerImportModal-A5PPDBfA.js",
+      "bytes": 343286,
+      "sha256": "46c7db72505bcf0f614779ab70a50414c4447e11b86ab4fa6e1f69f3b78f8da2"
+    },
+    {
+      "name": "RequestInbox-DumfhDaL.js",
+      "bytes": 24729,
+      "sha256": "74fd3c2b1bfa472f54695754d559793bad198851a43f767c03a426dd31d07a43"
+    },
+    {
+      "name": "RequestTimeline-CQ6amr54.js",
+      "bytes": 7834,
+      "sha256": "60edcbfe7601d3f070a4451bf4ee6a5c73a7322fb4eaf44b43dee9abe883c367"
+    },
+    {
+      "name": "UserManagementPanel-I4-6KoMU.js",
+      "bytes": 15299,
+      "sha256": "35d4cd5e9d4f2d02cbb9e4c48b501e275dd12932f834fd7788d1b888fa8040b4"
+    },
+    {
+      "name": "WorkloadView-CLCl-sjr.js",
+      "bytes": 6311,
+      "sha256": "795cb4b1cab0df6c2fafe64f5152130d5cd3ca8788c05fff8d328a4ddb8b2838"
+    },
+    {
+      "name": "index-CqPFMFU6.js",
+      "bytes": 452982,
+      "sha256": "e240941bc00861b1dce2c76e2bd8be56394ffb54abecf94bc0401b0c9bd290b1"
+    },
+    {
+      "name": "index-DBe2bVUl.css",
+      "bytes": 58268,
+      "sha256": "64d3f438c2fc50f503d815571fd937d4865f2570ff2932e4b3a665914e7db930"
+    },
+    {
+      "name": "useAreas-Ct3wlYjV.js",
+      "bytes": 1290,
+      "sha256": "2f6130245d6b2cb342864bc835dc6a40f2bac2db7a80de0cec7c3a44cc394dfb"
+    },
+    {
+      "name": "useUsers-xr_5vnIN.js",
+      "bytes": 4602,
+      "sha256": "8ac6f44e3a3d030036a71276182509fd3482535d09b0b0ef464576bda3a6e4fe"
+    }
+  ],
+  "captures": [
+    {
+      "name": "desktop-17-quipu-cargando",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1283.203125,
+        "bottom": 1319.203125
+      },
+      "sha256": "fa5bbfc6da52126e02c9ee1a7fb9eec176b164eabc3a5c0d7be1ff0e9d1f25f7"
+    },
+    {
+      "name": "desktop-17-quipufac-cargando",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1191.203125,
+        "bottom": 1227.203125
+      },
+      "sha256": "1726fb1eae7cdecb7f1496853510deb407804c8cb102ff523abad13e61856489"
+    },
+    {
+      "name": "desktop-01-portal",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 891,
+        "bottom": 927
+      },
+      "sha256": "77f8ea54baaa5a1de5235ff0b062e03aa85c5688eef47858d092448092b716b9"
+    },
+    {
+      "name": "desktop-02-modal-personal",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 891,
+        "bottom": 927
+      },
+      "sha256": "83199a5a93f14944f0ef8ffb9cfceb9250d7f7af8274b8c4d37ac0239967ebf9"
+    },
+    {
+      "name": "desktop-03-quipu-normal",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1283.203125,
+        "bottom": 1319.203125
+      },
+      "sha256": "50422ad17d7c2bac4a4de92c1d900fbab5b6bd278dc24fbdce3ea2702f4396cf"
+    },
+    {
+      "name": "desktop-03-quipu-validacion",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1327.578125,
+        "bottom": 1363.578125
+      },
+      "sha256": "eacd2a4e1f18a1a432ad7cab96b79927e08ac090ebc91a933229c1d0574db9d2"
+    },
+    {
+      "name": "desktop-03-quipufac-normal",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1191.203125,
+        "bottom": 1227.203125
+      },
+      "sha256": "64cd7b31902a094db407fb84288ce8d3b1f35305382f35bbd9eb3035a5e63bb5"
+    },
+    {
+      "name": "desktop-03-quipufac-validacion",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1213.390625,
+        "bottom": 1249.390625
+      },
+      "sha256": "54907910637273f0d5b337e596e45e7a004268bef6320b84dfb141686e405697"
+    },
+    {
+      "name": "desktop-04-nuevo-ticket-adjunto",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1783.671875,
+        "bottom": 1819.671875
+      },
+      "sha256": "908f0b570ac672cb683cd91095c9e2e4f6120f408b55102bc995ae479755a9ec"
+    },
+    {
+      "name": "desktop-05-mis-tickets",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 891,
+        "bottom": 927
+      },
+      "sha256": "9088d14da25704e1bc0244bf1466b6ee74769529491664280c4503858d62a1a4"
+    },
+    {
+      "name": "desktop-06-detalle",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 891,
+        "bottom": 927
+      },
+      "sha256": "126a7568b176a73b6ed33db794743d940d6129c4b53b6e1c67bc77b974ef0a84"
+    },
+    {
+      "name": "desktop-07-seguimiento-publico",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 891,
+        "bottom": 927
+      },
+      "sha256": "86579dcfb9680cbe00162f305a833d38901734f93cc5e954031fe0c52a7d36d9"
+    },
+    {
+      "name": "desktop-08-dashboard",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1415.9375,
+        "bottom": 1451.9375
+      },
+      "sha256": "7bb26a509a2a0725942f4c82185ea7466f5771c728baaf367b099f689a2e2261"
+    },
+    {
+      "name": "desktop-09-bandeja",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1158.5625,
+        "bottom": 1194.5625
+      },
+      "sha256": "413f9c525e7c37c7b792d2711dfa420c4ff4985f794f9d9da74cef0f22030066"
+    },
+    {
+      "name": "desktop-10-kanban",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 984.96875,
+        "bottom": 1020.96875
+      },
+      "sha256": "7eb7baecaf67dcf00c712d0945f8b356f2e2561d8cc38195a665c0df991c17e1"
+    },
+    {
+      "name": "desktop-11-kanban-done",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 984.96875,
+        "bottom": 1020.96875
+      },
+      "sha256": "7eb7baecaf67dcf00c712d0945f8b356f2e2561d8cc38195a665c0df991c17e1"
+    },
+    {
+      "name": "desktop-12-tabla",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 991.46875,
+        "bottom": 1027.46875
+      },
+      "sha256": "8ed282ac844267fa378813fc636ae4a7c062ea1192afc74e720cbf08ff6cfc48"
+    },
+    {
+      "name": "desktop-13-gantt",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 954.15625,
+        "bottom": 990.15625
+      },
+      "sha256": "5d504e894152b0d09afa51089d69de4b7fcfc113203220920f10c666f2011f60"
+    },
+    {
+      "name": "desktop-14-roadmap",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 891,
+        "bottom": 927
+      },
+      "sha256": "73b6b9cf7f284c353aff8ca4324d3ad469cfe860b217dac966c175cc7c573325"
+    },
+    {
+      "name": "desktop-15-modal-ticket",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 984.96875,
+        "bottom": 1020.96875
+      },
+      "sha256": "be41394e52d5bee5b4e465aad813b352c95021734728c77ded5c98f1bd974ef7"
+    },
+    {
+      "name": "laptop-17-quipu-cargando",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 1282.890625,
+        "bottom": 1318.890625
+      },
+      "sha256": "3ddd69fc33a7815488aba3a6845902ec8fcf01ab305ddfbf17e26f7a564876be"
+    },
+    {
+      "name": "laptop-17-quipufac-cargando",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 1190.890625,
+        "bottom": 1226.890625
+      },
+      "sha256": "a5b626a8b2b8735b60b1d3d7f22584eeb28e39f5e8467c3a51ab699c45f29d3e"
+    },
+    {
+      "name": "laptop-01-portal",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 818,
+        "bottom": 854
+      },
+      "sha256": "d43922e00e0fffef0fef971cdd07f3faeb73918bce81d18b8accbea623866c19"
+    },
+    {
+      "name": "laptop-02-modal-personal",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 818,
+        "bottom": 854
+      },
+      "sha256": "a1a38e6541fdad2445942faca35efa925d9f069776b36a4a1738ae902a277e2a"
+    },
+    {
+      "name": "laptop-03-quipu-normal",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 1282.890625,
+        "bottom": 1318.890625
+      },
+      "sha256": "a6f22cba784be013cf8049280824335250bca7733631e5a259da717533be67b0"
+    },
+    {
+      "name": "laptop-03-quipu-validacion",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 1327.265625,
+        "bottom": 1363.265625
+      },
+      "sha256": "43f414f99011be0166d9eaef54be6954e7b393a654e63991f722b02e9dea99f1"
+    },
+    {
+      "name": "laptop-03-quipufac-normal",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 1190.890625,
+        "bottom": 1226.890625
+      },
+      "sha256": "0bd52698c256e5cb9e2e8b7597e2dbf6448bc7289b5779688b7a59a41ccea0a5"
+    },
+    {
+      "name": "laptop-03-quipufac-validacion",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 1213.078125,
+        "bottom": 1249.078125
+      },
+      "sha256": "12426e8dd375e2c3d9141680b4599cf52901e3bd4562980517fe3b9fc95e1d57"
+    },
+    {
+      "name": "laptop-04-nuevo-ticket-adjunto",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 1783.671875,
+        "bottom": 1819.671875
+      },
+      "sha256": "a28f36741c5216c97127093f889e4d30bc8ee7398f30f1783d958998d2057aa2"
+    },
+    {
+      "name": "laptop-05-mis-tickets",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 759,
+        "bottom": 795
+      },
+      "sha256": "03492ac6d6fcb3c4ae9097b17f92a3d930571687dacb7a52e8a83b8f98c08d7b"
+    },
+    {
+      "name": "laptop-06-detalle",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 815.5625,
+        "bottom": 851.5625
+      },
+      "sha256": "78efb1e7be63e2e72cc8998adc780e5ea1666ab213f7efa30624a5499ac35e48"
+    },
+    {
+      "name": "laptop-07-seguimiento-publico",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 759,
+        "bottom": 795
+      },
+      "sha256": "d0abe0466dbca202741acb0876cae0fea2142ecd155a41a26b68c4bb6af5f768"
+    },
+    {
+      "name": "laptop-08-dashboard",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 1415.9375,
+        "bottom": 1451.9375
+      },
+      "sha256": "415caf832a0e43db9888f6b6931e46e72b4548b6d4a7e5d06190b00cc620a6f9"
+    },
+    {
+      "name": "laptop-09-bandeja",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 1158.5625,
+        "bottom": 1194.5625
+      },
+      "sha256": "75ea2caa2db2a2778747c6c9398887582f87d605daeb0682cc84398ab3e2c034"
+    },
+    {
+      "name": "laptop-10-kanban",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 984.96875,
+        "bottom": 1020.96875
+      },
+      "sha256": "cbbaa1553c6915fd4318cb24393f23f8559879b50fcbdb508e0f15ad5381a971"
+    },
+    {
+      "name": "laptop-11-kanban-done",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 984.96875,
+        "bottom": 1020.96875
+      },
+      "sha256": "cbbaa1553c6915fd4318cb24393f23f8559879b50fcbdb508e0f15ad5381a971"
+    },
+    {
+      "name": "laptop-12-tabla",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 1011.28125,
+        "bottom": 1047.28125
+      },
+      "sha256": "3f4c932eae54cf4e59c532cfcc5695e00fefe1db53a54bf41a84d0832af659e7"
+    },
+    {
+      "name": "laptop-13-gantt",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 954.15625,
+        "bottom": 990.15625
+      },
+      "sha256": "d2baf5aeb97cdf255dbef9bf3408b76729b5a4b6da8aad8ccb8ac55ee7818522"
+    },
+    {
+      "name": "laptop-14-roadmap",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 849.96875,
+        "bottom": 885.96875
+      },
+      "sha256": "c1cfcf724c42c9bfc0c9bf77affad8a6c08d07f85e94cae9c58e344613076e1b"
+    },
+    {
+      "name": "laptop-15-modal-ticket",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 984.96875,
+        "bottom": 1020.96875
+      },
+      "sha256": "a5522c6f961ef46c7b13aabd16fe1927dbd3953bf79956c51c13be17487efb2c"
+    },
+    {
+      "name": "tablet-17-quipu-cargando",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1268.078125,
+        "bottom": 1304.078125
+      },
+      "sha256": "d200ccfd3e88ceb48e7ca751700bbcb481bba50087b25a36e1a587ffa08e8cc9"
+    },
+    {
+      "name": "tablet-17-quipufac-cargando",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1176.078125,
+        "bottom": 1212.078125
+      },
+      "sha256": "3422ae7d9ce38e9ed851f9467cbbc36d33c8efafde5226fbea47fa89403f4a7b"
+    },
+    {
+      "name": "tablet-01-portal",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1015,
+        "bottom": 1051
+      },
+      "sha256": "8bec0276d06942850f9cb477065b544e0a4d59c9cbf5898fa077a24951ea5454"
+    },
+    {
+      "name": "tablet-02-modal-personal",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1015,
+        "bottom": 1051
+      },
+      "sha256": "37e1fe7c2eb43a61378218e5a5240085cbb0e59d9176d7824618d7d0d389811f"
+    },
+    {
+      "name": "tablet-03-quipu-normal",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1268.078125,
+        "bottom": 1304.078125
+      },
+      "sha256": "335d32efdc6bfe02ea99ee8fd31f80dd507f2cc813aa5dc8ca7d264eea60cf94"
+    },
+    {
+      "name": "tablet-03-quipu-validacion",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1312.453125,
+        "bottom": 1348.453125
+      },
+      "sha256": "0b13258c5f0114ef2ead7e5c4009d47e76973f380de90843a520ac02a924fad3"
+    },
+    {
+      "name": "tablet-03-quipufac-normal",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1176.078125,
+        "bottom": 1212.078125
+      },
+      "sha256": "9f87401f7a8a4fffd343a5f93381f527011e73975634e35e7c2eac5e53497a0b"
+    },
+    {
+      "name": "tablet-03-quipufac-validacion",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1198.265625,
+        "bottom": 1234.265625
+      },
+      "sha256": "439ea91dd157a3a61ffaa364d84a92f98a1d4a5d551bea8ddd174663585fbcea"
+    },
+    {
+      "name": "tablet-04-nuevo-ticket-adjunto",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1801.859375,
+        "bottom": 1837.859375
+      },
+      "sha256": "d3d277044de1616c0239412d98551b4264b22fca974ac4f073a82d477e85e553"
+    },
+    {
+      "name": "tablet-05-mis-tickets",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1015,
+        "bottom": 1051
+      },
+      "sha256": "b8a14fed6186281c4a0e5a026d1517463fd46a20590b8dc3d74ea100ebbe25ef"
+    },
+    {
+      "name": "tablet-06-detalle",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1015,
+        "bottom": 1051
+      },
+      "sha256": "a12c3a11bb806687865aafabd01a3488c6d24eee80c2abcd57b5ae7265d5deac"
+    },
+    {
+      "name": "tablet-07-seguimiento-publico",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1015,
+        "bottom": 1051
+      },
+      "sha256": "ed9b166b2d6a74b3bb14f449a169bef93c8c912b02a96247cd5f115cf3ff356c"
+    },
+    {
+      "name": "tablet-08-dashboard",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1632.328125,
+        "bottom": 1668.328125
+      },
+      "sha256": "9cf5b27ab4dc28d593c9cca0635b4c89ddff7440f3384f3e8e05b87e594e9756"
+    },
+    {
+      "name": "tablet-09-bandeja",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1158.5625,
+        "bottom": 1194.5625
+      },
+      "sha256": "1b4ba1322414f68eb3dea9c81a9299d393a11be5277f459f28f912755e97751d"
+    },
+    {
+      "name": "tablet-10-kanban",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1140.96875,
+        "bottom": 1176.96875
+      },
+      "sha256": "0e7dc2081b44d6178cddd864dd7564f414e7582b27487212e83bc02ecb3929d8"
+    },
+    {
+      "name": "tablet-11-kanban-done",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1140.96875,
+        "bottom": 1176.96875
+      },
+      "sha256": "0e7dc2081b44d6178cddd864dd7564f414e7582b27487212e83bc02ecb3929d8"
+    },
+    {
+      "name": "tablet-12-tabla",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1305.96875,
+        "bottom": 1341.96875
+      },
+      "sha256": "fc7050e4a1eb0da7ec5abd3853c02bf3e4ee70407e75ef34ece3aade7843f05e"
+    },
+    {
+      "name": "tablet-13-gantt",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1110.15625,
+        "bottom": 1146.15625
+      },
+      "sha256": "65efdc435238e0a69642ea8bf6606be928815c1a08d8730b630f9c958d55b1f9"
+    },
+    {
+      "name": "tablet-14-roadmap",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1155.15625,
+        "bottom": 1191.15625
+      },
+      "sha256": "1e3a6b5a57db77a1e653a78b6d0b1753235c6b4bda956bf7e7826a2d700ee3a5"
+    },
+    {
+      "name": "tablet-15-modal-ticket",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1140.96875,
+        "bottom": 1176.96875
+      },
+      "sha256": "a77dec0c4e44faa4577fd7c274e97200b2850deae1fbdf5b6ed17ba6adf0f1e9"
+    },
+    {
+      "name": "movil-17-quipu-cargando",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1541.46875,
+        "bottom": 1577.46875
+      },
+      "sha256": "5ffac8e1924d01158f8279f64af31c1d0230105e2c40e892f08f89b446a423f2"
+    },
+    {
+      "name": "movil-17-quipufac-cargando",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1449.46875,
+        "bottom": 1485.46875
+      },
+      "sha256": "11801253ceb163bd8280e3dbe888d618c605acfdb69e5611e3bd0dcbbd88f8d1"
+    },
+    {
+      "name": "movil-01-portal",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1100.4375,
+        "bottom": 1136.4375
+      },
+      "sha256": "5a8365f5c96b533798481f25b1984894684de2565e765916262f009ea34059ea"
+    },
+    {
+      "name": "movil-02-modal-personal",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1100.4375,
+        "bottom": 1136.4375
+      },
+      "sha256": "248bce0ebf472fd4e448e10d1bd202d0e34ffe6b6bf2541937b77bdb474c3a14"
+    },
+    {
+      "name": "movil-03-quipu-normal",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1541.46875,
+        "bottom": 1577.46875
+      },
+      "sha256": "9453e3eb322a15957f3cbbde9a9b0f7d641a94c23b221e8d40e2cfb5e5478477"
+    },
+    {
+      "name": "movil-03-quipu-validacion",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1585.84375,
+        "bottom": 1621.84375
+      },
+      "sha256": "fbdcd445b87d1cd85336d02b9c04c56df406e087c2c04253857699afbbeb2677"
+    },
+    {
+      "name": "movil-03-quipufac-normal",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1449.46875,
+        "bottom": 1485.46875
+      },
+      "sha256": "490c9b4e0e0b9d8ddf8c66a9c9ec9e586a572ca52e194edf7a4076b2e2462d6a"
+    },
+    {
+      "name": "movil-03-quipufac-validacion",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1471.65625,
+        "bottom": 1507.65625
+      },
+      "sha256": "ba23379001e82ce20fd600a69ea9a9e523a1cf57a61bcafd69f1efff0d550137"
+    },
+    {
+      "name": "movil-04-nuevo-ticket-adjunto",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 2132.8125,
+        "bottom": 2168.8125
+      },
+      "sha256": "dce86654e75c985a4997ab2be5a04e84815726434a9d60d16416546e48effa45"
+    },
+    {
+      "name": "movil-05-mis-tickets",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1007.125,
+        "bottom": 1043.125
+      },
+      "sha256": "2424a17c0991dd95ba1d77d4d7fd96c1c48916271f8dbed81897aadff981e4a1"
+    },
+    {
+      "name": "movil-06-detalle",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1178.3125,
+        "bottom": 1214.3125
+      },
+      "sha256": "113e0d7752d8e9672062c6ca096a3db1b52f63c7bef082710b40afcbbaf901c8"
+    },
+    {
+      "name": "movil-07-seguimiento-publico",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 835,
+        "bottom": 871
+      },
+      "sha256": "a019e666440240bbf1f63d281bc764735d9e0d971d76870e0d216c09285256ec"
+    },
+    {
+      "name": "movil-08-dashboard",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 2511.78125,
+        "bottom": 2547.78125
+      },
+      "sha256": "20b2df2017d4bb4374ba0b017209728be55647f0f104228b0e66e53c9657facc"
+    },
+    {
+      "name": "movil-09-bandeja",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1400.75,
+        "bottom": 1436.75
+      },
+      "sha256": "c7ee39aceab5fe5115b9f0a9bce68428ecfe8d1a2cb9af77dc79c4a0b347625b"
+    },
+    {
+      "name": "movil-10-kanban",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1462.625,
+        "bottom": 1498.625
+      },
+      "sha256": "d31298b5fcf1e4a921b46fe47ab1ade926183443dd24768170b36f3097504853"
+    },
+    {
+      "name": "movil-11-kanban-done",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1462.625,
+        "bottom": 1498.625
+      },
+      "sha256": "9ad890755636a8de3a5a09cd5c2c6b650de3fb186798681efc866e9dfe3c09b5"
+    },
+    {
+      "name": "movil-12-tabla",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1628.625,
+        "bottom": 1664.625
+      },
+      "sha256": "85b86c72fe644219921781547cf0a0ddbb145b186f3022e0cc6ca0f61e63414e"
+    },
+    {
+      "name": "movil-13-gantt",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1507.375,
+        "bottom": 1543.375
+      },
+      "sha256": "b7fd12b3d050f7c1215757b7a158078daeeb006eb2340299c8b6749beaab3b1e"
+    },
+    {
+      "name": "movil-14-roadmap",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1744.1875,
+        "bottom": 1780.1875
+      },
+      "sha256": "c4a4ac1351a3a3d67f022230deab012b9587f9514c66602d5f332aaf7c833721"
+    },
+    {
+      "name": "movil-15-modal-ticket",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1462.625,
+        "bottom": 1498.625
+      },
+      "sha256": "9ae922f2b090ef86f9b97ad406336129a68639cdf393f956dfb6f09bfb90792a"
+    },
+    {
+      "name": "desktop-16-arrastre",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 984.96875,
+        "bottom": 1020.96875
+      },
+      "sha256": "f34060242e69845cf0e223194ef9fd27f3b7e95446ef1cd676108c50e813f7fa"
+    },
+    {
+      "name": "desktop-18-metricas-sin-registros",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1415.9375,
+        "bottom": 1451.9375
+      },
+      "sha256": "379d6a6bb80fbb0034cd6765ec477d7efdd8d3c25013c21b112b8f535e59cd66"
+    },
+    {
+      "name": "desktop-19-metricas-no-disponibles",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1415.9375,
+        "bottom": 1451.9375
+      },
+      "sha256": "f304c017a6e21c9f669fa4488855142a9a95c095413e0cd46c3de807de89445c"
+    },
+    {
+      "name": "desktop-20-metricas-error",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1415.9375,
+        "bottom": 1451.9375
+      },
+      "sha256": "665abf348536488776d54d676051f0947c9e875dbab77117ffe13aa3fb9ae8f0"
+    },
+    {
+      "name": "desktop-21-planner-cargando",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1158.5625,
+        "bottom": 1194.5625
+      },
+      "sha256": "39d90a1e38036389d236ffd5118c1fa20932ea81e9801ec9bc47c76b031726c2"
+    },
+    {
+      "name": "desktop-22-planner-disponible",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1158.5625,
+        "bottom": 1194.5625
+      },
+      "sha256": "a190f4f9adc5ff7f30977729a24756c39e055950b0007e81032a326caf5be258"
+    },
+    {
+      "name": "desktop-23-planner-excel-leido",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1158.5625,
+        "bottom": 1194.5625
+      },
+      "sha256": "0a428b46cb5a31a693bc88ad5b3ab101fba9edd2337e4769e13260135931dd37"
+    },
+    {
+      "name": "desktop-24-equipo-cargando",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 891,
+        "bottom": 927
+      },
+      "sha256": "b77b2cb284e89cbe9a67cf653eb5f8076d59652c72a3c344153381ccb71bb09f"
+    },
+    {
+      "name": "movil-21-planner-cargando",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1400.75,
+        "bottom": 1436.75
+      },
+      "sha256": "6f6987a2cfa0ea7ef62183d3b03f5ed1f4052c599d1c792756a5acb4fddf6a6a"
+    },
+    {
+      "name": "movil-22-planner-disponible",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1400.75,
+        "bottom": 1436.75
+      },
+      "sha256": "866410c9aa8d1b7460f94c372278ca53bcfb25c11ec74249df3d4798da28359b"
+    },
+    {
+      "name": "movil-23-planner-excel-leido",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1400.75,
+        "bottom": 1436.75
+      },
+      "sha256": "3058b030be2ebd6192c1bb8df6bd75a929aa4e408c830bbdb11c40139283dd48"
+    },
+    {
+      "name": "movil-24-equipo-cargando",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 835,
+        "bottom": 871
+      },
+      "sha256": "39cce4303843298659b8dff4acd2bb393f19189b53e5bcc170e800285ee5ef06"
+    },
+    {
+      "name": "desktop-30-quipu-prioridad-alto",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1664.484375,
+        "bottom": 1700.484375
+      },
+      "sha256": "e9343e59ef5a3f5cd25fbd0409f840e42534f2dde02108b9055390e92a898bb8"
+    },
+    {
+      "name": "desktop-31-lista-cliente",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 891,
+        "bottom": 927
+      },
+      "sha256": "96be9b137c7610901436f3a4c030b2e479d91b91bd0c6e8ced77587b013395fe"
+    },
+    {
+      "name": "desktop-32-detalle-prioridad-subproyecto",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 891,
+        "bottom": 927
+      },
+      "sha256": "fcbadd9fb39d77ceb287a818056be182e204dd1d4240031a81a612197358a395"
+    },
+    {
+      "name": "desktop-33-quipufac-bajo-con-urgencia",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1664.484375,
+        "bottom": 1700.484375
+      },
+      "sha256": "cc49cf0fd6583c59bfdbcde6337f98d2bfc2af3dd1a054b73e28928759bfe578"
+    },
+    {
+      "name": "desktop-34-cuenta-empresarial",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 891,
+        "bottom": 927
+      },
+      "sha256": "7352c381228396b7be8e9721063b7c5af5f799db9ee15b7cf9523f07df835923"
+    },
+    {
+      "name": "desktop-35-bandeja-prioridad-solicitada",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1158.5625,
+        "bottom": 1194.5625
+      },
+      "sha256": "35fe451c3e59a0a253a34e64d9114e47ebc0d6f8e2d8d1bb8dca2099050523ef"
+    },
+    {
+      "name": "desktop-36-modal-prioridades-distintas",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1158.5625,
+        "bottom": 1194.5625
+      },
+      "sha256": "da8ffd405a5cb0cc7f3f93fb82b0bd1bba9db8ac0b1f3226dea68c63cf5cbc5f"
+    },
+    {
+      "name": "desktop-36b-modal-prioridad-definitiva",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 1158.5625,
+        "bottom": 1194.5625
+      },
+      "sha256": "eadd7d8795ed5bf32b0c3cc9214e8aadbca9b674b366b34a0ad05c24ec478980"
+    },
+    {
+      "name": "laptop-30-quipu-prioridad-alto",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 1664.484375,
+        "bottom": 1700.484375
+      },
+      "sha256": "4badbface39a024b5aef34d07ee8f763eb8883cd2c43ed526535c2e471a9998b"
+    },
+    {
+      "name": "laptop-31-lista-cliente",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 759,
+        "bottom": 795
+      },
+      "sha256": "b25eabb9472d8b2cef8ab969280a20567742c9f55048bcced85178e8274915ac"
+    },
+    {
+      "name": "laptop-32-detalle-prioridad-subproyecto",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 797.375,
+        "bottom": 833.375
+      },
+      "sha256": "4b249cdda73a935facc63ab7090af0206c6a9594cfabd7689437bc8715ba11a6"
+    },
+    {
+      "name": "laptop-33-quipufac-bajo-con-urgencia",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 1664.484375,
+        "bottom": 1700.484375
+      },
+      "sha256": "f1052c16524eba3c22308bfd78d2f4ee465c2a22b95e2fb48b9b15ae9ffa8a92"
+    },
+    {
+      "name": "laptop-34-cuenta-empresarial",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 759,
+        "bottom": 795
+      },
+      "sha256": "58aadd84b944af45c75bb29303484c191d8e2e3f5d1ee24feadda4a5221da6aa"
+    },
+    {
+      "name": "laptop-35-bandeja-prioridad-solicitada",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 1158.5625,
+        "bottom": 1194.5625
+      },
+      "sha256": "a90e2211adbfab1decd5c24490d8225ee0c643e1b13be21618dce907b29a83de"
+    },
+    {
+      "name": "laptop-36-modal-prioridades-distintas",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 1158.5625,
+        "bottom": 1194.5625
+      },
+      "sha256": "1c021f4c8e65c27edb40b238d98edfa3a41240c89e5ab898024787b1a129e1a6"
+    },
+    {
+      "name": "laptop-36b-modal-prioridad-definitiva",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "footerRect": {
+        "top": 1158.5625,
+        "bottom": 1194.5625
+      },
+      "sha256": "45ec06dbcfcb5cdaeffd93d21810041d6af8e0be78625e85f553e6fea3b09f66"
+    },
+    {
+      "name": "tablet-30-quipu-prioridad-alto",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1682.671875,
+        "bottom": 1718.671875
+      },
+      "sha256": "f955c326c819820556890c66d06c9ab25a2774b08b7319804d260ef18ba59b79"
+    },
+    {
+      "name": "tablet-31-lista-cliente",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1187.6875,
+        "bottom": 1223.6875
+      },
+      "sha256": "6db43ac1e8ffc4d6bfefa881ec76331b2a2b257e0c6f65d9cf36a89810b7413f"
+    },
+    {
+      "name": "tablet-32-detalle-prioridad-subproyecto",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1015,
+        "bottom": 1051
+      },
+      "sha256": "0392da802899c21e2726063024dabdad8545583c27fabd1c8c6b015d86535186"
+    },
+    {
+      "name": "tablet-33-quipufac-bajo-con-urgencia",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1682.671875,
+        "bottom": 1718.671875
+      },
+      "sha256": "e6c0ac3955bdb60c7212ef319c46d14eee92dfd2e3ddba60e966343ac1fa6a87"
+    },
+    {
+      "name": "tablet-34-cuenta-empresarial",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1327.6875,
+        "bottom": 1363.6875
+      },
+      "sha256": "6daba91db7dca36c464d13b251b4633c176b1dd0ce96db944b36828b08ebb6b6"
+    },
+    {
+      "name": "tablet-35-bandeja-prioridad-solicitada",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1158.5625,
+        "bottom": 1194.5625
+      },
+      "sha256": "6a163df794e1fd3b8ac29a58ae8119ed52cf5fb09ce39d464a325b41fc2f1a20"
+    },
+    {
+      "name": "tablet-36-modal-prioridades-distintas",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1158.5625,
+        "bottom": 1194.5625
+      },
+      "sha256": "f09235a1a9976c1f99e05b31ea443227e76cd742e9ddaa25c26cb200289ad634"
+    },
+    {
+      "name": "tablet-36b-modal-prioridad-definitiva",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "footerRect": {
+        "top": 1158.5625,
+        "bottom": 1194.5625
+      },
+      "sha256": "5074efdeda5096ee169477726052a5c8101e9853404d9498f74974f8471c9ae9"
+    },
+    {
+      "name": "movil-30-quipu-prioridad-alto",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 2013.625,
+        "bottom": 2049.625
+      },
+      "sha256": "cea8bed63f07fd1d6afe79c2df79ad8cbd13f5986f9390dbf34e2ef219c1d816"
+    },
+    {
+      "name": "movil-31-lista-cliente",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1291.6875,
+        "bottom": 1327.6875
+      },
+      "sha256": "97ca101818dfb0013b035677f4df7664ade116b397dd345911ae85e54026fc30"
+    },
+    {
+      "name": "movil-32-detalle-prioridad-subproyecto",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1178.3125,
+        "bottom": 1214.3125
+      },
+      "sha256": "a796da5a134422fc86171b7c41c2e1b423ce55a90b89477b62ad3f422cfc7326"
+    },
+    {
+      "name": "movil-33-quipufac-bajo-con-urgencia",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1987.4375,
+        "bottom": 2023.4375
+      },
+      "sha256": "d926b51198d233ba6683883ab8979578743e9fac9f1346e45cb256c94f21148b"
+    },
+    {
+      "name": "movil-34-cuenta-empresarial",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1395.6875,
+        "bottom": 1431.6875
+      },
+      "sha256": "3178386f2ce26c610b6e08c9ab5846d19a9ea1f8aff268ce7b2bde04dddede71"
+    },
+    {
+      "name": "movil-35-bandeja-prioridad-solicitada",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1400.75,
+        "bottom": 1436.75
+      },
+      "sha256": "c7ee39aceab5fe5115b9f0a9bce68428ecfe8d1a2cb9af77dc79c4a0b347625b"
+    },
+    {
+      "name": "movil-36-modal-prioridades-distintas",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1400.75,
+        "bottom": 1436.75
+      },
+      "sha256": "31d7919640a6d57813b0185f0bb1fb0f15f62944a7d3fef90f226019cf28bc61"
+    },
+    {
+      "name": "movil-36b-modal-prioridad-definitiva",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 1400.75,
+        "bottom": 1436.75
+      },
+      "sha256": "ab7e9afc8e1443a886e94dc30fb1e910c85636e0cfe5038f3ab0cfaca7cac742"
+    },
+    {
+      "name": "desktop-37-paginacion-primera",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 4819.75,
+        "bottom": 4855.75
+      },
+      "sha256": "3951cd82fdd80fb2ea69d9b52699f12afb53aa5793af5e042d84c19b6940147a"
+    },
+    {
+      "name": "desktop-38-paginacion-fin",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "footerRect": {
+        "top": 3628,
+        "bottom": 3664
+      },
+      "sha256": "3d745723f567b3f897a7bf71c612280ab523d13be3b0e37f97be6e3f04b384ac"
+    },
+    {
+      "name": "movil-39-sin-subproyectos",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 2031.8125,
+        "bottom": 2067.8125
+      },
+      "sha256": "80ff1b51280c683d8a25740fee6953445595554bed907745740b02ab82574c56"
+    },
+    {
+      "name": "movil-40-error-subproyectos",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 2107.8125,
+        "bottom": 2143.8125
+      },
+      "sha256": "b0ee398a7f22c2f0dc95d5d0da2ca748ab178303c199fdf3bd7615ec8403e84f"
+    },
+    {
+      "name": "movil-41-username-autenticado",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 2031.8125,
+        "bottom": 2067.8125
+      },
+      "sha256": "c39c9ca889c14db5bc29b428e012b559a6aa074338255cc0349cfa2a76c0d09c"
+    },
+    {
+      "name": "movil-42-envio-incierto",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 2203.625,
+        "bottom": 2239.625
+      },
+      "sha256": "efd599467b5fa94c86c24e8a910b5d87d4276ab4b513179122eca568afe180a1"
+    },
+    {
+      "name": "movil-43-sin-etiqueta-confiable",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 2079.8125,
+        "bottom": 2115.8125
+      },
+      "sha256": "73c3c6b6a868ebfba7b31d80b98b1ff15a09d2ced363abd3d602e239989a6488"
+    },
+    {
+      "name": "movil-44-lista-vacia",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 835,
+        "bottom": 871
+      },
+      "sha256": "abbdf12233f19d010e05fad20090396ef55618c8d369f9d2c0c8c6846607a79f"
+    },
+    {
+      "name": "movil-45-error-listado",
+      "version": "Versión 202611231008",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "footerRect": {
+        "top": 835,
+        "bottom": 871
+      },
+      "sha256": "7af77d9487bf86858d200de1059bcf235ed7fd63e0a9852ab0d36efd2a6dc30c"
+    }
+  ],
+  "externalRequests": []
+}

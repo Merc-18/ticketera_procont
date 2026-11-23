@@ -75,11 +75,13 @@ const inputIds = page => page.$$eval('form[aria-label^="Ingreso con"] input', in
 const productOptions = page => page.$$eval('#ticket-product option', o => o.map(x => x.textContent).filter(t => !t.startsWith('Selecciona')))
 
 for (const [label, viewport] of Object.entries(VIEWPORTS)) {
-  test(`[${label}] 1. /portal muestra Nueva Solicitud, Mis tickets, Rastrear y el ingreso del personal`, async () => {
+  test(`[${label}] 1. /portal muestra dos accesos públicos e ingreso del personal`, async () => {
     const page = await open(viteMock.url, '/portal', viewport)
-    for (const name of [/Nueva Solicitud/, /Mis tickets/, /Rastrear Solicitud/, /Ingreso del personal/]) {
+    for (const name of [/Nueva Solicitud/, /Rastrear Solicitud/, /Ingreso del personal/]) {
       assert.equal(await page.getByRole('button', { name }).count(), 1, String(name))
     }
+    assert.equal(await page.getByRole('button', { name: /Mis tickets/ }).count(), 0)
+    assert.equal(await page.locator('.portal-option').count(), 2)
     await shot(page, `${label}-01-portal`); await done(page)
   })
 
@@ -152,9 +154,9 @@ for (const [label, viewport] of Object.entries(VIEWPORTS)) {
     assert.match(await page.locator('main p').first().textContent(), /consultar tus tickets/)
     await clientLogin(page, 'quipu'); await page.waitForURL('**/cliente/tickets')
     await page.getByRole('heading', { name: 'Mis tickets' }).waitFor()
-    // Desde la página pública, «Mis tickets» conduce al mismo ingreso.
+    // El acceso directo a la ruta privada sigue protegido, sin tarjeta pública.
     const pub = await open(viteMock.url, '/portal', viewport)
-    await pub.getByRole('button', { name: /Mis tickets/ }).click(); await pub.waitForURL('**/cliente?ir=tickets')
+    assert.equal(await pub.getByRole('button', { name: /Mis tickets/ }).count(), 0)
     await done(pub); await done(page)
   })
 
@@ -342,8 +344,12 @@ for (const [label, viewport] of Object.entries(VIEWPORTS)) {
       await page.waitForURL('**/cliente/nuevo')
       await page.locator('#ticket-product').waitFor()
       if (provider === 'quipufac') assert.equal((await productOptions(page)).includes('Quipu'), false)
-      await page.fill('#ticket-requester', 'Persona ficticia integrada')
+      if (provider === 'quipufac') await page.fill('#ticket-requester', 'Persona ficticia integrada')
       await page.selectOption('#ticket-product', { label: provider === 'quipu' ? 'Quipu' : 'Quipu_Fac' })
+      if (provider === 'quipufac') {
+        await page.locator('#ticket-subproject option[value="00000000-0000-4000-8000-000000008002"]').waitFor({ state: 'attached' })
+        await page.selectOption('#ticket-subproject', '00000000-0000-4000-8000-000000008002')
+      }
       await page.selectOption('#ticket-type', { label: 'Mejora' })
       await page.fill('#ticket-title', `Prueba de formulario ${provider}`)
       await page.fill('#ticket-description', 'Datos ficticios del simulador local; sin tickets remotos.')

@@ -14,6 +14,12 @@ const PRODUCTS = [
   { id: '00000000-0000-4000-8000-0000000000a5', name: 'Quipu_AI', requires_subproject: false },
 ] as const
 export const MOCK_PRODUCTS = PRODUCTS
+/** Exclusivamente fixtures: la UI de producción consulta las opciones autorizadas por RPC. */
+export const MOCK_SUBPROJECTS = [
+  { id: '00000000-0000-4000-8000-000000008001', system_id: PRODUCTS[0].id, name: 'Subproyecto ficticio Quipu' },
+  { id: '00000000-0000-4000-8000-000000008002', system_id: PRODUCTS[1].id, name: 'Subproyecto ficticio A' },
+  { id: '00000000-0000-4000-8000-000000008003', system_id: PRODUCTS[1].id, name: 'Subproyecto ficticio B' },
+]
 const BINDING = { quipu: PRODUCTS[0].id, quipufac: PRODUCTS[1].id } as const
 
 /** Empresa ficticia con estudio asociado; otra sin asociación; otra con proveedor sin contrato. */
@@ -30,6 +36,8 @@ interface MockSession { identity: string; provider: Provider; ruc: string; conte
 interface MockTicket {
   identity: string; id: string; request_number: string; system_id: string; title: string; created_at: string
   status: string; general_status: string; requester_name: string; description: string
+  requested_priority?: string | null; requested_subsystem_id?: string | null
+  requester_name_source?: string | null; requester_name_verified?: boolean
   urgent_requested: boolean; rejection_reason: string | null; files: number; bytes: number
   // Campos internos que el adaptador debe descartar si llegaran a enviarse.
   priority?: string; assigned_to?: string; studio_code?: string
@@ -67,6 +75,7 @@ export function createMockClientTransport(): ClientAccessTransport & { tickets: 
   const tickets = seed()
   const usedCodes = new Set<string>()
   let seq = 0, reqSeq = 9100
+  const receipts = new Map<string, { payload: string; receipt: unknown }>()
 
   const newToken = (s: MockSession) => {
     const token = (++seq).toString(16).padStart(64, 'c')
@@ -111,7 +120,8 @@ export function createMockClientTransport(): ClientAccessTransport & { tickets: 
         if (ruc === MOCK_RUC_PROVIDER_PENDING) return edgeFail('provider_contract_pending')
         if (body.password !== MOCK_PASSWORD) return edgeFail('invalid_credentials')
         const username = provider === 'quipu' ? String(body.username) : undefined
-        const s: MockSession = { identity: provider === 'quipu' ? `quipu:${username}` : 'quipufac:company',
+        const owner = provider === 'quipu' ? `quipu:${username}` : 'quipufac:company'
+        const s: MockSession = { identity: ruc === MOCK_RUC ? owner : `${ruc}:${owner}`,
           provider, ruc, context: 'direct', username }
         return { data: { session_token: newToken(s), session: info(s) }, error: null }
       },
@@ -127,21 +137,40 @@ export function createMockClientTransport(): ClientAccessTransport & { tickets: 
         case 'client_session_info': return ok(info(s))
         case 'client_products': return ok(products(s))
         case 'client_list_tickets':
-          return ok(tickets.filter(t => t.identity === s.identity).sort((a, b) => b.created_at.localeCompare(a.created_at)).map(summary))
+          return ok(tickets.filter(t => t.identity === s.identity).sort((a, b) => b.created_at.localeCompare(a.created_at) || b.id.localeCompare(a.id)).slice(Number(args.p_offset ?? 0), Number(args.p_offset ?? 0) + Number(args.p_limit ?? 50)).map(summary))
         case 'client_ticket_detail': {
           const t = own(args.p_request_id)
           return t ? ok({ ...summary(t), description: t.description, urgent_requested: t.urgent_requested,
             rejection_reason: t.status === 'rejected' ? t.rejection_reason : null, timeline: [] }) : pg('PT404')
         }
+        case 'client_subprojects': {
+          if (!products(s).some(p => p.id === args.p_system_id)) return pg('PT403')
+          return ok(MOCK_SUBPROJECTS.filter(p => p.system_id === args.p_system_id))
+        }
         case 'client_submit_request': {
           const p = args.p_payload as Record<string, any>
           if (!products(s).some(x => x.id === p.system_id)) return pg('PT403')
           if (s.ruc !== MOCK_RUC) return pg('23514')
+          const children = MOCK_SUBPROJECTS.filter(x => x.system_id === p.system_id)
+          const product = products(s).find(x => x.id === p.system_id)!
+          if ((p.subsystem_id && !children.some(x => x.id === p.subsystem_id)) || (product.requires_subproject && children.length > 0 && !p.subsystem_id)) return pg('22023')
+          const requestedPriority = p.requested_priority ?? 'medium'
+          if (!['low','medium','high','urgent'].includes(requestedPriority)) return pg('22023')
+          const requesterName = s.provider === 'quipufac' ? p.requester_name : s.username === 'ana' ? 'Ana Ficticia' : s.username
+          if (!requesterName?.trim() || requesterName.length > 200) return pg('22023')
+          const replayKey = `${s.identity}:${args.p_idempotency_key}`
+          const previous = receipts.get(replayKey)
+          if (previous) return previous.payload === JSON.stringify(p) ? ok(previous.receipt) : pg('22023')
           const id = crypto.randomUUID(), request_number = `REQ26-${++reqSeq}`
           tickets.push({ identity: s.identity, id, request_number, system_id: p.system_id, title: p.title,
-            created_at: new Date().toISOString(), status: 'pending', general_status: 'received', requester_name: p.requester_name,
+            created_at: new Date().toISOString(), status: 'pending', general_status: 'received', requester_name: requesterName,
+            requested_priority: requestedPriority, requested_subsystem_id: p.subsystem_id ?? null,
+            requester_name_source: s.provider === 'quipufac' ? 'declared' : s.username === 'ana' ? 'verified_name' : 'username',
+            requester_name_verified: s.provider === 'quipu' && s.username === 'ana',
             description: p.description, urgent_requested: !!p.urgent_requested, rejection_reason: null, files: 0, bytes: 0 })
-          return ok({ id, request_number, tracking_token: crypto.randomUUID() })
+          const receipt = { id, request_number, tracking_token: crypto.randomUUID() }
+          receipts.set(replayKey, { payload: JSON.stringify(p), receipt })
+          return ok(receipt)
         }
         case 'client_reserve_attachments': {
           const t = own(args.p_request_id)

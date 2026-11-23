@@ -1,16 +1,22 @@
 import ControlLabel from '../ui/ControlLabel'
-import { createContext, useCallback, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState, useRef, type Dispatch, type SetStateAction, type MutableRefObject } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import BrandLogo from '../ui/BrandLogo'
 import { clientPortal } from '../../lib/client-portal-api'
 import { clientSessionStore } from '../../lib/client-session-store'
 import {
-  AUTH_TYPE_LABEL, identityLabel, isClientPortalError, type ClientSession,
+  AUTH_TYPE_LABEL, identityLabel, isClientPortalError, type ClientSession, type ClientTicketInput,
 } from '../../lib/client-portal'
+import { createRpcAttempt, type RpcAttempt } from '../../lib/rpc-attempt'
 import MockBanner from './MockBanner'
 import { useCatalogs } from '../../hooks/useCatalogs'
 
 interface ClientContextValue {
+  draft: ClientTicketInput | null
+  setDraft: Dispatch<SetStateAction<ClientTicketInput | null>>
+  attempt: MutableRefObject<RpcAttempt>
+  uncertain: boolean
+  setUncertain: Dispatch<SetStateAction<boolean>>
   session: ClientSession
   token: string
   /** Trata errores comunes: sesión vencida → vuelve al ingreso. Devuelve el mensaje a mostrar. */
@@ -36,6 +42,9 @@ export default function ClientWorkspace() {
   const [session, setSession] = useState<ClientSession | null>(null)
   const [error, setError] = useState<string | null>(null)
   const catalogs = useCatalogs('public')
+  const [draft, setDraft] = useState<ClientTicketInput | null>(null)
+  const attempt = useRef(createRpcAttempt())
+  const [uncertain, setUncertain] = useState(false)
 
   const expire = useCallback((notice: string) => {
     clientSessionStore.clear()
@@ -89,7 +98,7 @@ export default function ClientWorkspace() {
   const productName = (id: string) =>
     session.products.find(p => p.id === id)?.name ?? catalogs.systems.find(s => s.id === id)?.name ?? '—'
   const tab = ({ isActive }: { isActive: boolean }) =>
-    `px-4 py-2 rounded-md font-medium text-sm transition ${isActive ? 'bg-brand-700 text-white shadow-sm' : 'text-gray-600 hover:text-brand-700 hover:bg-white'}`
+    `inline-flex min-h-[44px] items-center px-4 py-2 rounded-md font-medium text-sm transition ${isActive ? 'bg-brand-700 text-white shadow-sm' : 'text-gray-600 hover:text-brand-700 hover:bg-white'}`
 
   return (
     <div className="app-surface">
@@ -126,7 +135,7 @@ export default function ClientWorkspace() {
         </nav>
       </header>
       <main id="main-content" tabIndex={-1} className="workspace-main max-w-5xl mx-auto px-4 sm:px-6">
-        <ClientContext.Provider value={{ session, token, handleError, productName }}>
+        <ClientContext.Provider value={{ session, token, handleError, productName, draft, setDraft, attempt, uncertain, setUncertain }}>
           <Outlet />
         </ClientContext.Provider>
       </main>
