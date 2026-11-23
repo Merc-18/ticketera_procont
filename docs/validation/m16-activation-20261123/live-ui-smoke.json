@@ -1,0 +1,42 @@
+{
+ "portal": {
+  "version": "Versión 202611231058",
+  "nueva": true,
+  "rastrear": true
+ },
+ "cliente": {
+  "cards": 2,
+  "disabled": [
+   false,
+   false
+  ],
+  "loginDisabledNotice": false
+ },
+ "quipuForm": {
+  "ruc": 4,
+  "text": [
+   "RUC",
+   "RUC",
+   "RUC",
+   "Usuario",
+   "Contraseña"
+  ]
+ },
+ "quipufacForm": {
+  "text": [
+   "RUC",
+   "RUC",
+   "RUC",
+   "Contraseña"
+  ]
+ },
+ "ticketsWithoutSession": {
+  "url": "/cliente?ir=tickets",
+  "text": "Saltar al contenido Ticketera Procont Procont Business ← Inicio ¿Qué producto utilizas para ingresar? Ingresa para consu"
+ },
+ "staffLogin": {
+  "hasEmail": 1
+ },
+ "pageErrors": [],
+ "nonGetRequests": []
+}

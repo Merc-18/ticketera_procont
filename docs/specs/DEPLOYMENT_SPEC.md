@@ -6,6 +6,10 @@ Fuente oficial de requisitos: [PRODUCT_REQUIREMENTS.md](PRODUCT_REQUIREMENTS.md)
 
 ## Estado conocido del piloto
 
+> **Actualización 23/11/2026** ([activación](../validation/m16-activation-20261123/REPORT.md)): main `718ab04` (merge del PR #2), Vercel Production desplegado con
+> **Versión 202611231058**; M1–M16b aplicadas (17/17). El merge posterior con solo documentación genera una versión más reciente;
+> la tabla inferior conserva el estado del 20/11 como antecedente.
+
 | Elemento | Estado / fuente | Grado de verificación |
 |---|---|---|
 | GitHub main | `c857a727c8e7640bbce8daada940f973acbf013e` | Ref local y `git ls-remote` coincidentes en revisión. |
@@ -22,6 +26,14 @@ Fuente oficial de requisitos: [PRODUCT_REQUIREMENTS.md](PRODUCT_REQUIREMENTS.md)
 | QA después de M15 | Creación/adjuntos/navegación autenticada pendientes | Sin sesiones reutilizables; no volver a solicitar contraseñas ni fabricar sesiones. |
 
 Una URL pública o una opción Vercel llamada Production no convierte las API externas del piloto en contratos de producción. [API y límites](API_CONTRACTS.md), [evidencia](EVIDENCE_20261120.md).
+
+### Activación M16 + M16b (23/11/2026)
+
+Orden usado: base de datos primero (M16 → M16b con `supabase db push --remote=xsxdpaiivklqeudgqoqf --yes`), verificación
+posterior y luego merge a main. Gracias a M16b, el frontend anterior sigue siendo compatible, así que no hubo ventana crítica.
+El frontend nuevo exige M16 (`client_subprojects`), por lo que no debe desplegarse sobre una base sin M16.
+Si M16 entra y M16b falla, la base queda en M16: reintentar M16b (repetible) o desplegar el frontend nuevo; no revertir M16.
+No se hizo respaldo lógico previo, por decisión expresa del usuario (la CLI exige Docker para `db dump`).
 
 ## Instalación local del frontend
 
