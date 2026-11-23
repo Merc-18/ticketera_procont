@@ -1,0 +1,6 @@
+Target: project ticketera-procont (xsxdpaiivklqeudgqoqf) · production
+Initialising login role...
+DRY RUN: migrations will *not* be pushed to the database.
+Would push these migrations:
+ • 20261123000100_client_request_data_security.sql
+{"upToDate":false,"dryRun":true,"migrations":["20261123000100_client_request_data_security.sql"],"seeds":[],"roles":[],"message":"Finished supabase db push.","target":{"kind":"linked","project_ref":"xsxdpaiivklqeudgqoqf","project_name":"ticketera-procont","environment":"production"}}

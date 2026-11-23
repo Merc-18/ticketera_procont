@@ -1,0 +1,3 @@
+Warning: --project-ref is deprecated and will be removed in v4. Use --remote=<ref> instead
+Target: project ticketera-procont (xsxdpaiivklqeudgqoqf) · production
+{"region":"us-east-2","walg_enabled":true,"pitr_enabled":false,"backups":[],"physical_backup_data":{},"message":"","target":{"kind":"linked","project_ref":"xsxdpaiivklqeudgqoqf","project_name":"ticketera-procont","environment":"production"}}
