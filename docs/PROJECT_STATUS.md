@@ -1,21 +1,21 @@
 # Estado operativo — Ticketera Procont
 
-Revisión: **23/11/2026** · Código: main **`718ab04`** (PR #2) y merge posterior de documentación. Estado del 20/11 conservado en el historial git.
+Revisión: **23/11/2026** · Código de producción: **`2f9ab74aff3d612951596986490b5641a27f3932`** (tag `ticketera-production-20261123`). [Release de producción](validation/production-release-20261123/REPORT.md). Estado del 20/11 conservado en el historial git.
 
 [Requisitos oficiales](specs/PRODUCT_REQUIREMENTS.md) · [Especificaciones](specs/README.md) · [Evidencia y procedencia](specs/EVIDENCE_20261120.md).
 
 | Área | Estado conocido y alcance |
 |---|---|
-| Código | main `718ab04`: integración Codex 1 (M16) + Codex 2 (experiencia del cliente) + M16b, merges normales. |
-| Web | https://ticketera-procont.vercel.app; Vercel Production OK para 718ab04, **Versión 202611231058**; ingreso Quipu/QuipuFac habilitado (comprobado en navegador, sin enviar credenciales). |
+| Código | `main` es la única rama remota. PR #1 (UX/UI), #2 (Codex 1 M16 + Codex 2 experiencia del cliente + M16b) y #3 (documentación) integrados con merges normales; el historial de cada agente sigue alcanzable. |
+| Web | https://ticketera-procont.vercel.app; Production Branch main (inferida); **Versión 202611231105** para el código de `2f9ab74`; los commits solo de documentación generan otra cadena con el mismo código. Ingreso Quipu/QuipuFac habilitado (comprobado en navegador, sin credenciales). |
 | Entorno | Piloto público expresamente autorizado con **APIs de desarrollo** Quipu/QuipuFac; producción externa no confirmada. |
 | Supabase | ticketera-procont, **xsxdpaiivklqeudgqoqf**, ACTIVE_HEALTHY; único proyecto autorizado. |
 | Migraciones | **17/17**: M16 y M16b aplicadas el 23/11/2026 15:55 UTC; postchecks OK; 107/107 funciones idénticas a la instalación probada. |
 | Edge | GET actual: **client-login v3**, **admin-users v4**, ambas ACTIVE; reporte anterior client-login v2 superado. |
 | M15 | Aplicada una vez; creador antiguo cerrado para PUBLIC/anon/authenticated/service_role; dos RPC internas exigen editor activo antes de idempotencia. M13/M14 conservados. |
 | Logins | Ambos funcionaban en dominio oficial según confirmación del usuario previa a M15; no repetidos ni nuevas contraseñas solicitadas. |
-| QA existentes | REQ26-002 Quipu y REQ26-003 Quipu_Fac; BUSINESS ACCOMPANYING SAC; identidades distintas, pending, huella sin cambios. |
-| Público | Seguimiento posterior a M15 devuelve solo REQ y received; negativas sin sesión rechazan RPC de creación. |
+| Datos | 4 solicitudes históricas conservadas (campos M16 en NULL, 1 urgente); 3 tickets de clientes (1 Quipu, 2 QuipuFac) visibles para su dueño, pendientes y sin subproyecto. |
+| Seguridad | RPC de cliente sin sesión → 401 PT401 (`client_subprojects` incluida); `submit_client_request` → 42501; tablas no legibles directamente; seguimiento público solo REQ y estado. |
 | Plan | Hobby gratuito elegido por usuario; estado de facturación/protección Preview/auto-deploy NO VERIFICADO en panel. |
 | Auth interno | GET aún Site URL localhost:3000 y allowlist vacía; invitaciones/callback/SMTP pendientes. |
 

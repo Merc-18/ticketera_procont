@@ -1,6 +1,6 @@
 # Pruebas, evidencias y reproducción segura
 
-Revisión: **20/11/2026** · Código de referencia: **`c857a727c8e7640bbce8daada940f973acbf013e`**.
+Revisión: **23/11/2026** · Código de referencia: **`2f9ab74aff3d612951596986490b5641a27f3932`** (tag `ticketera-production-20261123`, [release](../validation/production-release-20261123/REPORT.md)). Revisión anterior: 20/11/2026 sobre `c857a72`.
 
 Fuente oficial de requisitos: [PRODUCT_REQUIREMENTS.md](PRODUCT_REQUIREMENTS.md).
 
@@ -14,7 +14,8 @@ Fuente oficial de requisitos: [PRODUCT_REQUIREMENTS.md](PRODUCT_REQUIREMENTS.md)
 | Producción: historial y postchecks | 17/17; valores esperados | Remoto, solo lectura. |
 | Producción: huella de funciones | 107/107 idénticas a local M1–M16b | Remoto, solo lectura. |
 | Producción: RPC HTTP sin sesión | 401 PT401 / 42501 | Remoto real, sin escrituras. |
-| Creación/listado con sesiones reales | NO VERIFICADO | Sin sesiones reutilizables ni tickets autorizados. |
+| Producción: navegador en dominio oficial | Portal de 2 tarjetas, ingreso habilitado, 0 errores JS, 0 POST | Remoto real, solo navegación, sin credenciales. |
+| Login, creación, Mis tickets, detalle, adjuntos, logout, bandeja y modal con sesiones reales | NO VERIFICADO | Sin sesiones reutilizables ni tickets autorizados. |
 
 ### Reconstrucción backend M16 — ejecución local del 23/11/2026
 

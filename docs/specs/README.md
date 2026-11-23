@@ -1,6 +1,6 @@
 # Índice de especificaciones — Ticketera Procont
 
-Revisión: **20/11/2026** · Código de referencia: **`c857a727c8e7640bbce8daada940f973acbf013e`**.
+Revisión: **23/11/2026** · Código de referencia: **`2f9ab74aff3d612951596986490b5641a27f3932`** (tag `ticketera-production-20261123`, [release](../validation/production-release-20261123/REPORT.md)). Revisión anterior: 20/11/2026 sobre `c857a72`.
 
 Fuente oficial de requisitos: [PRODUCT_REQUIREMENTS.md](PRODUCT_REQUIREMENTS.md).
 
@@ -15,17 +15,18 @@ Leer [estado actual](../PROJECT_STATUS.md), requisitos, arquitectura y el flujo 
 | [WORKFLOWS_SPEC.md](WORKFLOWS_SPEC.md) | Operación funcional detallada de solicitudes y tablero. |
 | [API_CONTRACTS.md](API_CONTRACTS.md) | HTTP, RPC, sesiones, proveedores parciales y errores. |
 | [client-login.openapi.yaml](client-login.openapi.yaml) | OpenAPI 3.1 solo del endpoint propio. |
-| [DATABASE_SPEC.md](DATABASE_SPEC.md) | Modelo, 15 migraciones, tablas y catálogo de funciones públicas. |
+| [DATABASE_SPEC.md](DATABASE_SPEC.md) | Modelo, 17 migraciones (M1–M16b), tablas y catálogo de funciones públicas. |
 | [PERMISSIONS_SPEC.md](PERMISSIONS_SPEC.md) | Matriz de seis audiencias y capas UI/RPC/RLS/Edge. |
 | [SECURITY_SPEC.md](SECURITY_SPEC.md) | Capacidades, hashes, CORS, M14/M15 y límites de confianza. |
 | [METRICS_SPEC.md](METRICS_SPEC.md) | Cycle/Lead, cohortes, nulls, urgencias y exportación. |
 | [DEPLOYMENT_SPEC.md](DEPLOYMENT_SPEC.md) | Instalación, variables, activación controlada, diagnóstico y contingencia. |
 | [TESTING_SPEC.md](TESTING_SPEC.md) | Clases A–G, ejecuciones separadas, comandos y pendientes. |
-| [DECISION_LOG.md](DECISION_LOG.md) | 29 decisiones con sustituciones, fechas conocidas y límites. |
+| [DECISION_LOG.md](DECISION_LOG.md) | 36 decisiones con sustituciones, fechas conocidas y límites. |
 | [TRACEABILITY_MATRIX.md](TRACEABILITY_MATRIX.md) | Un registro por cada requisito, pruebas y evidencia. |
 | [DOCUMENTATION_INVENTORY.md](DOCUMENTATION_INVENTORY.md) | 31 Markdown originales, vigencia y hashes de base. |
 | [CODE_INVENTORY.md](CODE_INVENTORY.md) | 345 archivos de base, 227 de código/config y 55 JSON. |
 | [EVIDENCE_20261120.md](EVIDENCE_20261120.md) | Evidencia depurada de activación y GET actual, sin secretos. |
+| [Release 23/11/2026](../validation/production-release-20261123/REPORT.md) | Paso a producción de M16/M16b y la experiencia del cliente: GitHub, Supabase, seguridad, Vercel y límites. |
 | [DOCUMENTATION_VALIDATION.md](DOCUMENTATION_VALIDATION.md) | Comprobaciones de documentación y árbol de aplicación idéntico. |
 
 ## Política documental

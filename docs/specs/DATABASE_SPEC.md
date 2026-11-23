@@ -1,6 +1,6 @@
-# Base de datos y migraciones M1–M15
+# Base de datos y migraciones M1–M16b
 
-Revisión: **20/11/2026** · Código de referencia: **`c857a727c8e7640bbce8daada940f973acbf013e`**.
+Revisión: **23/11/2026** · Código de referencia: **`2f9ab74aff3d612951596986490b5641a27f3932`** (tag `ticketera-production-20261123`, [release](../validation/production-release-20261123/REPORT.md)). Revisión anterior: 20/11/2026 sobre `c857a72`.
 
 Fuente oficial de requisitos: [PRODUCT_REQUIREMENTS.md](PRODUCT_REQUIREMENTS.md).
 
@@ -9,7 +9,7 @@ Fuente oficial de requisitos: [PRODUCT_REQUIREMENTS.md](PRODUCT_REQUIREMENTS.md)
 > **Producción 23/11/2026 15:55 UTC:** M16 (`20261123000100_client_request_data_security.sql`, sha256 `ecec0b9a…3f102`) y M16b (`20261123000200_client_legacy_payload_compat.sql`, sha256 `8adce4bb…d036`) **aplicadas** en `xsxdpaiivklqeudgqoqf`; historial 17/17 y funciones remotas idénticas a la instalación probada (107/107). [Activación](../validation/m16-activation-20261123/REPORT.md).
 
 Revisión de esta ampliación: 23/11/2026; base `a61450c93f5180ecd623d945b100424a47a3a5d3`.
-El estado remoto histórico 15/15 de las secciones siguientes no se volvió a consultar.
+Historial remoto consultado el 23/11/2026 tras la activación: 17/17.
 M16 y M16b **aplicadas** (ver aviso superior); texto original de preparación conservado. M16b (`20261123000200_client_legacy_payload_compat.sql`) solo reemplaza `public.submit_client_request` y `public.client_submit_request`; sin columnas, datos, RLS ni permisos nuevos. [Handoff](../validation/client-experience-contract-handoff.md), [informe](../../REPORT-backend-codex1.md).
 
 | Archivo nuevo | Objetivo / datos |
@@ -28,9 +28,9 @@ de COMMIT en base desechable; no se autoriza un down remoto ni reabrir permisos 
 
 ## Estado y reglas de mantenimiento
 
-Las **15 migraciones están aplicadas** según evidencia remota de activación de M15 del 20/11/2026, conservada en [EVIDENCE_20261120.md](EVIDENCE_20261120.md). En esta revisión documental **no se ejecutó SQL ni se volvió a consultar la base**: se contrastó el historial conservado 15/15 con los quince nombres del commit y sus hashes. Management API se usó únicamente con GET para proyecto/funciones/configuración no secreta.
+Las **17 migraciones (M1–M16b) están aplicadas**: historial remoto 17/17 consultado el 23/11/2026 tras aplicar M16 y M16b ([release](../validation/production-release-20261123/REPORT.md)). Texto original de la revisión del 20/11: las 15 migraciones de entonces estaban aplicadas según evidencia remota de activación de M15 del 20/11/2026, conservada en [EVIDENCE_20261120.md](EVIDENCE_20261120.md). En esta revisión documental **no se ejecutó SQL ni se volvió a consultar la base**: se contrastó el historial conservado 15/15 con los quince nombres del commit y sus hashes. Management API se usó únicamente con GET para proyecto/funciones/configuración no secreta.
 
-El SQL en `supabase/migrations/` es fuente de esquema. Archivos SQL en raíz, seeds, scripts de migración de formatos y compensaciones son antecedentes; no se ejecutan como instalación. M1–M15 no se editan ni se reenvían. Cambios futuros: migración nueva, revisión, pruebas y autorización específica. La existencia de scripts versionados de M1–M4 no autoriza aplicarlos contra el proyecto actual.
+El SQL en `supabase/migrations/` es fuente de esquema. Archivos SQL en raíz, seeds, scripts de migración de formatos y compensaciones son antecedentes; no se ejecutan como instalación. M1–M16b no se editan ni se reenvían. Cambios futuros: migración nueva, revisión, pruebas y autorización específica. La existencia de scripts versionados de M1–M4 no autoriza aplicarlos contra el proyecto actual.
 
 ## Modelo y relaciones
 
@@ -93,6 +93,8 @@ Los nombres de diagrama representan tablas de `public`, `app_private`, `auth` y 
 | M13 | [20261119000100_client_access.sql](../../supabase/migrations/20261119000100_client_access.sql) | Client access | APLICADA; evidencia 20/11/2026, historial 15/15 |
 | M14 | [20261119000200_client_login_throttle.sql](../../supabase/migrations/20261119000200_client_login_throttle.sql) | Client login throttle | APLICADA; evidencia 20/11/2026, historial 15/15 |
 | M15 | [20261119000300_security_request_creation.sql](../../supabase/migrations/20261119000300_security_request_creation.sql) | Security request creation | APLICADA; evidencia 20/11/2026, historial 15/15 |
+| M16 | [20261123000100_client_request_data_security.sql](../../supabase/migrations/20261123000100_client_request_data_security.sql) | Identidad Quipu/QuipuFac, prioridad solicitada, subproyecto original, procedencia del nombre, `client_subprojects` | APLICADA 23/11/2026 15:55 UTC; historial 17/17 |
+| M16b | [20261123000200_client_legacy_payload_compat.sql](../../supabase/migrations/20261123000200_client_legacy_payload_compat.sql) | Compatibilidad con el frontend anterior (nombre Quipu descartado; NULL sin clave `subsystem_id`) | APLICADA 23/11/2026 15:55 UTC; historial 17/17 |
 
 ## Especificación por migración
 

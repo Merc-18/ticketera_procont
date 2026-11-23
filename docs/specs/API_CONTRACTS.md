@@ -1,6 +1,6 @@
 # Contratos API y adaptadores
 
-Revisión: **20/11/2026** · Código de referencia: **`c857a727c8e7640bbce8daada940f973acbf013e`**.
+Revisión: **23/11/2026** · Código de referencia: **`2f9ab74aff3d612951596986490b5641a27f3932`** (tag `ticketera-production-20261123`, [release](../validation/production-release-20261123/REPORT.md)). Revisión anterior: 20/11/2026 sobre `c857a72`.
 
 Fuente oficial de requisitos: [PRODUCT_REQUIREMENTS.md](PRODUCT_REQUIREMENTS.md).
 
@@ -34,7 +34,7 @@ exacta de la ampliación; [informe backend](../../REPORT-backend-codex1.md). Los
 
 ## Alcance y fuente
 
-API propia: Edge `client-login` y RPC de PostgreSQL. Las firmas se contrastaron con M1–M15 y contratos `.d.mts`/`.mjs`; inventario completo de 47 nombres públicos (incluye dos relaciones calculadas) en [DATABASE_SPEC.md](DATABASE_SPEC.md#catalogo-de-funciones-publicas). [OpenAPI 3.1](client-login.openapi.yaml) cubre solamente el endpoint propio `client-login`; no inventa un esquema completo de proveedores ni de todos los servicios Supabase.
+API propia: Edge `client-login` y RPC de PostgreSQL. Las firmas se contrastaron con M1–M15 (inventario del 20/11; las ampliaciones M16/M16b están en la sección superior) y contratos `.d.mts`/`.mjs`; inventario completo de 47 nombres públicos (incluye dos relaciones calculadas) en [DATABASE_SPEC.md](DATABASE_SPEC.md#catalogo-de-funciones-publicas). [OpenAPI 3.1](client-login.openapi.yaml) cubre solamente el endpoint propio `client-login`; no inventa un esquema completo de proveedores ni de todos los servicios Supabase.
 
 ## Endpoint `client-login`
 

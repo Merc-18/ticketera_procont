@@ -1,13 +1,13 @@
 # Roles y permisos efectivos
 
-Revisión: **20/11/2026** · Código de referencia: **`c857a727c8e7640bbce8daada940f973acbf013e`**.
+Revisión: **23/11/2026** · Código de referencia: **`2f9ab74aff3d612951596986490b5641a27f3932`** (tag `ticketera-production-20261123`, [release](../validation/production-release-20261123/REPORT.md)). Revisión anterior: 20/11/2026 sobre `c857a72`.
 
 Fuente oficial de requisitos: [PRODUCT_REQUIREMENTS.md](PRODUCT_REQUIREMENTS.md).
 
 ## Extensión local M16 — 23/11/2026
 
 Base `a61450c`; M16 y M16b aplicadas en producción el 23/11/2026 ([activación](../validation/m16-activation-20261123/REPORT.md)). [Contrato](../validation/client-experience-contract-handoff.md),
-[informe y pruebas](../../REPORT-backend-codex1.md). Matriz interna M1–M15 sin cambios.
+[informe y pruebas](../../REPORT-backend-codex1.md). Matriz interna sin cambios respecto de M1–M15: M16/M16b no añaden permisos de personal; `client_subprojects` se concede a anon/authenticated/service_role y `client_owns_request` queda revocada para todos.
 
 | Operación | Permiso efectivo / alcance |
 |---|---|

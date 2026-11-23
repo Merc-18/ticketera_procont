@@ -206,7 +206,7 @@ El inventario completo y los consumidores están en [CODE_INVENTORY.md](CODE_INV
 
 | Ruta | Parámetros / destino | Componente | Sesión y comportamiento |
 |---|---|---|---|
-| `/portal` | Tres tarjetas e ingreso interno | `PublicLanding` | Público; botones navegan a cliente/tracking o abren modal separado. |
+| `/portal` | Dos tarjetas (Nueva Solicitud, Rastrear Solicitud) e ingreso interno; tres hasta el 23/11/2026 | `PublicLanding` | Público; botones navegan a cliente/tracking o abren modal separado. |
 | `/cliente` | Query `ir=nuevo` o `ir=tickets` en lista blanca | `ClientHome` | Público; exactamente dos métodos; flag compilado controla disponibilidad. |
 | `/cliente/nuevo` | Sin UUID de estudio en URL | `ClientWorkspace` + `ClientNewTicket` + `PublicRequestForm` | Capacidad válida; sin asociación muestra aviso y bloquea envío. |
 | `/cliente/tickets` | Lista de identidad | `ClientWorkspace` + `MyTickets` | Capacidad válida; tabla escritorio/tarjetas móvil, primer lote de 100. |

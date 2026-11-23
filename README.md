@@ -2,7 +2,7 @@
 
 Mesa de solicitudes de Procont Business: recepción autenticada de clientes Quipu/QuipuFac, validación interna, trabajo Development de ocho fases, historial, evidencias y métricas basadas en eventos.
 
-Revisión: **20/11/2026** · Base técnica: **`c857a727c8e7640bbce8daada940f973acbf013e`**.
+Revisión: **23/11/2026** · Código de producción: **`2f9ab74aff3d612951596986490b5641a27f3932`** (tag `ticketera-production-20261123`, [release](docs/validation/production-release-20261123/REPORT.md)). Revisión anterior: 20/11/2026 sobre `c857a72`.
 
 La **única fuente oficial de requisitos funcionales aprobados** es [PRODUCT_REQUIREMENTS.md](docs/specs/PRODUCT_REQUIREMENTS.md). Comenzar por [PROJECT_STATUS](docs/PROJECT_STATUS.md): el sistema está en piloto público con APIs de desarrollo autorizadas, M1–M15 aplicadas y comprobaciones autenticadas post-M15 aún pendientes.
 
@@ -55,6 +55,8 @@ Node validado 26.8.2 para tests con imports TypeScript; Chromium se provee por r
 
 M15 revoca creación antigua, conserva M13 por llamada interna y exige perfil activo para las RPC del importador. No revertir a frontend anónimo ni reabrir grants. Cuatro adjuntos / 2.500.000 bytes combinados y bucket privado. Los tokens de proveedor se descartan; Ticketera usa su propia sesión.
 
-La web muestra versión fija de build en Lima, actualmente **Versión 202611191900**. Una etiqueta no demuestra por sí sola el SHA servido. La operación funcional alojada completa post-M15 sigue pendiente: [evidencia](docs/specs/EVIDENCE_20261120.md).
+M16 y M16b (23/11/2026) añaden aislamiento Quipu por username exacto, cuenta empresarial QuipuFac por RUC, prioridad solicitada (Bajo/Medio/Alto/Urgente) y subproyectos validados en servidor; M16b mantiene compatible el frontend anterior. Historial remoto 17/17.
+
+La web muestra versión fija de build en Lima: **Versión 202611231105** para el código de producción (los commits solo de documentación generan otra cadena). Una etiqueta no demuestra por sí sola el SHA servido. La operación funcional con sesiones reales de clientes y personal sigue NO VERIFICADA en producción: [release](docs/validation/production-release-20261123/REPORT.md), [evidencia anterior](docs/specs/EVIDENCE_20261120.md).
 
 Antecedente del README anterior conservado en [docs/history](docs/history/README-before-specs-20261120.md), con sus fechas y contexto. No usar informes de preparación como estado actual.

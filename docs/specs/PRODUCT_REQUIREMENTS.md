@@ -1,6 +1,6 @@
 # Requisitos del producto — Ticketera Procont
 
-Revisión: **20/11/2026** · Código de referencia: **`c857a727c8e7640bbce8daada940f973acbf013e`**.
+Revisión: **23/11/2026** · Código de referencia: **`2f9ab74aff3d612951596986490b5641a27f3932`** (tag `ticketera-production-20261123`, [release](../validation/production-release-20261123/REPORT.md)). Revisión anterior: 20/11/2026 sobre `c857a72`.
 
 Fuente oficial de requisitos: [PRODUCT_REQUIREMENTS.md](PRODUCT_REQUIREMENTS.md).
 
@@ -51,7 +51,7 @@ siguen NO VERIFICADOS en producción hasta una prueba autorizada.
 
 ## Dependencias y restricciones
 
-Frontend React/TypeScript/Vite; Supabase PostgreSQL con M1–M15; Edge `client-login`; Storage privado; Supabase Auth y Edge `admin-users` para personal; catálogos activos; asociación RUC→estudio; proveedor externo accesible con contrato explícito; origen autorizado. Vercel sirve la SPA y GitHub conserva el código. No hay un servidor Node de aplicación en producción.
+Frontend React/TypeScript/Vite; Supabase PostgreSQL con M1–M16b (17 migraciones); Edge `client-login`; Storage privado; Supabase Auth y Edge `admin-users` para personal; catálogos activos; asociación RUC→estudio; proveedor externo accesible con contrato explícito; origen autorizado. Vercel sirve la SPA y GitHub conserva el código. No hay un servidor Node de aplicación en producción.
 
 No forman parte del alcance: cambiar las plataformas externas, migrar datos de otro proyecto, convertir flujos históricos, una identidad universal entre proveedores, SSO automático entre personas, una política SLA nueva, un directorio por cada estudio, sincronización de todos los datos empresariales del proveedor, ni garantías de exportación con snapshot transaccional único. Ninguna operación documental autoriza tickets, despliegues o cambios de configuración.
 
@@ -81,14 +81,14 @@ Cada entrada contiene nombre, descripción/regla, comportamiento esperado, acept
 
 ### PORTAL-001
 
-**Tres entradas del portal**
+**Entradas del portal**
 
 | Campo | Especificación |
 |---|---|
-| Descripción | Tres entradas del portal. |
-| Regla exacta | Ofrecer Nueva Solicitud, Mis tickets y Rastrear Solicitud; las dos primeras requieren cuenta y la tercera es pública. |
-| Comportamiento esperado | Tres tarjetas; cada una lleva al destino aprobado. |
-| Criterio de aceptación | Tres tarjetas; cada una lleva al destino aprobado. |
+| Descripción | Entradas del portal. Decisión del 23/11/2026: dos tarjetas públicas (antes tres). |
+| Regla exacta | Ofrecer Nueva Solicitud (requiere cuenta Quipu/QuipuFac) y Rastrear Solicitud (pública). Mis tickets se alcanza dentro del espacio autenticado, junto a Nuevo ticket. |
+| Comportamiento esperado | Dos tarjetas; cada una lleva al destino aprobado. |
+| Criterio de aceptación | Dos tarjetas; cada una lleva al destino aprobado (comprobado en el dominio oficial el 23/11/2026). |
 | Implementación frontend/servidor | [src/components/requests/PublicLanding.tsx](../../src/components/requests/PublicLanding.tsx); `client_submit_request; track_request_status`; M10 M13. |
 | Prueba correspondiente | [tests/ui/portal-navigation.ui.test.mjs](../../tests/ui/portal-navigation.ui.test.mjs) |
 | Evidencia y alcance | [E-INT](TESTING_SPEC.md#e-int), [E-M15](TESTING_SPEC.md#e-m15) |
@@ -381,18 +381,18 @@ Cada entrada contiene nombre, descripción/regla, comportamiento esperado, acept
 
 ### CLIENT-007
 
-**Paginación disponible y límite UI**
+**Paginación de Mis tickets**
 
 | Campo | Especificación |
 |---|---|
-| Descripción | Paginación disponible y límite UI. |
-| Regla exacta | La RPC admite limit 1..100 y offset 0..100000; la interfaz actual solicita 100 y no ofrece navegación de páginas. |
-| Comportamiento esperado | No afirmar que la UI lista ilimitadamente; conservar aislamiento también al paginar por API. |
-| Criterio de aceptación | No afirmar que la UI lista ilimitadamente; conservar aislamiento también al paginar por API. |
+| Descripción | Paginación de Mis tickets. |
+| Regla exacta | La RPC admite limit 1..100 y offset 0..100000, con orden created_at desc / id desc. Desde el 23/11/2026 la interfaz pide páginas de 50, avanza por la cantidad recibida, confirma el final con una página vacía y permite reintentar. No hay total ni snapshot transaccional. |
+| Comportamiento esperado | Navegar todas las páginas autorizadas sin mezclar identidades; un fallo conserva la página anterior. |
+| Criterio de aceptación | Navegar todas las páginas autorizadas sin mezclar identidades; un fallo conserva la página anterior. |
 | Implementación frontend/servidor | [src/lib/client-portal.ts](../../src/lib/client-portal.ts); [src/components/client/MyTickets.tsx](../../src/components/client/MyTickets.tsx); `client_list_tickets`; M13. |
 | Prueba correspondiente | [supabase/tests/client_access_local.py](../../supabase/tests/client_access_local.py) |
-| Evidencia y alcance | [E-INT](TESTING_SPEC.md#e-int) |
-| Estado actual | **PARCIAL** |
+| Evidencia y alcance | [E-INT](TESTING_SPEC.md#e-int); M16: 106 tickets por RPC real local y 137 en UI con servicios simulados ([release](../validation/production-release-20261123/REPORT.md)) |
+| Estado actual | **CUMPLE** (local; sin sesión real en producción) |
 
 ### TICKET-001
 

@@ -1,6 +1,6 @@
 # Registro cronológico de decisiones aprobadas
 
-Revisión: **20/11/2026** · Código de referencia: **`c857a727c8e7640bbce8daada940f973acbf013e`**.
+Revisión: **23/11/2026** · Código de referencia: **`2f9ab74aff3d612951596986490b5641a27f3932`** (tag `ticketera-production-20261123`, [release](../validation/production-release-20261123/REPORT.md)). Revisión anterior: 20/11/2026 sobre `c857a72`.
 
 Fuente oficial de requisitos: [PRODUCT_REQUIREMENTS.md](PRODUCT_REQUIREMENTS.md).
 
@@ -39,6 +39,13 @@ Registra decisiones del usuario reafirmadas en la solicitud integral y evidencia
 | 20/11, antes de M15 | D-027 | Repetir logins como puerta obligatoria | **SUPERADA** | Usuario eliminó esa dependencia, aceptó evidencia previa y prohibió nuevas solicitudes de passwords. Las pruebas faltantes se marcan NO VERIFICADAS y no bloquean M15. | [OPS-005](PRODUCT_REQUIREMENTS.md#ops-005), [SEC-001](PRODUCT_REQUIREMENTS.md#sec-001) | [docs/specs/EVIDENCE_20261120.md](../../docs/specs/EVIDENCE_20261120.md) |
 | 20/11, activación expresa | D-028 | Aplicar M15 y no reabrir anon | **VIGENTE** | Dry-run único, propietario común, aplicación una vez; 15/15 y permisos verificados; sin rollback ni recrear tickets. | [SEC-001](PRODUCT_REQUIREMENTS.md#sec-001), [SEC-002](PRODUCT_REQUIREMENTS.md#sec-002), [OPS-002](PRODUCT_REQUIREMENTS.md#ops-002) | [docs/specs/EVIDENCE_20261120.md](../../docs/specs/EVIDENCE_20261120.md) |
 | 20/11, documentación integral | D-029 | Fuente única y trazabilidad | **VIGENTE** | Este maestro reúne requisitos aprobados; conservar antecedentes/fechas y no presentar mocks como remoto. Documentación no autoriza SQL o nuevas pruebas QA. | [NFR-002](PRODUCT_REQUIREMENTS.md#nfr-002) | [docs/specs/PRODUCT_REQUIREMENTS.md](../../docs/specs/PRODUCT_REQUIREMENTS.md) |
+| 23/11, reglas definitivas | D-030 | Identidad de clientes | **VIGENTE** | Quipu: individual por RUC y username exacto; nombre verificado o username. QuipuFac: empresa por RUC, tickets compartidos, nombre declarado por ticket sin efecto en permisos. Proveedores separados aunque coincida el RUC. | AUTH-003, AUTH-004, TICKET-002 | [Release](../validation/production-release-20261123/REPORT.md) |
+| 23/11, reglas definitivas | D-031 | Prioridad solicitada | **VIGENTE** | Bajo/Medio/Alto/Urgente → low/medium/high/urgent, default medium. Separada de `urgent_requested` y de `projects.priority`. | TICKET-004, TICKET-013 | [M16](../../supabase/migrations/20261123000100_client_request_data_security.sql) |
+| 23/11, reglas definitivas | D-032 | Subproyectos | **VIGENTE** | catalog_systems = producto, catalog_subsystems = subproyecto, projects = tablero. Pertenencia y autorización validadas en servidor. | TICKET-014 | [M16](../../supabase/migrations/20261123000100_client_request_data_security.sql) |
+| 23/11, portal | D-033 | Dos tarjetas públicas | **VIGENTE** | Portal con Nueva Solicitud y Rastrear Solicitud; Mis tickets dentro del espacio autenticado. Sustituye las tres entradas. | PORTAL-001 | [Informe frontend](../../REPORT-frontend-codex2.md) |
+| 23/11, activación | D-034 | M16b como migración separada | **VIGENTE** | El frontend anterior sigue compatible: el nombre Quipu se descarta y el subproyecto sin clave se exige al aprobar. Retirar con una migración futura cuando no quede tráfico antiguo. | TICKET-002b, TICKET-014b | [Preparación](../validation/m16b-preparation-20261123/REPORT.md) |
+| 23/11, activación expresa | D-035 | Aplicar M16+M16b sin respaldo adicional | **VIGENTE** | El usuario decidió no hacer dump ni instalar Docker o pg_dump. Correcciones solo hacia delante. | — | [Activación](../validation/m16-activation-20261123/REPORT.md) |
+| 23/11, repositorio | D-036 | Una sola rama remota | **VIGENTE** | Solo `main` en GitHub; versión identificada con el tag `ticketera-production-20261123` y su Release. | — | [Release](../validation/production-release-20261123/REPORT.md) |
 
 ## Decisiones aún no tomadas o confirmadas
 

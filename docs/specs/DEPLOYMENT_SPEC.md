@@ -1,29 +1,27 @@
 # Instalación, despliegue y operación
 
-Revisión: **20/11/2026** · Código de referencia: **`c857a727c8e7640bbce8daada940f973acbf013e`**.
+Revisión: **23/11/2026** · Código de referencia: **`2f9ab74aff3d612951596986490b5641a27f3932`** (tag `ticketera-production-20261123`, [release](../validation/production-release-20261123/REPORT.md)). Revisión anterior: 20/11/2026 sobre `c857a72`.
 
 Fuente oficial de requisitos: [PRODUCT_REQUIREMENTS.md](PRODUCT_REQUIREMENTS.md).
 
 ## Estado conocido del piloto
 
-> **Actualización 23/11/2026** ([activación](../validation/m16-activation-20261123/REPORT.md)): main `718ab04` (merge del PR #2), Vercel Production desplegado con
-> **Versión 202611231058**; M1–M16b aplicadas (17/17). El merge posterior con solo documentación genera una versión más reciente;
-> la tabla inferior conserva el estado del 20/11 como antecedente.
+> Estado actualizado el 23/11/2026 tras la [release de producción](../validation/production-release-20261123/REPORT.md). Los valores del 20/11 siguen en el historial git.
 
 | Elemento | Estado / fuente | Grado de verificación |
 |---|---|---|
-| GitHub main | `c857a727c8e7640bbce8daada940f973acbf013e` | Ref local y `git ls-remote` coincidentes en revisión. |
-| Vercel | Proyecto ticketera-procont; https://ticketera-procont.vercel.app | Dominio HTTP 200; panel/facturación no consultados. |
+| GitHub main | Código de producción `2f9ab74aff3d612951596986490b5641a27f3932` (tag `ticketera-production-20261123`); commits posteriores solo de documentación | `git ls-remote`; `main` es la única rama remota desde el 23/11/2026. |
+| Vercel | Proyecto ticketera-procont; https://ticketera-procont.vercel.app; Production Branch **main** | Inferido del comportamiento: las ramas generan Preview y el dominio cambia con los builds de main. Panel/facturación no consultados. |
 | Plan | **Hobby gratuito elegido por el usuario** | Decisión aprobada; facturación, cuotas y elegibilidad no verificadas nuevamente. No prometer capacidad ilimitada. |
-| Versión visible | **Versión 202611191900** | GET del bundle; se calcula en America/Lima al iniciar cada build. |
-| Login frontend | `VITE_CLIENT_LOGIN_ENABLED=1` | Constante true en bundle actual y evidencia UI conservada. No demuestra login nuevo. |
+| Versión visible | **Versión 202611231105** para el código de `2f9ab74` | GET del bundle; se calcula en America/Lima al iniciar cada build, así que un commit solo de documentación produce otra cadena con el mismo código. |
+| Login frontend | `VITE_CLIENT_LOGIN_ENABLED=1` | Selectores Quipu/QuipuFac habilitados en el navegador el 23/11/2026 (sin enviar credenciales). No demuestra un login real. |
 | Supabase | ticketera-procont / `xsxdpaiivklqeudgqoqf` | GET Management API ACTIVE_HEALTHY. Único destino autorizado. |
-| Migraciones | M1–M15, **15/15** | Evidencia remota conservada de activación 20/11; no ejecutar SQL otra vez en esta tarea. |
+| Migraciones | M1–M16b, **17/17** | Historial remoto del 23/11/2026; 107/107 funciones idénticas a la instalación probada. |
 | client-login | ACTIVE **v3**, verify_jwt=false | GET actual; reporte previo v2 superado por esta observación. |
 | admin-users | ACTIVE **v4**, verify_jwt=false | GET actual; validación del bearer en handler. |
 | Proveedores | Dos API **de desarrollo**, autorizadas expresamente para piloto público | Decisión del usuario; configuración por nombres presente, no se leyeron valores privados. |
 | Auth URLs | Site URL localhost:3000, allowlist vacía | GET actual; no dar invitaciones/callback por operativos. |
-| QA después de M15 | Creación/adjuntos/navegación autenticada pendientes | Sin sesiones reutilizables; no volver a solicitar contraseñas ni fabricar sesiones. |
+| QA después de M16/M16b | Login real, creación, Mis tickets, detalle, adjuntos, logout, bandeja y modal: NO VERIFICADOS | Sin sesiones reutilizables; no volver a solicitar contraseñas ni fabricar sesiones. |
 
 Una URL pública o una opción Vercel llamada Production no convierte las API externas del piloto en contratos de producción. [API y límites](API_CONTRACTS.md), [evidencia](EVIDENCE_20261120.md).
 
