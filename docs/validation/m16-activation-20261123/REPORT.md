@@ -32,3 +32,18 @@ Se ejecutó `m16-postcheck-readonly.sql`, con la misma regla de propiedad escrit
   - Compatibilidad del frontend anterior y del nuevo.
 - **No verificado en producción:** login real, creación, Mis tickets con sesión, detalle, adjuntos y logout con cuentas de clientes.
   No había sesiones reutilizables, no se pidieron contraseñas y no se autorizaron tickets reales.
+
+## GitHub y Vercel
+
+| Paso | Resultado |
+|---|---|
+| Push de la rama | `integration/ticketera-client-experience-final` (push normal, sin force). |
+| PR | #2 hacia main. Diff de migraciones: solo M16 y M16b; M1–M15 sin cambios. Vercel Preview OK. |
+| Merge | Merge normal: main `718ab04be4db7454ace26e138b9bac96bd6bcad4`, padres `a61450c` y `5814a6d`. |
+| Vercel Production | Estado del commit `718ab04`: «Deployment has completed». No se cambiaron variables. |
+| Dominio oficial | Bundle `index-gFRAUPZx.js` (453.010 bytes, en local 452.982), **Versión 202611231058** (hora de Lima). Contiene `client_subprojects` y «Prioridad solicitada». |
+| Navegador (Chromium, solo navegación) | Portal con dos tarjetas; selectores Quipu/QuipuFac habilitados (`VITE_CLIENT_LOGIN_ENABLED` activo); formularios RUC/usuario/contraseña y RUC/contraseña; `/cliente/tickets` sin sesión redirige al ingreso; ingreso del personal disponible. 0 errores JS, 0 peticiones POST (`live-ui-smoke.json`). |
+
+No verificado en producción, por falta de sesiones reales autorizadas: Mis tickets, formulario con prioridad y subproyectos,
+detalle, adjuntos, logout, bandeja interna y RequestValidationModal con datos reales. Esas pantallas pasaron 36/36 y 31/31 en
+Chromium con servicios simulados.

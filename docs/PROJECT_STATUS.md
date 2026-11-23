@@ -1,16 +1,16 @@
 # Estado operativo — Ticketera Procont
 
-Revisión: **20/11/2026** · Código: **`c857a727c8e7640bbce8daada940f973acbf013e`**.
+Revisión: **23/11/2026** · Código: main **`718ab04`** (PR #2) y merge posterior de documentación. Estado del 20/11 conservado en el historial git.
 
 [Requisitos oficiales](specs/PRODUCT_REQUIREMENTS.md) · [Especificaciones](specs/README.md) · [Evidencia y procedencia](specs/EVIDENCE_20261120.md).
 
 | Área | Estado conocido y alcance |
 |---|---|
-| Código | main local/remoto c857a72 confirmado; esta rama solo documentación, sin publicación. |
-| Web | https://ticketera-procont.vercel.app; HTTP 200; **Versión 202611191900**; login compilado habilitado. |
+| Código | main `718ab04`: integración Codex 1 (M16) + Codex 2 (experiencia del cliente) + M16b, merges normales. |
+| Web | https://ticketera-procont.vercel.app; Vercel Production OK para 718ab04, **Versión 202611231058**; ingreso Quipu/QuipuFac habilitado (comprobado en navegador, sin enviar credenciales). |
 | Entorno | Piloto público expresamente autorizado con **APIs de desarrollo** Quipu/QuipuFac; producción externa no confirmada. |
 | Supabase | ticketera-procont, **xsxdpaiivklqeudgqoqf**, ACTIVE_HEALTHY; único proyecto autorizado. |
-| Migraciones | **15/15** según evidencia de activación del 20/11; no se ejecutó SQL para esta revisión. |
+| Migraciones | **17/17**: M16 y M16b aplicadas el 23/11/2026 15:55 UTC; postchecks OK; 107/107 funciones idénticas a la instalación probada. |
 | Edge | GET actual: **client-login v3**, **admin-users v4**, ambas ACTIVE; reporte anterior client-login v2 superado. |
 | M15 | Aplicada una vez; creador antiguo cerrado para PUBLIC/anon/authenticated/service_role; dos RPC internas exigen editor activo antes de idempotencia. M13/M14 conservados. |
 | Logins | Ambos funcionaban en dominio oficial según confirmación del usuario previa a M15; no repetidos ni nuevas contraseñas solicitadas. |
@@ -21,9 +21,11 @@ Revisión: **20/11/2026** · Código: **`c857a727c8e7640bbce8daada940f973acbf013
 
 ## Pendientes que impiden afirmar validación completa
 
-- **NO VERIFICADO post-M15:** creación autenticada exitosa por ambos proveedores, Mis tickets con sesiones activas, detalle ajeno, subida/lectura real de adjuntos, bandeja interna visual y logout.
+- **NO VERIFICADO en producción post-M16/M16b:** login real, creación autenticada por ambos proveedores, Mis tickets con sesión, detalle propio/ajeno, adjuntos reales, bandeja interna y modal con sesión de personal, y logout. Las reglas están probadas en local sobre el mismo código SQL; falta una prueba real autorizada.
 - No había sesiones QA activas ni administrativas reutilizables en evidencia M15; no pedir contraseñas de nuevo ni sustituir admin con clave técnica. No existe almacén cifrado QA reutilizable acreditado.
 - Contratos/URLs oficiales de producción del proveedor pendientes antes de abandonar piloto; no cambiar las API de desarrollo autorizadas sin nueva decisión.
-- Exportación sin snapshot transaccional único; UI Mis tickets solo primer lote de 100; riesgo preventivo si cambia el RUC de estudio asociado explícitamente.
+- Exportación sin snapshot transaccional único; riesgo preventivo si cambia el RUC de estudio asociado explícitamente. (Mis tickets ya pagina en el servidor, de 50 en 50.)
+- Tolerancia de M16b para el frontend anterior: retirarla con una migración futura cuando no quede tráfico antiguo (consulta en `docs/validation/m16b-preparation-20261123/m16b-postcheck.sql`).
+- 3 solicitudes de clientes históricas pendientes sin subproyecto: el personal debe clasificarlas antes de aprobar (trigger existente).
 
-No declarar producción completamente validada. No hay nuevas solicitudes en esta tarea ni cambios de aplicación, SQL, Edge, Vercel o secretos. [Pruebas por clase y ejecución](specs/TESTING_SPEC.md), [roles](specs/PERMISSIONS_SPEC.md), [operación y contingencia](specs/DEPLOYMENT_SPEC.md).
+No declarar producción completamente validada. En la activación del 23/11 no se crearon solicitudes ni se cambiaron Edge, variables de Vercel, CORS ni secretos. [Pruebas por clase y ejecución](specs/TESTING_SPEC.md), [roles](specs/PERMISSIONS_SPEC.md), [operación y contingencia](specs/DEPLOYMENT_SPEC.md).
