@@ -209,7 +209,7 @@ test('Quipu observed contract connects handler to portal session, new-ticket pro
   // Provider values and RPC storage are synthetic. Exercises the real handler and portal together.
   let opened
   const calls = []
-  const products = [{ id: crypto.randomUUID(), name: 'Quipu' }, { id: crypto.randomUUID(), name: 'Quipu_Fac' }]
+  const products = [{ id: crypto.randomUUID(), name: 'Quipu', requires_subproject: false }, { id: crypto.randomUUID(), name: 'Quipu_Fac', requires_subproject: false }]
   const rpc = async (name, args) => {
     calls.push(name)
     if (name === 'client_open_session') { opened = args; return { data: null, error: null } }
