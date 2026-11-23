@@ -143,7 +143,7 @@ export default function UserManagementPanel() {
           { label: 'Viewers',       value: stats.viewer,     color: 'border-gray-400',    icon: 'eye' as IconName, show: true },
           { label: 'Inactivos',     value: stats.inactive,   color: 'border-gray-400',  icon: 'lock' as IconName, show: true },
         ].filter(s => s.show).map(s => (
-          <div key={s.label} className={`bg-white rounded-xl border-l-4 ${s.color} p-4 shadow-sm flex items-center gap-3`}>
+          <div key={s.label} className={`bg-surface rounded-xl border-l-4 ${s.color} p-4 shadow-sm flex items-center gap-3`}>
             <Icon name={s.icon} size={24} className="text-gray-600 shrink-0" />
             <div>
               <p className="text-2xl font-bold text-gray-900">{s.value}</p>
@@ -163,7 +163,7 @@ export default function UserManagementPanel() {
               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${
                 filter === f.key
                   ? 'bg-primary text-white shadow-sm'
-                  : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
+                  : 'bg-surface border border-gray-200 text-gray-600 hover:bg-gray-50'
               }`}
             >
               {f.label}
@@ -189,7 +189,7 @@ export default function UserManagementPanel() {
       </div>
 
       {/* Tabla */}
-      <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
+      <div className="bg-surface rounded-xl border shadow-sm overflow-hidden">
         {filtered.length === 0 ? (
           <div className="py-16 text-center text-gray-400">
             <Icon name="team" size={36} className="mx-auto mb-3 text-gray-500" />
@@ -296,7 +296,7 @@ export default function UserManagementPanel() {
       {/* Confirm Delete Modal */}
       {confirmDelete && (
         <div className="modal-backdrop fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="modal-panel bg-white rounded-xl shadow-2xl p-6 max-w-sm w-full">
+          <div className="modal-panel bg-surface rounded-xl shadow-2xl p-6 max-w-sm w-full">
             <h3 className="text-lg font-medium text-gray-900 mb-2 inline-flex items-center gap-2"><Icon name="trash" size={20} />Eliminar usuario</h3>
             <p className="text-gray-600 text-sm mb-1">
               ¿Estás seguro que deseas eliminar a <strong>{confirmDelete.full_name}</strong>?

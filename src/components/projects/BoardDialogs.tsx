@@ -5,7 +5,7 @@ import { reopenTargets, type BoardFlow, type PendingItem } from '../../lib/board
 import Icon from '../ui/Icon'
 
 const shell = 'modal-backdrop fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-[70]'
-const card = 'modal-panel bg-white rounded-xl max-w-lg w-full shadow-2xl max-h-[90vh] overflow-y-auto'
+const card = 'modal-panel bg-surface rounded-xl max-w-lg w-full shadow-2xl max-h-[90vh] overflow-y-auto'
 
 /**
  * Confirmación explícita para pasar a Done con tareas pendientes del checklist. Muestra la lista
@@ -105,14 +105,14 @@ export function ReopenDialog({ flows, busy, onConfirm, onCancel }: {
           {flows.length > 1 && (
             <div>
               <label className="block text-xs font-semibold text-gray-600 mb-1" htmlFor="reopen-flow">Flujo</label>
-              <select id="reopen-flow" value={flowId} onChange={e => setFlowId(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white">
+              <select id="reopen-flow" value={flowId} onChange={e => setFlowId(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-surface">
                 {flows.map(f => <option key={f.id} value={f.id}>{f.flow_type === 'development' ? 'Development' : 'Administrative (histórico)'}</option>)}
               </select>
             </div>
           )}
           <div>
             <label className="block text-xs font-semibold text-gray-600 mb-1" htmlFor="reopen-phase">Fase de retorno <span className="text-red-700">*</span></label>
-            <select id="reopen-phase" value={target} onChange={e => setTarget(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white">
+            <select id="reopen-phase" value={target} onChange={e => setTarget(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-surface">
               <option value="" disabled>Selecciona la fase…</option>
               {targets.map(p => <option key={p} value={p}>{PHASE_LABELS[p] ?? p}</option>)}
             </select>

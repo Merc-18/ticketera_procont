@@ -39,7 +39,7 @@ export default function ClientTicketDetail() {
     return (
       <div className="space-y-4">
         {back}
-        <div className="bg-white rounded-xl border border-gray-200 p-10 text-center text-gray-600">
+        <div className="bg-surface rounded-xl border border-gray-200 p-10 text-center text-gray-600">
           No encontramos ese ticket entre los tuyos.
         </div>
       </div>

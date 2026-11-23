@@ -1,0 +1,19 @@
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✔ claro por defecto: sin preferencia guardada no se cambia el tema (1935.14191ms)
+✔ selector accesible: grupo con nombre, Lucide Sun/Moon, tooltip, 44 px y foco visible (180.934043ms)
+✔ puntero: un único fundido de página (View Transition); se guarda solo la palabra del tema (535.566962ms)
+✔ teclado: el cambio no se anima (Emil) y es inmediato (158.325247ms)
+✔ movimiento reducido: el fundido se conserva solo como opacidad breve (120 ms) (202.69022ms)
+✔ persistencia sin destello: navegar, recargar y las rutas públicas abren ya en oscuro (754.192637ms)
+✔ sesión del cliente (fixtures): el tema se mantiene al entrar, navegar y salir (854.781306ms)
+✔ panel interno (fixtures): selector en la banda, se mantiene al entrar y al cerrar sesión (1586.196892ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6583.972776

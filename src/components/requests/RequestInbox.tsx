@@ -108,7 +108,7 @@ export default function RequestInbox() {
         <div className="inbox-toolbar flex flex-wrap items-center gap-2">
           <label htmlFor="inbox-studio" className="text-sm text-gray-600">Estudio</label>
           <select id="inbox-studio" value={studioFilter} onChange={e => setStudioFilter(e.target.value)}
-            className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-primary outline-none">
+            className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm bg-surface focus:ring-2 focus:ring-primary outline-none">
             <option value="all">Todos</option>
             {catalogs.studios.map(st => <option key={st.id} value={st.id}>{st.name}</option>)}
             <option value="none">Sin estudio</option>
@@ -319,7 +319,7 @@ export default function RequestInbox() {
       {showImportModal && (
         <Suspense fallback={
           <div className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div role="dialog" aria-modal="true" aria-label="Importar desde Planner" className="modal-panel bg-white rounded-2xl p-6 max-w-lg w-full">
+            <div role="dialog" aria-modal="true" aria-label="Importar desde Planner" className="modal-panel bg-surface rounded-2xl p-6 max-w-lg w-full">
               <ModalFocus onDismiss={() => setShowImportModal(false)} />
               <p role="status" className="text-sm text-gray-600">Cargando importador de Planner…</p>
               <button onClick={() => setShowImportModal(false)} className="ui-button ui-button-secondary mt-4">Cancelar</button>

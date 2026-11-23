@@ -168,7 +168,7 @@ export default function PublicRequestForm({ client }: { client: ClientFormConfig
               {deliveryError && <p className="text-xs">{deliveryError}</p>}
               <p className="text-xs">Puedes reintentar durante los 30 minutos siguientes al envío.</p>
               <button type="button" onClick={() => void retryDelivery()} disabled={retrying}
-                className="px-3 py-1.5 bg-accent-400 hover:bg-accent-300 text-gray-900 rounded-lg text-xs font-bold disabled:opacity-50">
+                className="px-3 py-1.5 bg-accent-400 hover:bg-accent-300 text-on-accent rounded-lg text-xs font-bold disabled:opacity-50">
                 {retrying ? 'Reintentando…' : 'Reintentar adjuntos'}
               </button>
             </div>

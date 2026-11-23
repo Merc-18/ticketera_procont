@@ -66,7 +66,7 @@ export default function UserModal({ user, currentUserRole, currentUserId, onClos
 
   return (
     <div className="modal-backdrop fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50" onClick={onClose}>
-      <div role="dialog" aria-modal="true" aria-label="Administrar usuario" className="modal-panel bg-white rounded-xl max-w-lg w-full shadow-xl" onClick={e => e.stopPropagation()}>
+      <div role="dialog" aria-modal="true" aria-label="Administrar usuario" className="modal-panel bg-surface rounded-xl max-w-lg w-full shadow-xl" onClick={e => e.stopPropagation()}>
         <ModalFocus onDismiss={onClose} />
 
         {/* Header */}
@@ -172,7 +172,7 @@ export default function UserModal({ user, currentUserRole, currentUserId, onClos
                   isActive ? 'bg-green-700' : 'bg-gray-300'
                 }`}
               >
-                <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${
+                <span className={`inline-block h-4 w-4 transform rounded-full bg-surface shadow transition-transform ${
                   isActive ? 'translate-x-6' : 'translate-x-1'
                 }`} />
               </button>

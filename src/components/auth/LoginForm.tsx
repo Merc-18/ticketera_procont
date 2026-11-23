@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import PasswordField from '../ui/PasswordField'
 import { BRAND } from '../../theme/brand'
+import ThemeToggle from '../ui/ThemeToggle'
 
 export default function LoginForm() {
   const [email, setEmail] = useState('')
@@ -31,6 +32,7 @@ export default function LoginForm() {
   return (
     <main id="main-content" tabIndex={-1} className="app-surface flex items-center justify-center px-4 py-12">
       <div className="max-w-md w-full">
+        <div className="theme-row"><ThemeToggle /></div>
         {/* Card */}
         <div className="tracking-panel">
           {/* Logo/Título */}

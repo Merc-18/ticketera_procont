@@ -196,7 +196,7 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
   if (done) {
     return (
       <div className="modal-backdrop fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div role="dialog" aria-modal="true" aria-label="Importar desde Planner" className="modal-panel bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full text-center">
+        <div role="dialog" aria-modal="true" aria-label="Importar desde Planner" className="modal-panel bg-surface rounded-2xl shadow-2xl p-8 max-w-sm w-full text-center">
         <ModalFocus onDismiss={onClose} />
           <Icon name="check" size={44} className="mx-auto mb-4 text-green-700" />
           <h2 className="text-xl font-bold text-gray-900 mb-2">{imported} solicitudes confirmadas</h2>
@@ -220,7 +220,7 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
 
   return (
     <div className="modal-backdrop fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div role="dialog" aria-modal="true" aria-label="Importar desde Planner" className="modal-panel bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+      <div role="dialog" aria-modal="true" aria-label="Importar desde Planner" className="modal-panel bg-surface rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col">
         <ModalFocus onDismiss={onClose} />
 
         {/* Header */}

@@ -20,6 +20,12 @@ body {
   --p-tint: #dbeafe; --p-tint-weak: #eff6ff; --p-accent-tint: #fef9c3;
   --gold: #eebb31; --line: #cbd5e1; --field-line: #64748b;
   --success: #15803d; --danger: #b91c1c; --danger-indicator: #ef4444; --danger-bg: #fef2f2; --warning-bg: #fef9c3; --warning-ink: #713f12;
+  /* Rol «relleno» de la acción y del peligro, separado del rol «texto/foco» (en claro valen lo mismo). */
+  --p-action-fill: #1e3a8a; --p-action-fill-hover: #01257b; --p-action-fill-active: #001e64; --p-focus: #1e3a8a;
+  --danger-fill: #b91c1c; --danger-fill-hover: #991b1b; --danger-fill-active: #7f1d1d; --danger-fill-ink: #fff;
+  --p-band: #01257b; --surface: 248 250 252;
+  --p-backdrop: rgb(1 37 123 / .45); --p-modal-shadow: 0 24px 80px rgb(1 37 123 / .15);
+  color-scheme: light;
   --font-display: 'Host Grotesk', system-ui, sans-serif;
   --font-text: 'Host Grotesk', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
@@ -37,12 +43,14 @@ body {
   button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
   button { touch-action: manipulation; }
   button:disabled { cursor: not-allowed; }
-  :focus-visible { outline: 2px solid var(--p-action); outline-offset: 2px; }
+  :focus-visible { outline: 2px solid var(--p-focus); outline-offset: 2px; }
   input:focus-visible, select:focus-visible, textarea:focus-visible { outline-offset: 2px; }
   h1, h2, h3 { font-family: var(--font-display); font-weight: 500; letter-spacing: -.025em; text-wrap: balance; }
   input:not([type=checkbox]):not([type=radio]):not([type=file]), select, textarea { min-height: 44px; border-color: var(--field-line); border-radius: var(--r-sm); }
-  input, textarea { caret-color: var(--p-action); }
-  input[type=checkbox] { accent-color: var(--p-action); }
+  /* Campo sin fondo propio: el del navegador es #FFF en claro (= --p-elevated); en oscuro sería gris neutro. */
+  input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=range]), select, textarea { background-color: var(--p-elevated); color: inherit; }
+  input, textarea { caret-color: var(--p-focus); }
+  input[type=checkbox] { accent-color: var(--p-action-fill); }
   textarea { line-height: 1.65; }
   select { max-width: 100%; }
   th { font-weight: 500; text-align: left; }
@@ -76,7 +84,7 @@ body {
 .portal-option:first-child .icon-tile { background: var(--p-accent-tint); }
 .public-footer { color: var(--p-muted); font-size: 13px; margin-top: 72px; }
 .ui-button { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: var(--r-sm); padding: 10px 20px; font-weight: 500; font-size: 14px; border: 1px solid transparent; }
-.ui-button-primary { background: var(--p-action); color: var(--p-action-ink); }
+.ui-button-primary { background: var(--p-action-fill); color: var(--p-action-ink); }
 .ui-button-secondary { background: var(--p-surface); color: var(--p-action); border-color: var(--line); }
 .ui-button-quiet { color: var(--p-muted); background: transparent; }
 .ui-button:disabled { opacity: .55; }
@@ -93,7 +101,7 @@ body {
 .provider-card:disabled { opacity: .6; }
 .provider-card h2 { font-size: 24px; color: var(--p-action); margin-bottom: 4px; }
 .provider-indicator { margin-left: auto; border: 1px solid var(--line); border-radius: 50%; width: 24px; height: 24px; flex-shrink: 0; display: grid; place-items: center; color: var(--p-action); }
-.provider-card[aria-pressed=true] .provider-indicator { color: var(--p-surface); background: var(--p-action); border-color: var(--p-action); }
+.provider-card[aria-pressed=true] .provider-indicator { color: var(--p-action-ink); background: var(--p-action-fill); border-color: var(--p-action-fill); }
 .client-login-form { margin-top: 24px; padding: 32px; border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--p-surface); }
 .client-login-form > .space-y-4 { max-width: 520px; margin-inline: auto; }
 .client-login-form > button[type=submit], .client-login-form > p:last-child { display: block; max-width: 520px; margin-inline: auto; }
@@ -112,7 +120,7 @@ body {
 .ticket-form form .ui-input { background: var(--p-elevated); }
 .attachment-picker { border: 1px dashed var(--field-line); border-radius: var(--r-md); padding: 24px; background: var(--p-tint-weak); }
 .attachment-picker input[type=file] { min-height: 44px; }
-.attachment-picker input:focus-visible + .attachment-trigger { outline: 2px solid var(--p-action); outline-offset: 3px; }
+.attachment-picker input:focus-visible + .attachment-trigger { outline: 2px solid var(--p-focus); outline-offset: 3px; }
 .attachment-picker input:disabled + .attachment-trigger { opacity: .55; cursor: not-allowed; }
 .attachment-picker button { min-width: 44px; min-height: 44px; border-radius: var(--r-sm); }
 .attachment-picker .attachment-file { background: var(--p-surface); flex-wrap: wrap; }
@@ -167,14 +175,14 @@ body {
 .data-view table th { color: var(--p-action); background: var(--p-tint-weak); }
 .data-view table th, .data-view table td { padding-top: 16px; padding-bottom: 16px; }
 .roadmap-quarter { border: 1px solid var(--line); background: var(--p-surface); border-radius: var(--r-md); box-shadow: none; }
-.modal-backdrop { background: rgb(1 37 123 / .45); padding: 24px; }
-.modal-panel { border-radius: var(--r-lg); background: var(--p-surface); border: 1px solid var(--line); box-shadow: 0 24px 80px rgb(1 37 123 / .15); max-height: calc(100dvh - 48px); }
+.modal-backdrop { background: var(--p-backdrop); padding: 24px; }
+.modal-panel { border-radius: var(--r-lg); background: var(--p-surface); border: 1px solid var(--line); box-shadow: var(--p-modal-shadow); max-height: calc(100dvh - 48px); }
 .modal-panel:not(.flex) { overflow-y: auto; }
 .build-version { background: var(--p-surface); color: var(--p-muted); border-top: 1px solid var(--line); font-family: var(--font-mono); min-height: 36px; }
 .control-label { display: inline-flex; align-items: center; gap: 8px; vertical-align: middle; }
 .control-label > svg { flex-shrink: 0; }
 .scroll-hint { display: none; }
-.skip-link { position: fixed; top: 8px; left: 16px; z-index: 300; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; background: var(--p-action); color: var(--p-surface); border-radius: 8px; transition: none; }
+.skip-link { position: fixed; top: 8px; left: 16px; z-index: 300; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; background: var(--p-action-fill); color: var(--p-action-ink); border-radius: 8px; transition: none; }
 .skip-link:focus-visible { width: auto; height: auto; padding: 12px 20px; overflow: visible; clip-path: none; }
 
 /* Movimiento (Emil + Taste). Teclado: nada se anima. Puntero fino: hover 150 ms de entrada y 120 ms de salida.
@@ -184,13 +192,13 @@ button, a, .portal-option, .provider-card {
   transition-duration: 120ms; transition-timing-function: var(--ease-out);
 }
 html[data-input=keyboard] *, html[data-input=keyboard] *::before, html[data-input=keyboard] *::after { transition-duration: 0s !important; animation: none !important; }
-.ui-button-primary:active:not(:disabled) { background: var(--p-action-active); }
+.ui-button-primary:active:not(:disabled) { background: var(--p-action-fill-active); }
 .ui-button-secondary:active:not(:disabled) { background: var(--p-tint); }
 @media (hover: hover) and (pointer: fine) {
   .portal-option:hover { transform: translateY(-2px); border-color: var(--field-line); transition-duration: 150ms; }
   .provider-card:hover:not(:disabled) { border-color: var(--field-line); transition-duration: 150ms; }
   .ui-button:hover:not(:disabled) { transform: translateY(-1px); transition-duration: 150ms; }
-  .ui-button-primary:hover:not(:disabled) { background: var(--p-action-hover); }
+  .ui-button-primary:hover:not(:disabled) { background: var(--p-action-fill-hover); }
   .ui-button-secondary:hover:not(:disabled), .password-toggle:hover { background: var(--p-tint-weak); border-color: var(--field-line); }
   html:not([data-input=keyboard]) button:active:not(:disabled), html:not([data-input=keyboard]) a.ui-button:active { transform: translateY(1px) scale(.98); transition-duration: 100ms; }
 }
@@ -271,7 +279,8 @@ html:not([data-input=keyboard]) .modal-backdrop { transition: opacity 200ms var(
 
 @media (max-width: 479px) {
   .portal-nav > .page-wrap { flex-wrap: wrap; padding-block: 16px; }
-  .portal-nav > .page-wrap > .ui-button { width: 100%; }
+  .portal-nav > .page-wrap > .portal-nav-actions { width: 100%; }
+  .portal-nav-actions > .ui-button { flex: 1; }
 }
 
 .ticket-form-fields { border: 0; padding: 0; margin: 0; }
@@ -306,8 +315,63 @@ main p.text-sm, main p.text-xs, main li.text-sm, main dd.text-sm, main p.text-\[
 .ui-button-danger { background: var(--p-surface); color: var(--danger); border-color: var(--danger); }
 @media (hover: hover) and (pointer: fine) { .ui-button-danger:hover:not(:disabled) { background: var(--danger-bg); } }
 .ui-button-danger:active:not(:disabled) { background: var(--danger-bg); }
-.ui-button-danger-solid { background: var(--danger); color: #fff; }
-@media (hover: hover) and (pointer: fine) { .ui-button-danger-solid:hover:not(:disabled) { background: #991b1b; } }
-.ui-button-danger-solid:active:not(:disabled) { background: #7f1d1d; }
+.ui-button-danger-solid { background: var(--danger-fill); color: var(--danger-fill-ink); }
+@media (hover: hover) and (pointer: fine) { .ui-button-danger-solid:hover:not(:disabled) { background: var(--danger-fill-hover); } }
+.ui-button-danger-solid:active:not(:disabled) { background: var(--danger-fill-active); }
 .form-actions { display: flex; flex-direction: column; gap: 12px; }
 @media (min-width: 768px) { .form-actions { flex-direction: row; align-items: center; } .form-actions > .ui-button { min-width: 180px; } }
+
+/* ─── Tema oscuro (extensión del sistema; valores y contrastes en docs/validation/dark-mode-20261123) ───────
+   Navy profundo de la identidad Procont (matiz ≈ 222°), sin negro ni blanco puros. Página → superficie → elevada
+   en escalones claros (Taste cards.md); azul de marca como texto #93C5FD, como relleno #2563EB (texto 4,9:1; 3,3:1 sobre la superficie);
+   dorado oficial intacto como relleno; foco #93C5FD (≥ 9:1). Las escalas Tailwind cambian por rol (themes.ts). */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --p-bg: #060b16; --p-surface: #111b30; --p-elevated: #172338; --surface: 17 27 48;
+  --p-ink: #e2e8f0; --p-ink-2: #ced7e5; --p-muted: #a3b0c7; --p-meta: #8e9db8;
+  --p-action: #93c5fd; --p-action-hover: #bfdbfe; --p-action-active: #bfdbfe; --p-action-ink: #f8fafc;
+  --p-action-fill: #2563eb; --p-action-fill-hover: #1d4ed8; --p-action-fill-active: #1e40af; --p-focus: #93c5fd;
+  --p-tint: #172b5c; --p-tint-weak: #12224a; --p-accent-tint: #2b230c;
+  --gold: #eebb31; --line: #2a3854; --field-line: #7083a3;
+  --success: #86efac; --danger: #fca5a5; --danger-indicator: #ef4444; --danger-bg: #2a1316; --warning-bg: #2b230c; --warning-ink: #f2ce52;
+  --danger-fill: #dc2626; --danger-fill-hover: #b91c1c; --danger-fill-active: #991b1b; --danger-fill-ink: #f8fafc;
+  --p-band: #0d1a3f;
+  --p-backdrop: rgb(2 6 23 / .72); --p-modal-shadow: 0 24px 80px rgb(0 0 0 / .55);
+}
+/* Banda corporativa (cabecera del panel y del modal de validación): #01257B en claro, navy profundo en oscuro. */
+.brand-band { background-color: var(--p-band); }
+/* Taste cards.md (solo oscuro): tarjeta un escalón sobre la página, borde de tinta al ~12 % y reflejo superior
+   de 1 px blanco al 5 %; sin sombra difusa en reposo. */
+:root[data-theme="dark"] :is(.portal-option, .client-login-form, .ticket-form, .ticket-receipt, .ticket-table, .ticket-mobile-card,
+  .ticket-detail, .tracking-panel, .stat-card, .metric-chart, .dashboard-toolbar, .inbox-toolbar, .request-card, .board-toolbar,
+  .board-column, .project-card, .project-list-card, .data-view, .roadmap-quarter, .bg-surface.rounded-xl) {
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .05);
+}
+:root[data-theme="dark"] .modal-panel { background: var(--p-elevated); box-shadow: inset 0 1px 0 rgb(255 255 255 / .06), var(--p-modal-shadow); }
+/* El logotipo conserva sus colores (Taste: nunca se tiñe); en oscuro solo se le da un contorno para separarlo del navy. */
+:root[data-theme="dark"] .brand-logo-img { box-shadow: 0 0 0 1px rgb(255 255 255 / .16); }
+:root[data-theme="dark"] .public-nav, :root[data-theme="dark"] .workspace-header, :root[data-theme="dark"] .build-version { background: var(--p-surface); }
+/* Tarjeta dorada del portal: en claro, icono azul sobre dorado; en oscuro, el dorado de marca sobre su tinte. */
+:root[data-theme="dark"] .portal-option:first-child .icon-tile { color: var(--gold); }
+
+/* Selector de apariencia: dos opciones visibles (Claro / Oscuro), estado activo con tinte y color de acción. */
+.theme-toggle { display: inline-flex; gap: 2px; padding: 2px; border-radius: var(--r-sm); border: 1px solid var(--line); background: var(--p-surface); flex-shrink: 0; }
+.theme-toggle button { width: 44px; height: 44px; min-height: 44px; display: grid; place-items: center; border-radius: 6px; color: var(--p-muted); }
+.theme-toggle button[aria-pressed=true] { background: var(--p-tint); color: var(--p-action); }
+@media (hover: hover) and (pointer: fine) { .theme-toggle button[aria-pressed=false]:hover { color: var(--p-ink); background: var(--p-tint-weak); } }
+/* Sobre la banda azul del panel: mismo control con tinta clara. */
+.theme-toggle.on-band { border-color: rgb(248 250 252 / .3); background: rgb(248 250 252 / .08); }
+.theme-toggle.on-band button { color: rgb(248 250 252 / .8); }
+.theme-toggle.on-band button[aria-pressed=true] { background: rgb(248 250 252 / .18); color: #f8fafc; }
+@media (hover: hover) and (pointer: fine) { .theme-toggle.on-band button[aria-pressed=false]:hover { color: var(--gold); background: rgb(248 250 252 / .1); } }
+/* Páginas sin barra (seguimiento, ingreso del personal, entrada al espacio): fila encima de la tarjeta, a la derecha. */
+.theme-row { display: flex; justify-content: flex-end; margin-bottom: 16px; }
+
+/* Cambio de tema (Emil: acción ocasional → una animación estándar; nunca con teclado; solo opacidad).
+   Un único fundido de la página (View Transitions) en lugar de cientos de transiciones de color por elemento. */
+html[data-theme-switching] *, html[data-theme-switching] *::before, html[data-theme-switching] *::after { transition: none !important; }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: 200ms; animation-timing-function: var(--ease-out); }
+@media (prefers-reduced-motion: reduce) {
+  /* Movimiento reducido: el fundido es solo opacidad (se conserva, Emil), más breve. */
+  ::view-transition-old(root), ::view-transition-new(root) { animation-duration: 120ms; }
+}

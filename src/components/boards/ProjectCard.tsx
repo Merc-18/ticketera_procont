@@ -67,7 +67,7 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
     <div
       onClick={onClick}
       className={`project-card relative border mb-3 cursor-pointer group/card ${
-        project.is_blocked ? 'bg-red-50 border-l-4 border-l-red-500' : 'bg-white'
+        project.is_blocked ? 'bg-red-50 border-l-4 border-l-red-500' : 'bg-surface'
       } ${selected ? 'border-brand-400 ring-1 ring-brand-200' : project.is_blocked ? 'border-red-200' : 'border-gray-200'}`}
     >
       {onSelect && (
@@ -162,7 +162,7 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
 
               {showAssign && (
                 <div
-                  className="assign-menu absolute bottom-7 right-0 bg-white border border-gray-200 rounded-lg shadow-lg z-20 py-1 min-w-[160px]"
+                  className="assign-menu absolute bottom-7 right-0 bg-surface border border-gray-200 rounded-lg shadow-lg z-20 py-1 min-w-[160px]"
                   onClick={e => e.stopPropagation()}
                 >
                   <p className="px-3 py-1 text-[13px] text-gray-600 font-medium border-b border-gray-200 mb-1">

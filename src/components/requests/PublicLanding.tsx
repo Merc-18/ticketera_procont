@@ -7,6 +7,7 @@ import PasswordField from '../ui/PasswordField'
 import ModalFocus from '../ui/ModalFocus'
 import { BRAND } from '../../theme/brand'
 import { loadClientHome, loadRequestTracking, preloadOnIntent } from '../../lib/client-routes'
+import ThemeToggle from '../ui/ThemeToggle'
 
 function LoginModal({ onClose }: { onClose: () => void }) {
   const [email, setEmail]       = useState('')
@@ -114,9 +115,12 @@ export default function PublicLanding() {
       <nav className="public-nav portal-nav" aria-label="Portal">
         <div className="wrap page-wrap">
           <BrandLogo size={40} />
-          <button onClick={() => setShowLogin(true)} className="ui-button ui-button-secondary shrink-0">
-            <Icon name="lock" size={18} /><span>Ingreso del personal</span>
-          </button>
+          <div className="portal-nav-actions flex items-center gap-3">
+            <ThemeToggle />
+            <button onClick={() => setShowLogin(true)} className="ui-button ui-button-secondary shrink-0">
+              <Icon name="lock" size={18} /><span>Ingreso del personal</span>
+            </button>
+          </div>
         </div>
       </nav>
       <main id="main-content" tabIndex={-1} className="wrap page-wrap portal-main">

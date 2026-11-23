@@ -115,7 +115,7 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
   return (
     <>
     <div className="modal-backdrop fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-4 z-50" onClick={onClose}>
-      <div role="dialog" aria-modal="true" aria-label="Detalle del ticket" className="modal-panel bg-white rounded-lg max-w-4xl w-full max-h-[94vh] overflow-hidden flex flex-col" onClick={e => e.stopPropagation()}>
+      <div role="dialog" aria-modal="true" aria-label="Detalle del ticket" className="modal-panel bg-surface rounded-lg max-w-4xl w-full max-h-[94vh] overflow-hidden flex flex-col" onClick={e => e.stopPropagation()}>
         <ModalFocus onDismiss={onClose} />
         {/* ── HEADER ── */}
         <div className={`shrink-0 border-b px-4 sm:px-6 py-4 flex items-start justify-between gap-3 ${blocked ? 'bg-red-50' : 'bg-gray-50'}`}>
@@ -143,7 +143,7 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
               )}
               {editMode ? (
                 <AreaInput value={editData.requester_area} onChange={v => setEditData(p => ({ ...p, requester_area: v }))} placeholder="Sin área"
-                  className="w-40 px-2 py-0.5 rounded-full text-xs font-medium border border-gray-300 bg-white outline-none focus:ring-2 focus:ring-primary" />
+                  className="w-40 px-2 py-0.5 rounded-full text-xs font-medium border border-gray-300 bg-surface outline-none focus:ring-2 focus:ring-primary" />
               ) : area ? (
                 <span className={`px-3 py-1 rounded-full text-xs font-medium border ${AREA_COLORS[area] ?? 'bg-gray-100 text-gray-700 border-gray-200'}`}><Icon name="pin" size={12} className="inline-block mr-1 -mt-0.5" />{area}</span>
               ) : null}
@@ -153,7 +153,7 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
               {editMode ? (
                 <input type="text" value={editData.requester_name} onChange={e => setEditData(p => ({ ...p, requester_name: e.target.value }))}
                   placeholder="Solicitante…" aria-label="Solicitante"
-                  className="px-2 py-0.5 rounded-full text-xs font-medium border border-gray-300 bg-white outline-none focus:ring-2 focus:ring-primary w-36" />
+                  className="px-2 py-0.5 rounded-full text-xs font-medium border border-gray-300 bg-surface outline-none focus:ring-2 focus:ring-primary w-36" />
               ) : project.requests?.requester_name && project.requests.requester_name !== '—' ? (
                 <span className="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200"><Icon name="user" size={12} className="inline-block mr-1 -mt-0.5" />{project.requests.requester_name}</span>
               ) : null}
@@ -237,7 +237,7 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
                               Fase
                               <select value={flow.phase} disabled={!canMove || busy} aria-label="Mover a fase"
                                 onChange={e => requestMove(flow, e.target.value as Phase)}
-                                className="px-2 py-1 border border-gray-300 rounded-lg text-sm bg-white font-medium disabled:bg-gray-100">
+                                className="px-2 py-1 border border-gray-300 rounded-lg text-sm bg-surface font-medium disabled:bg-gray-100">
                                 {phasesFor(flow.flow_type).map(p => <option key={p} value={p}>{PHASE_LABELS[p] ?? p}</option>)}
                               </select>
                             </label>
@@ -267,7 +267,7 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
                             {canAssign ? (
                               <div className="flex flex-wrap gap-2 items-center">
                                 <select value={draft} onChange={e => setAssignDraft(p => ({ ...p, [flow.id]: e.target.value }))} id={`assignee-${flow.id}`}
-                                  className="flex-1 min-w-[12rem] px-2.5 py-1.5 border border-gray-300 rounded-lg text-sm bg-white">
+                                  className="flex-1 min-w-[12rem] px-2.5 py-1.5 border border-gray-300 rounded-lg text-sm bg-surface">
                                   <option value="">— Sin responsable —</option>
                                   {assignableUsers.map(u => <option key={u.id} value={u.id}>{u.full_name} ({u.role})</option>)}
                                   {flow.assignee_id && !assignableUsers.some(u => u.id === flow.assignee_id) && <option value={flow.assignee_id}>Usuario no disponible</option>}

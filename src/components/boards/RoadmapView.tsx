@@ -37,7 +37,7 @@ export default function RoadmapView({ projects, onProjectClick, loading }: Props
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 animate-pulse">
         {[...Array(4)].map((_, i) => (
-          <div key={i} className="bg-white rounded-xl border shadow-sm overflow-hidden">
+          <div key={i} className="bg-surface rounded-xl border shadow-sm overflow-hidden">
             <div className="px-4 py-3 border-b bg-gray-50 flex items-center justify-between">
               <div className="h-4 w-16 bg-gray-200 rounded" />
               <div className="h-5 w-6 bg-gray-200 rounded-full" />
@@ -79,14 +79,14 @@ export default function RoadmapView({ projects, onProjectClick, loading }: Props
       <div className="flex items-center gap-3 flex-wrap">
         <button
           onClick={() => setShowYear(y => y - 1)}
-          className="px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition"
+          className="px-3 py-1.5 bg-surface border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition"
         >
           ← {showYear - 1}
         </button>
         <span className="text-base font-bold text-gray-900">Roadmap {showYear}</span>
         <button
           onClick={() => setShowYear(y => y + 1)}
-          className="px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition"
+          className="px-3 py-1.5 bg-surface border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition"
         >
           {showYear + 1} →
         </button>
@@ -107,7 +107,7 @@ export default function RoadmapView({ projects, onProjectClick, loading }: Props
             >
               {/* Quarter header */}
               <div className={`px-4 py-3 flex items-center justify-between border-b ${
-                isCurrent ? 'bg-primary/5 border-primary/20' : isPast ? 'bg-gray-50' : 'bg-white'
+                isCurrent ? 'bg-primary/5 border-primary/20' : isPast ? 'bg-gray-50' : 'bg-surface'
               }`}>
                 <div className="flex items-center gap-2">
                   <span className="font-bold text-sm text-gray-900">{q.label}</span>
@@ -174,7 +174,7 @@ export default function RoadmapView({ projects, onProjectClick, loading }: Props
 
       {/* Sin fecha */}
       {projectsByQuarter.noDate.length > 0 && (
-        <div className="bg-white rounded-xl border shadow-sm p-4">
+        <div className="bg-surface rounded-xl border shadow-sm p-4">
           <p className="text-sm font-semibold text-gray-500 mb-3">Sin fecha de vencimiento ({projectsByQuarter.noDate.length})</p>
           <div className="flex flex-wrap gap-2">
             {projectsByQuarter.noDate.map(p => (

@@ -263,7 +263,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
               </div>
               <div className="bg-gray-50 rounded-b-lg p-3 space-y-3 min-h-[200px]">
                 {Array.from({ length: ci < 2 ? 3 : ci < 4 ? 2 : 1 }).map((_, j) => (
-                  <div key={j} className="bg-white rounded-lg border border-gray-100 p-3.5 animate-pulse">
+                  <div key={j} className="bg-surface rounded-lg border border-gray-100 p-3.5 animate-pulse">
                     <div className="h-3 bg-gray-200 rounded mb-2 w-4/5" />
                     <div className="h-3 bg-gray-100 rounded mb-3 w-3/5" />
                     <div className="flex gap-1 mb-2.5">
@@ -540,7 +540,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
         <div className="flex justify-center mt-4">
           <button
             onClick={loadMore}
-            className="px-6 py-2 bg-white border border-gray-200 text-gray-600 rounded-lg text-sm hover:bg-gray-50 transition shadow-sm"
+            className="px-6 py-2 bg-surface border border-gray-200 text-gray-600 rounded-lg text-sm hover:bg-gray-50 transition shadow-sm"
           >
             Cargar más proyectos...
           </button>
@@ -549,7 +549,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
 
       {/* ── BULK ACTION BAR ── */}
       {canEdit && selectedIds.length > 0 && (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-white border border-gray-200 shadow-2xl rounded-2xl px-4 py-3 flex flex-wrap items-center justify-center gap-3 w-max max-w-[calc(100vw-2rem)]">
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-surface border border-gray-200 shadow-2xl rounded-2xl px-4 py-3 flex flex-wrap items-center justify-center gap-3 w-max max-w-[calc(100vw-2rem)]">
           <span role="status" className="text-sm font-medium text-gray-700">
             {selectedIds.length} seleccionado{selectedIds.length !== 1 ? 's' : ''}
           </span>

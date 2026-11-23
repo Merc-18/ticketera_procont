@@ -75,7 +75,7 @@ export default function PapeleraView() {
           </span>
           <button
             onClick={load}
-            className="px-3 py-1 bg-white border border-gray-200 text-gray-500 rounded-lg text-sm hover:bg-gray-50 transition"
+            className="px-3 py-1 bg-surface border border-gray-200 text-gray-500 rounded-lg text-sm hover:bg-gray-50 transition"
           >
             <Icon name="refresh" size={14} className="inline-block mr-1 -mt-0.5" />Actualizar
           </button>
@@ -92,7 +92,7 @@ export default function PapeleraView() {
           {projects.map(p => {
             const code = p.requests?.request_number ?? p.project_number
             return (
-              <div key={p.id} className="bg-white border border-gray-200 rounded-lg px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+              <div key={p.id} className="bg-surface border border-gray-200 rounded-lg px-4 py-3 flex flex-wrap items-center justify-between gap-4">
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   <div className="flex flex-col gap-1">
                     {code && (
@@ -128,7 +128,7 @@ export default function PapeleraView() {
       {/* Confirm restore */}
       {confirmRestore && (
         <div className="modal-backdrop fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="modal-panel bg-white rounded-lg max-w-sm w-full p-6 shadow-2xl">
+          <div className="modal-panel bg-surface rounded-lg max-w-sm w-full p-6 shadow-2xl">
             <h3 className="text-lg font-medium text-gray-900 mb-2 inline-flex items-center gap-2"><Icon name="refresh" size={20} />Restaurar proyecto</h3>
             <p className="text-sm text-gray-600 mb-6">
               El ticket volverá a los boards (activo, o terminado si ya estaba en su fase final). Queda registrado en el historial.

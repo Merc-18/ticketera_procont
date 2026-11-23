@@ -6,6 +6,7 @@ import { clientPortal } from '../../lib/client-portal-api'
 import { clientSessionStore } from '../../lib/client-session-store'
 import { AUTH_TYPE_LABEL, identityLabel, type ClientSession } from '../../lib/client-portal'
 import Icon from '../ui/Icon'
+import ThemeToggle from '../ui/ThemeToggle'
 
 /** Lee y borra de inmediato el código del fragmento (#code=…): no queda en el historial ni en el Referer. */
 function takeLaunchCode(): string | null {
@@ -52,7 +53,9 @@ export default function ClientLaunch() {
     <div className="app-surface flex flex-col">
       <MockBanner />
       <main id="main-content" tabIndex={-1} className="flex-1 flex items-center justify-center p-4 py-12">
-        <div className="max-w-md w-full tracking-panel">
+        <div className="max-w-md w-full">
+        <div className="theme-row"><ThemeToggle /></div>
+        <div className="tracking-panel">
           <BrandLogo size={44} className="justify-center mb-6" />
           {error ? (
             <div role="alert" className="text-center">
@@ -84,6 +87,7 @@ export default function ClientLaunch() {
               </div>
             </div>
           )}
+        </div>
         </div>
       </main>
     </div>

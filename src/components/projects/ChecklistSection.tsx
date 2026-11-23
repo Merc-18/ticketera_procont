@@ -135,7 +135,7 @@ export default function ChecklistSection({ flow, onChanged }: Props) {
             </button>
 
             {isExpanded && (
-              <div className="p-3 space-y-1.5 bg-white">
+              <div className="p-3 space-y-1.5 bg-surface">
                 {phaseItems.length === 0 && (
                   <p className="text-xs text-gray-400 italic mb-2">
                     Sin items. Agrega uno a continuación.

@@ -7,6 +7,7 @@ import { peekTrackingNumber, clearTrackingNumber } from '../../lib/tracking-hand
 import { GENERAL_STATUS } from '../../lib/request-status'
 import BrandLogo from '../ui/BrandLogo'
 import Icon from '../ui/Icon'
+import ThemeToggle from '../ui/ThemeToggle'
 
 const CURRENT_PREFIX = `REQ${new Date().getFullYear().toString().slice(2)}-`
 
@@ -45,6 +46,7 @@ export default function RequestTracking() {
   return (
     <main id="main-content" tabIndex={-1} className="tracking-page app-surface px-4">
       <div className="max-w-xl mx-auto">
+        <div className="theme-row"><ThemeToggle /></div>
         <div className="tracking-panel">
           <button onClick={() => navigate('/portal')} className="back-link mb-4">← Inicio</button>
           <div className="text-center mb-8">

@@ -12,6 +12,7 @@ import { loadClientHome, loadRequestTracking, loadClientLaunch, loadClientWorksp
 import { usePendingCount } from './hooks/usePendingCount'
 import { errorMessage } from './lib/supabase-errors'
 import { toast } from './lib/toast'
+import ThemeToggle from './components/ui/ThemeToggle'
 
 // Las vistas internas se descargan al abrir su sección, sin cambiar rutas ni permisos.
 const DashboardView = lazy(() => import('./components/dashboard/DashboardView'))
@@ -67,13 +68,14 @@ function Dashboard() {
       {/* Header */}
       <header className="enterprise-header">
         {/* Barra corporativa */}
-        <div className="bg-brand-700 border-b-4 border-accent-400">
+        <div className="brand-band border-b-4 border-accent-400">
           <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
             <BrandLogo tone="light" size={40} />
 
             <div className="flex items-center gap-3 sm:gap-4">
               {/* Reloj + Campana */}
               {canSeeEquipo && <AdminClock />}
+              <ThemeToggle onBand />
               <NotificationBell
                 buttonClassName="text-white/80 hover:text-accent-300 hover:bg-white/10"
                 onProjectClick={(projectId) => {
@@ -98,7 +100,7 @@ function Dashboard() {
         </div>
 
         {/* Navegación */}
-        <nav className="bg-white border-b border-gray-200" aria-label="Secciones">
+        <nav className="bg-surface border-b border-gray-200" aria-label="Secciones">
           <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-3">
             <div className="enterprise-tabs flex flex-wrap gap-1 bg-gray-100 p-1 rounded-lg">
               {([
@@ -114,7 +116,7 @@ function Dashboard() {
                   className={`px-3 sm:px-4 py-2 rounded-md font-medium text-sm transition flex items-center gap-1.5 ${
                     currentTab === tab
                       ? 'bg-brand-700 text-white shadow-sm'
-                      : 'text-gray-600 hover:text-brand-700 hover:bg-white'
+                      : 'text-gray-600 hover:text-brand-700 hover:bg-surface'
                   }`}
                 >
                   <ControlLabel icon={icon}>{label}</ControlLabel>
@@ -181,7 +183,7 @@ function Dashboard() {
                 onClick={() => setAdminSubTab('carga')}
                 className={`px-4 py-2 rounded-md font-medium text-sm transition ${
                   adminSubTab === 'carga'
-                    ? 'bg-white text-primary shadow-sm'
+                    ? 'bg-surface text-primary shadow-sm'
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
@@ -192,7 +194,7 @@ function Dashboard() {
                   onClick={() => setAdminSubTab('usuarios')}
                   className={`px-4 py-2 rounded-md font-medium text-sm transition ${
                     adminSubTab === 'usuarios'
-                      ? 'bg-white text-primary shadow-sm'
+                      ? 'bg-surface text-primary shadow-sm'
                       : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
@@ -205,7 +207,7 @@ function Dashboard() {
                   onClick={() => setAdminSubTab('papelera')}
                   className={`px-4 py-2 rounded-md font-medium text-sm transition ${
                     adminSubTab === 'papelera'
-                      ? 'bg-white text-primary shadow-sm'
+                      ? 'bg-surface text-primary shadow-sm'
                       : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
@@ -218,7 +220,7 @@ function Dashboard() {
                   onClick={() => setAdminSubTab('areas')}
                   className={`px-4 py-2 rounded-md font-medium text-sm transition ${
                     adminSubTab === 'areas'
-                      ? 'bg-white text-primary shadow-sm'
+                      ? 'bg-surface text-primary shadow-sm'
                       : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >

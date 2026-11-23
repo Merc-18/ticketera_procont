@@ -254,7 +254,7 @@ export default function DashboardView() {
             value={areaFilter ?? ''}
             onChange={e => setAreaFilter(e.target.value || null)}
             className={`px-3 py-2 border rounded-lg text-sm outline-none transition cursor-pointer ${
-              areaFilter ? 'border-brand-400 bg-brand-50 text-brand-700' : 'border-gray-200 bg-white text-gray-600'
+              areaFilter ? 'border-brand-400 bg-brand-50 text-brand-700' : 'border-gray-200 bg-surface text-gray-600'
             }`}
           >
             <option value="">Todas las áreas</option>
@@ -271,7 +271,7 @@ export default function DashboardView() {
               <select
                 value={studioFilter ?? ''}
                 onChange={e => setStudioFilter(e.target.value || null)}
-                className={`px-3 py-2 border rounded-lg text-sm outline-none transition cursor-pointer ${studioFilter ? 'border-brand-400 bg-brand-50 text-brand-700' : 'border-gray-200 bg-white text-gray-600'}`}
+                className={`px-3 py-2 border rounded-lg text-sm outline-none transition cursor-pointer ${studioFilter ? 'border-brand-400 bg-brand-50 text-brand-700' : 'border-gray-200 bg-surface text-gray-600'}`}
               >
                 <option value="">Todos los estudios</option>
                 {studios.map(st => <option key={st.id} value={st.id}>{st.name}</option>)}
@@ -331,7 +331,7 @@ export default function DashboardView() {
         {areaItems.length > 0
           ? <HBarChart title="Por Área" items={areaItems} />
           : (
-            <div className="bg-white rounded-xl border p-5 shadow-sm flex items-center justify-center text-gray-400 text-sm">
+            <div className="bg-surface rounded-xl border p-5 shadow-sm flex items-center justify-center text-gray-400 text-sm">
               Sin datos de área disponibles
             </div>
           )
@@ -353,7 +353,7 @@ export default function DashboardView() {
             <div key={s.label} className={`flex-1 min-w-[140px] rounded-lg p-4 ${s.bg}`}>
               <p className={`text-2xl font-bold ${s.text}`}>{s.value}</p>
               <p className={`text-sm ${s.text} font-medium`}>{s.label}</p>
-              <div className="mt-2 bg-white rounded-full h-2">
+              <div className="mt-2 bg-surface rounded-full h-2">
                 <div className={`h-2 rounded-full ${s.bar}`} style={{ width: `${s.pct}%` }} />
               </div>
               <p className={`text-sm mt-1 ${s.text}`}>{s.pct}% del total</p>

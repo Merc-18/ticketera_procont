@@ -27,7 +27,7 @@ export default function UrgencyStatsPanel() {
     ? [...result.data].sort((a, b) => b.urgent_requests - a.urgent_requests || b.total_requests - a.total_requests) : []
 
   return (
-    <section className="bg-white rounded-xl border p-5 shadow-sm space-y-4">
+    <section className="bg-surface rounded-xl border p-5 shadow-sm space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="font-semibold text-gray-800 text-base">Solicitudes urgentes por solicitante y estudio</h2>
@@ -36,7 +36,7 @@ export default function UrgencyStatsPanel() {
         <label className="toolbar-field">
           <span>Mes</span>
           <select value={month} onChange={e => setMonth(e.target.value)}
-            className="px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white outline-none focus:ring-2 focus:ring-primary">
+            className="px-3 py-2 border border-gray-200 rounded-lg text-sm bg-surface outline-none focus:ring-2 focus:ring-primary">
             {months.map(m => <option key={m} value={m}>{monthLabel(m)}</option>)}
           </select>
         </label>

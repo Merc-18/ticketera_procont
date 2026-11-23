@@ -11,6 +11,7 @@ import { createRpcAttempt, type RpcAttempt } from '../../lib/rpc-attempt'
 import MockBanner from './MockBanner'
 import { useCatalogs } from '../../hooks/useCatalogs'
 import { preloadClientArea } from '../../lib/client-routes'
+import ThemeToggle from '../ui/ThemeToggle'
 
 interface ClientContextValue {
   draft: ClientTicketInput | null
@@ -84,7 +85,7 @@ export default function ClientWorkspace() {
         <div role="alert" className="tracking-panel max-w-md w-full text-center">
           <p className="text-gray-700 mb-6">{error}</p>
           <button onClick={() => { clientSessionStore.clear(); navigate('/cliente', { replace: true }) }}
-            className="w-full bg-accent-400 hover:bg-accent-300 text-gray-900 py-3 rounded-lg font-bold transition">
+            className="w-full bg-accent-400 hover:bg-accent-300 text-on-accent py-3 rounded-lg font-bold transition">
             Volver al ingreso
           </button>
         </div>
@@ -100,7 +101,7 @@ export default function ClientWorkspace() {
   const productName = (id: string) =>
     session.products.find(p => p.id === id)?.name ?? catalogs.systems.find(s => s.id === id)?.name ?? '—'
   const tab = ({ isActive }: { isActive: boolean }) =>
-    `inline-flex min-h-[44px] items-center px-4 py-2 rounded-md font-medium text-sm transition ${isActive ? 'bg-brand-700 text-white shadow-sm' : 'text-gray-600 hover:text-brand-700 hover:bg-white'}`
+    `inline-flex min-h-[44px] items-center px-4 py-2 rounded-md font-medium text-sm transition ${isActive ? 'bg-brand-700 text-white shadow-sm' : 'text-gray-600 hover:text-brand-700 hover:bg-surface'}`
 
   return (
     <div className="app-surface">
@@ -115,6 +116,7 @@ export default function ClientWorkspace() {
                 <p className="font-medium text-brand-700 leading-tight truncate" title={companyLabel}>{companyLabel}</p>
                 <p className="text-xs text-gray-600 truncate">{identityLabel(session)}</p>
               </div>
+              <ThemeToggle />
               <button onClick={() => void logout()}
                 className="ui-button ui-button-secondary shrink-0">
                 Salir
@@ -122,7 +124,7 @@ export default function ClientWorkspace() {
             </div>
           </div>
         </div>
-        <nav className="bg-white border-b border-gray-200" aria-label="Secciones del cliente">
+        <nav className="bg-surface border-b border-gray-200" aria-label="Secciones del cliente">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-2">
             <div className="flex gap-1 bg-gray-100 p-1 rounded-lg">
               <NavLink to="/cliente/nuevo" className={tab}><ControlLabel icon="edit">Nuevo ticket</ControlLabel></NavLink>

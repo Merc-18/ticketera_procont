@@ -158,7 +158,7 @@ export default function CommentsSection({ projectId }: Props) {
           />
           {/* Mention dropdown */}
           {showMentions && mentionedUsers.length > 0 && (
-            <div className="absolute left-0 bottom-full mb-1 bg-white border border-gray-200 rounded-lg shadow-lg z-20 min-w-[180px] py-1 max-h-40 overflow-y-auto">
+            <div className="absolute left-0 bottom-full mb-1 bg-surface border border-gray-200 rounded-lg shadow-lg z-20 min-w-[180px] py-1 max-h-40 overflow-y-auto">
               <p className="px-3 py-1 text-[13px] text-gray-600 font-medium border-b border-gray-200">
                 Mencionar
               </p>
@@ -201,7 +201,7 @@ export default function CommentsSection({ projectId }: Props) {
             const displayName = comment.user?.full_name || 'Anónimo'
             const initial = displayName.charAt(0).toUpperCase()
             return (
-              <div key={comment.id} className="bg-white border rounded-lg p-4">
+              <div key={comment.id} className="bg-surface border rounded-lg p-4">
                 <div className="flex items-start gap-3">
                   <div className="flex-shrink-0 w-9 h-9 bg-primary rounded-full flex items-center justify-center text-white font-bold text-sm">
                     {initial}

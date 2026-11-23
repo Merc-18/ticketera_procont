@@ -13,6 +13,7 @@ import type { PublicTracking } from '../../lib/operations'
 import { GENERAL_STATUS } from '../../lib/request-status'
 import { errorMessage } from '../../lib/supabase-errors'
 import { preloadClientArea } from '../../lib/client-routes'
+import ThemeToggle from '../ui/ThemeToggle'
 
 const CARDS: { type: AuthType; title: string; subtitle: string; detail: string }[] = [
   { type: 'quipu', title: 'Quipu', subtitle: 'Ingreso con usuario', detail: 'RUC, usuario y contraseña' },
@@ -44,6 +45,7 @@ export default function ClientHome() {
           <BrandLogo size={40} />
         </div>
         <div className="flex items-center gap-2 shrink-0">
+        <ThemeToggle />
         <Link to="/portal" className="ui-button ui-button-quiet">
           ← Inicio
         </Link>
@@ -71,7 +73,7 @@ export default function ClientHome() {
             <p role="status" className="mb-6 bg-accent-50 border border-accent-300 text-gray-800 px-4 py-3 rounded-lg text-sm text-center">{notice}</p>
           )}
           {!CLIENT_PORTAL_LOGIN_ENABLED && (
-            <div role="status" className="mb-6 bg-white rounded-lg p-4 text-center text-gray-800 border-l-4 border-accent-400">
+            <div role="status" className="mb-6 bg-surface rounded-lg p-4 text-center text-gray-800 border-l-4 border-accent-400">
               <p className="font-semibold">El ingreso de clientes todavía no está habilitado.</p>
               <p className="text-sm text-gray-600 mt-1">Por ahora no es posible registrar ni consultar tickets con Quipu o QuipuFac. El seguimiento por número REQ sigue disponible más abajo.</p>
             </div>
@@ -237,7 +239,7 @@ function PublicSearch() {
         </button>
       </form>
       {result && status && (
-        <div role="status" className="mt-4 flex flex-wrap items-center justify-between gap-3 bg-white border border-gray-300 rounded-lg px-4 py-3">
+        <div role="status" className="mt-4 flex flex-wrap items-center justify-between gap-3 bg-surface border border-gray-300 rounded-lg px-4 py-3">
           <span className="font-medium font-mono text-brand-700">{result.request_number}</span>
           <span className={`inline-flex items-center gap-1.5 text-sm font-medium px-3 py-1 rounded-full border ${status.tone}`}><Icon name={status.icon} size={14} />{status.label}</span>
         </div>

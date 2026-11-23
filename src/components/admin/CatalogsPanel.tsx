@@ -90,14 +90,14 @@ export default function CatalogsPanel() {
     )
   }
 
-  const card = 'bg-white rounded-xl border shadow-sm p-4 divide-y divide-gray-100'
+  const card = 'bg-surface rounded-xl border shadow-sm p-4 divide-y divide-gray-100'
   const studioForAreas = areaStudio || cat.studios.find(s => cat.areas.some(a => a.studio_id === s.id))?.id || ''
   return (
     <div className="space-y-5 max-w-4xl">
       <div className="flex gap-1 bg-gray-100 p-1 rounded-lg w-fit">
         {([['studios', 'Estudios'], ['systems', 'Proyectos'], ['areas', 'Áreas'], ['types', 'Tipos de solicitud']] as [Section, string][]).map(([k, l]) => (
           <button key={k} onClick={() => setSection(k)}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition ${section === k ? 'bg-white text-primary shadow-sm' : 'text-gray-600 hover:text-gray-900'}`}>{l}</button>
+            className={`px-4 py-2 rounded-md text-sm font-medium transition ${section === k ? 'bg-surface text-primary shadow-sm' : 'text-gray-600 hover:text-gray-900'}`}>{l}</button>
         ))}
       </div>
 
@@ -165,7 +165,7 @@ export default function CatalogsPanel() {
         <>
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-sm text-gray-600">Estudio:</span>
-            <select value={studioForAreas} onChange={e => setAreaStudio(e.target.value)} className={`${input} bg-white`}>
+            <select value={studioForAreas} onChange={e => setAreaStudio(e.target.value)} className={`${input} bg-surface`}>
               {cat.studios.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
           </div>

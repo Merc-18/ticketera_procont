@@ -15,7 +15,7 @@ export default function RequesterUrgencySummary({ requestId, createdAt }: { requ
   useEffect(() => { setResult(null); void metrics.requesterUrgency(requestId, month).then(setResult) }, [requestId, month])
 
   return (
-    <div className="border border-gray-200 rounded-lg px-3 py-2.5 bg-white">
+    <div className="border border-gray-200 rounded-lg px-3 py-2.5 bg-surface">
       <p className="text-sm font-semibold text-gray-600 mb-1">Historial de urgencias · {monthLabel(month)}</p>
       {result?.state === 'ready' && result.data === null ? (
         <p className="text-xs text-gray-500">Sin datos suficientes para esta solicitud.</p>

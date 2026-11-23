@@ -61,7 +61,7 @@ export default function GanttView({ projects, boardType, onProjectClick, loading
 
   if (loading) {
     return (
-      <div className="bg-white rounded-xl border shadow-sm overflow-hidden animate-pulse">
+      <div className="bg-surface rounded-xl border shadow-sm overflow-hidden animate-pulse">
         <div className="bg-gray-50 border-b h-9" />
         <div className="border-b flex h-9 items-center px-4 gap-6">
           <div className="w-48 h-3 bg-gray-200 rounded shrink-0" />
@@ -217,7 +217,7 @@ export default function GanttView({ projects, boardType, onProjectClick, loading
                       style={{ left: `${leftPct}%`, width: `${widthPct}%`, minWidth: 8 }}
                       title={`${project.title}\nInicio: ${start.toLocaleDateString('es-PE')}\nFin: ${end.toLocaleDateString('es-PE')}\nFase: ${PHASE_LABELS[flow.current_phase] ?? flow.current_phase}`}
                     >
-                      <span className={`${project.priority === 'high' ? 'text-gray-900' : 'text-white'} text-xs font-medium truncate hidden sm:block`}>
+                      <span className={`${project.priority === 'high' ? 'text-on-accent' : 'text-white'} text-xs font-medium truncate hidden sm:block`}>
                         {PHASE_LABELS[flow.current_phase] ?? flow.current_phase}
                       </span>
                     </div>
@@ -233,7 +233,7 @@ export default function GanttView({ projects, boardType, onProjectClick, loading
         <span>{items.length} proyecto{items.length !== 1 ? 's' : ''} · Arrastra horizontalmente para ver el timeline completo</span>
         <button
           onClick={() => exportGanttCSV(items)}
-          className="px-3 py-1 bg-white border border-gray-200 text-gray-600 rounded text-xs hover:bg-gray-100 transition"
+          className="px-3 py-1 bg-surface border border-gray-200 text-gray-600 rounded text-xs hover:bg-gray-100 transition"
         >
           <ControlLabel icon="download">Exportar CSV</ControlLabel>
         </button>

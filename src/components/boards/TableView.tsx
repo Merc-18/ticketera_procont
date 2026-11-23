@@ -97,7 +97,7 @@ export default function TableView({ projects, boardType, onProjectClick, loading
 
   if (loading) {
     return (
-      <div className="bg-white rounded-xl border shadow-sm overflow-hidden animate-pulse">
+      <div className="bg-surface rounded-xl border shadow-sm overflow-hidden animate-pulse">
         <div className="bg-gray-50 border-b h-10" />
         {[...Array(7)].map((_, i) => (
           <div key={i} className="flex items-center border-b px-4 gap-6" style={{ height: 52 }}>

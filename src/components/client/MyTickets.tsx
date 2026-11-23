@@ -58,7 +58,7 @@ export default function MyTickets() {
       <p>{error}</p><button className="ui-button ui-button-secondary mt-2" disabled={busy} onClick={() => failed && void load(failed.target, failed.previous, failed.first)}>Reintentar página</button>
     </div>}
     {tickets === null ? !error && <p role="status" className="py-10 text-center text-gray-600">Cargando tickets…</p>
-      : !tickets.length ? <div className="bg-white rounded-xl border border-gray-200 p-10 text-center">
+      : !tickets.length ? <div className="bg-surface rounded-xl border border-gray-200 p-10 text-center">
         <span className="icon-tile mb-4"><Icon name="tickets" /></span>
         <p className="text-gray-600 mb-4">Aún no tienes tickets registrados.</p>
         <Link to="/cliente/nuevo" className="ui-button ui-button-primary">Crear un ticket</Link>

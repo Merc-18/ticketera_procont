@@ -45,7 +45,7 @@ export default function AreasPanel() {
   const active = areas.filter(a => a.is_active).length
   return (
     <div className="space-y-5 max-w-3xl">
-      <form onSubmit={submitNew} className="bg-white rounded-xl border shadow-sm p-4 flex flex-col sm:flex-row gap-3">
+      <form onSubmit={submitNew} className="bg-surface rounded-xl border shadow-sm p-4 flex flex-col sm:flex-row gap-3">
         <input
           value={newName}
           onChange={e => setNewName(e.target.value)}
@@ -60,7 +60,7 @@ export default function AreasPanel() {
         </button>
       </form>
 
-      <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
+      <div className="bg-surface rounded-xl border shadow-sm overflow-hidden">
         {areas.length === 0 ? (
           <div className="py-12 text-center text-gray-400">
             <Icon name="tag" size={32} className="mx-auto mb-2 text-gray-500" />

@@ -60,7 +60,7 @@ export default function NewProjectModal({ onClose, onCreate }: Props) {
 
   return (
     <div className="modal-backdrop fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <div role="dialog" aria-modal="true" aria-label="Nuevo proyecto" className="modal-panel bg-white rounded-2xl shadow-2xl w-full max-w-lg flex flex-col max-h-[90vh]">
+      <div role="dialog" aria-modal="true" aria-label="Nuevo proyecto" className="modal-panel bg-surface rounded-2xl shadow-2xl w-full max-w-lg flex flex-col max-h-[90vh]">
         <ModalFocus onDismiss={onClose} />
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b">

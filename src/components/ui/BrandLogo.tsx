@@ -21,7 +21,7 @@ export default function BrandLogo({ size = 40, showName = true, tone = 'dark', c
         alt={`Logotipo de ${BRAND.company}`}
         width={size}
         height={size}
-        className="rounded-lg shrink-0"
+        className="brand-logo-img rounded-lg shrink-0"
         style={{ width: size, height: size }}
       />
       {showName && (

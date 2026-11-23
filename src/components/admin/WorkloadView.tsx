@@ -80,7 +80,7 @@ export default function WorkloadView() {
           <p className="text-sm text-gray-500 mt-0.5">Tickets activos por responsable principal (cada ticket cuenta una vez)</p>
         </div>
         <button onClick={() => { void loadFlows() }}
-          className="px-3 py-1.5 bg-white border border-gray-200 text-gray-600 rounded-lg text-sm hover:bg-gray-50 transition shadow-sm"><ControlLabel icon="refresh">Actualizar</ControlLabel></button>
+          className="px-3 py-1.5 bg-surface border border-gray-200 text-gray-600 rounded-lg text-sm hover:bg-gray-50 transition shadow-sm"><ControlLabel icon="refresh">Actualizar</ControlLabel></button>
       </div>
       {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
 
@@ -101,7 +101,7 @@ export default function WorkloadView() {
             isExpanded={expanded === user.id} onToggle={() => setExpanded(expanded === user.id ? null : user.id)} />
         ))}
         {activeUsers.length === 0 && (
-          <div className="col-span-full py-16 text-center text-gray-400 bg-white rounded-xl border">
+          <div className="col-span-full py-16 text-center text-gray-400 bg-surface rounded-xl border">
             <p className="font-medium">No hay responsables activos</p>
           </div>
         )}
@@ -112,7 +112,7 @@ export default function WorkloadView() {
 
 function Stat({ value, label, tone }: { value: number | string; label: string; tone: string }) {
   return (
-    <div className={`bg-white rounded-xl border-l-4 ${tone} p-4 shadow-sm`}>
+    <div className={`bg-surface rounded-xl border-l-4 ${tone} p-4 shadow-sm`}>
       <p className="text-xl font-bold text-gray-900">{value}</p>
       <p className="text-xs text-gray-500">{label}</p>
     </div>
@@ -128,7 +128,7 @@ function UserCard({ user, tickets, isExpanded, onToggle }: { user: User; tickets
   const byPhase = new Map<string, number>()
   for (const t of tickets) for (const ph of new Set(t.phases)) byPhase.set(ph, (byPhase.get(ph) ?? 0) + 1)
   return (
-    <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
+    <div className="bg-surface rounded-xl border shadow-sm overflow-hidden">
       <div className="p-4">
         <div className="flex items-start gap-3">
           <div className={`w-10 h-10 rounded-full ${getAvatarColor(user.full_name)} flex items-center justify-center text-white text-sm font-bold shrink-0`}>

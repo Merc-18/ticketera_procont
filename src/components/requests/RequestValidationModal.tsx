@@ -19,7 +19,7 @@ type Mode = 'view' | 'approve' | 'reject'
 type Priority = 'low' | 'medium' | 'high' | 'urgent'
 
 const PRIORITIES: [Priority, string][] = (['low', 'medium', 'high', 'urgent'] as Priority[]).map(v => [v, PRIORITY_LABEL[v]])
-const input = 'w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary outline-none bg-white'
+const input = 'w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary outline-none bg-surface'
 
 interface Props {
   request: Request
@@ -114,9 +114,9 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
 
   return (
     <div className="modal-backdrop fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" onClick={onClose}>
-      <div role="dialog" aria-modal="true" aria-label="Validación de solicitud" className="modal-panel bg-white rounded-xl max-w-3xl w-full max-h-[92vh] overflow-y-auto shadow-2xl" onClick={e => e.stopPropagation()}>
+      <div role="dialog" aria-modal="true" aria-label="Validación de solicitud" className="modal-panel bg-surface rounded-xl max-w-3xl w-full max-h-[92vh] overflow-y-auto shadow-2xl" onClick={e => e.stopPropagation()}>
         <ModalFocus onDismiss={onClose} />
-        <div className="flex items-center justify-between px-6 py-4 border-b bg-brand-700 rounded-t-xl">
+        <div className="flex items-center justify-between px-6 py-4 border-b brand-band rounded-t-xl">
           <div>
             <p className="font-mono text-accent-300 text-sm">{r.request_number}</p>
             <h2 className="text-lg font-medium text-white">{r.title || r.request_type}</h2>

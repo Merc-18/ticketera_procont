@@ -23,7 +23,7 @@ export default function ClientNewTicket() {
 
   if (session.studio_mapping === 'required' || products.length === 0) {
     return (
-      <div className="max-w-2xl mx-auto bg-white rounded-2xl border border-gray-200 shadow-sm p-8 text-center">
+      <div className="max-w-2xl mx-auto bg-surface rounded-2xl border border-gray-200 shadow-sm p-8 text-center">
         <div className="icon-tile mx-auto mb-4"><Icon name="building" size={28} /></div>
         <h1 className="text-xl font-bold text-brand-700 mb-2">
           {session.studio_mapping === 'required' ? 'Tu empresa aún no está habilitada' : 'No hay productos disponibles'}
@@ -33,7 +33,7 @@ export default function ClientNewTicket() {
             ? 'Para registrar tickets, el equipo de Procont debe completar la asociación de tu empresa. Comunícate con nosotros; mientras tanto puedes consultar tus tickets.'
             : 'En este momento no hay productos habilitados para este acceso. Intenta más tarde.'}
         </p>
-        <Link to="/cliente/tickets" className="inline-block bg-accent-400 hover:bg-accent-300 text-gray-900 px-5 py-2.5 rounded-lg font-bold transition">
+        <Link to="/cliente/tickets" className="inline-block bg-accent-400 hover:bg-accent-300 text-on-accent px-5 py-2.5 rounded-lg font-bold transition">
           Ver Mis tickets
         </Link>
       </div>

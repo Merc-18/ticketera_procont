@@ -1,7 +1,7 @@
 // ─── Shared UI constants ──────────────────────────────────────────────────────
 
-/** Avatares: solo tonos de marca y neutros con texto blanco ≥ 7:1 (sin violeta). */
-export const AVATAR_COLORS = ['bg-brand-600', 'bg-brand-800', 'bg-gray-600', 'bg-gray-700', 'bg-brand-500']
+/** Avatares: tonos de marca y neutros con texto blanco (≥ 7:1 en claro, ≥ 4,9:1 en oscuro; src/theme/themes.ts). */
+export const AVATAR_COLORS = ['bg-avatar-1', 'bg-avatar-2', 'bg-avatar-3', 'bg-avatar-4', 'bg-avatar-5']
 
 export function getAvatarColor(name: string): string {
   let h = 0
