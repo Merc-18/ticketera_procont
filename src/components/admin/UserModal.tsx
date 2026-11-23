@@ -1,6 +1,8 @@
 import ModalFocus from '../ui/ModalFocus'
 import { useState } from 'react'
 import type { User } from '../../types/database.types'
+import Icon from '../ui/Icon'
+import ControlLabel from '../ui/ControlLabel'
 
 type RoleOption = 'superadmin' | 'admin' | 'developer' | 'viewer'
 
@@ -70,9 +72,9 @@ export default function UserModal({ user, currentUserRole, currentUserId, onClos
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b">
           <h2 className="text-xl font-bold text-gray-900">
-            {isEdit ? '✏️ Editar Usuario' : '➕ Nuevo Usuario'}
+            <ControlLabel icon={isEdit ? 'edit' : 'plus'}>{isEdit ? 'Editar usuario' : 'Nuevo usuario'}</ControlLabel>
           </h2>
-          <button aria-label="Cerrar" onClick={onClose} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">✕</button>
+          <button aria-label="Cerrar" onClick={onClose} className="text-gray-600 hover:text-gray-900 hover:bg-gray-100"><Icon name="close" size={20} /></button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
@@ -151,7 +153,7 @@ export default function UserModal({ user, currentUserRole, currentUserId, onClos
             </div>
             {!isSuperAdmin && (
               <p className="text-xs text-gray-400 mt-2">
-                🔒 Solo un Superadmin puede asignar roles Admin o Superadmin
+                <Icon name="lock" size={14} className="inline-block mr-1 -mt-0.5" />Solo un Superadmin puede asignar roles Admin o Superadmin
               </p>
             )}
           </div>
@@ -167,7 +169,7 @@ export default function UserModal({ user, currentUserRole, currentUserId, onClos
                 type="button"
                 onClick={() => setIsActive(v => !v)}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  isActive ? 'bg-green-500' : 'bg-gray-300'
+                  isActive ? 'bg-green-700' : 'bg-gray-300'
                 }`}
               >
                 <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${
@@ -186,7 +188,7 @@ export default function UserModal({ user, currentUserRole, currentUserId, onClos
 
           {/* Aviso creación */}
           {!isEdit && (
-            <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-xs text-amber-700">
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg px-4 py-3 text-xs text-yellow-800">
               <strong>Nota:</strong> la cuenta se crea con el correo confirmado y queda activa con el rol
               elegido. Verifica la identidad de la persona y entrégale la contraseña por un canal aprobado.
             </div>

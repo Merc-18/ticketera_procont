@@ -3,6 +3,7 @@ import { useCatalogs, saveCatalogRow } from '../../hooks/useCatalogs'
 import { errorMessage } from '../../lib/supabase-errors'
 import { toast } from '../../lib/toast'
 import AreasPanel from './AreasPanel'
+import Icon from '../ui/Icon'
 
 type Table = Parameters<typeof saveCatalogRow>[0]
 type Section = 'studios' | 'systems' | 'areas' | 'types'
@@ -42,9 +43,9 @@ function Row({ table, id, name, code, active, codeLabel, onSaved, indent = false
             {!active && <span className="ml-2 text-xs text-gray-500">(inactivo)</span>}
           </span>
           {extra}
-          <button disabled={busy} onClick={() => setEditing(true)} className={`${btn} bg-brand-50 text-brand-700 hover:bg-brand-100`}>✏️ Editar</button>
+          <button disabled={busy} onClick={() => setEditing(true)} className={`${btn} bg-brand-50 text-brand-700 hover:bg-brand-100`}><Icon name="edit" size={14} className="inline-block mr-1 -mt-0.5" />Editar</button>
           <button disabled={busy} onClick={() => void save({ is_active: !active }, active ? 'Desactivado.' : 'Activado.')}
-            className={`${btn} ${active ? 'bg-orange-50 text-orange-700 hover:bg-orange-100' : 'bg-green-50 text-green-700 hover:bg-green-100'}`}>
+            className={`${btn} ${active ? 'bg-yellow-50 text-yellow-800 hover:bg-yellow-100' : 'bg-green-50 text-green-700 hover:bg-green-100'}`}>
             {active ? 'Desactivar' : 'Activar'}
           </button>
         </>
@@ -66,7 +67,7 @@ function AddForm({ placeholder, codePlaceholder, onAdd, small = false }: {
     }}>
       <input required className={`${input} flex-1 min-w-[10rem]`} placeholder={placeholder} value={n} maxLength={300} onChange={e => setN(e.target.value)} />
       {codePlaceholder && <input className={`${input} w-32 font-mono`} placeholder={codePlaceholder} value={c} maxLength={20} onChange={e => setC(e.target.value)} />}
-      <button disabled={busy || !n.trim()} className={`${btn} bg-primary text-white hover:bg-brand-700`}>➕ Agregar</button>
+      <button disabled={busy || !n.trim()} className={`${btn} bg-primary text-white hover:bg-brand-700`}><Icon name="plus" size={14} className="inline-block mr-1 -mt-0.5" />Agregar</button>
     </form>
   )
 }
@@ -81,7 +82,7 @@ export default function CatalogsPanel() {
   if (!cat.available) {
     return (
       <div className="space-y-4">
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 text-sm text-yellow-800">
           Los catálogos de estudios y proyectos requieren la migración <code>20261118000300_ticket_catalogs</code> y <code>20261118000400_request_intake</code>, pendientes de aplicar.
         </div>
         <AreasPanel />
@@ -94,7 +95,7 @@ export default function CatalogsPanel() {
   return (
     <div className="space-y-5 max-w-4xl">
       <div className="flex gap-1 bg-gray-100 p-1 rounded-lg w-fit">
-        {([['studios', '🏢 Estudios'], ['systems', '🧩 Proyectos'], ['areas', '🏷 Áreas'], ['types', '📝 Tipos de solicitud']] as [Section, string][]).map(([k, l]) => (
+        {([['studios', 'Estudios'], ['systems', 'Proyectos'], ['areas', 'Áreas'], ['types', 'Tipos de solicitud']] as [Section, string][]).map(([k, l]) => (
           <button key={k} onClick={() => setSection(k)}
             className={`px-4 py-2 rounded-md text-sm font-medium transition ${section === k ? 'bg-white text-primary shadow-sm' : 'text-gray-600 hover:text-gray-900'}`}>{l}</button>
         ))}
@@ -107,7 +108,7 @@ export default function CatalogsPanel() {
             <div key={s.id} className={card}>
               <Row table="studios" id={s.id} name={s.name} active={s.is_active} onSaved={reload}
                 extra={<span className="text-xs text-gray-500 font-mono">{s.ruc ? `RUC ${s.ruc}` : 'Sin RUC'}</span>} />
-              {s.review_note && <p className="text-xs text-amber-700 bg-amber-50 rounded px-2 py-1 my-1">⚠ {s.review_note}</p>}
+              {s.review_note && <p className="text-xs text-yellow-800 bg-yellow-50 rounded px-2 py-1 my-1"><Icon name="alert" size={12} className="inline-block mr-1 -mt-0.5" />{s.review_note}</p>}
               {cat.codes.filter(c => c.studio_id === s.id).map(c => (
                 <Row key={c.id} table="studio_codes" id={c.id} name={c.code} code={c.code} active={c.is_active} onSaved={reload} indent />
               ))}

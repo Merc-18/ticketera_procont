@@ -1,4 +1,5 @@
 import { Component, type ReactNode } from 'react'
+import Icon from './ui/Icon'
 
 interface Props { children: ReactNode }
 interface State { hasError: boolean; message: string }
@@ -20,7 +21,7 @@ export default class ErrorBoundary extends Component<Props, State> {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
         <div className="bg-white rounded-2xl shadow-lg border border-red-100 p-8 max-w-md w-full text-center">
-          <p className="text-5xl mb-4">⚠️</p>
+          <Icon name="alert" size={44} className="mx-auto mb-4 text-red-700" />
           <h2 className="text-xl font-bold text-gray-900 mb-2">Algo salió mal</h2>
           <p className="text-sm text-gray-500 mb-6">{this.state.message}</p>
           <button

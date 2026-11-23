@@ -2,7 +2,8 @@ import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import type { useCatalogs } from '../../hooks/useCatalogs'
 import { GENERAL_STATUS, isGeneralStatus, limaDateTime, type GeneralStatus } from '../../lib/request-status'
-import { PHASE_LABELS } from '../../lib/constants'
+import { PHASE_LABELS, PRIORITY_LABEL } from '../../lib/constants'
+import Icon from '../ui/Icon'
 
 interface Entry { key: string; at: string; actor: string | null; source: 'ticket' | 'proyecto'; title: string; detail?: string; status?: GeneralStatus; tone?: 'block' | 'done' | 'reopen' }
 type Catalogs = ReturnType<typeof useCatalogs>
@@ -22,7 +23,7 @@ const ACTION: Record<string, string> = {
   edited: 'Proyecto editado', due_date_changed: 'Fecha de entrega cambiada', sla_completed: 'Trabajo completado (histórico)',
   comment: 'Comentario', comment_added: 'Comentario agregado', status_changed: 'Estado del proyecto cambiado', project_deleted: 'Proyecto eliminado', project_restored: 'Proyecto restaurado',
 }
-const PRIORITY: Record<string, string> = { low: 'Baja', medium: 'Media', high: 'Alta', urgent: 'Urgente' }
+const PRIORITY: Record<string, string> = PRIORITY_LABEL
 const ROLE: Record<string, string> = { superadmin: 'superadmin', admin: 'admin', developer: 'developer', viewer: 'viewer' }
 const phase = (p?: string) => (p ? PHASE_LABELS[p] ?? p : '—')
 const FLOW: Record<string, string> = { development: 'Desarrollo', administrative: 'Administrativo' }
@@ -121,22 +122,22 @@ export default function RequestTimeline({ requestId, projectId, catalogs, refres
   return (
     <section className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h3 className="text-sm font-semibold text-brand-700 uppercase tracking-wide">Historial inmutable</h3>
-        {current && <span className={`px-3 py-1 rounded-full border text-xs font-semibold ${GENERAL_STATUS[current].tone}`}>
-          {GENERAL_STATUS[current].icon} {GENERAL_STATUS[current].label}</span>}
+        <h3 className="text-sm font-semibold text-brand-700">Historial inmutable</h3>
+        {current && <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-medium ${GENERAL_STATUS[current].tone}`}>
+          <Icon name={GENERAL_STATUS[current].icon} size={12} />{GENERAL_STATUS[current].label}</span>}
       </div>
-      <p className="text-[11px] text-gray-400">Registro generado por el servidor; no admite edición ni borrado. Horas de Perú (Lima).</p>
-      <p className="text-[11px] text-gray-400 font-mono break-all">ID interno: {requestId}</p>
+      <p className="text-[13px] text-gray-600">Registro generado por el servidor; no admite edición ni borrado. Horas de Perú (Lima).</p>
+      <p className="text-[13px] text-gray-600 font-mono break-all">ID interno: {requestId}</p>
       {error && <p className="text-sm text-red-700">{error}</p>}
-      {entries === null ? <p className="text-sm text-gray-400">Cargando…</p> : entries.length === 0 ? <p className="text-sm text-gray-400">Sin eventos registrados.</p> : (
+      {entries === null ? <p role="status" className="text-sm text-gray-600">Cargando…</p> : entries.length === 0 ? <p className="text-sm text-gray-600">Sin eventos registrados.</p> : (
         <ol className="border-l-2 border-brand-100 ml-2 space-y-3">
           {entries.map(e => (
             <li key={e.key} className="pl-4 relative">
-              <span className={`absolute -left-[7px] top-1.5 w-3 h-3 rounded-full ${e.tone === 'block' ? 'bg-red-500' : e.tone === 'done' ? 'bg-emerald-600' : e.tone === 'reopen' ? 'bg-orange-500' : e.status ? 'bg-accent-400' : e.source === 'proyecto' ? 'bg-gray-300' : 'bg-brand-600'}`} />
+              <span className={`absolute -left-[7px] top-1.5 w-3 h-3 rounded-full ${e.tone === 'block' ? 'bg-red-700' : e.tone === 'done' ? 'bg-green-700' : e.tone === 'reopen' ? 'bg-yellow-100' : e.status ? 'bg-accent-400' : e.source === 'proyecto' ? 'bg-gray-300' : 'bg-brand-600'}`} />
               <p className="text-sm font-medium text-gray-900">{e.title}
-                {e.source === 'proyecto' && <span className="ml-2 text-[10px] uppercase text-gray-400">registro anterior</span>}</p>
+                {e.source === 'proyecto' && <span className="ml-2 text-[13px] text-gray-600">registro anterior</span>}</p>
               {e.detail && <p className="text-xs text-gray-600 break-words">{e.detail}</p>}
-              <p className="text-[11px] text-gray-400">{limaDateTime(e.at)} (Lima){e.actor ? ` · ${e.actor}` : ''}</p>
+              <p className="text-[13px] text-gray-600">{limaDateTime(e.at)} (Lima){e.actor ? ` · ${e.actor}` : ''}</p>
             </li>
           ))}
         </ol>

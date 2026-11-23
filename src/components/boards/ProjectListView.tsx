@@ -1,5 +1,6 @@
 import type { Project, ProjectFlow } from '../../types/database.types'
-import { PRIORITY_COLORS, AREA_COLORS, PHASE_LABELS } from '../../lib/constants'
+import { PRIORITY_COLORS, AREA_COLORS, PHASE_LABELS, PRIORITY_LABEL } from '../../lib/constants'
+import Icon from '../ui/Icon'
 import { checklistCount, phasePosition } from '../../lib/board'
 
 interface ProjectWithRelations extends Project {
@@ -16,7 +17,7 @@ interface Props {
 
 export default function ProjectListView({ projects, boardType, onProjectClick, status }: Props) {
   const statusLabel = status === 'completed' ? 'completados' : 'archivados'
-  const statusIcon = status === 'completed' ? '✅' : '📦'
+  const statusIcon = status === 'completed' ? 'check' as const : 'archive' as const
 
   // Filtrar proyectos que tienen el flow del tipo del board
   const items = projects
@@ -28,8 +29,8 @@ export default function ProjectListView({ projects, boardType, onProjectClick, s
 
   if (items.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-64 text-gray-400">
-        <span className="text-5xl mb-3">{statusIcon}</span>
+      <div className="flex flex-col items-center justify-center h-64 text-gray-600">
+        <Icon name={statusIcon} size={40} className="mb-3 text-gray-500" />
         <p className="text-lg font-medium">No hay proyectos {statusLabel}</p>
         <p className="text-sm mt-1">Los proyectos {statusLabel} aparecerán aquí</p>
       </div>
@@ -55,7 +56,7 @@ export default function ProjectListView({ projects, boardType, onProjectClick, s
               className="project-list-card border border-gray-200 cursor-pointer"
             >
               {/* Título */}
-              <h3 className="font-semibold text-gray-900 text-sm mb-2 line-clamp-2">
+              <h3 className="font-medium text-gray-900 text-base mb-2 line-clamp-2">
                 {project.title}
               </h3>
 
@@ -67,7 +68,7 @@ export default function ProjectListView({ projects, boardType, onProjectClick, s
               {/* Badges */}
               <div className="flex flex-wrap gap-1.5 mb-3">
                 <span className={`px-2 py-0.5 rounded text-xs font-medium border ${PRIORITY_COLORS[project.priority]}`}>
-                  {project.priority.toUpperCase()}
+                  <span className="sr-only">Prioridad definitiva: </span>{PRIORITY_LABEL[project.priority] ?? project.priority}
                 </span>
                 {area && (
                   <span className={`px-2 py-0.5 rounded text-xs font-medium ${areaColorClass}`}>
@@ -76,11 +77,11 @@ export default function ProjectListView({ projects, boardType, onProjectClick, s
                 )}
                 {showRequester && (
                   <span className="px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200">
-                    👤 {requesterName}
+                    <Icon name="user" size={13} className="inline-block mr-1 -mt-0.5" />{requesterName}
                   </span>
                 )}
                 {project.project_type === 'dual' && (
-                  <span className="px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">
+                  <span className="px-2 py-0.5 rounded text-xs font-medium bg-brand-100 text-brand-800">
                     DUAL
                   </span>
                 )}
@@ -101,8 +102,8 @@ export default function ProjectListView({ projects, boardType, onProjectClick, s
               </div>
 
               {/* Fecha */}
-              <p className="text-xs text-gray-400 mt-3">
-                {status === 'completed' ? '✅' : '📦'} {new Date(project.updated_at).toLocaleDateString('es-PE')}
+              <p className="text-sm text-gray-600 mt-3 flex items-center gap-1">
+                <Icon name={statusIcon} size={14} />{new Date(project.updated_at).toLocaleDateString('es-PE')}
               </p>
             </div>
           )

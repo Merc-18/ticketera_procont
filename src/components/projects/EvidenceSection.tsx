@@ -3,6 +3,7 @@ import AttachmentPicker from '../requests/AttachmentPicker'
 import { listRequestAttachments, uploadBoardEvidence } from '../../lib/attachments'
 import type { PreparationResult } from '../../lib/attachment-prep'
 import { toast } from '../../lib/toast'
+import Icon from '../ui/Icon'
 
 /** Evidencias del ticket (bucket privado). Subida interna vía reserve_board_evidence. */
 export default function EvidenceSection({ projectId, requestId, editable, onChanged }: {
@@ -49,18 +50,18 @@ export default function EvidenceSection({ projectId, requestId, editable, onChan
       <div>
         <h3 className="font-semibold text-gray-900 mb-2">Evidencias del ticket</h3>
         {loadError ? <p role="alert" className="text-sm text-red-700">{loadError}</p>
-          : files === null ? <p className="text-sm text-gray-400">Cargando…</p> : files.length === 0
-          ? <p className="text-sm text-gray-400">Sin evidencias adjuntas.</p>
+          : files === null ? <p role="status" className="text-sm text-gray-600">Cargando…</p> : files.length === 0
+          ? <p className="text-sm text-gray-600">Sin evidencias adjuntas.</p>
           : (
             <ul className="space-y-1">
               {files.map(f => (
                 <li key={f.name} className="text-sm break-all">
-                  {f.url ? <a href={f.url} target="_blank" rel="noreferrer" className="text-primary hover:underline">📎 {f.name}</a> : <span>📎 {f.name}</span>}
+                  {f.url ? <a href={f.url} target="_blank" rel="noreferrer" className="text-primary hover:underline inline-flex items-center gap-1"><Icon name="file" size={14} />{f.name}</a> : <span className="inline-flex items-center gap-1"><Icon name="file" size={14} />{f.name}</span>}
                 </li>
               ))}
             </ul>
           )}
-        <p className="text-xs text-gray-400 mt-2">Límite por ticket: 4 archivos y 2,5 MB en total (incluye los adjuntos del solicitante).</p>
+        <p className="text-sm text-gray-600 mt-2">Límite por ticket: 4 archivos y 2,5 MB en total (incluye los adjuntos del solicitante).</p>
       </div>
       {editable && (
         <div className="border-t pt-4 space-y-3">

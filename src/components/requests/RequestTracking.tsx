@@ -6,6 +6,7 @@ import { errorMessage } from '../../lib/supabase-errors'
 import { peekTrackingNumber, clearTrackingNumber } from '../../lib/tracking-handoff'
 import { GENERAL_STATUS } from '../../lib/request-status'
 import BrandLogo from '../ui/BrandLogo'
+import Icon from '../ui/Icon'
 
 const CURRENT_PREFIX = `REQ${new Date().getFullYear().toString().slice(2)}-`
 
@@ -45,44 +46,44 @@ export default function RequestTracking() {
     <main id="main-content" tabIndex={-1} className="tracking-page app-surface px-4">
       <div className="max-w-xl mx-auto">
         <div className="tracking-panel">
-          <button onClick={() => navigate('/portal')} className="text-sm text-gray-400 hover:text-gray-600 transition mb-4">← Inicio</button>
+          <button onClick={() => navigate('/portal')} className="back-link mb-4">← Inicio</button>
           <div className="text-center mb-8">
             <BrandLogo size={48} showName={false} className="justify-center mb-4" />
-            <h1 className="text-3xl font-bold text-brand-700 mb-2">Rastrear Solicitud</h1>
+            <h1 className="text-3xl font-medium text-brand-700 mb-2">Rastrear Solicitud</h1>
             <div className="mx-auto mb-3 h-1 w-16 rounded-full bg-accent-400" aria-hidden="true" />
             <p className="text-gray-600">Ingresa tu número de solicitud para conocer su estado</p>
           </div>
 
           <label htmlFor="tracking-number" className="block text-sm font-medium text-gray-700 mb-2">Número de solicitud</label>
-          <form onSubmit={e => { e.preventDefault(); void search(requestNumber) }} className="flex gap-3 mb-6">
+          <form noValidate onSubmit={e => { e.preventDefault(); if (!requestNumber.trim()) { setError('Escribe el número de solicitud.'); return } void search(requestNumber) }} className="flex flex-col sm:flex-row gap-3 mb-6">
             <input id="tracking-number" value={requestNumber} onChange={e => setRequestNumber(e.target.value.toUpperCase())}
-              placeholder={`${CURRENT_PREFIX}001`} maxLength={20} required autoFocus
-              className="flex-1 min-w-0 px-4 py-3 border-2 border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-primary text-lg font-mono" />
-            <button type="submit" disabled={loading || !requestNumber.trim()}
+              placeholder={`${CURRENT_PREFIX}001`} maxLength={20} required autoFocus aria-invalid={!!error || undefined} aria-describedby={error ? 'tracking-error' : undefined}
+              className="ui-input flex-1 min-w-0 text-lg font-mono" />
+            <button type="submit" disabled={loading}
               className="ui-button ui-button-primary">
               {loading ? 'Buscando…' : 'Buscar'}
             </button>
           </form>
 
-          {error && <p role="alert" className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>}
+          {error && <p id="tracking-error" role="alert" className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>}
           {notFound && (
             <div className="bg-gray-50 border rounded-lg p-5 text-center">
               <p className="font-medium text-gray-800">No encontramos esa solicitud</p>
-              <p className="text-sm text-gray-500 mt-1">Verifica el número, por ejemplo {CURRENT_PREFIX}001.</p>
+              <p className="text-sm text-gray-600 mt-1">Verifica el número, por ejemplo {CURRENT_PREFIX}001.</p>
             </div>
           )}
 
           {result && status && (
             <div className="space-y-5">
               <div data-testid="public-tracking-result" role="status" className="text-center bg-gray-50 border rounded-xl p-5">
-                <p className="text-sm text-gray-500">Solicitud</p>
-                <p className="font-mono font-bold text-2xl text-primary">{result.request_number}</p>
-                <span className={`inline-flex items-center gap-2 mt-3 px-4 py-1.5 rounded-full border text-sm font-semibold ${status.tone}`}>
-                  {status.icon} {status.label}
+                <p className="text-sm text-gray-600">Solicitud</p>
+                <p className="font-mono font-medium text-2xl text-primary">{result.request_number}</p>
+                <span className={`inline-flex items-center gap-2 mt-3 px-4 py-1.5 rounded-full border text-sm font-medium ${status.tone}`}>
+                  <Icon name={status.icon} size={16} />{status.label}
                 </span>
               </div>
               <button onClick={() => navigate('/request')}
-                className="w-full bg-gray-100 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-200 transition">
+                className="ui-button ui-button-secondary w-full">
                 Nueva solicitud
               </button>
             </div>

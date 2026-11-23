@@ -1,0 +1,27 @@
+[
+ {
+  "check": "flush",
+  "target": "portal-option:nth-of-type(1)",
+  "reason": "The card text sits 30-32px inside the card's own padding (cards.md: card padding 24-32px); the checker measures the row edge, not the text inside the card."
+ },
+ {
+  "check": "container-edges",
+  "target": "portal-option:nth-of-type(1) > h2",
+  "reason": "Card title inside its card padding; layout-v4.md excludes text inside cards from the page's left line."
+ },
+ {
+  "check": "container-edges",
+  "target": "portal-option:nth-of-type(2) > h2",
+  "reason": "Second column of a two-column grid; layout-v4.md allows grid columns and excludes card text from the global left line."
+ },
+ {
+  "check": "container-edges",
+  "target": "Saltar al contenido",
+  "reason": "React mount point of an existing app (SKILL section 4.0: an existing project builds in its own stack); header, main and footer live inside it."
+ },
+ {
+  "check": "section-height",
+  "target": "footer.build-version",
+  "reason": "Global build-version metadata line required by the product on every screen; it is not a content section and must not grow to a screen."
+ }
+]

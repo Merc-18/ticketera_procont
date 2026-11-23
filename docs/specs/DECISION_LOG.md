@@ -46,6 +46,7 @@ Registra decisiones del usuario reafirmadas en la solicitud integral y evidencia
 | 23/11, activación | D-034 | M16b como migración separada | **VIGENTE** | El frontend anterior sigue compatible: el nombre Quipu se descarta y el subproyecto sin clave se exige al aprobar. Retirar con una migración futura cuando no quede tráfico antiguo. | TICKET-002b, TICKET-014b | [Preparación](../validation/m16b-preparation-20261123/REPORT.md) |
 | 23/11, activación expresa | D-035 | Aplicar M16+M16b sin respaldo adicional | **VIGENTE** | El usuario decidió no hacer dump ni instalar Docker o pg_dump. Correcciones solo hacia delante. | — | [Activación](../validation/m16-activation-20261123/REPORT.md) |
 | 23/11, repositorio | D-036 | Una sola rama remota | **VIGENTE** | Solo `main` en GitHub; versión identificada con el tag `ticketera-production-20261123` y su Release. | — | [Release](../validation/production-release-20261123/REPORT.md) |
+| 23/11, corrección UX/UI | D-037 | Paleta oficial Procont, sin violeta, iconos únicos, prioridad en español | **VIGENTE** | El usuario ordenó la paleta oficial medida en procontbusiness.com y el logo (azules `#1E3A8A` `#01257B` `#001E64`, dorados `#EEBB31` `#F2CE52` `#FFCC2A`, neutros slate), contraste medio, solo iconos lineales, nunca violeta y prioridades Bajo/Medio/Alto/Urgente. Revoca los derivados `#173D66`/`#D5AE54`. Presión `scale(.98)` + 1 px (rango Emil .95–.98). Sin cambios de backend. | NFR-002 | [Corrección](../validation/ux-ui-correction-20261123/REPORT.md) |
 
 ## Decisiones aún no tomadas o confirmadas
 

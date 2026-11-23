@@ -26,8 +26,8 @@ export default function BrandLogo({ size = 40, showName = true, tone = 'dark', c
       />
       {showName && (
         <div className="brand-name leading-tight min-w-0">
-          <p className={`font-medium tracking-tight truncate ${title}`}>{BRAND.appName}</p>
-          <p className={`text-xs font-medium truncate ${sub}`}>{BRAND.company}</p>
+          <p className={`font-medium tracking-tight whitespace-nowrap ${title}`}>{BRAND.appName}</p>
+          <p className={`text-xs font-medium whitespace-nowrap ${sub}`}>{BRAND.company}</p>
         </div>
       )}
     </div>

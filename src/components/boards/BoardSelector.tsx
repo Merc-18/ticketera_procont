@@ -11,21 +11,21 @@ export default function BoardSelector({ currentBoard, onChange }: Props) {
         onClick={() => onChange('development')}
         className={`px-4 py-2 rounded-md font-medium text-sm transition ${
           currentBoard === 'development'
-            ? 'bg-white text-primary shadow-sm'
+            ? 'bg-brand-100 text-brand-700'
             : 'text-gray-600 hover:text-gray-900'
         }`}
       >
-        <ControlLabel>💻 Development</ControlLabel>
+        <ControlLabel icon="code">Development</ControlLabel>
       </button>
       <button
         onClick={() => onChange('administrative')}
         className={`px-4 py-2 rounded-md font-medium text-sm transition ${
           currentBoard === 'administrative'
-            ? 'bg-white text-primary shadow-sm'
+            ? 'bg-brand-100 text-brand-700'
             : 'text-gray-600 hover:text-gray-900'
         }`}
       >
-        <ControlLabel>📋 Histórico Admin.</ControlLabel>
+        <ControlLabel icon="tickets">Histórico Admin.</ControlLabel>
       </button>
     </div>
   )

@@ -3,6 +3,8 @@ import { supabase } from '../../lib/supabase'
 import { board } from '../../lib/api'
 import { actionKey } from '../../lib/board'
 import { errorMessage } from '../../lib/supabase-errors'
+import Icon from '../ui/Icon'
+import { PRIORITY_LABEL } from '../../lib/constants'
 
 interface DeletedProject {
   id: string
@@ -14,12 +16,8 @@ interface DeletedProject {
   requests?: { request_number: string } | null
 }
 
-const PRIORITY_LABEL: Record<string, string> = {
-  urgent: '🔴 Urgente', high: '🟠 Alta', medium: '🟡 Media', low: '🟢 Baja',
-}
-
 const TYPE_LABEL: Record<string, string> = {
-  development: '💻 Dev', administrative: '📋 Admin', dual: '🔄 Dual',
+  development: 'Development', administrative: 'Administrative', dual: 'Dual',
 }
 
 export default function PapeleraView() {
@@ -68,7 +66,7 @@ export default function PapeleraView() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-bold text-gray-900">🗑 Papelera</h3>
+          <h2 className="text-lg font-medium text-gray-900 inline-flex items-center gap-2"><Icon name="trash" size={20} />Papelera</h2>
           <p className="text-sm text-gray-500 mt-0.5">Proyectos eliminados antes del historial inmutable. Pueden restaurarse; no se borran definitivamente.</p>
         </div>
         <div className="flex items-center gap-2">
@@ -79,14 +77,14 @@ export default function PapeleraView() {
             onClick={load}
             className="px-3 py-1 bg-white border border-gray-200 text-gray-500 rounded-lg text-sm hover:bg-gray-50 transition"
           >
-            ↻ Actualizar
+            <Icon name="refresh" size={14} className="inline-block mr-1 -mt-0.5" />Actualizar
           </button>
         </div>
       </div>
 
       {projects.length === 0 ? (
         <div className="text-center py-16 bg-gray-50 rounded-xl border border-dashed border-gray-200">
-          <p className="text-4xl mb-3">🗑</p>
+          <Icon name="trash" size={36} className="mx-auto mb-3 text-gray-500" />
           <p className="text-gray-500 font-medium">La papelera está vacía</p>
         </div>
       ) : (
@@ -104,7 +102,7 @@ export default function PapeleraView() {
                     <div className="flex items-center gap-2">
                       <span className="text-xs text-gray-500">{TYPE_LABEL[p.project_type]}</span>
                       <span className="text-xs text-gray-400">·</span>
-                      <span className="text-xs text-gray-500">{PRIORITY_LABEL[p.priority]}</span>
+                      <span className="text-xs text-gray-600">Prioridad {PRIORITY_LABEL[p.priority] ?? p.priority}</span>
                       <span className="text-xs text-gray-400">·</span>
                       <span className="text-xs text-gray-400">
                         Eliminado {new Date(p.updated_at).toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: 'numeric' })}
@@ -118,7 +116,7 @@ export default function PapeleraView() {
                     onClick={() => setConfirmRestore(p.id)}
                     className="px-3 py-1.5 bg-brand-50 text-brand-700 border border-brand-200 rounded-lg text-xs font-medium hover:bg-brand-100 transition"
                   >
-                    ↩ Restaurar
+                    <Icon name="refresh" size={14} className="inline-block mr-1 -mt-0.5" />Restaurar
                   </button>
                 </div>
               </div>
@@ -131,7 +129,7 @@ export default function PapeleraView() {
       {confirmRestore && (
         <div className="modal-backdrop fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="modal-panel bg-white rounded-lg max-w-sm w-full p-6 shadow-2xl">
-            <h3 className="text-lg font-bold text-gray-900 mb-2">↩ Restaurar proyecto</h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-2 inline-flex items-center gap-2"><Icon name="refresh" size={20} />Restaurar proyecto</h3>
             <p className="text-sm text-gray-600 mb-6">
               El ticket volverá a los boards (activo, o terminado si ya estaba en su fase final). Queda registrado en el historial.
             </p>

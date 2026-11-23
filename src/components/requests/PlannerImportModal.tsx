@@ -7,6 +7,7 @@ import { createRpcAttempt, type RpcAttempt } from '../../lib/rpc-attempt'
 import { errorMessage } from '../../lib/supabase-errors'
 import { toast } from '../../lib/toast'
 import AreaInput from '../ui/AreaInput'
+import Icon from '../ui/Icon'
 
 interface PlannerRow {
   'Task Name'?: string
@@ -197,7 +198,7 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
       <div className="modal-backdrop fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
         <div role="dialog" aria-modal="true" aria-label="Importar desde Planner" className="modal-panel bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full text-center">
         <ModalFocus onDismiss={onClose} />
-          <div className="text-5xl mb-4">✅</div>
+          <Icon name="check" size={44} className="mx-auto mb-4 text-green-700" />
           <h2 className="text-xl font-bold text-gray-900 mb-2">{imported} solicitudes confirmadas</h2>
           {failures.length > 0 && <div role="alert" className="text-red-700 text-sm mb-4">
             {failures.map(message => <p key={message}>{message}</p>)}
@@ -225,12 +226,12 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b shrink-0">
           <div>
-            <h2 className="text-lg font-bold text-gray-900"><ControlLabel>📥 Importar desde Planner</ControlLabel></h2>
+            <h2 className="text-lg font-medium text-gray-900"><ControlLabel icon="upload">Importar desde Planner</ControlLabel></h2>
             <p className="text-xs text-gray-500 mt-0.5">
               Las tareas importadas quedarán como solicitudes <strong>pendientes</strong> con prioridad <strong>baja</strong>
             </p>
           </div>
-          <button aria-label="Cerrar" onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl">✕</button>
+          <button aria-label="Cerrar" onClick={onClose} className="text-gray-600 hover:text-gray-900 hover:bg-gray-100"><Icon name="close" size={20} /></button>
         </div>
 
         {/* Step: upload */}
@@ -242,10 +243,10 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
               className="border-2 border-dashed border-gray-300 rounded-xl p-12 text-center hover:border-primary transition cursor-pointer w-full max-w-md"
               onClick={() => inputRef.current?.click()}
             >
-              <div className="text-5xl mb-4">📊</div>
+              <Icon name="table" size={44} className="mx-auto mb-4 text-gray-500" />
               <p className="text-gray-700 font-semibold mb-1">Arrastra el Excel aquí</p>
-              <p className="text-gray-400 text-sm mb-4">o haz clic para seleccionar el archivo</p>
-              <p className="text-xs text-gray-400">Exporta desde Planner → Exportar plan a Excel (.xlsx)</p>
+              <p className="text-gray-600 text-sm mb-4">o haz clic para seleccionar el archivo</p>
+              <p className="text-sm text-gray-600">Exporta desde Planner → Exportar plan a Excel (.xlsx)</p>
               <input
                 ref={inputRef}
                 type="file"
@@ -272,11 +273,11 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
                   />
                   Seleccionar todo
                 </label>
-                <span className="text-xs text-gray-400">{selected.size} de {rows.length} seleccionadas</span>
+                <span className="text-sm text-gray-600">{selected.size} de {rows.length} seleccionadas</span>
               </div>
               <button
                 onClick={() => { setStep('upload'); setRows([]); setSelected(new Set()) }}
-                className="text-xs text-gray-400 hover:text-gray-600 underline"
+                className="text-sm text-gray-600 hover:text-gray-900 underline min-h-[44px]"
               >
                 Cambiar archivo
               </button>
@@ -286,7 +287,7 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
             <div className="flex-1 overflow-auto">
               <table className="w-full text-sm">
                 <thead className="bg-gray-50 border-b sticky top-0">
-                  <tr className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                  <tr className="text-xs font-semibold text-gray-500">
                     <th className="w-10 px-4 py-3"></th>
                     <th className="text-left px-4 py-3">Título</th>
                     <th className="text-left px-4 py-3">Solicitante</th>
@@ -315,7 +316,7 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
                       <td className="px-4 py-2.5 max-w-xs">
                         <p className="font-medium text-gray-900 truncate">{row.title}</p>
                         {row.description && row.description !== row.title && (
-                          <p className="text-xs text-gray-400 truncate">{row.description}</p>
+                          <p className="text-sm text-gray-600 truncate">{row.description}</p>
                         )}
                       </td>
                       <td className="px-4 py-2.5 text-gray-600 whitespace-nowrap">{row.requester_name}</td>
@@ -344,7 +345,7 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
             {/* Footer */}
             <div className="px-6 py-4 border-t bg-gray-50 flex flex-wrap items-center justify-between gap-3 shrink-0">
               <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500">
-                <span>Se importarán con prioridad <strong>🟢 Baja</strong> y área</span>
+                <span>Se importarán con prioridad <strong>Bajo</strong> y área</span>
                 <AreaInput
                   required
                   value={importArea}
@@ -371,7 +372,7 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
                       Importando...
                     </>
                   ) : (
-                    <ControlLabel>{`📥 Importar ${selected.size} solicitud${selected.size !== 1 ? 'es' : ''}`}</ControlLabel>
+                    <ControlLabel icon="upload">{`Importar ${selected.size} solicitud${selected.size !== 1 ? 'es' : ''}`}</ControlLabel>
                   )}
                 </button>
               </div>

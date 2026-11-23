@@ -391,11 +391,11 @@ for (const size of ['desktop', 'movil']) {
     await board.getByRole('button', { name: 'Equipo', exact: true }).click()
     try {
       await board.getByRole('status').filter({ hasText: 'Cargando vista…' }).waitFor()
-      assert.equal(await board.getByRole('button', { name: 'Carga de Trabajo', exact: true }).isVisible(), true, 'la navegación permanece visible durante la descarga')
+      assert.equal(await board.getByRole('button', { name: 'Carga de trabajo', exact: true }).isVisible(), true, 'la navegación permanece visible durante la descarga')
       assert.equal(await board.getByRole('button', { name: 'Usuarios', exact: true }).isVisible(), true)
       await capture(board, `${size}-24-equipo-cargando`)
     } finally { releaseWorkload() }
-    await board.getByRole('heading', { name: 'Carga de Trabajo del Equipo', exact: true }).waitFor()
+    await board.getByRole('heading', { name: 'Carga de trabajo del equipo', exact: true }).waitFor()
     await board.context().close()
   })
 }
@@ -450,6 +450,7 @@ for (const [size, viewport] of Object.entries(SIZES)) {
     await page.locator('main a:visible', { hasText: 'REQ26-9101' }).first().waitFor()
     await capture(page, `${size}-31-lista-cliente`)
     await page.locator('main a:visible', { hasText: 'REQ26-9101' }).first().click()
+    await page.locator('.ticket-detail').waitFor()   // vista con carga diferida
     await page.getByText('Subproyecto ficticio A', { exact: true }).waitFor()
     assert.equal(await page.getByText('Alto', { exact: true }).count(), 1)
     await capture(page, `${size}-32-detalle-prioridad-subproyecto`)
@@ -490,10 +491,12 @@ for (const [size, viewport] of Object.entries(SIZES)) {
     await card.getByRole('button', { name: /Aprobar/ }).click()
     const dialog = page.getByRole('dialog', { name: 'Validación de solicitud' })
     await dialog.getByText('Prioridad solicitada por el cliente', { exact: true }).waitFor()
-    assert.equal(await dialog.getByText('Alto', { exact: true }).count(), 1)
+    // La prioridad definitiva usa las mismas palabras (Bajo/Medio/Alto/Urgente): se excluyen las opciones del selector.
+    const requestedShown = () => dialog.locator('p').filter({ hasText: /^Alto$/ }).count()
+    assert.equal(await requestedShown(), 1)
     assert.equal(await dialog.locator('#validation-priority').inputValue(), 'urgent', 'default de aprobación heredado de urgent_requested, no de requested_priority')
     await dialog.locator('#validation-priority').selectOption('medium')
-    assert.equal(await dialog.getByText('Alto', { exact: true }).count(), 1)
+    assert.equal(await requestedShown(), 1)
     await capture(page, `${size}-36-modal-prioridades-distintas`)
     await dialog.evaluate(el => { el.scrollTop = el.scrollHeight })
     await capture(page, `${size}-36b-modal-prioridad-definitiva`)
@@ -536,11 +539,11 @@ test('M16 paginación: 137 tickets empresariales, error recuperable, offset real
   seen.push(...await readNumbers())
   assert.equal(new Set(seen).size, 137)
   assert.equal(seen.length, 137)
-  await page.getByRole('button', { name: 'Siguiente', exact: true }).click()
+  // H-22: una página con menos de 50 resultados es la última; no se ofrece «Siguiente» ni se pide una página vacía.
   await page.getByText('No hay más solicitudes.', { exact: true }).waitFor()
   assert.equal(await page.getByRole('button', { name: 'Siguiente', exact: true }).isDisabled(), true)
   assert.ok(clientRpc(page, 'client_list_tickets').some(c => c.body.p_offset === 0))
-  assert.deepEqual(clientRpc(page, 'client_list_tickets').map(c => c.body.p_offset).filter(offset => offset !== 0), [50, 50, 100, 137])
+  assert.deepEqual(clientRpc(page, 'client_list_tickets').map(c => c.body.p_offset).filter(offset => offset !== 0), [50, 50, 100])
   assert.ok(clientRpc(page, 'client_list_tickets').every(c => c.body.p_limit === 50 && Object.keys(c.body).sort().join(',') === 'p_limit,p_offset,p_session_token'))
   await capture(page, 'desktop-38-paginacion-fin')
   await page.getByRole('button', { name: 'Anterior', exact: true }).click()
@@ -578,7 +581,11 @@ test('M16 subproyectos: cambio limpia, catálogo vacío, error y respuesta tard�
   })
   await page.selectOption('#ticket-product', MOCK_PRODUCTS[0].id)
   await page.locator('#ticket-subproject-help').filter({ hasText: 'Cargando' }).waitFor()
-  assert.equal(await page.getByRole('button', { name: 'Enviar solicitud', exact: true }).isDisabled(), true)
+  // H-11 (Taste Forms): el botón sigue activo; pulsarlo mientras cargan los subproyectos no envía y explica por qué.
+  const beforeSubmit = clientRpc(page, 'client_submit_request').length
+  await page.getByRole('button', { name: 'Enviar solicitud', exact: true }).click()
+  await page.locator('form p[role=status]').filter({ hasText: /Revisa|Espera/ }).waitFor()
+  assert.equal(clientRpc(page, 'client_submit_request').length, beforeSubmit)
   await product(page, 1)
   await page.getByRole('button', { name: 'Reintentar subproyectos', exact: true }).waitFor()
   release()
@@ -653,7 +660,9 @@ test('M16 estados: etiqueta ausente, lista vacía/error y PT401', async () => {
   await page.getByRole('alert').filter({ hasText: 'No tenemos un nombre o usuario válido' }).waitFor()
   await fillClient(page, 'quipu')
   assert.equal(await page.locator('#ticket-requester').count(), 0)
-  assert.equal(await page.getByRole('button', { name: 'Enviar solicitud', exact: true }).isDisabled(), true)
+  // H-11: el botón sigue activo; sin nombre confiable no se envía y se explica el motivo.
+  await page.getByRole('button', { name: 'Enviar solicitud', exact: true }).click()
+  await page.locator('form p[role=status]').filter({ hasText: 'No se dispone de un nombre o usuario autenticado válido.' }).waitFor()
   assert.equal(clientRpc(page, 'client_submit_request').length, 0)
   await capture(page, 'movil-43-sin-etiqueta-confiable')
   let mode = 'empty'

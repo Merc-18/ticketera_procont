@@ -1,9 +1,7 @@
 // ─── Shared UI constants ──────────────────────────────────────────────────────
 
-export const AVATAR_COLORS = [
-  'bg-brand-500', 'bg-purple-500', 'bg-green-500',
-  'bg-orange-500', 'bg-pink-500', 'bg-teal-500', 'bg-indigo-500',
-]
+/** Avatares: solo tonos de marca y neutros con texto blanco ≥ 7:1 (sin violeta). */
+export const AVATAR_COLORS = ['bg-brand-600', 'bg-brand-800', 'bg-gray-600', 'bg-gray-700', 'bg-brand-500']
 
 export function getAvatarColor(name: string): string {
   let h = 0
@@ -15,28 +13,25 @@ export function getInitials(name: string): string {
   return name.split(' ').slice(0, 2).map(w => w[0]?.toUpperCase() ?? '').join('')
 }
 
-/** Badge style — includes border-color class (pair with `border` in template when needed) */
-export const PRIORITY_COLORS: Record<string, string> = {
-  low:    'bg-green-100 text-green-800 border-green-200',
-  medium: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-  high:   'bg-orange-100 text-orange-800 border-orange-200',
-  urgent: 'bg-red-100 text-red-800 border-red-200',
-}
-
-/** Emoji + label for each priority */
+/** Prioridad administrativa (projects.priority): mismas palabras que la prioridad solicitada por el cliente. */
 export const PRIORITY_LABEL: Record<string, string> = {
-  urgent: '🔴 Urgente', high: '🟠 Alta', medium: '🟡 Media', low: '🟢 Baja',
+  urgent: 'Urgente', high: 'Alto', medium: 'Medio', low: 'Bajo',
+}
+export const PRIORITY_ORDER: Record<string, number> = { urgent: 0, high: 1, medium: 2, low: 3 }
+
+/** Badge (incluye borde; usar con `border`). Texto ≥ 4,5:1 sobre su fondo. */
+export const PRIORITY_COLORS: Record<string, string> = {
+  urgent: 'bg-red-50 text-red-700 border-red-200',
+  high:   'bg-accent-100 text-accent-700 border-accent-300',
+  medium: 'bg-brand-50 text-brand-700 border-brand-200',
+  low:    'bg-gray-100 text-gray-600 border-gray-300',
 }
 
-/** Solid bar color for Gantt timeline */
+/** Barra del Gantt y punto del Roadmap: paleta oficial (rojo, dorado, azul, neutro). */
 export const PRIORITY_BAR: Record<string, string> = {
-  urgent: 'bg-red-500', high: 'bg-orange-400', medium: 'bg-brand-500', low: 'bg-green-500',
+  urgent: 'bg-red-700', high: 'bg-accent-400', medium: 'bg-brand-600', low: 'bg-gray-400',
 }
-
-/** Small dot color for Roadmap cards */
-export const PRIORITY_DOT: Record<string, string> = {
-  urgent: 'bg-red-500', high: 'bg-orange-500', medium: 'bg-yellow-400', low: 'bg-green-500',
-}
+export const PRIORITY_DOT = PRIORITY_BAR
 
 /**
  * Area badge — includes border-color class.

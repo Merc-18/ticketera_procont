@@ -89,6 +89,8 @@ for (const [label, viewport] of Object.entries(VIEWPORTS)) {
     const page = await open(viteMock.url, '/portal', viewport)
     await page.getByRole('button', { name: /Nueva Solicitud/ }).click()
     await page.waitForURL('**/cliente')
+    // /cliente se descarga al abrirse (carga diferida): se espera su contenido antes de comprobarlo.
+    await page.getByRole('heading', { name: '¿Qué producto utilizas para ingresar?' }).waitFor()
     assert.equal(await page.getByRole('heading', { name: '¿Qué producto utilizas para ingresar?' }).count(), 1)
     assert.equal(await page.getByRole('link', { name: /Inicio/ }).count(), 1, 'regreso a la página principal')
     await shot(page, `${label}-02-cliente`); await done(page)
@@ -118,13 +120,14 @@ for (const [label, viewport] of Object.entries(VIEWPORTS)) {
   test(`[${label}] 6. Login desactivado: estado inequívocamente no operativo`, async () => {
     const page = await open(viteOff.url, '/cliente', viewport)
     const cards = page.locator('[aria-label="Tipo de ingreso"] button')
+    await cards.first().waitFor()
     assert.equal(await cards.count(), 2)
     for (let i = 0; i < 2; i++) {
       assert.equal(await cards.nth(i).isDisabled(), true)
       assert.equal(await cards.nth(i).evaluate(el => getComputedStyle(el).cursor), 'not-allowed')
       assert.match(await cards.nth(i).textContent(), /No disponible/)
     }
-    assert.match(await page.getByRole('status').first().textContent(), /todavía no está habilitado/)
+    assert.match(await page.getByRole('status').filter({ hasText: /todavía no está habilitado/ }).first().textContent(), /todavía no está habilitado/)
     await cards.first().click({ force: true })
     assert.equal(await page.locator('#client-password').count(), 0, 'no aparece formulario')
     // La entrada principal sigue llevando a la selección deshabilitada, nunca al formulario anónimo.
@@ -195,8 +198,8 @@ const TABS = {
   admin: ['Dashboard', 'Boards', 'Requests', 'Equipo'],
   superadmin: ['Dashboard', 'Boards', 'Requests', 'Equipo'],
 }
-const EQUIPO = { developer: ['Carga de Trabajo'], admin: ['Carga de Trabajo', 'Usuarios', 'Papelera'],
-  superadmin: ['Carga de Trabajo', 'Usuarios', 'Papelera', 'Catálogos'] }
+const EQUIPO = { developer: ['Carga de trabajo'], admin: ['Carga de trabajo', 'Usuarios', 'Papelera'],
+  superadmin: ['Carga de trabajo', 'Usuarios', 'Papelera', 'Catálogos'] }
 async function staffLogin(page, role) {
   await page.getByRole('button', { name: /Ingreso del personal/ }).click()
   await page.fill('input[type=email]', Object.keys(STAFF).find(e => STAFF[e].role === role))
@@ -215,7 +218,7 @@ for (const [label, viewport] of Object.entries(VIEWPORTS)) {
       assert.deepEqual(tabs, TABS[role], role)
       if (EQUIPO[role]) {
         await page.getByRole('button', { name: 'Equipo' }).click()
-        for (const sub of ['Carga de Trabajo', 'Usuarios', 'Papelera', 'Catálogos']) {
+        for (const sub of ['Carga de trabajo', 'Usuarios', 'Papelera', 'Catálogos']) {
           assert.equal(await page.getByRole('button', { name: sub }).count(), EQUIPO[role].includes(sub) ? 1 : 0, `${role} ${sub}`)
         }
       }
@@ -226,6 +229,7 @@ for (const [label, viewport] of Object.entries(VIEWPORTS)) {
       await done(page)
     }
     const login = await open(viteMock.url, '/login', viewport)
+    await login.locator('input[type=password]').waitFor()   // ruta con carga diferida
     assert.equal(await login.locator('input[type=password]').count(), 1, '/login sigue disponible')
     await done(login)
   })

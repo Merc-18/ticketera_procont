@@ -1,4 +1,5 @@
 import ControlLabel from '../ui/ControlLabel'
+import type { IconName } from '../ui/Icon'
 import { Droppable, Draggable } from '@hello-pangea/dnd'
 import ProjectCard from './ProjectCard'
 import type { Project, ProjectFlow, User } from '../../types/database.types'
@@ -7,7 +8,7 @@ interface Props {
   phase: {
     id: string
     title: string
-    color: string
+    icon: IconName
   }
   projects: Array<{ project: Project; flow: ProjectFlow }>
   onProjectClick: (item: { project: Project; flow: ProjectFlow }) => void
@@ -23,12 +24,12 @@ export default function BoardColumn({ phase, projects, onProjectClick, users = [
   return (
     <div className="board-column flex-shrink-0 w-72">
       {/* Column Header */}
-      <div className={`board-column-header ${phase.color}`}>
+      <div className="board-column-header">
         <div className="flex items-center justify-between">
-          <h2 className="font-semibold text-white text-sm">
-            <ControlLabel>{phase.title}</ControlLabel>
+          <h2 className="font-medium text-gray-800 text-base">
+            <ControlLabel icon={phase.icon}>{phase.title}</ControlLabel>
           </h2>
-          <span className="bg-white bg-opacity-30 text-white text-xs font-bold px-2 py-1 rounded">
+          <span className="bg-gray-200 text-gray-800 text-[13px] font-medium px-2 py-0.5 rounded-md tabular-nums" aria-label={`${projects.length} tickets`}>
             {projects.length}
           </span>
         </div>

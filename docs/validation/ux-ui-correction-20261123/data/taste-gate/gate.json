@@ -1,0 +1,720 @@
+{
+ "start": "2026-11-23T17:49:29.130Z",
+ "round": 3,
+ "idle": 0,
+ "errors": 0,
+ "status": "open",
+ "history": [
+  {
+   "at": "2026-11-23T17:50:33.794Z",
+   "mode": "manual",
+   "status": "fail",
+   "fails": 18,
+   "round": 1,
+   "reused": false,
+   "stopHookActive": false
+  },
+  {
+   "at": "2026-11-23T17:52:46.920Z",
+   "mode": "manual",
+   "status": "fail",
+   "fails": 19,
+   "round": 2,
+   "reused": false,
+   "stopHookActive": false
+  },
+  {
+   "at": "2026-11-23T17:54:29.244Z",
+   "mode": "manual",
+   "status": "open",
+   "fails": 14,
+   "round": 3,
+   "reused": false,
+   "stopHookActive": false
+  }
+ ],
+ "max": 3,
+ "marker": {
+  "page": "site/index.html",
+  "url": null,
+  "root": "site",
+  "kind": "software",
+  "category": "Mesa de solicitudes de Procont Business",
+  "primary": "Nueva Solicitud",
+  "rounds": 3,
+  "start": "2026-11-23T17:49:29.130Z",
+  "by": "gate.mjs --start"
+ },
+ "manual": true,
+ "roundKey": "7fb32a456d695e6a:4ad54cf6",
+ "roundFree": false,
+ "idleFree": false,
+ "blockKey": null,
+ "fp": "7fb32a456d695e6a",
+ "page": "site/index.html",
+ "found": {
+  "fails": [
+   {
+    "check": "hero-fill",
+    "where": "main#main-content > div.portal-access \"Nueva Solicitud\"",
+    "msg": "the next section shows on the first screen: it starts at 336px on a 900px screen (the hero ends at 288px)",
+    "fix": "let the hero fill the first screen alone (min-height: 100svh, less above it): nothing of the next section on load",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency",
+    "ids": [
+     "hero-fill"
+    ],
+    "wheres": [
+     "main#main-content > div.portal-access \"Nueva Solicitud\""
+    ]
+   },
+   {
+    "check": "flush",
+    "where": "div.portal-access > div.wrap > div.portal-options > button.portal-option:nth-of-type(1) \"Nueva Solicitud Ingresa con Quipu o Quip\"",
+    "msg": "its first line sits 0px under the top edge of div.portal-access, where the ground changes",
+    "fix": "give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency",
+    "ids": [
+     "flush"
+    ],
+    "wheres": [
+     "div.portal-access > div.wrap > div.portal-options > button.portal-option:nth-of-type(1) \"Nueva Solicitud Ingresa con Quipu o Quip\""
+    ]
+   },
+   {
+    "check": "cta",
+    "where": "main#main-content > div.portal-heading.hero",
+    "msg": "the hero has no button (the nav's does not count)",
+    "fix": "add the action: a button in the hero, one on every priced item, one in the closing section",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency",
+    "ids": [
+     "cta"
+    ],
+    "wheres": [
+     "main#main-content > div.portal-heading.hero"
+    ]
+   },
+   {
+    "check": "cta",
+    "where": "main#main-content > div.portal-access \"Nueva Solicitud\"",
+    "msg": "the last section before the footer ends with no button",
+    "fix": "add the action: a button in the hero, one on every priced item, one in the closing section",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency",
+    "ids": [
+     "cta"
+    ],
+    "wheres": [
+     "main#main-content > div.portal-access \"Nueva Solicitud\""
+    ]
+   },
+   {
+    "check": "moment-none",
+    "where": "(the page)",
+    "msg": "a software page (--type) deals no moment: every kind carries one, two on a long page (moments.md)",
+    "fix": "deal one (moments.mjs pick --page software) and mount it in its own section",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "moment-none"
+    ],
+    "wheres": [
+     "(the page)"
+    ]
+   },
+   {
+    "check": "hero-screen",
+    "where": "main#main-content > div.portal-heading.hero \"Ticketera ProcontMesa de solicitudesRegi\"",
+    "msg": "the hero ends at 288px on a 900px screen, 612px above the fold: it ends at the fold, 1px either way (SR-1)",
+    "fix": "make the hero exactly one screen (height: 100svh, its content fitted inside), never taller or shorter",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "hero-screen"
+    ],
+    "wheres": [
+     "main#main-content > div.portal-heading.hero \"Ticketera ProcontMesa de solicitudesRegi\""
+    ]
+   },
+   {
+    "check": "hero-screen",
+    "where": "main#main-content > div.portal-access \"Nueva SolicitudIngresa con Quipu o Quipu\"",
+    "msg": "564px of the next section shows on the first screen (from 336px on a 900px screen): nothing below the hero shows at load (SR-1)",
+    "fix": "end the hero at the fold so nothing of the next section shows at load (hero height: 100svh)",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "hero-screen"
+    ],
+    "wheres": [
+     "main#main-content > div.portal-access \"Nueva SolicitudIngresa con Quipu o Quipu\""
+    ]
+   },
+   {
+    "check": "section-height",
+    "where": "div#root > footer.build-version.text-xs \"Versión 202611231253\"",
+    "msg": "the section is 36px tall (0 screens), 864px short of one screen (900px): every section after the hero is one screen or two, 2px either way (SR-2)",
+    "fix": "set the section to one screen or two (height: calc(var(--h,1) * 100vh), --h 1 or 2) and cut or split its content to fit",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "section-height"
+    ],
+    "wheres": [
+     "div#root > footer.build-version.text-xs \"Versión 202611231253\""
+    ]
+   },
+   {
+    "check": "section-height",
+    "where": "main#main-content > div.portal-access \"Nueva SolicitudIngresa con Quipu o Quipu\"",
+    "msg": "the section is 393px tall (0.4 screens), 508px short of one screen (900px): every section after the hero is one screen or two, 2px either way (SR-2)",
+    "fix": "set the section to one screen or two (height: calc(var(--h,1) * 100vh), --h 1 or 2) and cut or split its content to fit",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "section-height"
+    ],
+    "wheres": [
+     "main#main-content > div.portal-access \"Nueva SolicitudIngresa con Quipu o Quipu\"",
+     "main#main-content > div.portal-heading.hero \"Ticketera ProcontMesa de solicitudesRegi\""
+    ]
+   },
+   {
+    "check": "section-air",
+    "where": "main#main-content > div.portal-access > div.wrap > p.public-footer \"© 2026 Procont Business\"",
+    "msg": "a top border across 100% of the container, between the section's content: sections and their parts are told apart by air and ground, not lines (SR-3)",
+    "fix": "take the rule out: sections and their parts are parted by their ground and the air between them",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "section-air"
+    ],
+    "wheres": [
+     "main#main-content > div.portal-access > div.wrap > p.public-footer \"© 2026 Procont Business\""
+    ]
+   },
+   {
+    "check": "one-section",
+    "where": "main#main-content > div.portal-heading.hero > div.wrap > h1 \"Mesa de solicitudes\"",
+    "msg": "the screen at scroll 0px (stride 0) shows 135px of section 1 and the heading of section 1 whole and the content of 2 sections, over 24px each beside section 2: a screen shows one section (another may peek 8px, 24px WARN) (SR-4)",
+    "fix": "make each section exactly one screen or two, so a screen shows one section and no neighbour peeks",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "one-section"
+    ],
+    "wheres": [
+     "main#main-content > div.portal-heading.hero > div.wrap > h1 \"Mesa de solicitudes\"",
+     "main#main-content > div.portal-heading.hero \"Ticketera ProcontMesa de solicitudesRegi\"",
+     "main#main-content > div.portal-access \"Nueva SolicitudIngresa con Quipu o Quipu\""
+    ]
+   },
+   {
+    "check": "one-heading",
+    "where": "div.wrap > div.portal-options > button.portal-option:nth-of-type(2) > h2 \"Rastrear Solicitud\"",
+    "msg": "the section holds 2 h2 headings: one per section, first in its .wrap (SR-5)",
+    "fix": "give each section one h2, first in its .wrap, and the hero only its h1",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "one-heading"
+    ],
+    "wheres": [
+     "div.wrap > div.portal-options > button.portal-option:nth-of-type(2) > h2 \"Rastrear Solicitud\""
+    ]
+   },
+   {
+    "check": "container-edges",
+    "where": "main#main-content > div.portal-heading.hero \"Ticketera ProcontMesa de solicitudesRegi\"",
+    "msg": "the content of section 1 runs 80px from the left and 600px from the right: 80 and 600px are not one margin (one container, equal margins, 2px either way) (SR-6)",
+    "fix": "use one container on every section and the nav (.wrap): one margin left and right, 64-120px on a desktop, 16-24px on a phone",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "container-edges"
+    ],
+    "wheres": [
+     "main#main-content > div.portal-heading.hero \"Ticketera ProcontMesa de solicitudesRegi\""
+    ]
+   },
+   {
+    "check": "container-edges",
+    "where": "div#root \"Saltar al contenidoTicketera ProcontProc\"",
+    "msg": "a <div> at the top of the page, outside header.nav, main, footer.closing and nav.actionbar (SR-6)",
+    "fix": "build the page as header.nav, a main of sections (each one in-flow .wrap plus background layers) and footer.closing",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "container-edges"
+    ],
+    "wheres": [
+     "div#root \"Saltar al contenidoTicketera ProcontProc\""
+    ]
+   },
+   {
+    "check": "container-edges",
+    "where": "main#main-content > div.portal-heading.hero > div.wrap \"Ticketera ProcontMesa de solicitudesRegi\"",
+    "msg": "the hero's .wrap holds 3 children, 0 of them .hero-text: one .hero-text and at most one strip (SR-6)",
+    "fix": "build the page as header.nav, a main of sections (each one in-flow .wrap plus background layers) and footer.closing",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "container-edges"
+    ],
+    "wheres": [
+     "main#main-content > div.portal-heading.hero > div.wrap \"Ticketera ProcontMesa de solicitudesRegi\""
+    ]
+   },
+   {
+    "check": "container-edges",
+    "where": "div#root > footer.build-version.text-xs \"Versión 202611231253\"",
+    "msg": "the section needs exactly one in-flow child .wrap (it has 0 in-flow children, 0 .wrap) (SR-6)",
+    "fix": "build the page as header.nav, a main of sections (each one in-flow .wrap plus background layers) and footer.closing",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "container-edges"
+    ],
+    "wheres": [
+     "div#root > footer.build-version.text-xs \"Versión 202611231253\""
+    ]
+   },
+   {
+    "check": "container-edges",
+    "where": "div.wrap > div.portal-options > button.portal-option:nth-of-type(2) > h2 \"Rastrear Solicitud\"",
+    "msg": "the h2 starts 685px right of the container's left: every h1 and h2 starts on it, 2px either way (SR-6)",
+    "fix": "start the text on the container's left, or on the one split line every split shares",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "container-edges"
+    ],
+    "wheres": [
+     "div.wrap > div.portal-options > button.portal-option:nth-of-type(2) > h2 \"Rastrear Solicitud\""
+    ]
+   },
+   {
+    "check": "container-edges",
+    "where": "div.wrap > div.portal-options > button.portal-option:nth-of-type(1) > h2 \"Nueva Solicitud\"",
+    "msg": "the h2 starts 33px right of the container's left: every h1 and h2 starts on it, 2px either way (SR-6)",
+    "fix": "start the text on the container's left, or on the one split line every split shares",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "container-edges"
+    ],
+    "wheres": [
+     "div.wrap > div.portal-options > button.portal-option:nth-of-type(1) > h2 \"Nueva Solicitud\""
+    ]
+   },
+   {
+    "check": "spill",
+    "where": "div.portal-access p.public-footer \"© 2026 Procont Business\"",
+    "msg": "x 80 to 1360, the page runs 80 to 840",
+    "fix": "keep it inside the .wrap; nothing past the right edge",
+    "widths": [
+     1440
+    ],
+    "from": "layout",
+    "ids": [
+     "spill"
+    ],
+    "wheres": [
+     "div.portal-access p.public-footer \"© 2026 Procont Business\""
+    ]
+   }
+  ],
+  "warns": [
+   {
+    "check": "copy-buttons",
+    "where": "div.app-surface > nav.public-nav.portal-nav > div.wrap.page-wrap > button.ui-button.ui-button-secondary \"Ingreso del personal\"",
+    "msg": "\"Ingreso del personal\" does not start with a verb (book, buy, try, start, get, see...)",
+    "fix": "label buttons with a verb and what the visitor gets (\"Book a room\", \"Start free trial\")",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "copy-actions",
+    "where": "(the page)",
+    "msg": "the main action \"Nueva Solicitud\" does not read word for word the same in the nav or hero and the closing section",
+    "fix": "few actions, one wording: at most 2 in the hero, the main action word for word in nav, hero and close",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   }
+  ],
+  "crashed": [],
+  "seconds": {
+   "consistency": 49,
+   "layout": 12
+  }
+ },
+ "open": [
+  {
+   "check": "hero-fill",
+   "where": "main#main-content > div.portal-access \"Nueva Solicitud\"",
+   "msg": "the next section shows on the first screen: it starts at 336px on a 900px screen (the hero ends at 288px)",
+   "fix": "let the hero fill the first screen alone (min-height: 100svh, less above it): nothing of the next section on load",
+   "widths": [
+    1440,
+    390
+   ],
+   "from": "consistency",
+   "ids": [
+    "hero-fill"
+   ],
+   "wheres": [
+    "main#main-content > div.portal-access \"Nueva Solicitud\""
+   ]
+  },
+  {
+   "check": "cta",
+   "where": "main#main-content > div.portal-heading.hero",
+   "msg": "the hero has no button (the nav's does not count)",
+   "fix": "add the action: a button in the hero, one on every priced item, one in the closing section",
+   "widths": [
+    1440,
+    390
+   ],
+   "from": "consistency",
+   "ids": [
+    "cta"
+   ],
+   "wheres": [
+    "main#main-content > div.portal-heading.hero"
+   ]
+  },
+  {
+   "check": "cta",
+   "where": "main#main-content > div.portal-access \"Nueva Solicitud\"",
+   "msg": "the last section before the footer ends with no button",
+   "fix": "add the action: a button in the hero, one on every priced item, one in the closing section",
+   "widths": [
+    1440,
+    390
+   ],
+   "from": "consistency",
+   "ids": [
+    "cta"
+   ],
+   "wheres": [
+    "main#main-content > div.portal-access \"Nueva Solicitud\""
+   ]
+  },
+  {
+   "check": "moment-none",
+   "where": "(the page)",
+   "msg": "a software page (--type) deals no moment: every kind carries one, two on a long page (moments.md)",
+   "fix": "deal one (moments.mjs pick --page software) and mount it in its own section",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "moment-none"
+   ],
+   "wheres": [
+    "(the page)"
+   ]
+  },
+  {
+   "check": "hero-screen",
+   "where": "main#main-content > div.portal-heading.hero \"Ticketera ProcontMesa de solicitudesRegi\"",
+   "msg": "the hero ends at 288px on a 900px screen, 612px above the fold: it ends at the fold, 1px either way (SR-1)",
+   "fix": "make the hero exactly one screen (height: 100svh, its content fitted inside), never taller or shorter",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "hero-screen"
+   ],
+   "wheres": [
+    "main#main-content > div.portal-heading.hero \"Ticketera ProcontMesa de solicitudesRegi\""
+   ]
+  },
+  {
+   "check": "hero-screen",
+   "where": "main#main-content > div.portal-access \"Nueva SolicitudIngresa con Quipu o Quipu\"",
+   "msg": "564px of the next section shows on the first screen (from 336px on a 900px screen): nothing below the hero shows at load (SR-1)",
+   "fix": "end the hero at the fold so nothing of the next section shows at load (hero height: 100svh)",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "hero-screen"
+   ],
+   "wheres": [
+    "main#main-content > div.portal-access \"Nueva SolicitudIngresa con Quipu o Quipu\""
+   ]
+  },
+  {
+   "check": "section-height",
+   "where": "main#main-content > div.portal-access \"Nueva SolicitudIngresa con Quipu o Quipu\"",
+   "msg": "the section is 393px tall (0.4 screens), 508px short of one screen (900px): every section after the hero is one screen or two, 2px either way (SR-2)",
+   "fix": "set the section to one screen or two (height: calc(var(--h,1) * 100vh), --h 1 or 2) and cut or split its content to fit",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "section-height"
+   ],
+   "wheres": [
+    "main#main-content > div.portal-access \"Nueva SolicitudIngresa con Quipu o Quipu\"",
+    "main#main-content > div.portal-heading.hero \"Ticketera ProcontMesa de solicitudesRegi\""
+   ]
+  },
+  {
+   "check": "section-air",
+   "where": "main#main-content > div.portal-access > div.wrap > p.public-footer \"© 2026 Procont Business\"",
+   "msg": "a top border across 100% of the container, between the section's content: sections and their parts are told apart by air and ground, not lines (SR-3)",
+   "fix": "take the rule out: sections and their parts are parted by their ground and the air between them",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "section-air"
+   ],
+   "wheres": [
+    "main#main-content > div.portal-access > div.wrap > p.public-footer \"© 2026 Procont Business\""
+   ]
+  },
+  {
+   "check": "one-section",
+   "where": "main#main-content > div.portal-heading.hero > div.wrap > h1 \"Mesa de solicitudes\"",
+   "msg": "the screen at scroll 0px (stride 0) shows 135px of section 1 and the heading of section 1 whole and the content of 2 sections, over 24px each beside section 2: a screen shows one section (another may peek 8px, 24px WARN) (SR-4)",
+   "fix": "make each section exactly one screen or two, so a screen shows one section and no neighbour peeks",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "one-section"
+   ],
+   "wheres": [
+    "main#main-content > div.portal-heading.hero > div.wrap > h1 \"Mesa de solicitudes\"",
+    "main#main-content > div.portal-heading.hero \"Ticketera ProcontMesa de solicitudesRegi\"",
+    "main#main-content > div.portal-access \"Nueva SolicitudIngresa con Quipu o Quipu\""
+   ]
+  },
+  {
+   "check": "one-heading",
+   "where": "div.wrap > div.portal-options > button.portal-option:nth-of-type(2) > h2 \"Rastrear Solicitud\"",
+   "msg": "the section holds 2 h2 headings: one per section, first in its .wrap (SR-5)",
+   "fix": "give each section one h2, first in its .wrap, and the hero only its h1",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "one-heading"
+   ],
+   "wheres": [
+    "div.wrap > div.portal-options > button.portal-option:nth-of-type(2) > h2 \"Rastrear Solicitud\""
+   ]
+  },
+  {
+   "check": "container-edges",
+   "where": "main#main-content > div.portal-heading.hero \"Ticketera ProcontMesa de solicitudesRegi\"",
+   "msg": "the content of section 1 runs 80px from the left and 600px from the right: 80 and 600px are not one margin (one container, equal margins, 2px either way) (SR-6)",
+   "fix": "use one container on every section and the nav (.wrap): one margin left and right, 64-120px on a desktop, 16-24px on a phone",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "container-edges"
+   ],
+   "wheres": [
+    "main#main-content > div.portal-heading.hero \"Ticketera ProcontMesa de solicitudesRegi\""
+   ]
+  },
+  {
+   "check": "container-edges",
+   "where": "main#main-content > div.portal-heading.hero > div.wrap \"Ticketera ProcontMesa de solicitudesRegi\"",
+   "msg": "the hero's .wrap holds 3 children, 0 of them .hero-text: one .hero-text and at most one strip (SR-6)",
+   "fix": "build the page as header.nav, a main of sections (each one in-flow .wrap plus background layers) and footer.closing",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "container-edges"
+   ],
+   "wheres": [
+    "main#main-content > div.portal-heading.hero > div.wrap \"Ticketera ProcontMesa de solicitudesRegi\""
+   ]
+  },
+  {
+   "check": "container-edges",
+   "where": "div#root > footer.build-version.text-xs \"Versión 202611231253\"",
+   "msg": "the section needs exactly one in-flow child .wrap (it has 0 in-flow children, 0 .wrap) (SR-6)",
+   "fix": "build the page as header.nav, a main of sections (each one in-flow .wrap plus background layers) and footer.closing",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "container-edges"
+   ],
+   "wheres": [
+    "div#root > footer.build-version.text-xs \"Versión 202611231253\""
+   ]
+  },
+  {
+   "check": "spill",
+   "where": "div.portal-access p.public-footer \"© 2026 Procont Business\"",
+   "msg": "x 80 to 1360, the page runs 80 to 840",
+   "fix": "keep it inside the .wrap; nothing past the right edge",
+   "widths": [
+    1440
+   ],
+   "from": "layout",
+   "ids": [
+    "spill"
+   ],
+   "wheres": [
+    "div.portal-access p.public-footer \"© 2026 Procont Business\""
+   ]
+  }
+ ],
+ "waived": [
+  {
+   "check": "flush",
+   "where": "div.portal-access > div.wrap > div.portal-options > button.portal-option:nth-of-type(1) \"Nueva Solicitud Ingresa con Quipu o Quip\"",
+   "msg": "its first line sits 0px under the top edge of div.portal-access, where the ground changes",
+   "fix": "give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)",
+   "widths": [
+    1440,
+    390
+   ],
+   "from": "consistency",
+   "ids": [
+    "flush"
+   ],
+   "wheres": [
+    "div.portal-access > div.wrap > div.portal-options > button.portal-option:nth-of-type(1) \"Nueva Solicitud Ingresa con Quipu o Quip\""
+   ],
+   "reason": "The card text sits 30-32px inside the card's own padding (cards.md: card padding 24-32px); the checker measures the row edge, not the text inside the card."
+  },
+  {
+   "check": "section-height",
+   "where": "div#root > footer.build-version.text-xs \"Versión 202611231253\"",
+   "msg": "the section is 36px tall (0 screens), 864px short of one screen (900px): every section after the hero is one screen or two, 2px either way (SR-2)",
+   "fix": "set the section to one screen or two (height: calc(var(--h,1) * 100vh), --h 1 or 2) and cut or split its content to fit",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "section-height"
+   ],
+   "wheres": [
+    "div#root > footer.build-version.text-xs \"Versión 202611231253\""
+   ],
+   "reason": "Global build-version metadata line required by the product on every screen; it is not a content section and must not grow to a screen."
+  },
+  {
+   "check": "container-edges",
+   "where": "div#root \"Saltar al contenidoTicketera ProcontProc\"",
+   "msg": "a <div> at the top of the page, outside header.nav, main, footer.closing and nav.actionbar (SR-6)",
+   "fix": "build the page as header.nav, a main of sections (each one in-flow .wrap plus background layers) and footer.closing",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "container-edges"
+   ],
+   "wheres": [
+    "div#root \"Saltar al contenidoTicketera ProcontProc\""
+   ],
+   "reason": "React mount point of an existing app (SKILL section 4.0: an existing project builds in its own stack); header, main and footer live inside it."
+  },
+  {
+   "check": "container-edges",
+   "where": "div.wrap > div.portal-options > button.portal-option:nth-of-type(2) > h2 \"Rastrear Solicitud\"",
+   "msg": "the h2 starts 685px right of the container's left: every h1 and h2 starts on it, 2px either way (SR-6)",
+   "fix": "start the text on the container's left, or on the one split line every split shares",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "container-edges"
+   ],
+   "wheres": [
+    "div.wrap > div.portal-options > button.portal-option:nth-of-type(2) > h2 \"Rastrear Solicitud\""
+   ],
+   "reason": "Second column of a two-column grid; layout-v4.md allows grid columns and excludes card text from the global left line."
+  },
+  {
+   "check": "container-edges",
+   "where": "div.wrap > div.portal-options > button.portal-option:nth-of-type(1) > h2 \"Nueva Solicitud\"",
+   "msg": "the h2 starts 33px right of the container's left: every h1 and h2 starts on it, 2px either way (SR-6)",
+   "fix": "start the text on the container's left, or on the one split line every split shares",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "container-edges"
+   ],
+   "wheres": [
+    "div.wrap > div.portal-options > button.portal-option:nth-of-type(1) > h2 \"Nueva Solicitud\""
+   ],
+   "reason": "Card title inside its card padding; layout-v4.md excludes text inside cards from the page's left line."
+  }
+ ],
+ "warnCount": 2,
+ "at": "2026-11-23T17:54:29.244Z",
+ "openTold": true
+}

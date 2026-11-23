@@ -5,6 +5,8 @@ import type { User } from '../../types/database.types'
 import { PRIORITY_COLORS, PRIORITY_LABEL, PHASE_LABELS, getAvatarColor, getInitials } from '../../lib/constants'
 import { metrics } from '../../lib/api'
 import { averageLabel, type MetricResult, type TimeAverages } from '../../lib/metrics-adapter'
+import Icon from '../ui/Icon'
+import ControlLabel from '../ui/ControlLabel'
 
 interface FlowRow {
   id: string
@@ -74,11 +76,11 @@ export default function WorkloadView() {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h3 className="text-lg font-bold text-gray-900">Carga de Trabajo del Equipo</h3>
+          <h2 className="text-lg font-bold text-gray-900">Carga de trabajo del equipo</h2>
           <p className="text-sm text-gray-500 mt-0.5">Tickets activos por responsable principal (cada ticket cuenta una vez)</p>
         </div>
         <button onClick={() => { void loadFlows() }}
-          className="px-3 py-1.5 bg-white border border-gray-200 text-gray-600 rounded-lg text-sm hover:bg-gray-50 transition shadow-sm">↺ Actualizar</button>
+          className="px-3 py-1.5 bg-white border border-gray-200 text-gray-600 rounded-lg text-sm hover:bg-gray-50 transition shadow-sm"><ControlLabel icon="refresh">Actualizar</ControlLabel></button>
       </div>
       {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
 
@@ -153,7 +155,7 @@ function UserCard({ user, tickets, isExpanded, onToggle }: { user: User; tickets
         )}
         {blockedCount > 0 && (
           <span className="inline-block mt-2 px-2 py-0.5 bg-red-50 text-red-700 text-xs rounded-full border border-red-200">
-            🚫 {blockedCount} bloqueado{blockedCount !== 1 ? 's' : ''}
+            <Icon name="block" size={14} className="inline-block mr-1 -mt-0.5" />{blockedCount} bloqueado{blockedCount !== 1 ? 's' : ''}
           </span>
         )}
         {tickets.length > 0 && (
@@ -172,7 +174,7 @@ function UserCard({ user, tickets, isExpanded, onToggle }: { user: User; tickets
                 {p.project_number && <span className="text-xs font-mono text-gray-500">{p.project_number}</span>}
                 <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${PRIORITY_COLORS[p.priority] ?? ''}`}>{PRIORITY_LABEL[p.priority] ?? p.priority}</span>
                 <span className="text-xs text-gray-500">{phases.map(ph => PHASE_LABELS[ph] ?? ph).join(' · ')}</span>
-                {p.is_blocked && <span className="text-xs text-red-600 font-medium">🚫 Bloqueado</span>}
+                {p.is_blocked && <span className="text-xs text-red-700 font-medium inline-flex items-center gap-1"><Icon name="block" size={12} />Bloqueado</span>}
               </div>
             </div>
           ))}

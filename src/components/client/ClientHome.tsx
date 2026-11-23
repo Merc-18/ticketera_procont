@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import Icon from '../ui/Icon'
 import PasswordField from '../ui/PasswordField'
@@ -12,10 +12,11 @@ import { operations } from '../../lib/api'
 import type { PublicTracking } from '../../lib/operations'
 import { GENERAL_STATUS } from '../../lib/request-status'
 import { errorMessage } from '../../lib/supabase-errors'
+import { preloadClientArea } from '../../lib/client-routes'
 
-const CARDS: { type: AuthType; title: string; subtitle: string; detail: string; icon: string }[] = [
-  { type: 'quipu', title: 'Quipu', subtitle: 'Ingreso con usuario', detail: 'RUC, usuario y contraseña', icon: '👤' },
-  { type: 'quipufac', title: 'QuipuFac', subtitle: 'Ingreso empresarial', detail: 'RUC y contraseña', icon: '🏢' },
+const CARDS: { type: AuthType; title: string; subtitle: string; detail: string }[] = [
+  { type: 'quipu', title: 'Quipu', subtitle: 'Ingreso con usuario', detail: 'RUC, usuario y contraseña' },
+  { type: 'quipufac', title: 'QuipuFac', subtitle: 'Ingreso empresarial', detail: 'RUC y contraseña' },
 ]
 const field = 'ui-input focus:ring-2 focus:ring-primary'
 
@@ -24,6 +25,8 @@ const field = 'ui-input focus:ring-2 focus:ring-primary'
  * correspondiente y búsqueda general por número REQ (solo número y estado).
  */
 export default function ClientHome() {
+  // Rendimiento percibido: el espacio del cliente se descarga mientras se completan las credenciales.
+  useEffect(() => { preloadClientArea() }, [])
   const navigate = useNavigate()
   const notice = (useLocation().state as { notice?: string } | null)?.notice ?? null
   // Destino tras el ingreso: Nuevo ticket (por defecto) o Mis tickets (lista blanca, nunca una URL libre).
@@ -137,7 +140,7 @@ function LoginForm({ type, onChange, onSuccess }: { type: AuthType; onChange: ()
   }
 
   const fieldError = (name: string) => errors[name]
-    ? <p id={`${name}-error`} className="text-xs text-red-600 mt-1">{errors[name]}</p> : null
+    ? <p id={`${name}-error`} className="text-xs text-red-700 mt-1">{errors[name]}</p> : null
   const label = type === 'quipu' ? 'Quipu' : 'QuipuFac'
 
   return (
@@ -204,7 +207,9 @@ function PublicSearch() {
 
   const search = async (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true); setResult(null); setNotFound(false); setError(null)
+    setResult(null); setNotFound(false); setError(null)
+    if (!value.trim()) { setError('Escribe el número REQ del ticket.'); return }
+    setLoading(true)
     try {
       const raw = value.trim()
       const full = /^\d+$/.test(raw) ? `${CURRENT_PREFIX}${raw.padStart(3, '0')}` : raw.toUpperCase()
@@ -219,23 +224,26 @@ function PublicSearch() {
   return (
     <section aria-labelledby="public-search" className="public-search">
       <h2 id="public-search" className="font-medium">Consultar estado de un ticket</h2>
-      <p className="text-gray-600 text-sm mb-4">Ingresa el número REQ. Solo se muestra el número y el estado general.</p>
-      <form onSubmit={search} className="flex flex-col sm:flex-row gap-3">
-        <input value={value} onChange={e => setValue(e.target.value)} placeholder={`${CURRENT_PREFIX}001`}
-          aria-label="Número de ticket" className="ui-input flex-1 min-w-0" />
-        <button type="submit" disabled={loading || !value.trim()}
+      <p className="text-gray-600 text-sm mb-4">Solo se muestra el número y el estado general.</p>
+      <form onSubmit={search} noValidate className="flex flex-col sm:flex-row sm:items-end gap-3">
+        <div className="flex-1 min-w-0">
+          <label htmlFor="public-req" className="block text-sm font-medium text-gray-700 mb-1">Número de ticket</label>
+          <input id="public-req" value={value} onChange={e => setValue(e.target.value)} placeholder={`${CURRENT_PREFIX}001`}
+            aria-invalid={!!error || undefined} aria-describedby={error ? 'public-req-error' : undefined} className="ui-input w-full" />
+        </div>
+        <button type="submit" disabled={loading}
           className="ui-button ui-button-secondary">
           {loading ? 'Buscando…' : 'Buscar'}
         </button>
       </form>
       {result && status && (
-        <div role="status" className="mt-4 flex flex-wrap items-center justify-between gap-3 bg-white rounded-lg px-4 py-3">
-          <span className="font-bold text-brand-700">{result.request_number}</span>
-          <span className={`text-sm font-semibold px-3 py-1 rounded-full border ${status.tone}`}>{status.icon} {status.label}</span>
+        <div role="status" className="mt-4 flex flex-wrap items-center justify-between gap-3 bg-white border border-gray-300 rounded-lg px-4 py-3">
+          <span className="font-medium font-mono text-brand-700">{result.request_number}</span>
+          <span className={`inline-flex items-center gap-1.5 text-sm font-medium px-3 py-1 rounded-full border ${status.tone}`}><Icon name={status.icon} size={14} />{status.label}</span>
         </div>
       )}
       {notFound && <p role="status" className="mt-4 text-sm text-gray-700">No se encontró un ticket con ese número.</p>}
-      {error && <p role="alert" className="mt-4 text-sm text-red-700 bg-red-50 rounded-lg px-3 py-2">{error}</p>}
+      {error && <p id="public-req-error" role="alert" className="mt-4 text-sm text-red-700 bg-red-50 rounded-lg px-3 py-2">{error}</p>}
     </section>
   )
 }

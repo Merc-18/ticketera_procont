@@ -35,7 +35,8 @@ export default function MyTickets() {
       const page = await clientPortal.listMyTickets(token, { limit: PAGE_SIZE, offset: target })
       if (sequence.current !== call) return
       if (!page.length && target > 0) { setEnd(true); return }
-      setTickets(page); setOffset(target); setHistory(previous); setEnd(!page.length)
+      // Menos de PAGE_SIZE resultados: es la última página (el servidor devuelve hasta `limit`); con 50 exactos se confirma con [].
+      setTickets(page); setOffset(target); setHistory(previous); setEnd(page.length < PAGE_SIZE)
     } catch (err) {
       if (sequence.current === call) { setError(handleError(err)); setFailed({ target, previous, first }); if (first) setTickets(null) }
     } finally { if (sequence.current === call) setBusy(false) }

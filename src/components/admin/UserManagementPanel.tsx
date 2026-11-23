@@ -7,6 +7,7 @@ import { toast } from '../../lib/toast'
 import UserModal from './UserModal'
 import { getAvatarColor, getInitials } from '../../lib/constants'
 import type { User } from '../../types/database.types'
+import Icon, { type IconName } from '../ui/Icon'
 
 type RoleOption = 'superadmin' | 'admin' | 'developer' | 'viewer'
 type RoleFilter = 'all' | 'superadmin' | 'admin' | 'developer' | 'viewer' | 'inactive'
@@ -119,7 +120,7 @@ export default function UserManagementPanel() {
     { key: 'admin',     label: 'Admin' },
     { key: 'developer', label: 'Usuario' },
     { key: 'viewer',    label: 'Viewer' },
-    { key: 'inactive',  label: '🔒 Inactivos' },
+    { key: 'inactive',  label: 'Inactivos' },
   ]
 
   return (
@@ -127,26 +128,26 @@ export default function UserManagementPanel() {
       {/* Mensaje de acción */}
       {actionMsg && (
         <div className="bg-green-50 border border-green-200 rounded-lg px-4 py-3 text-sm text-green-800 flex items-center justify-between">
-          <span>✅ {actionMsg}</span>
-          <button onClick={() => setActionMsg(null)} className="text-green-600 hover:text-green-800 ml-4">✕</button>
+          <span className="inline-flex items-center gap-2"><Icon name="check" size={16} />{actionMsg}</span>
+          <button aria-label="Cerrar mensaje" onClick={() => setActionMsg(null)} className="text-green-700 hover:text-green-800 ml-4 inline-grid place-items-center min-w-[44px] min-h-[44px]"><Icon name="close" size={16} /></button>
         </div>
       )}
 
       {/* Stats cards */}
       <div className="grid grid-cols-2 sm:grid-cols-6 gap-3">
         {[
-          { label: 'Total Activos', value: stats.total,      color: 'border-brand-500',    icon: '👥', show: true },
-          { label: 'Superadmins',   value: stats.superadmin, color: 'border-yellow-500',  icon: '⭐', show: isSuperAdmin },
-          { label: 'Admins',        value: stats.admin,      color: 'border-red-500',     icon: '🔑', show: true },
-          { label: 'Usuarios',      value: stats.developer,  color: 'border-brand-400',    icon: '💻', show: true },
-          { label: 'Viewers',       value: stats.viewer,     color: 'border-gray-400',    icon: '👁️', show: true },
-          { label: 'Inactivos',     value: stats.inactive,   color: 'border-orange-400',  icon: '🔒', show: true },
+          { label: 'Total Activos', value: stats.total,      color: 'border-brand-600',    icon: 'team' as IconName, show: true },
+          { label: 'Superadmins',   value: stats.superadmin, color: 'border-accent-400',  icon: 'star' as IconName, show: isSuperAdmin },
+          { label: 'Admins',        value: stats.admin,      color: 'border-red-700',     icon: 'key' as IconName, show: true },
+          { label: 'Usuarios',      value: stats.developer,  color: 'border-brand-500',    icon: 'code' as IconName, show: true },
+          { label: 'Viewers',       value: stats.viewer,     color: 'border-gray-400',    icon: 'eye' as IconName, show: true },
+          { label: 'Inactivos',     value: stats.inactive,   color: 'border-gray-400',  icon: 'lock' as IconName, show: true },
         ].filter(s => s.show).map(s => (
           <div key={s.label} className={`bg-white rounded-xl border-l-4 ${s.color} p-4 shadow-sm flex items-center gap-3`}>
-            <span className="text-2xl">{s.icon}</span>
+            <Icon name={s.icon} size={24} className="text-gray-600 shrink-0" />
             <div>
               <p className="text-2xl font-bold text-gray-900">{s.value}</p>
-              <p className="text-xs text-gray-500">{s.label}</p>
+              <p className="text-sm text-gray-600">{s.label}</p>
             </div>
           </div>
         ))}
@@ -182,7 +183,7 @@ export default function UserManagementPanel() {
             onClick={() => { setEditing(null); setShowModal(true) }}
             className="px-4 py-1.5 bg-primary text-white rounded-lg text-sm font-medium hover:bg-brand-700 transition flex items-center gap-1.5 shadow-sm"
           >
-            ➕ Nuevo Usuario
+            <Icon name="plus" size={16} className="inline-block mr-1 -mt-0.5" />Nuevo usuario
           </button>
         </div>
       </div>
@@ -191,13 +192,13 @@ export default function UserManagementPanel() {
       <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
         {filtered.length === 0 ? (
           <div className="py-16 text-center text-gray-400">
-            <p className="text-4xl mb-3">👥</p>
+            <Icon name="team" size={36} className="mx-auto mb-3 text-gray-500" />
             <p className="font-medium">No se encontraron usuarios</p>
           </div>
         ) : (
           <table className="w-full">
             <thead>
-              <tr className="bg-gray-50 border-b text-xs font-semibold text-gray-500 uppercase tracking-wide">
+              <tr className="bg-gray-50 border-b text-xs font-semibold text-gray-500">
                 <th className="text-left px-4 py-3">Usuario</th>
                 <th className="text-left px-4 py-3">Email</th>
                 <th className="text-left px-4 py-3">Rol</th>
@@ -233,7 +234,7 @@ export default function UserManagementPanel() {
                     <td className="px-4 py-3">
                       {u.is_active !== false ? (
                         <span className="flex items-center gap-1.5 text-xs text-green-700 font-medium">
-                          <span className="w-2 h-2 rounded-full bg-green-500 inline-block" />
+                          <span className="w-2 h-2 rounded-full bg-green-700 inline-block" />
                           Activo
                         </span>
                       ) : (
@@ -255,29 +256,29 @@ export default function UserManagementPanel() {
                             onClick={() => { setEditing(u); setShowModal(true) }}
                             className="px-3 py-1 bg-brand-50 text-brand-700 rounded-lg text-xs font-medium hover:bg-brand-100 transition"
                           >
-                            ✏️ Editar
+                            <Icon name="edit" size={14} className="inline-block mr-1 -mt-0.5" />Editar
                           </button>
                           <button
                             onClick={() => { void handleToggleActive(u).catch(err => toast.error(errorMessage(err))) }}
                             className={`px-3 py-1 rounded-lg text-xs font-medium transition ${
                               u.is_active !== false
-                                ? 'bg-orange-50 text-orange-700 hover:bg-orange-100'
+                                ? 'bg-yellow-50 text-yellow-800 hover:bg-yellow-100'
                                 : 'bg-green-50 text-green-700 hover:bg-green-100'
                             }`}
                           >
-                            {u.is_active !== false ? '🔒 Desactivar' : '✅ Activar'}
+                            {u.is_active !== false ? 'Desactivar' : 'Activar'}
                           </button>
                           {isSuperAdmin && (
                             <button
                               disabled title="Utiliza Desactivar; el borrado de cuentas requiere el backend Auth"
-                              className="px-3 py-1 bg-red-50 text-red-600 rounded-lg text-xs font-medium hover:bg-red-100 transition"
+                              className="px-3 py-1 bg-red-50 text-red-700 rounded-lg text-xs font-medium hover:bg-red-100 transition"
                             >
-                              🗑 Eliminar
+                              <Icon name="trash" size={14} className="inline-block mr-1 -mt-0.5" />Eliminar
                             </button>
                           )}
                         </div>
                       ) : (
-                        <p className="text-xs text-gray-400 text-right">🔒 Solo Superadmin</p>
+                        <p className="text-sm text-gray-600 text-right inline-flex items-center gap-1 justify-end"><Icon name="lock" size={14} />Solo Superadmin</p>
                       )}
                     </td>
                   </tr>
@@ -296,11 +297,11 @@ export default function UserManagementPanel() {
       {confirmDelete && (
         <div className="modal-backdrop fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="modal-panel bg-white rounded-xl shadow-2xl p-6 max-w-sm w-full">
-            <h3 className="text-lg font-bold text-gray-900 mb-2">🗑 Eliminar usuario</h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-2 inline-flex items-center gap-2"><Icon name="trash" size={20} />Eliminar usuario</h3>
             <p className="text-gray-600 text-sm mb-1">
               ¿Estás seguro que deseas eliminar a <strong>{confirmDelete.full_name}</strong>?
             </p>
-            <p className="text-red-600 text-xs mb-5">
+            <p className="text-red-700 text-xs mb-5">
               Esta acción no se puede deshacer.
             </p>
             <div className="flex gap-3">
@@ -312,7 +313,7 @@ export default function UserManagementPanel() {
               </button>
               <button
                 onClick={() => { void handleDelete(confirmDelete).catch(err => toast.error(errorMessage(err))) }}
-                className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition"
+                className="flex-1 px-4 py-2 bg-red-700 text-white rounded-lg text-sm font-medium hover:bg-red-700 transition"
               >
                 Sí, eliminar
               </button>

@@ -1,20 +1,14 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { lazy, Suspense, useState, useEffect } from 'react'
 import { useAuth } from './hooks/useAuth'
-import LoginForm from './components/auth/LoginForm'
 import ProtectedRoute from './components/auth/ProtectedRoute'
 import BoardSelector from './components/boards/BoardSelector'
-import RequestTracking from './components/requests/RequestTracking'
 import PublicLanding from './components/requests/PublicLanding'
-import ClientHome from './components/client/ClientHome'
-import ClientLaunch from './components/client/ClientLaunch'
-import ClientWorkspace from './components/client/ClientWorkspace'
-import ClientNewTicket from './components/client/ClientNewTicket'
-import MyTickets from './components/client/MyTickets'
-import ClientTicketDetail from './components/client/ClientTicketDetail'
 import NotificationBell from './components/notifications/NotificationBell'
 import BrandLogo from './components/ui/BrandLogo'
 import ControlLabel from './components/ui/ControlLabel'
+import type { IconName } from './components/ui/Icon'
+import { loadClientHome, loadRequestTracking, loadClientLaunch, loadClientWorkspace, loadClientNewTicket, loadMyTickets, loadClientTicketDetail } from './lib/client-routes'
 import { usePendingCount } from './hooks/usePendingCount'
 import { errorMessage } from './lib/supabase-errors'
 import { toast } from './lib/toast'
@@ -27,7 +21,17 @@ const UserManagementPanel = lazy(() => import('./components/admin/UserManagement
 const WorkloadView = lazy(() => import('./components/admin/WorkloadView'))
 const PapeleraView = lazy(() => import('./components/admin/PapeleraView'))
 const CatalogsPanel = lazy(() => import('./components/admin/CatalogsPanel'))
-const viewLoading = <p role="status" className="py-6 text-sm text-gray-600">Cargando vista…</p>
+// Rutas públicas secundarias y espacio del cliente: fuera del JavaScript inicial del portal (Taste perf.md).
+const LoginForm = lazy(() => import('./components/auth/LoginForm'))
+const RequestTracking = lazy(loadRequestTracking)
+const ClientHome = lazy(loadClientHome)
+const ClientLaunch = lazy(loadClientLaunch)
+const ClientWorkspace = lazy(loadClientWorkspace)
+const ClientNewTicket = lazy(loadClientNewTicket)
+const MyTickets = lazy(loadMyTickets)
+const ClientTicketDetail = lazy(loadClientTicketDetail)
+const viewLoading = <p role="status" className="py-6 text-base text-gray-600">Cargando vista…</p>
+const routeLoading = <p role="status" className="page-wrap py-12 text-base text-gray-600">Cargando…</p>
 
 function AdminClock() {
   const [time, setTime] = useState('')
@@ -42,7 +46,7 @@ function AdminClock() {
   return (
     <div className="text-right hidden sm:block">
       <p className="text-sm font-mono font-semibold text-white">{time}</p>
-      <p className="text-xs text-white/60 whitespace-nowrap">Lima GMT-5</p>
+      <p className="text-xs text-white/80 whitespace-nowrap">Lima GMT-5</p>
     </div>
   )
 }
@@ -64,7 +68,7 @@ function Dashboard() {
       <header className="enterprise-header">
         {/* Barra corporativa */}
         <div className="bg-brand-700 border-b-4 border-accent-400">
-          <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
+          <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
             <BrandLogo tone="light" size={40} />
 
             <div className="flex items-center gap-3 sm:gap-4">
@@ -98,11 +102,11 @@ function Dashboard() {
           <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-3">
             <div className="enterprise-tabs flex flex-wrap gap-1 bg-gray-100 p-1 rounded-lg">
               {([
-                ['dashboard', '📈 Dashboard'],
-                ['boards', '📊 Boards'],
-                ['requests', '📬 Requests'],
-                ...(canSeeEquipo ? [['equipo', '👥 Equipo']] : []),
-              ] as [typeof currentTab, string][]).map(([tab, label]) => (
+                ['dashboard', 'Dashboard', 'chart'],
+                ['boards', 'Boards', 'board'],
+                ['requests', 'Requests', 'inbox'],
+                ...(canSeeEquipo ? [['equipo', 'Equipo', 'team']] : []),
+              ] as [typeof currentTab, string, IconName][]).map(([tab, label, icon]) => (
                 <button
                   key={tab}
                   onClick={() => setCurrentTab(tab)}
@@ -113,9 +117,9 @@ function Dashboard() {
                       : 'text-gray-600 hover:text-brand-700 hover:bg-white'
                   }`}
                 >
-                  <ControlLabel>{tab === 'boards' ? '⬛ Boards' : label}</ControlLabel>
+                  <ControlLabel icon={icon}>{label}</ControlLabel>
                   {tab === 'requests' && pendingCount > 0 && (
-                    <span className="min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 leading-none">
+                    <span aria-label={`${pendingCount} pendientes`} className="min-w-[22px] h-[22px] bg-red-700 text-white text-[13px] font-medium rounded-full flex items-center justify-center px-1.5 leading-none">
                       {pendingCount > 9 ? '9+' : pendingCount}
                     </span>
                   )}
@@ -151,9 +155,9 @@ function Dashboard() {
         {currentTab === 'requests' && (
           <>
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-brand-700">
-                <ControlLabel>📬 Inbox de Solicitudes</ControlLabel>
-              </h2>
+              <h1 className="view-title">
+                <ControlLabel icon="inbox">Bandeja de solicitudes</ControlLabel>
+              </h1>
               <p className="text-gray-600 text-sm mt-1">
                 Revisa y gestiona las solicitudes pendientes
               </p>
@@ -165,7 +169,7 @@ function Dashboard() {
         {currentTab === 'equipo' && canSeeEquipo && (
           <>
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-brand-700"><ControlLabel>👥 Equipo</ControlLabel></h2>
+              <h1 className="view-title"><ControlLabel icon="team">Equipo</ControlLabel></h1>
               <p className="text-gray-600 text-sm mt-1">
                 Gestión de usuarios y carga de trabajo del equipo
               </p>
@@ -181,7 +185,7 @@ function Dashboard() {
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                <ControlLabel>📊 Carga de Trabajo</ControlLabel>
+                <ControlLabel icon="chart">Carga de trabajo</ControlLabel>
               </button>
               {isAdminOrSuperAdmin && (
                 <button
@@ -192,7 +196,7 @@ function Dashboard() {
                       : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
-                  <ControlLabel>🔑 Usuarios</ControlLabel>
+                  <ControlLabel icon="key">Usuarios</ControlLabel>
                 </button>
               )}
 
@@ -205,7 +209,7 @@ function Dashboard() {
                       : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
-                  <ControlLabel>🗑 Papelera</ControlLabel>
+                  <ControlLabel icon="trash">Papelera</ControlLabel>
                 </button>
               )}
 
@@ -218,7 +222,7 @@ function Dashboard() {
                       : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
-                  <ControlLabel>🗂 Catálogos</ControlLabel>
+                  <ControlLabel icon="tickets">Catálogos</ControlLabel>
                 </button>
               )}
             </div>
@@ -240,6 +244,7 @@ function Dashboard() {
 function App() {
   return (
     <BrowserRouter>
+      <Suspense fallback={routeLoading}>
       <Routes>
         <Route path="/login" element={<LoginForm />} />
         <Route path="/portal" element={<PublicLanding />} />
@@ -264,6 +269,7 @@ function App() {
         />
         <Route path="*" element={<Navigate to="/portal" replace />} />
       </Routes>
+      </Suspense>
     </BrowserRouter>
   )
 }

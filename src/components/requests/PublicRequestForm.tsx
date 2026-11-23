@@ -80,22 +80,42 @@ export default function PublicRequestForm({ client }: { client: ClientFormConfig
   const [deliveryError, setDeliveryError] = useState<string | null>(null)
   const [retrying, setRetrying] = useState(false)
 
-  const set = (patch: Partial<ClientTicketInput>) => client.setDraft({ ...form, ...patch })
+  // Taste (Forms): errores al enviar, cada uno bajo su campo; el primero recibe el foco.
+  type FieldKey = 'ticket-requester' | 'ticket-product' | 'ticket-subproject' | 'ticket-type' | 'ticket-title' | 'ticket-description'
+  const [fieldErrors, setFieldErrors] = useState<Partial<Record<FieldKey, string>>>({})
+  const FIELD_OF: Partial<Record<keyof ClientTicketInput, FieldKey>> = { requester_name: 'ticket-requester', system_id: 'ticket-product',
+    subsystem_id: 'ticket-subproject', request_type_id: 'ticket-type', title: 'ticket-title', description: 'ticket-description' }
+  const set = (patch: Partial<ClientTicketInput>) => {
+    client.setDraft({ ...form, ...patch })
+    const cleared = Object.keys(patch).map(k => FIELD_OF[k as keyof ClientTicketInput]).filter(Boolean) as FieldKey[]
+    if (patch.system_id !== undefined) cleared.push('ticket-subproject')
+    if (cleared.some(k => fieldErrors[k])) setFieldErrors(prev => { const next = { ...prev }; cleared.forEach(k => delete next[k]); return next })
+  }
   const [nameTouched, setNameTouched] = useState(false)
-  const nameInvalid = nameTouched && !form.requester_name.trim()
+  const nameInvalid = !!fieldErrors['ticket-requester'] || (nameTouched && !form.requester_name.trim())
+  const invalid = (id: FieldKey) => fieldErrors[id] ? { 'aria-invalid': true as const, 'aria-describedby': `${id}-error` } : {}
+  const fieldError = (id: FieldKey) => fieldErrors[id] ? <p id={`${id}-error`} className="field-error">{fieldErrors[id]}</p> : null
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (individual && nameUnavailable) { setError('No se dispone de un nombre o usuario autenticado válido.'); return }
     // Nombre, título y descripción no pueden quedar vacíos ni contener solo espacios.
-    if (individual ? nameUnavailable : !form.requester_name.trim()) {
+    const errors: Partial<Record<FieldKey, string>> = {}
+    if (!individual && !form.requester_name.trim()) errors['ticket-requester'] = 'Escribe el nombre de quien hace la solicitud.'
+    if (!client.products.some(p => p.id === form.system_id)) errors['ticket-product'] = 'Elige el producto de la solicitud.'
+    else if (ready && ((requiresSubproject && !form.subsystem_id) || (form.subsystem_id && !options.items.some(p => p.id === form.subsystem_id)))) errors['ticket-subproject'] = 'Elige un subproyecto de este producto.'
+    if (!form.request_type_id) errors['ticket-type'] = 'Elige el tipo de solicitud.'
+    if (!form.title.trim()) errors['ticket-title'] = 'Escribe un título breve.'
+    if (!form.description.trim()) errors['ticket-description'] = 'Describe qué necesitas.'
+    const failed = Object.keys(errors) as FieldKey[]
+    setFieldErrors(errors)
+    if (failed.length) {
       setNameTouched(true)
-      setError(individual ? 'No se dispone de un nombre o usuario autenticado válido.' : 'Ingresa el nombre del solicitante.')
+      setError(failed.length === 1 ? 'Revisa el campo marcado.' : `Revisa los ${failed.length} campos marcados.`)
+      document.getElementById(failed[0])?.focus()
       return
     }
-    if (!form.title.trim() || !form.description.trim()) { setError('Completa el título y la descripción.'); return }
-    if (!client.products.some(p => p.id === form.system_id)) { setError('Selecciona el producto.'); return }
     if (!ready) { setError('Espera a que se carguen los subproyectos del producto.'); return }
-    if ((requiresSubproject && !form.subsystem_id) || (form.subsystem_id && !options.items.some(p => p.id === form.subsystem_id))) { setError('Selecciona un subproyecto válido del producto.'); return }
     if (!prepared) { setError('Espera a que terminen de prepararse los adjuntos.'); return }
     if (!prepared.ok) { setError(prepared.error); return }
     setLoading(true); setError(null)
@@ -143,7 +163,7 @@ export default function PublicRequestForm({ client }: { client: ClientFormConfig
             <p className="text-3xl font-mono text-primary">{receipt.request_number}</p>
           </div>
           {pendingDelivery.length > 0 && (
-            <div className="text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4 text-left space-y-2">
+            <div className="text-sm text-yellow-800 bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4 text-left space-y-2">
               <p>La solicitud quedó registrada, pero no se pudieron adjuntar: <strong>{pendingDelivery.map(i => i.file.name).join(', ')}</strong>.</p>
               {deliveryError && <p className="text-xs">{deliveryError}</p>}
               <p className="text-xs">Puedes reintentar durante los 30 minutos siguientes al envío.</p>
@@ -171,7 +191,7 @@ export default function PublicRequestForm({ client }: { client: ClientFormConfig
 
   const label = (id: string, text: string, required = true) => (
     <label htmlFor={id} className="block text-sm font-medium text-gray-700 mb-2">
-      {text} {required && <span className="text-red-500">*</span>}
+      {text} {required && <span className="text-red-700">*</span>}
     </label>
   )
   const section = 'font-medium text-brand-700'
@@ -180,16 +200,16 @@ export default function PublicRequestForm({ client }: { client: ClientFormConfig
     <div className="max-w-4xl mx-auto">
       <div className="ticket-form">
         <header>
-          <h1 className="text-2xl font-bold text-brand-700 mb-1">Nuevo ticket</h1>
+          <h1 className="text-2xl font-medium text-brand-700 mb-1">Nuevo ticket</h1>
           <p className="text-gray-600 text-sm">Completa el formulario para enviar tu solicitud al {BRAND.teamLabel}.</p>
         </header>
 
         {catalogs.loading ? (
-          <p className="text-center text-gray-400 py-8">Cargando formulario...</p>
+          <p role="status" className="text-center text-gray-600 py-8">Cargando formulario…</p>
         ) : !catalogs.available ? (
           <p role="alert" className="text-center text-red-700 py-8">El formulario no está disponible en este momento. Intenta más tarde.</p>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-8">
+          <form onSubmit={handleSubmit} noValidate className="space-y-8">
             <fieldset className="ticket-form-fields space-y-8 min-w-0" disabled={loading || client.uncertain}>
               <legend className="sr-only">Datos de la solicitud</legend>
               <section className="space-y-4">
@@ -203,11 +223,11 @@ export default function PublicRequestForm({ client }: { client: ClientFormConfig
                 <div>
                   {label('ticket-requester', 'Nombre del solicitante')}
                   <input id="ticket-requester" required maxLength={200} value={form.requester_name} placeholder="Nombre y apellido"
-                    pattern=".*\S.*" title="Ingresa el nombre del solicitante" aria-invalid={nameInvalid}
+                    aria-invalid={nameInvalid || undefined} aria-describedby={nameInvalid ? 'ticket-requester-error' : undefined}
                     onBlur={() => setNameTouched(true)}
                     onChange={e => set({ requester_name: e.target.value })}
-                    className={`${field} ${nameInvalid ? 'border-red-400 focus:ring-red-400' : ''}`} />
-                  {nameInvalid && <p className="text-xs text-red-600 mt-1">El nombre es obligatorio.</p>}
+                    className={field} />
+                  {nameInvalid && <p id="ticket-requester-error" className="field-error">{fieldErrors['ticket-requester'] ?? 'Escribe el nombre de quien hace la solicitud.'}</p>}
                 </div>
                 </>}
               </section>
@@ -225,20 +245,23 @@ export default function PublicRequestForm({ client }: { client: ClientFormConfig
                 ) : (
                   <div>
                     {label('ticket-product', 'Producto')}
-                    <select id="ticket-product" required value={form.system_id} onChange={e => set({ system_id: e.target.value, subsystem_id: null })} className={field}>
+                    <select id="ticket-product" required {...invalid('ticket-product')} value={form.system_id} onChange={e => set({ system_id: e.target.value, subsystem_id: null })} className={field}>
                       <option value="">Selecciona un producto</option>
                       {client.products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                     </select>
+                    {fieldError('ticket-product')}
                   </div>
                 )}
                 <div>
                   {label('ticket-subproject', 'Subproyecto', requiresSubproject)}
                   <select id="ticket-subproject" className={field} value={form.subsystem_id ?? ''} required={requiresSubproject}
-                    disabled={!ready || options.items.length === 0} aria-describedby="ticket-subproject-help"
+                    disabled={!ready || options.items.length === 0} aria-invalid={fieldErrors['ticket-subproject'] ? true : undefined}
+                    aria-describedby={fieldErrors['ticket-subproject'] ? 'ticket-subproject-error ticket-subproject-help' : 'ticket-subproject-help'}
                     onChange={e => set({ subsystem_id: e.target.value || null })}>
                     <option value="">{!product ? 'Selecciona primero un producto' : options.failed && options.systemId === form.system_id ? 'Opciones no disponibles' : !ready ? 'Cargando subproyectos…' : !options.items.length ? 'Sin subproyectos' : requiresSubproject ? 'Selecciona un subproyecto' : 'Sin subproyecto'}</option>
                     {options.systemId === form.system_id && options.items.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                   </select>
+                  {fieldError('ticket-subproject')}
                   <p id="ticket-subproject-help" role="status" className="text-xs text-gray-600 mt-2">{!product ? 'Elige un producto para consultar sus opciones.' : options.systemId !== form.system_id || options.loading ? 'Cargando subproyectos…' : options.failed ? 'No pudimos cargar los subproyectos. Reintenta para continuar.' : !options.items.length ? 'Este producto no tiene subproyectos disponibles. Puedes continuar.' : requiresSubproject ? 'Selecciona un subproyecto para continuar.' : 'Subproyecto opcional para este producto.'}</p>
                 </div>
               </section>
@@ -247,21 +270,24 @@ export default function PublicRequestForm({ client }: { client: ClientFormConfig
                 <h2 className={section}>¿Qué necesitas?</h2>
                 <div>
                   {label('ticket-type', 'Tipo de solicitud')}
-                  <select id="ticket-type" required value={form.request_type_id} onChange={e => set({ request_type_id: e.target.value })} className={field}>
+                  <select id="ticket-type" required {...invalid('ticket-type')} value={form.request_type_id} onChange={e => set({ request_type_id: e.target.value })} className={field}>
                     <option value="">Selecciona el tipo principal</option>
                     {catalogs.requestTypes.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
                   </select>
+                  {fieldError('ticket-type')}
                 </div>
                 <div>
                   {label('ticket-title', 'Título del requerimiento')}
-                  <input id="ticket-title" required maxLength={300} value={form.title} placeholder="Resumen breve"
+                  <input id="ticket-title" required {...invalid('ticket-title')} maxLength={300} value={form.title} placeholder="Resumen breve"
                     onChange={e => set({ title: e.target.value })} className={field} />
+                  {fieldError('ticket-title')}
                 </div>
                 <div>
                   {label('ticket-description', 'Descripción detallada')}
-                  <textarea id="ticket-description" required rows={6} maxLength={20000} value={form.description}
+                  <textarea id="ticket-description" required {...invalid('ticket-description')} rows={6} maxLength={20000} value={form.description}
                     placeholder="Describe qué ocurre o qué necesitas, pasos para reproducirlo y el resultado esperado"
                     onChange={e => set({ description: e.target.value })} className={`${field} resize-y`} />
+                  {fieldError('ticket-description')}
                 </div>
                 <div>
                   <p className="block text-sm font-medium text-gray-700 mb-2">Adjuntar capturas o documentos</p>
@@ -275,8 +301,8 @@ export default function PublicRequestForm({ client }: { client: ClientFormConfig
                   </select>
                   <p id="ticket-priority-help" className="text-xs text-gray-600 mt-2">El equipo revisará tu solicitud y asignará la prioridad definitiva. La atención urgente se solicita por separado.</p>
                 </div>
-                <label className="flex items-center gap-3 p-4 rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-50">
-                  <input type="checkbox" checked={form.urgent_requested} onChange={e => set({ urgent_requested: e.target.checked })} className="h-4 w-4 accent-red-600" />
+                <label className="flex items-center gap-3 p-4 min-h-[44px] rounded-lg border border-gray-300 cursor-pointer hover:bg-gray-50">
+                  <input type="checkbox" checked={form.urgent_requested} onChange={e => set({ urgent_requested: e.target.checked })} className="h-5 w-5 accent-red-700" />
                   <span className="text-sm font-medium text-gray-800">Solicito atención urgente (independiente de la prioridad)</span>
                 </label>
               </section>
@@ -284,13 +310,14 @@ export default function PublicRequestForm({ client }: { client: ClientFormConfig
             </fieldset>
             {options.systemId === form.system_id && options.failed && <button type="button" className="ui-button ui-button-secondary" onClick={() => setRetry(n => n + 1)}>Reintentar subproyectos</button>}
             {client.uncertain && <p role="status" className="text-sm text-gray-700">No pudimos confirmar el envío. Reintenta con los mismos datos para recuperar la constancia sin duplicar tu solicitud.</p>}
-            {error && <p role="alert" className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">{error}</p>}
-
-            <button type="button" className="ui-button ui-button-secondary w-full" disabled={loading || client.uncertain} onClick={() => { client.setDraft(null); attempt.current = createRpcAttempt(); client.onViewMine() }}>Cancelar</button>
-            <button type="submit" disabled={loading || !prepared || !prepared.ok || !ready || nameUnavailable}
-              className="ui-button ui-button-primary w-full">
-              {loading ? 'Enviando...' : client.uncertain ? 'Reintentar envío' : 'Enviar solicitud'}
-            </button>
+            <div className="form-actions">
+              <button type="submit" disabled={loading}
+                className="ui-button ui-button-primary">
+                {loading ? 'Enviando…' : client.uncertain ? 'Reintentar envío' : 'Enviar solicitud'}
+              </button>
+              <button type="button" className="ui-button ui-button-secondary" disabled={loading || client.uncertain} onClick={() => { client.setDraft(null); attempt.current = createRpcAttempt(); client.onViewMine() }}>Cancelar</button>
+            </div>
+            <p role="status" aria-live="polite" className={error ? 'bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm' : 'sr-only'}>{error ?? ''}</p>
           </form>
         )}
       </div>

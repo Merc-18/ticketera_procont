@@ -2,6 +2,7 @@ import ModalFocus from '../ui/ModalFocus'
 import { useEffect, useState } from 'react'
 import { PHASE_LABELS } from '../../lib/constants'
 import { reopenTargets, type BoardFlow, type PendingItem } from '../../lib/board'
+import Icon from '../ui/Icon'
 
 const shell = 'modal-backdrop fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-[70]'
 const card = 'modal-panel bg-white rounded-xl max-w-lg w-full shadow-2xl max-h-[90vh] overflow-y-auto'
@@ -19,14 +20,14 @@ export function DoneConfirmDialog({ title, pending, busy, onConfirm, onCancel }:
     <div className={shell} role="dialog" aria-modal="true" aria-labelledby="done-confirm-title">
       <div className={card}>
         <ModalFocus onDismiss={() => { if (!busy) onCancel() }} />
-        <div className="px-5 py-4 border-b bg-amber-50">
-          <h3 id="done-confirm-title" className="font-bold text-amber-900">⚠️ Tareas pendientes antes de Done</h3>
-          <p className="text-sm text-amber-800 mt-1">«{title}» tiene {pending.length} tarea{pending.length !== 1 ? 's' : ''} sin completar.</p>
+        <div className="px-5 py-4 border-b bg-yellow-50">
+          <h3 id="done-confirm-title" className="font-medium text-yellow-900 inline-flex items-center gap-2"><Icon name="alert" size={18} />Tareas pendientes antes de Done</h3>
+          <p className="text-sm text-yellow-800 mt-1">«{title}» tiene {pending.length} tarea{pending.length !== 1 ? 's' : ''} sin completar.</p>
         </div>
         <ul className="px-5 py-3 space-y-1.5 max-h-60 overflow-y-auto">
           {pending.map(item => (
             <li key={item.id} className="text-sm text-gray-800 flex gap-2">
-              <span className="text-gray-400 shrink-0">☐</span>
+              <Icon name="square" size={14} className="text-gray-500 shrink-0 mt-1" />
               <span className="break-words"><span className="text-xs text-gray-500">{PHASE_LABELS[item.phase] ?? item.phase} · </span>{item.description}</span>
             </li>
           ))}
@@ -39,7 +40,7 @@ export function DoneConfirmDialog({ title, pending, busy, onConfirm, onCancel }:
           <div className="flex gap-2 justify-end">
             <button onClick={onCancel} disabled={busy} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200">Cancelar</button>
             <button onClick={onConfirm} disabled={!ack || busy}
-              className="px-4 py-2 bg-emerald-700 text-white rounded-lg text-sm font-semibold hover:bg-emerald-800 disabled:opacity-50">
+              className="px-4 py-2 bg-green-700 text-white rounded-lg text-sm font-semibold hover:bg-green-800 disabled:opacity-50">
               {busy ? 'Guardando…' : 'Confirmar y pasar a Done'}
             </button>
           </div>
@@ -60,18 +61,18 @@ export function BlockDialog({ initial, busy, onConfirm, onCancel }: {
       <div className={card}>
         <ModalFocus onDismiss={() => { if (!busy) onCancel() }} />
         <div className="px-5 py-4 border-b bg-red-50">
-          <h3 id="block-title" className="font-bold text-red-900">🚫 {initial ? 'Corregir motivo del bloqueo' : 'Bloquear ticket'}</h3>
+          <h3 id="block-title" className="font-medium text-red-900 inline-flex items-center gap-2"><Icon name="block" size={18} />{initial ? 'Corregir motivo del bloqueo' : 'Bloquear ticket'}</h3>
           <p className="text-sm text-red-800 mt-1">El ticket conserva su fase y responsable. Mientras esté bloqueado no puede cambiar de fase ni terminarse; sí admite comentarios, checklist y evidencias.</p>
         </div>
         <div className="px-5 py-4 space-y-3">
-          <label className="block text-xs font-semibold text-gray-600" htmlFor="block-reason">Motivo <span className="text-red-500">*</span></label>
+          <label className="block text-xs font-semibold text-gray-600" htmlFor="block-reason">Motivo <span className="text-red-700">*</span></label>
           <textarea id="block-reason" rows={3} value={reason} onChange={e => setReason(e.target.value)} autoFocus maxLength={5000}
             placeholder="Describe qué impide continuar…"
             className="w-full px-3 py-2 border border-red-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-red-400 resize-none" />
           <div className="flex gap-2 justify-end">
             <button onClick={onCancel} disabled={busy} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200">Cancelar</button>
             <button onClick={() => onConfirm(reason.trim())} disabled={!valid || busy}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 disabled:opacity-50">
+              className="px-4 py-2 bg-red-700 text-white rounded-lg text-sm font-semibold hover:bg-red-700 disabled:opacity-50">
               {busy ? 'Guardando…' : 'Confirmar bloqueo'}
             </button>
           </div>
@@ -96,9 +97,9 @@ export function ReopenDialog({ flows, busy, onConfirm, onCancel }: {
     <div className={shell} role="dialog" aria-modal="true" aria-labelledby="reopen-title">
       <div className={card}>
         <ModalFocus onDismiss={() => { if (!busy) onCancel() }} />
-        <div className="px-5 py-4 border-b bg-orange-50">
-          <h3 id="reopen-title" className="font-bold text-orange-900">↩️ Reabrir ticket</h3>
-          <p className="text-sm text-orange-800 mt-1">El ticket vuelve a trabajo activo. El cierre anterior se conserva en el historial.</p>
+        <div className="px-5 py-4 border-b bg-yellow-50">
+          <h3 id="reopen-title" className="font-medium text-yellow-900 inline-flex items-center gap-2"><Icon name="refresh" size={18} />Reabrir ticket</h3>
+          <p className="text-sm text-yellow-800 mt-1">El ticket vuelve a trabajo activo. El cierre anterior se conserva en el historial.</p>
         </div>
         <div className="px-5 py-4 space-y-3">
           {flows.length > 1 && (
@@ -110,21 +111,21 @@ export function ReopenDialog({ flows, busy, onConfirm, onCancel }: {
             </div>
           )}
           <div>
-            <label className="block text-xs font-semibold text-gray-600 mb-1" htmlFor="reopen-phase">Fase de retorno <span className="text-red-500">*</span></label>
+            <label className="block text-xs font-semibold text-gray-600 mb-1" htmlFor="reopen-phase">Fase de retorno <span className="text-red-700">*</span></label>
             <select id="reopen-phase" value={target} onChange={e => setTarget(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white">
               <option value="" disabled>Selecciona la fase…</option>
               {targets.map(p => <option key={p} value={p}>{PHASE_LABELS[p] ?? p}</option>)}
             </select>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-gray-600 mb-1" htmlFor="reopen-reason">Motivo <span className="text-red-500">*</span></label>
+            <label className="block text-xs font-semibold text-gray-600 mb-1" htmlFor="reopen-reason">Motivo <span className="text-red-700">*</span></label>
             <textarea id="reopen-reason" rows={3} value={reason} onChange={e => setReason(e.target.value)} maxLength={5000}
-              placeholder="¿Por qué se reabre?" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-orange-400 resize-none" />
+              placeholder="¿Por qué se reabre?" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-yellow-400 resize-none" />
           </div>
           <div className="flex gap-2 justify-end">
             <button onClick={onCancel} disabled={busy} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200">Cancelar</button>
             <button onClick={() => flow && onConfirm(flow.id, target, reason.trim())} disabled={!valid || busy}
-              className="px-4 py-2 bg-orange-600 text-white rounded-lg text-sm font-semibold hover:bg-orange-700 disabled:opacity-50">
+              className="px-4 py-2 bg-yellow-600 text-white rounded-lg text-sm font-semibold hover:bg-yellow-700 disabled:opacity-50">
               {busy ? 'Guardando…' : 'Reabrir ticket'}
             </button>
           </div>

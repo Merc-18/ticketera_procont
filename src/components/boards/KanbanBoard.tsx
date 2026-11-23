@@ -1,4 +1,6 @@
 import ControlLabel from '../ui/ControlLabel'
+import { PRIORITY_LABEL } from '../../lib/constants'
+import Icon, { type IconName } from '../ui/Icon'
 import ScrollHint from '../ui/ScrollHint'
 import { DragDropContext, DropResult } from '@hello-pangea/dnd'
 import { useState, useEffect } from 'react'
@@ -31,49 +33,49 @@ interface Props {
   onOpenHandled?: () => void
 }
 
-const PHASES = {
+const PHASES: Record<string, { id: string; title: string; icon: IconName }[]> = {
   // Flujo único definitivo (M12). Se permiten saltos y retrocesos; Done solo al llegar a esa columna.
   development: [
-    { id: 'backlog', title: '📋 Backlog', color: 'bg-gray-600' },
-    { id: 'analysis', title: '🔎 Analysis', color: 'bg-sky-700' },
-    { id: 'design', title: '📝 Design', color: 'bg-brand-600' },
-    { id: 'dev', title: '💻 Development', color: 'bg-purple-600' },
-    { id: 'code_review', title: '👀 Code Review', color: 'bg-indigo-600' },
-    { id: 'testing', title: '🧪 Testing', color: 'bg-yellow-600' },
-    { id: 'deploy', title: '🚀 Deploy', color: 'bg-green-600' },
-    { id: 'done', title: '✅ Done', color: 'bg-emerald-700' },
+    { id: 'backlog', title: 'Backlog', icon: 'tickets' },
+    { id: 'analysis', title: 'Analysis', icon: 'search' },
+    { id: 'design', title: 'Design', icon: 'edit' },
+    { id: 'dev', title: 'Development', icon: 'code' },
+    { id: 'code_review', title: 'Code Review', icon: 'eye' },
+    { id: 'testing', title: 'Testing', icon: 'check' },
+    { id: 'deploy', title: 'Deploy', icon: 'upload' },
+    { id: 'done', title: 'Done', icon: 'check' },
   ],
   // Solo proyectos históricos (no se crean nuevos Administrative/Dual).
   administrative: [
-    { id: 'backlog', title: '📋 Backlog', color: 'bg-gray-600' },
-    { id: 'ready_to_start', title: '🎯 Ready to Start', color: 'bg-brand-600' },
-    { id: 'discovery', title: '🔍 Discovery', color: 'bg-indigo-600' },
-    { id: 'design', title: '📝 Design', color: 'bg-purple-600' },
-    { id: 'build', title: '🔨 Build', color: 'bg-orange-600' },
-    { id: 'uat_validation', title: '✔️ UAT/Validation', color: 'bg-yellow-600' },
-    { id: 'deployed', title: '🚀 Deployed', color: 'bg-green-600' },
+    { id: 'backlog', title: 'Backlog', icon: 'tickets' },
+    { id: 'ready_to_start', title: 'Ready to Start', icon: 'flag' },
+    { id: 'discovery', title: 'Discovery', icon: 'search' },
+    { id: 'design', title: 'Design', icon: 'edit' },
+    { id: 'build', title: 'Build', icon: 'code' },
+    { id: 'uat_validation', title: 'UAT/Validation', icon: 'check' },
+    { id: 'deployed', title: 'Deployed', icon: 'upload' },
   ],
 }
 
-const STATUS_OPTIONS = [
-  { value: 'active',    label: '🟢 Activos',     activeClass: 'bg-brand-600 text-white' },
-  { value: 'completed', label: '✅ Completados',  activeClass: 'bg-green-600 text-white' },
-  { value: 'archived',  label: '📦 Archivados',   activeClass: 'bg-gray-600 text-white' },
-] as const
-
-const PRIORITY_OPTS = [
-  { value: 'all',    label: 'Prioridad' },
-  { value: 'urgent', label: '🔴 Urgente' },
-  { value: 'high',   label: '🟠 Alta' },
-  { value: 'medium', label: '🟡 Media' },
-  { value: 'low',    label: '🟢 Baja' },
+const STATUS_OPTIONS: { value: 'active' | 'completed' | 'archived'; label: string; icon: IconName }[] = [
+  { value: 'active',    label: 'Activos',     icon: 'circle' },
+  { value: 'completed', label: 'Completados', icon: 'check' },
+  { value: 'archived',  label: 'Archivados',  icon: 'archive' },
 ]
 
-const VIEW_MODES: { value: ViewMode; label: string; icon: string }[] = [
-  { value: 'kanban',  label: 'Kanban',  icon: '⬛' },
-  { value: 'table',   label: 'Tabla',   icon: '☰' },
-  { value: 'gantt',   label: 'Gantt',   icon: '📅' },
-  { value: 'roadmap', label: 'Roadmap', icon: '🗓' },
+const PRIORITY_OPTS = [
+  { value: 'all',    label: 'Todas' },
+  { value: 'urgent', label: PRIORITY_LABEL.urgent },
+  { value: 'high',   label: PRIORITY_LABEL.high },
+  { value: 'medium', label: PRIORITY_LABEL.medium },
+  { value: 'low',    label: PRIORITY_LABEL.low },
+]
+
+const VIEW_MODES: { value: ViewMode; label: string; icon: IconName }[] = [
+  { value: 'kanban',  label: 'Kanban',  icon: 'board' },
+  { value: 'table',   label: 'Tabla',   icon: 'table' },
+  { value: 'gantt',   label: 'Gantt',   icon: 'calendar' },
+  { value: 'roadmap', label: 'Roadmap', icon: 'flag' },
 ]
 
 export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }: Props) {
@@ -241,7 +243,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
         <div className="kanban-scroll flex gap-4 overflow-x-auto pb-4">
           {phases.map((phase, ci) => (
             <div key={phase.id} className="flex-shrink-0 w-72">
-              <div className={`rounded-t-lg p-3 ${phase.color} opacity-50`}>
+              <div className="rounded-t-lg p-3 bg-gray-100">
                 <div className="h-4 w-28 bg-white/40 rounded" />
               </div>
               <div className="bg-gray-50 rounded-b-lg p-3 space-y-3 min-h-[200px]">
@@ -267,126 +269,130 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
     )
   }
 
-  const boardTitle = boardType === 'development' ? '💻 Board Development' : '📋 Administrative (histórico)'
+  const boardTitle = boardType === 'development' ? 'Board Development' : 'Administrative (histórico)'
 
   return (
     <>
       {/* Header: título + buscador */}
       <div className="flex flex-wrap items-center gap-x-4 gap-y-3 mb-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900"><ControlLabel>{boardTitle}</ControlLabel></h2>
-          <p className="text-gray-500 text-xs mt-0.5">
+          <h1 className="view-title"><ControlLabel icon={boardType === 'development' ? 'code' : 'tickets'}>{boardTitle}</ControlLabel></h1>
+          <p className="text-gray-600 text-sm mt-0.5">
             {boardType === 'development'
               ? 'Arrastra los tickets entre fases (se pueden saltar fases). Terminado solo al llegar a Done.'
               : 'Proyectos anteriores al flujo único Development. Se conservan con sus datos e historial.'}
           </p>
         </div>
-        <input
-          type="text"
-          aria-label="Buscar por título, número o área" placeholder="Buscar por título, número o área..."
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-          className="px-4 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary bg-white placeholder-gray-400 w-full sm:w-72"
-        />
+        <label className="toolbar-field w-full sm:w-72">
+          <span>Buscar</span>
+          <input
+            type="search"
+            placeholder="Título, número o área"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            className="ui-input"
+          />
+        </label>
       </div>
 
       {/* Fila única: Vista + Filtros + Toggle de modo */}
       <div className="board-toolbar flex items-center gap-2 mb-4 flex-wrap">
-        <span className="text-sm text-gray-500 font-medium">Vista:</span>
-        {STATUS_OPTIONS.map(opt => (
-          <button
-            key={opt.value}
-            onClick={() => setStatusFilter(opt.value)}
-            className={`px-4 py-1.5 rounded-full text-sm font-medium transition ${
-              statusFilter === opt.value
-                ? opt.activeClass
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            {opt.label}
-          </button>
-        ))}
+        <div role="group" aria-label="Estado de los proyectos" className="segmented">
+          {STATUS_OPTIONS.map(opt => (
+            <button
+              key={opt.value}
+              aria-pressed={statusFilter === opt.value}
+              onClick={() => setStatusFilter(opt.value)}
+              className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${statusFilter === opt.value ? 'bg-brand-100 text-brand-700' : 'text-gray-600 hover:text-brand-700'}`}
+            >
+              <ControlLabel icon={opt.icon}>{opt.label}</ControlLabel>
+            </button>
+          ))}
+        </div>
 
         {/* Separador */}
         {statusFilter === 'active' && (
-          <span className="text-gray-300 select-none">|</span>
+          <span aria-hidden="true" className="toolbar-divider" />
         )}
 
         {/* Filtros de prioridad y área (solo en vista activa) */}
         {statusFilter === 'active' && (
           <>
-            <select
-              aria-label="Filtrar por prioridad" value={priorityFilter}
-              onChange={e => setPriorityFilter(e.target.value)}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium border transition cursor-pointer outline-none ${
-                priorityFilter !== 'all'
-                  ? 'border-brand-400 bg-brand-50 text-brand-700'
-                  : 'border-gray-200 bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              {PRIORITY_OPTS.map(opt => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
-              ))}
-            </select>
+            <label className="toolbar-field">
+              <span>Prioridad</span>
+              <select
+                value={priorityFilter}
+                onChange={e => setPriorityFilter(e.target.value)}
+                className="ui-input toolbar-select"
+              >
+                {PRIORITY_OPTS.map(opt => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+            </label>
 
-            <select
-              aria-label="Filtrar por área" value={areaFilter}
-              onChange={e => setAreaFilter(e.target.value)}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium border transition cursor-pointer outline-none ${
-                areaFilter !== 'all'
-                  ? 'border-brand-400 bg-brand-50 text-brand-700'
-                  : 'border-gray-200 bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              <option value="all">Área</option>
-              {areaOptions.map(area => (
-                <option key={area} value={area}>{area}</option>
-              ))}
-            </select>
+            <label className="toolbar-field">
+
+              <span>Área</span>
+
+              <select
+                value={areaFilter}
+                onChange={e => setAreaFilter(e.target.value)}
+                className="ui-input toolbar-select"
+              >
+                <option value="all">Todas</option>
+                {areaOptions.map(area => (
+                  <option key={area} value={area}>{area}</option>
+                ))}
+              </select>
+
+            </label>
 
             {/* Filtro por Estudio (independiente del área) */}
             {studios.length > 0 && (
-              <select
-                aria-label="Filtrar por estudio" value={studioFilter}
-                onChange={e => setStudioFilter(e.target.value)}
-                className={`px-3 py-1.5 rounded-full text-sm font-medium border transition cursor-pointer outline-none ${studioFilter !== 'all' ? 'border-brand-400 bg-brand-50 text-brand-700' : 'border-gray-200 bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
-              >
-                <option value="all">Estudio</option>
-                {studios.map(st => <option key={st.id} value={st.id}>{st.name}</option>)}
-              </select>
+              <label className="toolbar-field">
+                <span>Estudio</span>
+                <select
+                  value={studioFilter}
+                  onChange={e => setStudioFilter(e.target.value)}
+                  className="ui-input toolbar-select"
+                >
+                  <option value="all">Todos</option>
+                  {studios.map(st => <option key={st.id} value={st.id}>{st.name}</option>)}
+                </select>
+              </label>
             )}
 
             {/* Filtro por Responsable / Usuario */}
             {canManage ? (
-              <select
-                aria-label="Filtrar por responsable" value={userFilter}
-                onChange={e => setUserFilter(e.target.value)}
-                className={`px-3 py-1.5 rounded-full text-sm font-medium border transition cursor-pointer outline-none ${
-                  userFilter !== 'all'
-                    ? 'border-indigo-400 bg-indigo-50 text-indigo-700 font-semibold'
-                    : 'border-gray-200 bg-gray-100 text-gray-600 hover:bg-gray-200'
-                }`}
-              >
-                <option value="all">Todos los responsables</option>
-                <option value="me">Mis proyectos</option>
-                <optgroup label="Filtrar por Usuario">
-                  {activeUsers.map(u => (
-                    <option key={u.id} value={u.id}>
-                      {u.full_name} ({u.role})
-                    </option>
-                  ))}
-                </optgroup>
-              </select>
+              <label className="toolbar-field">
+                <span>Responsable</span>
+                <select
+                  value={userFilter}
+                  onChange={e => setUserFilter(e.target.value)}
+                  className="ui-input toolbar-select"
+                >
+                  <option value="all">Todos</option>
+                  <option value="me">Mis proyectos</option>
+                  <optgroup label="Filtrar por Usuario">
+                    {activeUsers.map(u => (
+                      <option key={u.id} value={u.id}>
+                        {u.full_name} ({u.role})
+                      </option>
+                    ))}
+                  </optgroup>
+                </select>
+              </label>
             ) : (
               <button
                 onClick={() => setMyProjectsOnly(v => !v)}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium border transition ${
                   myProjectsOnly
-                    ? 'border-indigo-400 bg-indigo-50 text-indigo-700'
+                    ? 'border-brand-400 bg-brand-50 text-brand-700'
                     : 'border-gray-200 bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
-                <ControlLabel>👤 Mis proyectos</ControlLabel>
+                <ControlLabel icon="user">Mis proyectos</ControlLabel>
               </button>
             )}
 
@@ -394,9 +400,9 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
               <>
                 <button
                   onClick={() => { setPriorityFilter('all'); setAreaFilter('all'); setStudioFilter('all'); setUserFilter('all'); setMyProjectsOnly(false); setSearchQuery('') }}
-                  className="px-3 py-1.5 rounded-full text-sm font-medium border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 transition"
+                  className="ui-button ui-button-secondary"
                 >
-                  ✕ Limpiar
+                  <ControlLabel icon="close">Limpiar filtros</ControlLabel>
                 </button>
                 <span className="text-sm text-gray-500">
                   {filteredCount} de {totalCount}
@@ -410,9 +416,9 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
         {canManage && boardType === 'development' && (
           <button
             onClick={() => setShowNewModal(true)}
-            className="ml-auto px-3 py-1.5 rounded-lg text-sm font-semibold bg-primary text-white hover:bg-primary/90 transition flex items-center gap-1.5"
+            className="ml-auto ui-button ui-button-primary"
           >
-            <span className="text-base leading-none">+</span> Nuevo Proyecto
+            <ControlLabel icon="plus">Nuevo proyecto</ControlLabel>
           </button>
         )}
         <div className="board-view-modes flex items-center gap-1 bg-gray-100 rounded-lg p-1">
@@ -422,13 +428,9 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
               aria-pressed={viewMode === vm.value}
               onClick={() => setViewMode(vm.value)}
               title={vm.label}
-              className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${
-                viewMode === vm.value
-                  ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
+              className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${viewMode === vm.value ? 'bg-brand-100 text-brand-700' : 'text-gray-600 hover:text-brand-700'}`}
             >
-              <ControlLabel>{`${vm.icon} ${vm.label}`}</ControlLabel>
+              <ControlLabel icon={vm.icon}>{vm.label}</ControlLabel>
             </button>
           ))}
         </div>
@@ -465,8 +467,8 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
 
       {/* ── KANBAN: sin resultados con filtros activos ── */}
       {viewMode === 'kanban' && statusFilter === 'active' && filteredProjects.length === 0 && hasFilters && (
-        <div className="flex flex-col items-center justify-center h-64 text-gray-400">
-          <span className="text-5xl mb-3">🔍</span>
+        <div className="flex flex-col items-center justify-center h-64 text-gray-600">
+          <Icon name="search" size={40} className="mb-3 text-gray-500" />
           <p className="text-base font-medium text-gray-500">Sin proyectos con los filtros aplicados</p>
           <button
             onClick={() => { setPriorityFilter('all'); setAreaFilter('all'); setStudioFilter('all'); setMyProjectsOnly(false); setSearchQuery('') }}
@@ -524,12 +526,14 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
       {/* ── BULK ACTION BAR ── */}
       {canEdit && selectedIds.length > 0 && (
         <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-white border border-gray-200 shadow-2xl rounded-2xl px-4 py-3 flex flex-wrap items-center justify-center gap-3 w-max max-w-[calc(100vw-2rem)]">
-          <span className="text-sm font-semibold text-gray-700">
+          <span role="status" className="text-sm font-medium text-gray-700">
             {selectedIds.length} seleccionado{selectedIds.length !== 1 ? 's' : ''}
           </span>
-          {selectedIds.length > 100 && <span className="text-xs text-red-600">Máximo 100 por operación</span>}
-          <div className="h-5 w-px bg-gray-200" />
+          {selectedIds.length > 100 && <span className="text-xs text-red-700">Máximo 100 por operación</span>}
+          <div className="h-5 w-px bg-gray-300" aria-hidden="true" />
+          <label htmlFor="bulk-priority" className="text-sm font-medium text-gray-700">Prioridad definitiva</label>
           <select
+            id="bulk-priority"
             disabled={selectedIds.length > 100}
             defaultValue=""
             onChange={async e => {
@@ -541,13 +545,13 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
                 toast.success(`Prioridad actualizada en ${selectedIds.length} proyecto${selectedIds.length !== 1 ? 's' : ''}`)
               } catch (err) { toast.error(errorMessage(err)) }
             }}
-            className="text-sm border border-gray-200 rounded-lg px-2 py-1.5 text-gray-700 cursor-pointer outline-none hover:border-gray-300"
+            className="ui-input toolbar-select"
           >
-            <option value="" disabled>Cambiar prioridad...</option>
-            <option value="urgent">🔴 Urgente</option>
-            <option value="high">🟠 Alta</option>
-            <option value="medium">🟡 Media</option>
-            <option value="low">🟢 Baja</option>
+            <option value="" disabled>Elegir…</option>
+            <option value="urgent">{PRIORITY_LABEL.urgent}</option>
+            <option value="high">{PRIORITY_LABEL.high}</option>
+            <option value="medium">{PRIORITY_LABEL.medium}</option>
+            <option value="low">{PRIORITY_LABEL.low}</option>
           </select>
           <button
             disabled={selectedIds.length > 100}
@@ -560,15 +564,15 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
                 toast.success(`${count} proyecto${count !== 1 ? 's' : ''} archivado${count !== 1 ? 's' : ''}`)
               } catch (err) { toast.error(errorMessage(err)) }
             }}
-            className="text-sm text-orange-600 hover:text-orange-700 font-medium transition"
+            className="ui-button ui-button-secondary"
           >
-            <ControlLabel>📦 Archivar</ControlLabel>
+            <ControlLabel icon="archive">Archivar</ControlLabel>
           </button>
           <button
             onClick={() => setSelectedIds([])}
-            className="text-sm text-gray-400 hover:text-gray-600 transition"
+            className="ui-button ui-button-secondary"
           >
-            ✕ Cancelar
+            Cancelar
           </button>
         </div>
       )}

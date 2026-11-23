@@ -71,7 +71,7 @@ export default function AttachmentPicker({ onChange, resetKey }: Props) {
                     : formatBytes(f.size)}
                 </span>
                 {item?.compressed && <span className="text-[10px] px-1.5 py-0.5 rounded bg-green-50 text-green-700">comprimida</span>}
-                <button type="button" onClick={() => remove(i)} className="text-gray-400 hover:text-red-600" aria-label={`Quitar ${f.name}`}>✕</button>
+                <button type="button" onClick={() => remove(i)} className="text-gray-600 hover:text-red-700" aria-label={`Quitar ${f.name}`}><Icon name="close" size={16} /></button>
               </div>
             )
           })}
@@ -83,7 +83,7 @@ export default function AttachmentPicker({ onChange, resetKey }: Props) {
               </span>
             </div>
             <div className="h-1.5 rounded-full bg-gray-100 overflow-hidden">
-              <div className={`h-full ${over ? 'bg-red-500' : 'bg-accent-400'}`} style={{ width: '100%', transform: `scaleX(${pct / 100})`, transformOrigin: 'left' }} />
+              <div className={`h-full ${over ? 'bg-red-700' : 'bg-accent-400'}`} style={{ width: '100%', transform: `scaleX(${pct / 100})`, transformOrigin: 'left' }} />
             </div>
             {result && result.ok && result.originalBytes > result.totalBytes && (
               <p className="text-xs text-green-700">Imágenes optimizadas: {formatBytes(result.originalBytes)} → {formatBytes(result.totalBytes)}.</p>

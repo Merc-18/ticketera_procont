@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useAreas, type Area } from '../../hooks/useAreas'
 import { errorMessage } from '../../lib/supabase-errors'
 import { toast } from '../../lib/toast'
+import Icon from '../ui/Icon'
 
 /** Administración del catálogo de áreas (solo superadmin; RLS lo exige en Supabase). */
 export default function AreasPanel() {
@@ -33,7 +34,7 @@ export default function AreasPanel() {
   if (loading) return <p className="text-sm text-gray-500 py-8 text-center">Cargando áreas...</p>
   if (!available) {
     return (
-      <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 text-sm text-amber-800">
+      <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-5 text-sm text-yellow-800">
         El catálogo de áreas aún no está disponible en Supabase (migración <code>20261118000200_areas</code> pendiente).
         Mientras tanto, los formularios aceptan el área como texto libre.
         {error && <button onClick={() => void reload()} className="ml-2 underline">Reintentar</button>}
@@ -55,21 +56,21 @@ export default function AreasPanel() {
         />
         <button type="submit" disabled={busy || !newName.trim()}
           className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-brand-700 transition disabled:opacity-50">
-          ➕ Agregar área
+          <Icon name="plus" size={16} className="inline-block mr-1 -mt-0.5" />Agregar área
         </button>
       </form>
 
       <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
         {areas.length === 0 ? (
           <div className="py-12 text-center text-gray-400">
-            <p className="text-3xl mb-2">🏷</p>
+            <Icon name="tag" size={32} className="mx-auto mb-2 text-gray-500" />
             <p className="font-medium">Aún no hay áreas registradas</p>
             <p className="text-xs mt-1">Los formularios usan texto libre hasta que exista al menos un área activa.</p>
           </div>
         ) : (
           <table className="w-full">
             <thead>
-              <tr className="bg-gray-50 border-b text-xs font-semibold text-gray-500 uppercase tracking-wide">
+              <tr className="bg-gray-50 border-b text-xs font-semibold text-gray-500">
                 <th className="text-left px-4 py-3">Área</th>
                 <th className="text-left px-4 py-3">Estado</th>
                 <th className="text-right px-4 py-3">Acciones</th>
@@ -101,12 +102,12 @@ export default function AreasPanel() {
                       ) : (
                         <>
                           <button disabled={busy} onClick={() => { setEditingId(area.id); setEditName(area.name) }}
-                            className="px-3 py-1 bg-brand-50 text-brand-700 rounded-lg text-xs font-medium hover:bg-brand-100">✏️ Editar</button>
+                            className="px-3 py-1 bg-brand-50 text-brand-700 rounded-lg text-xs font-medium hover:bg-brand-100"><Icon name="edit" size={14} className="inline-block mr-1 -mt-0.5" />Editar</button>
                           <button disabled={busy} onClick={() => toggle(area)}
                             className={`px-3 py-1 rounded-lg text-xs font-medium ${area.is_active
-                              ? 'bg-orange-50 text-orange-700 hover:bg-orange-100'
+                              ? 'bg-yellow-50 text-yellow-800 hover:bg-yellow-100'
                               : 'bg-green-50 text-green-700 hover:bg-green-100'}`}>
-                            {area.is_active ? '🔒 Desactivar' : '✅ Activar'}
+                            {area.is_active ? 'Desactivar' : 'Activar'}
                           </button>
                         </>
                       )}

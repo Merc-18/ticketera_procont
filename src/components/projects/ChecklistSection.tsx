@@ -8,6 +8,7 @@ import { canEdit } from '../../lib/access'
 import { errorMessage } from '../../lib/supabase-errors'
 import { toast } from '../../lib/toast'
 import { phasesFor } from '../../lib/board'
+import Icon from '../ui/Icon'
 
 interface Props {
   flow: ProjectFlow
@@ -72,7 +73,7 @@ export default function ChecklistSection({ flow, onChanged }: Props) {
 
   if (error) return <p role="alert" className="text-red-700">{error}</p>
   if (loading) {
-    return <p className="text-xs text-gray-400 py-2">Cargando checklist...</p>
+    return <p role="status" className="text-sm text-gray-600 py-2">Cargando checklist…</p>
   }
 
   const totalItems = items.length
@@ -114,8 +115,8 @@ export default function ChecklistSection({ flow, onChanged }: Props) {
               }`}
             >
               <div className="flex items-center gap-2">
-                {isCurrentPhase && <span className="w-2 h-2 bg-brand-500 rounded-full animate-pulse" />}
-                {allDone && !isCurrentPhase && <span className="text-green-500">✓</span>}
+                {isCurrentPhase && <span className="w-2 h-2 bg-brand-600 rounded-full" aria-hidden="true" />}{isCurrentPhase && <span className="sr-only">Fase actual</span>}
+                {allDone && !isCurrentPhase && <Icon name="check" size={14} className="text-green-700" aria-label="Completada" />}
                 <span>{PHASE_LABELS[phase]}</span>
                 {isCurrentPhase && (
                   <span className="text-xs bg-brand-200 text-brand-700 px-1.5 py-0.5 rounded font-normal">
@@ -125,11 +126,11 @@ export default function ChecklistSection({ flow, onChanged }: Props) {
               </div>
               <div className="flex items-center gap-2">
                 {phaseItems.length > 0 && (
-                  <span className={`text-xs ${allDone ? 'text-green-600 font-semibold' : 'text-gray-500'}`}>
+                  <span className={`text-xs ${allDone ? 'text-green-700 font-semibold' : 'text-gray-500'}`}>
                     {completedCount}/{phaseItems.length}
                   </span>
                 )}
-                <span className="text-gray-400 text-xs">{isExpanded ? '▲' : '▼'}</span>
+                <Icon name="arrow" size={14} className={`text-gray-500 transition-transform ${isExpanded ? '-rotate-90' : 'rotate-90'}`} />
               </div>
             </button>
 
@@ -156,7 +157,7 @@ export default function ChecklistSection({ flow, onChanged }: Props) {
                             >
                               <span
                                 {...provided.dragHandleProps}
-                                className="text-gray-300 hover:text-gray-500 cursor-grab active:cursor-grabbing mt-0.5 shrink-0 text-xs select-none"
+                                className="text-gray-500 hover:text-gray-700 cursor-grab active:cursor-grabbing mt-0.5 shrink-0 text-xs select-none"
                                 title="Arrastrar para reordenar"
                               >
                                 ⠿
@@ -177,10 +178,10 @@ export default function ChecklistSection({ flow, onChanged }: Props) {
                               </span>
                               <button
                                 disabled={!editable || !!saving} onClick={() => { void handleDelete(item.id) }}
-                                className="opacity-0 group-hover:opacity-100 text-gray-300 hover:text-red-500 transition text-xs ml-1 flex-shrink-0"
+                                className="opacity-0 group-hover:opacity-100 focus-visible:opacity-100 [@media(hover:none)]:opacity-100 text-gray-500 hover:text-red-700 transition ml-1 flex-shrink-0 inline-grid place-items-center min-w-[32px] min-h-[32px] rounded"
                                 title="Eliminar item"
                               >
-                                ✕
+                                <Icon name="close" size={14} />
                               </button>
                             </div>
                           )}

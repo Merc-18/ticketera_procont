@@ -1,4 +1,5 @@
 import ControlLabel from '../ui/ControlLabel'
+import Icon, { type IconName } from '../ui/Icon'
 import ModalFocus from '../ui/ModalFocus'
 import { useEffect, useState } from 'react'
 import type { Project, ProjectFlow } from '../../types/database.types'
@@ -15,7 +16,7 @@ import { operations, board } from '../../lib/api'
 import { canEdit } from '../../lib/access'
 import { errorMessage } from '../../lib/supabase-errors'
 import { toast } from '../../lib/toast'
-import { getAvatarColor, getInitials, AREA_COLORS, PHASE_LABELS, PRIORITY_COLORS } from '../../lib/constants'
+import { getAvatarColor, getInitials, AREA_COLORS, PHASE_LABELS, PRIORITY_COLORS, PRIORITY_LABEL } from '../../lib/constants'
 import { GENERAL_STATUS, isGeneralStatus } from '../../lib/request-status'
 import { actionKey, needsPendingConfirmation, pct, phasesFor, type BoardFlow, type BoardTicket, type Phase, type Priority } from '../../lib/board'
 import AreaInput from '../ui/AreaInput'
@@ -30,7 +31,7 @@ interface Props {
 }
 
 const PRIORITY_OPTIONS: { value: Priority; label: string }[] = [
-  { value: 'low', label: 'Baja' }, { value: 'medium', label: 'Media' }, { value: 'high', label: 'Alta' }, { value: 'urgent', label: 'Urgente' },
+  { value: 'low', label: PRIORITY_LABEL.low }, { value: 'medium', label: PRIORITY_LABEL.medium }, { value: 'high', label: PRIORITY_LABEL.high }, { value: 'urgent', label: PRIORITY_LABEL.urgent },
 ]
 type Tab = 'details' | 'checklist' | 'comments' | 'evidence' | 'history'
 type Dialog = null | { kind: 'block' } | { kind: 'reopen' } | { kind: 'done'; flowId: string; target: Phase; key: string }
@@ -128,59 +129,60 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
             <div className="flex items-center gap-2 flex-wrap">
               {ticket?.request_number && <span className="font-mono text-xs text-gray-500">{ticket.request_number}</span>}
               {statusInfo && (
-                <span className={`px-3 py-1 rounded-full border text-xs font-semibold ${statusInfo.tone}`}>{statusInfo.icon} {statusInfo.label}</span>
+                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-semibold ${statusInfo.tone}`}><Icon name={statusInfo.icon} size={12} />{statusInfo.label}</span>
               )}
-              {editable && ticket && ticket.project_status !== 'deleted' ? (
-                <select aria-label="Prioridad" value={ticket.priority} disabled={busy}
+              {editable && ticket && ticket.project_status !== 'deleted' ? (<>
+                <label htmlFor="project-priority" className="sr-only">Prioridad definitiva</label>
+                <select id="project-priority" value={ticket.priority} disabled={busy}
                   onChange={e => { const v = e.target.value as Priority; void run(() => board.setPriority(project.id, v, actionKey()), 'Prioridad actualizada') }}
                   className={`px-2 py-1 rounded-full text-xs font-medium border cursor-pointer ${PRIORITY_COLORS[ticket.priority]}`}>
                   {PRIORITY_OPTIONS.map(o => <option key={o.value} value={o.value}>Prioridad: {o.label}</option>)}
-                </select>
+                </select></>
               ) : (
-                <span className={`px-3 py-1 rounded-full text-xs font-medium border ${PRIORITY_COLORS[project.priority]}`}>{project.priority.toUpperCase()}</span>
+                <span className={`px-3 py-1 rounded-full text-xs font-medium border ${PRIORITY_COLORS[project.priority]}`}><Icon name="flag" size={12} className="inline-block mr-1 -mt-0.5" />Prioridad definitiva: {PRIORITY_LABEL[project.priority] ?? project.priority}</span>
               )}
               {editMode ? (
                 <AreaInput value={editData.requester_area} onChange={v => setEditData(p => ({ ...p, requester_area: v }))} placeholder="Sin área"
                   className="w-40 px-2 py-0.5 rounded-full text-xs font-medium border border-gray-300 bg-white outline-none focus:ring-2 focus:ring-primary" />
               ) : area ? (
-                <span className={`px-3 py-1 rounded-full text-xs font-medium border ${AREA_COLORS[area] ?? 'bg-gray-100 text-gray-700 border-gray-200'}`}>📍 {area}</span>
+                <span className={`px-3 py-1 rounded-full text-xs font-medium border ${AREA_COLORS[area] ?? 'bg-gray-100 text-gray-700 border-gray-200'}`}><Icon name="pin" size={12} className="inline-block mr-1 -mt-0.5" />{area}</span>
               ) : null}
               {project.requests?.request_type && (
-                <span className="px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 border border-indigo-200">🏷️ {project.requests.request_type}</span>
+                <span className="px-3 py-1 rounded-full text-xs font-medium bg-brand-50 text-brand-700 border border-brand-200"><Icon name="tag" size={12} className="inline-block mr-1 -mt-0.5" />{project.requests.request_type}</span>
               )}
               {editMode ? (
                 <input type="text" value={editData.requester_name} onChange={e => setEditData(p => ({ ...p, requester_name: e.target.value }))}
                   placeholder="Solicitante…" aria-label="Solicitante"
                   className="px-2 py-0.5 rounded-full text-xs font-medium border border-gray-300 bg-white outline-none focus:ring-2 focus:ring-primary w-36" />
               ) : project.requests?.requester_name && project.requests.requester_name !== '—' ? (
-                <span className="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200">👤 {project.requests.requester_name}</span>
+                <span className="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200"><Icon name="user" size={12} className="inline-block mr-1 -mt-0.5" />{project.requests.requester_name}</span>
               ) : null}
               {legacy && (
-                <span className="px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 border border-purple-200" title="Proyecto anterior al flujo único Development">
+                <span className="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 border border-gray-300" title="Proyecto anterior al flujo único Development">
                   Histórico {project.project_type === 'dual' ? 'Dual' : project.project_type === 'administrative' ? 'Administrative' : ''}
                 </span>
               )}
-              {ticket?.project_status === 'archived' && <span className="px-3 py-1 rounded-full text-xs font-medium bg-gray-200 text-gray-700">📦 Archivado</span>}
+              {ticket?.project_status === 'archived' && <span className="px-3 py-1 rounded-full text-xs font-medium bg-gray-200 text-gray-700"><Icon name="archive" size={12} className="inline-block mr-1 -mt-0.5" />Archivado</span>}
             </div>
           </div>
-          <button onClick={onClose} aria-label="Cerrar" className="text-gray-400 hover:text-gray-600 text-2xl shrink-0">✕</button>
+          <button onClick={onClose} aria-label="Cerrar" className="text-gray-600 hover:text-gray-900 hover:bg-gray-100 shrink-0"><Icon name="close" size={20} /></button>
         </div>
 
         {/* Banner de bloqueo: visible en todas las pestañas */}
         {blocked && (
-          <div className="shrink-0 bg-red-600 text-white px-4 sm:px-6 py-2.5 text-sm flex flex-col sm:flex-row sm:items-center gap-x-3 gap-y-0.5">
-            <span className="font-bold shrink-0">🚫 BLOQUEADO</span>
+          <div className="shrink-0 bg-red-700 text-white px-4 sm:px-6 py-2.5 text-sm flex flex-col sm:flex-row sm:items-center gap-x-3 gap-y-0.5">
+            <span className="font-medium shrink-0 inline-flex items-center gap-1.5"><Icon name="block" size={16} />Bloqueado</span>
             <span className="break-words min-w-0 sm:flex-1">{ticket?.blocked_reason ?? project.blocked_reason}</span>
-            {project.blocked_since && <span className="text-red-100 text-xs">desde {new Date(project.blocked_since).toLocaleString('es-PE', { timeZone: 'America/Lima', dateStyle: 'short', timeStyle: 'short' })}</span>}
+            {project.blocked_since && <span className="text-white text-xs">desde {new Date(project.blocked_since).toLocaleString('es-PE', { timeZone: 'America/Lima', dateStyle: 'short', timeStyle: 'short' })}</span>}
           </div>
         )}
 
         {/* ── TABS ── */}
         <div className="shrink-0 border-b flex px-2 sm:px-6 overflow-x-auto" role="tablist">
-          {([['details', '📋 Detalles'], ['checklist', '✅ Checklist'], ['comments', '💬 Comentarios'], ['evidence', '📎 Evidencias'], ['history', '🕐 Historial']] as [Tab, string][]).map(([id, label]) => (
+          {([['details', 'Detalles', 'tickets'], ['checklist', 'Checklist', 'check'], ['comments', 'Comentarios', 'comments'], ['evidence', 'Evidencias', 'file'], ['history', 'Historial', 'clock']] as [Tab, string, IconName][]).map(([id, label, icon]) => (
             <button key={id} role="tab" aria-selected={tab === id} onClick={() => setTab(id)}
               className={`px-3 sm:px-4 py-3 font-medium text-sm border-b-2 whitespace-nowrap transition ${tab === id ? 'border-primary text-primary' : 'border-transparent text-gray-600 hover:text-gray-900'}`}>
-              <ControlLabel>{label}</ControlLabel>
+              <ControlLabel icon={icon}>{label}</ControlLabel>
             </button>
           ))}
         </div>
@@ -230,7 +232,7 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
                       return (
                         <div key={flow.id} className={`rounded-lg p-4 border space-y-4 ${blocked ? 'bg-red-50/40 border-red-200' : 'bg-gray-50'}`}>
                           <div className="flex flex-wrap items-center justify-between gap-2">
-                            <h4 className="font-semibold text-gray-900">{flow.flow_type === 'development' ? '💻 Development' : '📋 Administrative (histórico)'}</h4>
+                            <h4 className="font-medium text-gray-900"><ControlLabel icon={flow.flow_type === 'development' ? 'code' : 'tickets'}>{flow.flow_type === 'development' ? 'Development' : 'Administrative (histórico)'}</ControlLabel></h4>
                             <label className="text-sm text-gray-600 flex items-center gap-2">
                               Fase
                               <select value={flow.phase} disabled={!canMove || busy} aria-label="Mover a fase"
@@ -241,14 +243,14 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
                             </label>
                           </div>
                           {editable && blocked && <p className="text-xs text-red-700">Bloqueado: no se puede cambiar de fase ni terminar hasta desbloquear.</p>}
-                          {editable && isDone && <p className="text-xs text-emerald-800">Terminado. Para volver a trabajar en él usa «Reabrir ticket».</p>}
+                          {editable && isDone && <p className="text-xs text-green-800">Terminado. Para volver a trabajar en él usa «Reabrir ticket».</p>}
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                               <div className="flex justify-between text-xs text-gray-600 mb-1">
                                 <span>Progreso de fase</span>
                                 <span className="font-semibold">Fase {flow.phase_index + 1} de {flow.phase_count} · {pct(flow.phase_progress_percent)}</span>
                               </div>
-                              <Bar value={flow.phase_progress_percent} tone={blocked ? 'bg-red-400' : 'bg-brand-600'} />
+                              <Bar value={flow.phase_progress_percent} tone={blocked ? 'bg-red-700' : 'bg-brand-600'} />
                             </div>
                             <div>
                               <div className="flex justify-between text-xs text-gray-600 mb-1">
@@ -261,10 +263,10 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
                             </div>
                           </div>
                           <div>
-                            <p className="text-xs font-medium text-gray-500 mb-1">Responsable principal</p>
+                            {canAssign ? <label htmlFor={`assignee-${flow.id}`} className="block text-sm font-medium text-gray-600 mb-1">Responsable principal</label> : <p className="text-sm font-medium text-gray-600 mb-1">Responsable principal</p>}
                             {canAssign ? (
                               <div className="flex flex-wrap gap-2 items-center">
-                                <select value={draft} onChange={e => setAssignDraft(p => ({ ...p, [flow.id]: e.target.value }))} aria-label="Responsable"
+                                <select value={draft} onChange={e => setAssignDraft(p => ({ ...p, [flow.id]: e.target.value }))} id={`assignee-${flow.id}`}
                                   className="flex-1 min-w-[12rem] px-2.5 py-1.5 border border-gray-300 rounded-lg text-sm bg-white">
                                   <option value="">— Sin responsable —</option>
                                   {assignableUsers.map(u => <option key={u.id} value={u.id}>{u.full_name} ({u.role})</option>)}
@@ -307,7 +309,7 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
             <div className="space-y-8">
               {(ticket?.flows ?? []).map(flow => (
                 <div key={flow.id}>
-                  <h3 className="font-semibold text-gray-900 mb-1">{flow.flow_type === 'development' ? '💻 Development' : '📋 Administrative (histórico)'}</h3>
+                  <h3 className="font-medium text-gray-900 mb-1"><ControlLabel icon={flow.flow_type === 'development' ? 'code' : 'tickets'}>{flow.flow_type === 'development' ? 'Development' : 'Administrative (histórico)'}</ControlLabel></h3>
                   <p className="text-xs text-gray-500 mb-1">
                     Progreso del checklist (servidor): {flow.checklist_total === 0 ? 'sin tareas' : pct(flow.checklist_progress_percent)}.
                     {blocked && ' El checklist se puede actualizar aunque el ticket esté bloqueado.'}
@@ -323,7 +325,7 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
           {tab === 'evidence' && <EvidenceSection projectId={project.id} requestId={project.request_id} editable={editable && ticket?.project_status !== 'deleted'} onChanged={() => setHistory(h => h + 1)} />}
           {tab === 'history' && (project.request_id
             ? <RequestTimeline requestId={project.request_id} projectId={project.id} catalogs={catalogs} refreshKey={history} />
-            : <p className="text-sm text-gray-400">Sin historial vinculado.</p>)}
+            : <p className="text-sm text-gray-600">Sin historial vinculado.</p>)}
         </div>
 
         {/* ── FOOTER ── */}
@@ -334,25 +336,25 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
                 {active && !isDone && (blocked ? (
                   <>
                     <button onClick={() => { void run(() => board.unblock(project.id, actionKey()), 'Ticket desbloqueado') }} disabled={busy}
-                      className="px-3 py-2 rounded-lg text-sm font-medium bg-green-100 text-green-700 hover:bg-green-200 disabled:opacity-50">✅ Desbloquear</button>
+                      className="ui-button ui-button-secondary"><ControlLabel icon="check">Desbloquear</ControlLabel></button>
                     <button onClick={() => setDialog({ kind: 'block' })} disabled={busy}
-                      className="px-3 py-2 rounded-lg text-sm font-medium bg-white border border-red-200 text-red-700 hover:bg-red-50 disabled:opacity-50">Corregir motivo</button>
+                      className="ui-button ui-button-danger">Corregir motivo</button>
                   </>
                 ) : (
                   <button onClick={() => setDialog({ kind: 'block' })} disabled={busy}
-                    className="px-3 py-2 rounded-lg text-sm font-medium bg-red-100 text-red-700 hover:bg-red-200 disabled:opacity-50">🚫 Bloquear</button>
+                    className="ui-button ui-button-danger"><ControlLabel icon="block">Bloquear</ControlLabel></button>
                 ))}
                 {isDone && !blocked && ticket.project_status !== 'deleted' && ticket.project_status !== 'archived' && (
                   <button onClick={() => setDialog({ kind: 'reopen' })} disabled={busy}
-                    className="px-3 py-2 rounded-lg text-sm font-medium bg-orange-100 text-orange-800 hover:bg-orange-200 disabled:opacity-50">↩️ Reabrir ticket</button>
+                    className="ui-button ui-button-secondary"><ControlLabel icon="refresh">Reabrir ticket</ControlLabel></button>
                 )}
                 {(ticket.project_status === 'active' || ticket.project_status === 'completed') && (
                   <button onClick={() => { if (confirm('¿Archivar este ticket? Se conserva su historial y puede restaurarse.')) void run(() => board.archive(project.id, actionKey()), 'Ticket archivado') }} disabled={busy}
-                    className="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-300 disabled:opacity-50"><ControlLabel>📦 Archivar</ControlLabel></button>
+                    className="ui-button ui-button-secondary"><ControlLabel icon="archive">Archivar</ControlLabel></button>
                 )}
                 {(ticket.project_status === 'archived' || (ticket.project_status === 'deleted' && canManage)) && (
                   <button onClick={() => { void run(() => board.restore(project.id, actionKey()), 'Ticket restaurado') }} disabled={busy}
-                    className="px-3 py-2 bg-brand-100 text-brand-700 rounded-lg text-sm font-medium hover:bg-brand-200 disabled:opacity-50"><ControlLabel>↺ Restaurar</ControlLabel></button>
+                    className="ui-button ui-button-secondary"><ControlLabel icon="refresh">Restaurar</ControlLabel></button>
                 )}
               </>
             )}
@@ -360,14 +362,14 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
           <div className="flex gap-2">
             {editMode ? (
               <>
-                <button onClick={() => { setEditMode(false); setEditData(blank()) }} className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-300">Cancelar</button>
+                <button onClick={() => { setEditMode(false); setEditData(blank()) }} className="ui-button ui-button-secondary">Cancelar</button>
                 <button onClick={() => { void handleSaveEdit() }} disabled={!editable || busy || !editData.title.trim()}
-                  className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-brand-700 disabled:opacity-50">{busy ? 'Guardando…' : 'Guardar cambios'}</button>
+                  className="ui-button ui-button-primary">{busy ? 'Guardando…' : 'Guardar cambios'}</button>
               </>
             ) : (
               <>
-                {editable && <button onClick={() => { setEditData(blank()); setEditMode(true) }} className="px-4 py-2 bg-brand-100 text-brand-700 rounded-lg text-sm font-medium hover:bg-brand-200"><ControlLabel>✏️ Editar</ControlLabel></button>}
-                <button onClick={onClose} className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 text-sm">Cerrar</button>
+                {editable && <button onClick={() => { setEditData(blank()); setEditMode(true) }} className="ui-button ui-button-secondary"><ControlLabel icon="edit">Editar</ControlLabel></button>}
+                <button onClick={onClose} className="ui-button ui-button-secondary">Cerrar</button>
               </>
             )}
           </div>

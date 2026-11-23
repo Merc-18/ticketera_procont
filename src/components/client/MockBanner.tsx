@@ -4,7 +4,7 @@ import { CLIENT_PORTAL_MOCK } from '../../lib/client-portal-api'
 export default function MockBanner() {
   if (!CLIENT_PORTAL_MOCK) return null
   return (
-    <div role="status" className="bg-red-600 text-white text-center text-xs font-bold py-1.5 px-4 tracking-wide">
+    <div role="status" className="bg-red-700 text-white text-center text-xs font-bold py-1.5 px-4">
       VISTA DE DESARROLLO · DATOS FICTICIOS · no es información real
     </div>
   )

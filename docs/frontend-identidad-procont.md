@@ -33,8 +33,14 @@ empresas con nombre similar.
 | `accent-500` | `#FFCC2A` | Verificado (logo) | Base amarilla del isotipo |
 | — | `#FFC930` | Verificado (JS) | Íconos de contacto (solo referencia) |
 | — | `#020617`, `#0F172A` | Verificado (CSS) | Texto slate del sitio (solo referencia) |
-| `brand-50…500`, `brand-900/950` | `#EEF2FA` `#DCE4F5` `#B9C8EB` `#8AA1DA` `#5574C2` `#2F4FA3` `#001652` `#000E38` | **Derivados** | Tintes/sombras para fondos, bordes y hover |
-| `accent-50…200`, `600/700` | `#FFF9E5` `#FFF1BF` `#FCE08A` `#C9930E` `#8A6400` | **Derivados** | Fondos suaves; `700` para texto dorado AA |
+| `brand-50…500`, `brand-900/950` | `#EFF6FF` `#DBEAFE` `#BFDBFE` `#93C5FD` `#3B82F6` `#1E40AF` `#001B5E` | Escala Tailwind blue del sitio + sombra del logo | Tintes para fondos, selección y foco; `900/950` sombra del isotipo |
+| `accent-50…200`, `600/700` | `#FEFCE8` `#FEF9C3` `#FDE047` `#A16207` `#713F12` | Escala Tailwind yellow del sitio | Fondos suaves; `600/700` para texto dorado AA |
+| `gray-*` / `slate-*` | `#F8FAFC` `#F1F5F9` `#E2E8F0` `#CBD5E1` `#64748B` `#4B5563` `#374151` `#1F2937` `#0F172A` `#020617` | Neutros del sitio | Superficies, bordes (campos `#64748B`, 3:1) y texto |
+
+Corrección UX/UI del 23/11/2026 (D-037): se retiraron los derivados anteriores
+(`#173D66`/`#D5AE54` y la escala `#EEF2FA…#000E38`), el violeta (`info` ahora es
+`brand-600`) y todo emoji de interfaz; ver
+[docs/validation/ux-ui-correction-20261123/](validation/ux-ui-correction-20261123/REPORT.md).
 
 Los derivados no son colores oficiales; solo completan la escala. Los colores
 semánticos (éxito, alerta, error) y los colores categóricos de fases/tipos se

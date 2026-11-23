@@ -2,12 +2,13 @@ import { useState, useRef, useEffect } from 'react'
 import { useNotifications } from '../../hooks/useNotifications'
 import { toast } from '../../lib/toast'
 import { errorMessage } from '../../lib/supabase-errors'
+import Icon, { type IconName } from '../ui/Icon'
 
-const TYPE_ICON: Record<string, string> = {
-  project_assigned: '👤',
-  project_blocked:  '🚫',
-  sla_warning:      '⚠️',
-  mention:          '💬',
+const TYPE_ICON: Record<string, IconName> = {
+  project_assigned: 'user',
+  project_blocked:  'block',
+  sla_warning:      'alert',
+  mention:          'comments',
 }
 
 function timeAgo(dateStr: string): string {
@@ -54,7 +55,7 @@ export default function NotificationBell({ onProjectClick, buttonClassName = 'te
           />
         </svg>
         {unreadCount > 0 && (
-          <span className="absolute top-1 right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 leading-none">
+          <span className="absolute top-1 right-1 min-w-[18px] h-[18px] bg-red-700 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 leading-none">
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         )}
@@ -68,7 +69,7 @@ export default function NotificationBell({ onProjectClick, buttonClassName = 'te
             <span className="font-semibold text-gray-900 text-sm">
               Notificaciones
               {unreadCount > 0 && (
-                <span className="ml-2 px-1.5 py-0.5 bg-red-100 text-red-600 rounded-full text-xs font-bold">
+                <span className="ml-2 px-1.5 py-0.5 bg-red-100 text-red-700 rounded-full text-xs font-bold">
                   {unreadCount}
                 </span>
               )}
@@ -86,8 +87,8 @@ export default function NotificationBell({ onProjectClick, buttonClassName = 'te
           {/* List */}
           <div className="max-h-80 overflow-y-auto divide-y divide-gray-50">
             {error ? <p role="alert" className="p-4 text-red-700">{error}</p> : notifications.length === 0 ? (
-              <div className="text-center py-10 text-gray-400">
-                <p className="text-3xl mb-2">🔔</p>
+              <div className="text-center py-10 text-gray-600">
+                <Icon name="bell" size={32} className="mx-auto mb-2 text-gray-500" />
                 <p className="text-sm">Sin notificaciones</p>
               </div>
             ) : (
@@ -101,13 +102,13 @@ export default function NotificationBell({ onProjectClick, buttonClassName = 'te
                   }}
                   className={`w-full text-left px-4 py-3 hover:bg-gray-50 transition flex items-start gap-3 ${!n.read ? 'bg-brand-50/50' : ''} ${n.project_id ? 'cursor-pointer' : ''}`}
                 >
-                  <span className="text-lg shrink-0 mt-0.5">{TYPE_ICON[n.type] ?? '📝'}</span>
+                  <Icon name={TYPE_ICON[n.type] ?? 'bell'} size={18} className="shrink-0 mt-0.5 text-brand-700" />
                   <div className="flex-1 min-w-0">
                     <p className={`text-sm leading-snug ${!n.read ? 'font-semibold text-gray-900' : 'text-gray-700'}`}>
                       {n.title}
                     </p>
                     {n.message && (
-                      <p className="text-xs text-gray-500 mt-0.5 truncate">{n.message}</p>
+                      <p className="text-sm text-gray-600 mt-0.5 truncate">{n.message}</p>
                     )}
                     <p className="text-xs text-gray-400 mt-1">{timeAgo(n.created_at)}</p>
                   </div>

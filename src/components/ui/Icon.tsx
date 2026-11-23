@@ -1,6 +1,7 @@
 import type { SVGProps } from 'react'
 
-// Glifos de interfaz Lucide (ISC). No representan marcas de proveedores.
+// Glifos de interfaz Lucide (ISC); key, tag y package simplificados a trazos equivalentes.
+// Sustituyen a los emojis como iconos funcionales (Taste: un sistema de iconos). No representan marcas.
 const paths = {
   plus: 'M12 5v14M5 12h14',
   tickets: 'M9 5H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4M9 3h12v12H9zM12 7h6M12 11h4M6 10v6',
@@ -29,6 +30,19 @@ const paths = {
   edit: 'm16 3 5 5-13 13H3v-5ZM13 6l5 5',
   comments: 'M21 15a4 4 0 0 1-4 4H7l-5 3V6a4 4 0 0 1 4-4h11a4 4 0 0 1 4 4ZM7 7h9M7 12h6',
   code: 'm8 6-6 6 6 6m8-12 6 6-6 6M14 3l-4 18',
+  alert: 'm21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3ZM12 9v4M12 17h.01',
+  trash: 'M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6',
+  pin: 'M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0ZM15 10a3 3 0 1 1-6 0 3 3 0 0 1 6 0',
+  flag: 'M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7',
+  layers: 'm12 2 10 5-10 5L2 7zM2 17l10 5 10-5M2 12l10 5 10-5',
+  info: 'M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0M12 16v-4M12 8h.01',
+  bell: 'M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0',
+  package: 'm7.5 4.3 9 5.2M21 8 12 3 3 8v8l9 5 9-5ZM3.3 7.5 12 12.5l8.7-5M12 22V12.5',
+  star: 'm12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z',
+  key: 'M21 2l-9.6 9.6M15.5 7.5l3 3M18 5l2.5 2.5M7.5 21a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11Z',
+  tag: 'M12.6 2.6A2 2 0 0 0 11.2 2H4a2 2 0 0 0-2 2v7.2a2 2 0 0 0 .6 1.4l8.7 8.7a2.4 2.4 0 0 0 3.4 0l6.6-6.6a2.4 2.4 0 0 0 0-3.4ZM7.5 7.5h.01',
+  square: 'M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z',
+  circle: 'M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0',
 } as const
 export type IconName = keyof typeof paths
 

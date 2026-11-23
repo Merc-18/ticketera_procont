@@ -10,6 +10,7 @@ import {
 import { createRpcAttempt, type RpcAttempt } from '../../lib/rpc-attempt'
 import MockBanner from './MockBanner'
 import { useCatalogs } from '../../hooks/useCatalogs'
+import { preloadClientArea } from '../../lib/client-routes'
 
 interface ClientContextValue {
   draft: ClientTicketInput | null
@@ -34,6 +35,7 @@ export function useClientSession() {
 
 /** Espacio autenticado del cliente: cabecera con empresa e identidad, Nuevo ticket y Mis tickets. */
 export default function ClientWorkspace() {
+  useEffect(() => { preloadClientArea() }, [])
   const navigate = useNavigate()
   // Sin sesión: ingreso Quipu/QuipuFac y, tras autenticarse, volver al destino pedido.
   const destination = useLocation().pathname.startsWith('/cliente/tickets') ? 'tickets' : 'nuevo'
@@ -90,7 +92,7 @@ export default function ClientWorkspace() {
     )
   }
   if (!session) {
-    return <div className="min-h-screen bg-slate-50 flex items-center justify-center text-gray-400">Cargando tu espacio…</div>
+    return <div role="status" className="min-h-screen bg-slate-200 flex items-center justify-center text-gray-600">Cargando tu espacio…</div>
   }
 
   const studioName = catalogs.studios.find(s => s.id === session.studio_id)?.name
@@ -123,8 +125,8 @@ export default function ClientWorkspace() {
         <nav className="bg-white border-b border-gray-200" aria-label="Secciones del cliente">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-2">
             <div className="flex gap-1 bg-gray-100 p-1 rounded-lg">
-              <NavLink to="/cliente/nuevo" className={tab}><ControlLabel>📝 Nuevo ticket</ControlLabel></NavLink>
-              <NavLink to="/cliente/tickets" className={tab}><ControlLabel>📋 Mis tickets</ControlLabel></NavLink>
+              <NavLink to="/cliente/nuevo" className={tab}><ControlLabel icon="edit">Nuevo ticket</ControlLabel></NavLink>
+              <NavLink to="/cliente/tickets" className={tab}><ControlLabel icon="tickets">Mis tickets</ControlLabel></NavLink>
             </div>
             {session.origin && (
               <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-accent-50 text-accent-700 border border-accent-200">

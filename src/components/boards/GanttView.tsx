@@ -1,7 +1,8 @@
 import ControlLabel from '../ui/ControlLabel'
 import ScrollHint from '../ui/ScrollHint'
 import type { Project, ProjectFlow } from '../../types/database.types'
-import { PRIORITY_BAR, PHASE_LABELS } from '../../lib/constants'
+import { PRIORITY_BAR, PRIORITY_DOT, PRIORITY_LABEL, PHASE_LABELS } from '../../lib/constants'
+import Icon from '../ui/Icon'
 
 interface ProjectWithRelations extends Project {
   project_flows?: ProjectFlow[]
@@ -15,9 +16,6 @@ interface Props {
   loading?: boolean
 }
 
-const PRIORITY_LABEL: Record<string, string> = {
-  urgent: '🔴', high: '🟠', medium: '🟡', low: '🟢',
-}
 
 function addMonths(date: Date, months: number): Date {
   const d = new Date(date)
@@ -95,8 +93,8 @@ export default function GanttView({ projects, boardType, onProjectClick, loading
 
   if (items.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-64 text-gray-400">
-        <span className="text-5xl mb-3">📅</span>
+      <div className="flex flex-col items-center justify-center h-64 text-gray-600">
+        <Icon name="calendar" size={40} className="mb-3 text-gray-500" />
         <p className="text-lg font-medium">No hay proyectos para mostrar</p>
       </div>
     )
@@ -132,15 +130,15 @@ export default function GanttView({ projects, boardType, onProjectClick, loading
     <div className="data-view overflow-hidden">
       <ScrollHint>Desliza horizontalmente para recorrer el timeline completo.</ScrollHint>
       {/* Legend */}
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 border-b bg-gray-50 text-xs text-gray-600">
-        <span className="font-semibold">Leyenda:</span>
-        {Object.entries(PRIORITY_LABEL).map(([k, icon]) => (
-          <span key={k} className="flex items-center gap-1">
-            {icon} <span className="capitalize">{k === 'urgent' ? 'Urgente' : k === 'high' ? 'Alta' : k === 'medium' ? 'Media' : 'Baja'}</span>
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 border-b bg-gray-50 text-sm text-gray-600">
+        <span className="font-medium">Prioridad definitiva:</span>
+        {(['urgent', 'high', 'medium', 'low'] as const).map(k => (
+          <span key={k} className="flex items-center gap-1.5">
+            <span aria-hidden="true" className={`inline-block w-2.5 h-2.5 rounded-full ${PRIORITY_DOT[k]}`} />{PRIORITY_LABEL[k]}
           </span>
         ))}
         <span className="ml-auto">
-          <span className="inline-block w-3 h-3 bg-red-400 opacity-40 mr-1 rounded-sm" />Hoy
+          <span className="inline-block w-3 h-3 bg-red-700 opacity-40 mr-1 rounded-sm" />Hoy
         </span>
       </div>
 
@@ -189,9 +187,10 @@ export default function GanttView({ projects, boardType, onProjectClick, loading
                     style={{ width: LEFT_W, minWidth: LEFT_W }}
                     className="shrink-0 px-4 flex items-center gap-2 border-r"
                   >
-                    {project.is_blocked && <span className="text-red-500 text-xs shrink-0">🚫</span>}
-                    <span className="text-xs font-medium text-gray-800 truncate group-hover:text-brand-700">
-                      {PRIORITY_LABEL[project.priority]} {project.title}
+                    {project.is_blocked && <Icon name="block" size={14} className="text-red-700 shrink-0" aria-label="Bloqueado" />}
+                    <span aria-hidden="true" className={`inline-block w-2.5 h-2.5 rounded-full shrink-0 ${PRIORITY_DOT[project.priority] ?? 'bg-gray-400'}`} />
+                    <span className="text-sm font-medium text-gray-800 truncate group-hover:text-brand-700">
+                      <span className="sr-only">Prioridad {PRIORITY_LABEL[project.priority]}: </span>{project.title}
                     </span>
                   </div>
 
@@ -208,7 +207,7 @@ export default function GanttView({ projects, boardType, onProjectClick, loading
 
                     {/* Today line */}
                     <div
-                      className="absolute top-0 bottom-0 w-0.5 bg-red-400 opacity-40 z-10"
+                      className="absolute top-0 bottom-0 w-0.5 bg-red-700 opacity-40 z-10"
                       style={{ left: `${todayPct}%` }}
                     />
 
@@ -218,7 +217,7 @@ export default function GanttView({ projects, boardType, onProjectClick, loading
                       style={{ left: `${leftPct}%`, width: `${widthPct}%`, minWidth: 8 }}
                       title={`${project.title}\nInicio: ${start.toLocaleDateString('es-PE')}\nFin: ${end.toLocaleDateString('es-PE')}\nFase: ${PHASE_LABELS[flow.current_phase] ?? flow.current_phase}`}
                     >
-                      <span className="text-white text-xs font-medium truncate hidden sm:block">
+                      <span className={`${project.priority === 'high' ? 'text-gray-900' : 'text-white'} text-xs font-medium truncate hidden sm:block`}>
                         {PHASE_LABELS[flow.current_phase] ?? flow.current_phase}
                       </span>
                     </div>
@@ -236,7 +235,7 @@ export default function GanttView({ projects, boardType, onProjectClick, loading
           onClick={() => exportGanttCSV(items)}
           className="px-3 py-1 bg-white border border-gray-200 text-gray-600 rounded text-xs hover:bg-gray-100 transition"
         >
-          <ControlLabel>⬇ Exportar CSV</ControlLabel>
+          <ControlLabel icon="download">Exportar CSV</ControlLabel>
         </button>
       </div>
     </div>

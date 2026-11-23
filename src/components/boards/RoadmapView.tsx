@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
-import { PRIORITY_COLORS, PRIORITY_DOT } from '../../lib/constants'
+import { PRIORITY_COLORS, PRIORITY_DOT, PRIORITY_LABEL } from '../../lib/constants'
+import Icon from '../ui/Icon'
 
 interface Project {
   id: string
@@ -89,7 +90,7 @@ export default function RoadmapView({ projects, onProjectClick, loading }: Props
         >
           {showYear + 1} →
         </button>
-        <span className="text-sm text-gray-400 ml-2">{totalInYear} proyecto{totalInYear !== 1 ? 's' : ''} con fecha límite en {showYear}</span>
+        <span className="text-sm text-gray-600 ml-2">{totalInYear} proyecto{totalInYear !== 1 ? 's' : ''} con fecha límite en {showYear}</span>
       </div>
 
       {/* Quarter grid */}
@@ -114,7 +115,7 @@ export default function RoadmapView({ projects, onProjectClick, loading }: Props
                   {isPast    && <span className="text-[10px] bg-gray-200 text-gray-500 px-1.5 py-0.5 rounded-full font-medium">Pasado</span>}
                 </div>
                 <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-                  qProjects.length === 0 ? 'bg-gray-100 text-gray-400' : 'bg-brand-100 text-brand-700'
+                  qProjects.length === 0 ? 'bg-gray-100 text-gray-600' : 'bg-brand-100 text-brand-700'
                 }`}>
                   {qProjects.length}
                 </span>
@@ -123,7 +124,7 @@ export default function RoadmapView({ projects, onProjectClick, loading }: Props
               {/* Projects list */}
               <div className="flex-1 divide-y divide-gray-50 overflow-y-auto max-h-72">
                 {qProjects.length === 0 ? (
-                  <div className="py-8 text-center text-gray-300 text-sm">Sin proyectos</div>
+                  <div className="py-8 text-center text-gray-600 text-sm">Sin proyectos</div>
                 ) : (
                   qProjects
                     .sort((a, b) => {
@@ -145,20 +146,20 @@ export default function RoadmapView({ projects, onProjectClick, loading }: Props
                             <div className="flex-1 min-w-0">
                               <p className="text-xs font-medium text-gray-800 truncate leading-snug">{p.title}</p>
                               <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
-                                {p.is_blocked && <span className="text-[10px] text-red-500">🚫</span>}
-                                {overdue      && <span className="text-[10px] text-orange-500">⚠️ Vencido</span>}
+                                {p.is_blocked && <Icon name="block" size={13} className="text-red-700" aria-label="Bloqueado" />}
+                                {overdue      && <span className="inline-flex items-center gap-1 text-[13px] text-red-700"><Icon name="alert" size={13} />Vencido</span>}
                                 {date && (
-                                  <span className={`text-[10px] ${overdue ? 'text-orange-500 font-semibold' : 'text-gray-400'}`}>
+                                  <span className={`text-[10px] ${overdue ? 'text-red-700 font-medium' : 'text-gray-600'}`}>
                                     {new Date(date + 'T12:00:00').toLocaleDateString('es-PE', { day: '2-digit', month: 'short' })}
                                   </span>
                                 )}
                                 {p.requests?.requester_area && (
-                                  <span className="text-[10px] text-gray-400 truncate">{p.requests.requester_area}</span>
+                                  <span className="text-[13px] text-gray-600 truncate">{p.requests.requester_area}</span>
                                 )}
                               </div>
                             </div>
                             <span className={`text-[10px] px-1.5 py-0.5 rounded border shrink-0 ${PRIORITY_COLORS[p.priority] ?? 'bg-gray-100 text-gray-500 border-gray-200'}`}>
-                              {p.priority === 'urgent' ? 'Urg' : p.priority === 'high' ? 'Alta' : p.priority === 'medium' ? 'Med' : 'Baja'}
+                              <span className="sr-only">Prioridad definitiva: </span>{PRIORITY_LABEL[p.priority] ?? p.priority}
                             </span>
                           </div>
                         </button>

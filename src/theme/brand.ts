@@ -9,17 +9,46 @@
 //   [D]      derivado (tinte/sombra interpolado); no es un color oficial
 // Detalle en docs/frontend-identidad-procont.md.
 
-/** Escala visual aprobada para Ticketera (20/11/2026), derivada de #173D66. */
+/**
+ * Escala azul oficial (corrección UX/UI 23/11/2026). procontbusiness.com usa la escala azul de
+ * Tailwind: blue-900 #1E3A8A [V-CSS, mayor superficie renderizada] y blue-500 #3B82F6 [V-CSS].
+ * 700–900: azules del isotipo [V-LOGO] #01257B (67 % de píxeles), #001E64, #001B5E.
+ * 50–300 y 500: pasos de la misma escala azul de Tailwind que usa el sitio [D], para tintes y estados.
+ */
 export const BRAND_NAVY = {
-  50: '#EDF3F9', 100: '#DFE8F2', 200: '#C4D4E5', 300: '#9AAFC6',
-  400: '#6D8FAF', 500: '#36648E', 600: '#173D66', 700: '#173D66',
-  800: '#123252', 900: '#102C49', 950: '#0C243D',
+  50: '#EFF6FF', 100: '#DBEAFE', 200: '#BFDBFE', 300: '#93C5FD',
+  400: '#3B82F6', 500: '#1E40AF', 600: '#1E3A8A', 700: '#01257B',
+  800: '#001E64', 900: '#001B5E', 950: '#001B5E',
 } as const
 
-/** Dorado Procont aprobado; los tonos claros se reservan a superficies y énfasis. */
+/**
+ * Dorado oficial: #EEBB31 [V-CSS, superficies], #F2CE52 [V-CSS], #FFCC2A [V-LOGO], #FFC930 [V-JS],
+ * #FEF9C3 y #FDE047 [V-CSS]. 50, 600 y 700 son pasos de la misma escala amarilla de Tailwind [D],
+ * usados solo como fondo tenue (50) o texto oscuro sobre dorado (600, 700). El dorado nunca es texto.
+ */
 export const BRAND_GOLD = {
-  50: '#FAF5E9', 100: '#F1E7CF', 200: '#E8D6AB', 300: '#DFBF78',
-  400: '#D5AE54', 500: '#BB9139', 600: '#92702B', 700: '#72551F',
+  50: '#FEFCE8', 100: '#FEF9C3', 200: '#FDE047', 300: '#F2CE52',
+  400: '#EEBB31', 500: '#FFC930', 600: '#A16207', 700: '#713F12',
+} as const
+
+/**
+ * Neutros oficiales [V-CSS]: #F8FAFC #F1F5F9 #E2E8F0 #CBD5E1 #64748B #4B5563 #374151 #1F2937
+ * #0F172A #020617. 400 (#64748B) solo como texto meta sobre superficies (4,55:1), nunca sobre el fondo.
+ */
+export const BRAND_NEUTRAL = {
+  50: '#F8FAFC', 100: '#F1F5F9', 200: '#E2E8F0', 300: '#CBD5E1', 400: '#64748B',
+  500: '#4B5563', 600: '#374151', 700: '#1F2937', 800: '#0F172A', 900: '#0F172A', 950: '#020617',
+} as const
+
+/**
+ * Estados. Danger: #EF4444 [V-CSS] solo como indicador; texto y relleno con blanco #B91C1C
+ * (red-700, misma escala) [D] para AA. Success #15803D (green-700) [D]: el sitio no publica un
+ * verde; se usa solo para estados funcionales de completado y aprobación. Warning: #FEF9C3 [V-CSS]
+ * con texto #713F12 [D].
+ */
+export const BRAND_STATE = {
+  success: '#15803D', successBg: '#F0FDF4', danger: '#B91C1C', dangerIndicator: '#EF4444',
+  dangerBg: '#FEF2F2', warningBg: '#FEF9C3', warningText: '#713F12',
 } as const
 
 /** Otros valores verificados del sitio (no se exponen como escala propia). */

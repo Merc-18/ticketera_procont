@@ -3,6 +3,7 @@ import ScrollHint from '../ui/ScrollHint'
 import { useState } from 'react'
 import type { Project, ProjectFlow } from '../../types/database.types'
 import { PRIORITY_COLORS, PHASE_LABELS, PRIORITY_LABEL } from '../../lib/constants'
+import Icon from '../ui/Icon'
 import { checklistCount, phasePosition } from '../../lib/board'
 
 interface ProjectWithRelations extends Project {
@@ -82,11 +83,11 @@ export default function TableView({ projects, boardType, onProjectClick, loading
     return (
       <th
         onClick={() => toggleSort(k)}
-        className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide cursor-pointer select-none hover:bg-gray-100 transition whitespace-nowrap"
+        className="px-4 py-3 text-left text-xs font-semibold text-gray-600 cursor-pointer select-none hover:bg-gray-100 transition whitespace-nowrap"
       >
         <span className="flex items-center gap-1">
           {label}
-          <span className="text-gray-400">
+          <span className="text-gray-600" aria-hidden="true">
             {active ? (sortDir === 'asc' ? '↑' : '↓') : '↕'}
           </span>
         </span>
@@ -118,8 +119,8 @@ export default function TableView({ projects, boardType, onProjectClick, loading
 
   if (sorted.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-64 text-gray-400">
-        <span className="text-5xl mb-3">📋</span>
+      <div className="flex flex-col items-center justify-center h-64 text-gray-600">
+        <Icon name="tickets" size={40} className="mb-3 text-gray-500" />
         <p className="text-lg font-medium">No hay proyectos para mostrar</p>
       </div>
     )
@@ -156,7 +157,7 @@ export default function TableView({ projects, boardType, onProjectClick, loading
                   {/* Título */}
                   <td className="px-4 py-3 max-w-[220px]">
                     <div className="flex items-start gap-2">
-                      {project.is_blocked && <span title="Bloqueado" className="text-red-500 shrink-0">🚫</span>}
+                      {project.is_blocked && <Icon name="block" size={14} className="text-red-700 shrink-0" aria-label="Bloqueado" />}
                       <span className="font-medium text-gray-900 line-clamp-2">{project.title}</span>
                     </div>
                   </td>
@@ -170,29 +171,29 @@ export default function TableView({ projects, boardType, onProjectClick, loading
 
                   {/* Área */}
                   <td className="px-4 py-3 whitespace-nowrap text-gray-600 text-xs">
-                    {area ?? <span className="text-gray-300">—</span>}
+                    {area ?? <span className="text-gray-500">—</span>}
                   </td>
 
                   {/* Fase */}
                   <td className="px-4 py-3 whitespace-nowrap text-xs text-gray-700 font-medium">
                     {PHASE_LABELS[flow.current_phase] ?? flow.current_phase}
                     <span className="ml-1 text-gray-400 font-normal">({phasePosition(flow.flow_type, flow.current_phase).label})</span>
-                    {project.is_blocked && <span className="ml-1.5 text-red-600 font-semibold" title={project.blocked_reason ?? ''}>🚫 Bloqueado</span>}
+                    {project.is_blocked && <span className="ml-1.5 inline-flex items-center gap-1 text-red-700 font-medium" title={project.blocked_reason ?? ''}><Icon name="block" size={14} />Bloqueado</span>}
                   </td>
 
                   {/* Checklist (conteo; el % oficial está en el detalle) */}
                   <td className="px-4 py-3 whitespace-nowrap text-xs text-gray-700">
-                    {(({ done, total }) => total ? `${done}/${total} tareas` : <span className="text-gray-300">Sin tareas</span>)(checklistCount(flow as any))}
+                    {(({ done, total }) => total ? `${done}/${total} tareas` : <span className="text-gray-500">Sin tareas</span>)(checklistCount(flow as any))}
                   </td>
 
                   {/* Vencimiento */}
                   <td className="px-4 py-3 whitespace-nowrap text-xs">
                     {project.due_date ? (
-                      <span className={isOverdue ? 'text-red-600 font-semibold' : 'text-gray-600'}>
-                        {isOverdue && '⚠️ '}
+                      <span className={isOverdue ? 'text-red-700 font-semibold' : 'text-gray-600'}>
+                        {isOverdue && <Icon name="alert" size={14} className="inline-block mr-1 -mt-0.5" aria-label="Vencido" />}
                         {new Date(project.due_date + 'T00:00:00').toLocaleDateString('es-PE')}
                       </span>
-                    ) : <span className="text-gray-300">—</span>}
+                    ) : <span className="text-gray-500">—</span>}
                   </td>
 
                   {/* Creado */}
@@ -209,9 +210,9 @@ export default function TableView({ projects, boardType, onProjectClick, loading
         <span>{sorted.length} proyecto{sorted.length !== 1 ? 's' : ''}</span>
         <button
           onClick={() => exportTableCSV(sorted)}
-          className="px-3 py-1 bg-white border border-gray-200 text-gray-600 rounded text-xs hover:bg-gray-100 transition"
+          className="ui-button ui-button-secondary"
         >
-          <ControlLabel>⬇ Exportar CSV</ControlLabel>
+          <ControlLabel icon="download">Exportar CSV</ControlLabel>
         </button>
       </div>
     </div>

@@ -11,7 +11,8 @@ import type { MetricResult, TimeAverages } from '../../lib/metrics-adapter'
 import { averageLabel } from '../../lib/metrics-adapter'
 import UrgencyStatsPanel from '../metrics/UrgencyStatsPanel'
 import { buildCompletedExport, ExportError, type ExportClient } from '../../lib/ticket-export'
-import Icon from '../ui/Icon'
+import Icon, { type IconName } from '../ui/Icon'
+import { PRIORITY_LABEL, PRIORITY_BAR } from '../../lib/constants'
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -81,14 +82,14 @@ async function exportCompletedCSV() {
 // ── Reusable components ──────────────────────────────────────────────────────
 
 function StatCard({ label, value, color, icon }: {
-  label: string; value: number | string; color: string; icon: string
+  label: string; value: number | string; color: string; icon: IconName
 }) {
   return (
     <div className={`stat-card border-t-2 ${color}`}>
-      <span className="stat-icon" aria-hidden="true"><Icon name={icon === '🔄' || label.includes('Time') ? 'clock' : icon === '🚫' ? 'block' : icon === '✅' ? 'check' : 'chart'} size={22} /></span>
+      <span className="stat-icon" aria-hidden="true"><Icon name={icon} size={22} /></span>
       <div>
-        <p className={`font-bold ${typeof value === 'string' && value.length > 6 ? 'text-base text-gray-400' : 'stat-value text-gray-900'}`}>{value}</p>
-        <p className="text-sm text-gray-500 mt-0.5">{label}</p>
+        <p className={`font-bold ${typeof value === 'string' && value.length > 6 ? 'text-base text-gray-500' : 'stat-value text-gray-900'}`}>{value}</p>
+        <p className="text-sm text-gray-600 mt-0.5">{label}</p>
       </div>
     </div>
   )
@@ -101,18 +102,18 @@ function HBarChart({ title, items }: {
   const max = Math.max(...items.map(i => i.value), 1)
   return (
     <div className="metric-chart">
-      <h3 className="font-semibold text-gray-800 mb-4 text-sm uppercase tracking-wide">{title}</h3>
+      <h2 className="font-semibold text-gray-800 mb-4 text-base">{title}</h2>
       <div className="space-y-3">
         {items.map(item => (
           <div key={item.label} className="flex items-center gap-3">
-            <span className="text-xs text-gray-600 w-24 shrink-0 truncate"><ControlLabel>{item.label}</ControlLabel></span>
+            <span className="text-sm text-gray-600 w-28 shrink-0 break-words leading-tight">{item.label}</span>
             <div className="flex-1 bg-gray-100 rounded-full h-5 overflow-hidden">
               <div
                 className={`h-full rounded-full ${item.color}`}
                 style={{ width: `${(item.value / max) * 100}%` }}
               />
             </div>
-            <span className="text-xs font-bold text-gray-700 w-5 text-right">{item.value}</span>
+            <span className="text-sm font-medium text-gray-700 min-w-[1.5rem] text-right tabular-nums">{item.value}</span>
           </div>
         ))}
       </div>
@@ -127,10 +128,10 @@ const PERIOD_OPTIONS = [
 ] as const
 
 const TYPE_VIEW_OPTIONS = [
-  { value: null,             label: '🌐 Global' },
-  { value: 'development',    label: '💻 Development' },
-  { value: 'administrative', label: '📋 Administrative' },
-] as const
+  { value: null,             label: 'Global',         icon: 'layers' },
+  { value: 'development',    label: 'Development',    icon: 'code' },
+  { value: 'administrative', label: 'Administrative', icon: 'tickets' },
+] as const satisfies readonly { value: string | null; label: string; icon: IconName }[]
 
 export default function DashboardView() {
   const [period, setPeriod] = useState<number | null>(null)
@@ -177,22 +178,22 @@ export default function DashboardView() {
   if (!stats) return null
 
   const priorityItems = [
-    { label: '🔴 Urgente', value: stats.byPriority.urgent, color: 'bg-red-500' },
-    { label: '🟠 Alta',    value: stats.byPriority.high,   color: 'bg-orange-500' },
-    { label: '🟡 Media',   value: stats.byPriority.medium, color: 'bg-yellow-400' },
-    { label: '🟢 Baja',    value: stats.byPriority.low,    color: 'bg-green-500' },
+    { label: PRIORITY_LABEL.urgent, value: stats.byPriority.urgent, color: PRIORITY_BAR.urgent },
+    { label: PRIORITY_LABEL.high,   value: stats.byPriority.high,   color: PRIORITY_BAR.high },
+    { label: PRIORITY_LABEL.medium, value: stats.byPriority.medium, color: PRIORITY_BAR.medium },
+    { label: PRIORITY_LABEL.low,    value: stats.byPriority.low,    color: PRIORITY_BAR.low },
   ]
 
   const typeItems = [
-    { label: '💻 Development',    value: stats.byType.development,   color: 'bg-brand-500' },
-    { label: '📋 Administrative', value: stats.byType.administrative, color: 'bg-purple-500' },
-    { label: '🔀 Dual',           value: stats.byType.dual,          color: 'bg-indigo-400' },
+    { label: 'Development',    value: stats.byType.development,   color: 'bg-brand-600' },
+    { label: 'Administrative', value: stats.byType.administrative, color: 'bg-gray-500' },
+    { label: 'Dual',           value: stats.byType.dual,          color: 'bg-accent-400' },
   ]
 
   const areaItems = Object.entries(stats.byArea)
     .sort((a, b) => b[1] - a[1])
     .map(([label, value], i) => {
-      const colors = ['bg-brand-500', 'bg-purple-500', 'bg-teal-500', 'bg-orange-500', 'bg-pink-500']
+      const colors = ['bg-brand-600', 'bg-brand-500', 'bg-accent-400', 'bg-gray-500', 'bg-brand-800']
       return { label, value, color: colors[i % colors.length] }
     })
 
@@ -204,8 +205,8 @@ export default function DashboardView() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900"><ControlLabel>📈 Dashboard</ControlLabel></h2>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="view-title"><ControlLabel icon="chart">Dashboard</ControlLabel></h1>
+          <p className="text-sm text-gray-600 mt-1">
             {typeFilter === 'development' ? 'Vista: solo proyectos de Development' : typeFilter === 'administrative' ? 'Vista: solo proyectos Administrativos' : 'Vista global — todos los proyectos'}
           </p>
         </div>
@@ -216,13 +217,14 @@ export default function DashboardView() {
               <button
                 key={String(opt.value)}
                 onClick={() => setPeriod(opt.value)}
-                className={`px-3 py-1.5 rounded-md text-xs font-medium transition ${
+                aria-pressed={period === opt.value}
+                className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${
                   period === opt.value
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-500 hover:text-gray-700'
+                    ? 'bg-brand-100 text-brand-700'
+                    : 'text-gray-600 hover:text-brand-700'
                 }`}
               >
-                <ControlLabel>{opt.label}</ControlLabel>
+                {opt.label}
               </button>
             ))}
           </div>
@@ -233,20 +235,23 @@ export default function DashboardView() {
               <button
                 key={String(opt.value)}
                 onClick={() => setTypeFilter(opt.value)}
-                className={`px-3 py-1.5 rounded-md text-xs font-medium transition ${
+                aria-pressed={typeFilter === opt.value}
+                className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${
                   typeFilter === opt.value
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-500 hover:text-gray-700'
+                    ? 'bg-brand-100 text-brand-700'
+                    : 'text-gray-600 hover:text-brand-700'
                 }`}
               >
-                <ControlLabel>{opt.label}</ControlLabel>
+                <ControlLabel icon={opt.icon}>{opt.label}</ControlLabel>
               </button>
             ))}
           </div>
 
           {/* Filtro de área */}
+          <label className="toolbar-field">
+          <span>Área</span>
           <select
-            aria-label="Filtrar métricas por área" value={areaFilter ?? ''}
+            value={areaFilter ?? ''}
             onChange={e => setAreaFilter(e.target.value || null)}
             className={`px-3 py-2 border rounded-lg text-sm outline-none transition cursor-pointer ${
               areaFilter ? 'border-brand-400 bg-brand-50 text-brand-700' : 'border-gray-200 bg-white text-gray-600'
@@ -257,58 +262,62 @@ export default function DashboardView() {
               <option key={area} value={area}>{area}</option>
             ))}
           </select>
+          </label>
 
             {/* Filtro por Estudio (independiente del área) */}
             {studios.length > 0 && (
+              <label className="toolbar-field">
+              <span>Estudio</span>
               <select
-                aria-label="Filtrar métricas por estudio" value={studioFilter ?? ''}
+                value={studioFilter ?? ''}
                 onChange={e => setStudioFilter(e.target.value || null)}
                 className={`px-3 py-2 border rounded-lg text-sm outline-none transition cursor-pointer ${studioFilter ? 'border-brand-400 bg-brand-50 text-brand-700' : 'border-gray-200 bg-white text-gray-600'}`}
               >
                 <option value="">Todos los estudios</option>
                 {studios.map(st => <option key={st.id} value={st.id}>{st.name}</option>)}
               </select>
+              </label>
             )}
 
           <button
             onClick={handleExportActive}
             disabled={exporting !== null}
-            className="px-4 py-2 bg-brand-600 text-white rounded-lg text-sm font-medium hover:bg-brand-700 transition shadow-sm disabled:opacity-50"
+            className="ui-button ui-button-primary"
           >
-            <ControlLabel>{exporting === 'active' ? '⏳ Exportando...' : '⬇ Activos CSV'}</ControlLabel>
+            <ControlLabel icon={exporting === 'active' ? 'clock' : 'download'}>{exporting === 'active' ? 'Exportando…' : 'Activos CSV'}</ControlLabel>
           </button>
           <button
             onClick={handleExportCompleted}
             disabled={exporting !== null}
-            className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 transition shadow-sm disabled:opacity-50"
+            className="ui-button ui-button-secondary"
           >
-            <ControlLabel>{exporting === 'completed' ? '⏳ Exportando...' : '⬇ Completados CSV'}</ControlLabel>
+            <ControlLabel icon={exporting === 'completed' ? 'clock' : 'download'}>{exporting === 'completed' ? 'Exportando…' : 'Completados CSV'}</ControlLabel>
           </button>
           <button
             onClick={reload}
-            className="px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-lg text-sm hover:bg-gray-50 transition shadow-sm"
+            className="ui-button ui-button-secondary"
           >
-            <ControlLabel>↺ Actualizar</ControlLabel>
+            <ControlLabel icon="refresh">Actualizar</ControlLabel>
           </button>
         </div>
       </div>
 
       {/* Stat Cards — proyectos (siempre todo el tiempo) */}
       <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
-        <StatCard label="Total"       value={stats.total}             icon="📊" color="border-brand-500" />
-        <StatCard label="Activos"     value={stats.byStatus.active}   icon="🟢" color="border-green-500" />
-        <StatCard label="Completados" value={stats.byStatus.completed} icon="✅" color="border-emerald-500" />
-        <StatCard label="Archivados"  value={stats.byStatus.archived}  icon="📦" color="border-gray-400" />
-        <StatCard label="Bloqueados"  value={stats.blocked}            icon="🚫" color="border-red-500" />
-        <StatCard label="Vencidos"    value={stats.overdue}            icon="⚠️" color="border-orange-500" />
+        <StatCard label="Total"       value={stats.total}             icon="chart" color="border-brand-600" />
+        <StatCard label="Activos"     value={stats.byStatus.active}   icon="circle" color="border-brand-600" />
+        <StatCard label="Completados" value={stats.byStatus.completed} icon="check" color="border-green-700" />
+        <StatCard label="Archivados"  value={stats.byStatus.archived}  icon="archive" color="border-gray-400" />
+        <StatCard label="Bloqueados"  value={stats.blocked}            icon="block" color="border-red-700" />
+        <StatCard label="Vencidos"    value={stats.overdue}            icon="alert" color="border-accent-400" />
       </div>
 
       {/* Métricas de tiempo (sin «Cumplimiento SLA»: los plazos de Procont aún no están configurados) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <StatCard label="Cycle Time promedio" value={cycleLabel} icon="🔄" color="border-brand-400" />
-        <StatCard label="Lead Time promedio"  value={leadLabel}  icon="📦" color="border-purple-400" />
+        <StatCard label="Cycle Time promedio" value={cycleLabel} icon="clock" color="border-brand-600" />
+        <StatCard label="Lead Time promedio"  value={leadLabel}  icon="clock" color="border-brand-600" />
         {averages?.state === 'ready' && averages.data.completed_count > 0 && (
-          <p className="sm:col-span-2 text-xs text-gray-400 -mt-2">
+          <p className="sm:col-span-2 text-sm text-gray-600 -mt-2">
             Ambos promedios sobre los mismos {averages.data.cycle_sample_size ?? averages.data.completed_count} trabajos terminados
             {averages.data.excluded_count ? ` · ${averages.data.excluded_count} terminado(s) excluido(s) por no tener inicio o cronología válida` : ''}.
           </p>
@@ -334,20 +343,20 @@ export default function DashboardView() {
 
       {/* Status breakdown */}
       <div className="metric-chart">
-        <h3 className="font-semibold text-gray-800 mb-4 text-sm uppercase tracking-wide">Estado de proyectos</h3>
+        <h2 className="font-semibold text-gray-800 mb-4 text-base">Estado de proyectos</h2>
         <div className="flex gap-4 flex-wrap">
           {[
-            { label: 'Activos',     value: stats.byStatus.active,    pct: stats.total ? Math.round(stats.byStatus.active / stats.total * 100) : 0,    bg: 'bg-green-100',   text: 'text-green-800',   bar: 'bg-green-500' },
-            { label: 'Completados', value: stats.byStatus.completed,  pct: stats.total ? Math.round(stats.byStatus.completed / stats.total * 100) : 0,  bg: 'bg-emerald-100', text: 'text-emerald-800', bar: 'bg-emerald-500' },
-            { label: 'Archivados',  value: stats.byStatus.archived,   pct: stats.total ? Math.round(stats.byStatus.archived / stats.total * 100) : 0,   bg: 'bg-gray-100',    text: 'text-gray-600',    bar: 'bg-gray-400' },
+            { label: 'Activos',     value: stats.byStatus.active,    pct: stats.total ? Math.round(stats.byStatus.active / stats.total * 100) : 0,    bg: 'bg-brand-50',   text: 'text-brand-700',   bar: 'bg-brand-600' },
+            { label: 'Completados', value: stats.byStatus.completed,  pct: stats.total ? Math.round(stats.byStatus.completed / stats.total * 100) : 0,  bg: 'bg-green-100', text: 'text-green-800', bar: 'bg-green-700' },
+            { label: 'Archivados',  value: stats.byStatus.archived,   pct: stats.total ? Math.round(stats.byStatus.archived / stats.total * 100) : 0,   bg: 'bg-gray-100',    text: 'text-gray-700',    bar: 'bg-gray-500' },
           ].map(s => (
             <div key={s.label} className={`flex-1 min-w-[140px] rounded-lg p-4 ${s.bg}`}>
               <p className={`text-2xl font-bold ${s.text}`}>{s.value}</p>
               <p className={`text-sm ${s.text} font-medium`}>{s.label}</p>
-              <div className="mt-2 bg-white bg-opacity-60 rounded-full h-2">
+              <div className="mt-2 bg-white rounded-full h-2">
                 <div className={`h-2 rounded-full ${s.bar}`} style={{ width: `${s.pct}%` }} />
               </div>
-              <p className={`text-xs mt-1 ${s.text} opacity-70`}>{s.pct}% del total</p>
+              <p className={`text-sm mt-1 ${s.text}`}>{s.pct}% del total</p>
             </div>
           ))}
         </div>

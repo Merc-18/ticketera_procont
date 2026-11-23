@@ -7,6 +7,7 @@ import { useAuth } from '../../hooks/useAuth'
 import { canEdit } from '../../lib/access'
 import { errorMessage } from '../../lib/supabase-errors'
 import { toast } from '../../lib/toast'
+import Icon from '../ui/Icon'
 
 interface Props {
   projectId: string
@@ -158,7 +159,7 @@ export default function CommentsSection({ projectId }: Props) {
           {/* Mention dropdown */}
           {showMentions && mentionedUsers.length > 0 && (
             <div className="absolute left-0 bottom-full mb-1 bg-white border border-gray-200 rounded-lg shadow-lg z-20 min-w-[180px] py-1 max-h-40 overflow-y-auto">
-              <p className="px-3 py-1 text-[10px] text-gray-400 font-semibold uppercase tracking-wide border-b border-gray-100">
+              <p className="px-3 py-1 text-[13px] text-gray-600 font-medium border-b border-gray-200">
                 Mencionar
               </p>
               {mentionedUsers.map(u => (
@@ -176,7 +177,7 @@ export default function CommentsSection({ projectId }: Props) {
           )}
         </div>
         <div className="flex items-center justify-between">
-          <p className="text-xs text-gray-400">Usa @ para mencionar a un colega</p>
+          <p className="text-sm text-gray-600">Usa @ para mencionar a un colega</p>
           <button
             type="submit"
             disabled={!newComment.trim() || submitting}
@@ -191,7 +192,7 @@ export default function CommentsSection({ projectId }: Props) {
       <div className="space-y-3">
         {comments.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
-            <p className="text-4xl mb-2">💬</p>
+            <Icon name="comments" size={36} className="mx-auto mb-2 text-gray-500" />
             <p>No hay comentarios aún</p>
             <p className="text-sm">Sé el primero en comentar</p>
           </div>

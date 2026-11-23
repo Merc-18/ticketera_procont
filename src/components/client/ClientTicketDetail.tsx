@@ -9,6 +9,7 @@ import { shortDate } from './MyTickets'
 import { clientPortal } from '../../lib/client-portal-api'
 import type { ClientTicketDetail as Detail } from '../../lib/client-portal'
 import { GENERAL_STATUS, MAIN_PATH } from '../../lib/request-status'
+import Icon from '../ui/Icon'
 
 /**
  * Detalle autorizado de un ticket propio: seguimiento general y datos enviados por el cliente.
@@ -33,7 +34,7 @@ export default function ClientTicketDetail() {
 
   const back = <Link to="/cliente/tickets" className="ui-button ui-button-quiet !px-0">← Mis tickets</Link>
   if (error) return <div className="space-y-4">{back}<p role="alert" className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">{error}</p></div>
-  if (ticket === undefined) return <p className="text-gray-400 py-10 text-center">Cargando ticket…</p>
+  if (ticket === undefined) return <p role="status" className="text-gray-600 py-10 text-center">Cargando ticket…</p>
   if (ticket === null) {
     return (
       <div className="space-y-4">
@@ -70,14 +71,14 @@ export default function ClientTicketDetail() {
               return (
                 <li key={step} aria-current={current ? 'step' : undefined}
                   className={`rounded-lg border px-3 py-2 text-xs font-medium ${done ? 'bg-green-50 border-green-200 text-green-800'
-                    : current ? 'bg-accent-50 border-accent-300 text-gray-900' : 'bg-gray-50 border-gray-200 text-gray-400'}`}>
-                  {done ? '✓ ' : ''}{GENERAL_STATUS[step].label}
+                    : current ? 'bg-accent-50 border-accent-300 text-gray-900' : 'bg-gray-50 border-gray-300 text-gray-600'}`}>
+                  {done && <Icon name="check" size={14} className="inline-block mr-1 -mt-0.5" aria-label="Completado:" />}{GENERAL_STATUS[step].label}
                 </li>
               )
             })}
           </ol>
         )}
-        {blocked && <p className="mx-5 sm:mx-6 mb-4 text-sm text-orange-800 bg-orange-50 border border-orange-200 rounded-lg px-3 py-2">El trabajo está temporalmente bloqueado.</p>}
+        {blocked && <p className="mx-5 sm:mx-6 mb-4 text-sm text-yellow-800 bg-yellow-50 border border-yellow-200 rounded-lg px-3 py-2">El trabajo está temporalmente bloqueado.</p>}
         {rejected && ticket.rejection_reason && (
           <div className="mx-5 sm:mx-6 mt-5 text-sm text-red-800 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
             <p className="font-semibold mb-1">Motivo</p>
@@ -94,7 +95,7 @@ export default function ClientTicketDetail() {
           <div><dt className="sr-only">Prioridad solicitada</dt><dd><RequestedPriority value={ticket.requested_priority} /></dd></div>
           <div className="sm:col-span-2">
             <dt className="text-gray-500 mb-1">Descripción</dt>
-            <dd className="text-gray-900 whitespace-pre-wrap break-words bg-gray-50 rounded-lg p-3">{ticket.description}</dd>
+            <dd className="text-base text-gray-900 whitespace-pre-wrap break-words bg-gray-50 rounded-lg p-3">{ticket.description}</dd>
           </div>
         </dl>
       </article>

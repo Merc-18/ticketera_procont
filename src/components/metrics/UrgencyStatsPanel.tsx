@@ -30,16 +30,19 @@ export default function UrgencyStatsPanel() {
     <section className="bg-white rounded-xl border p-5 shadow-sm space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h3 className="font-semibold text-gray-800 text-sm uppercase tracking-wide">Solicitudes urgentes por solicitante y estudio</h3>
-          <p className="text-xs text-gray-400">Urgencia solicitada por el cliente · uso interno</p>
+          <h2 className="font-semibold text-gray-800 text-base">Solicitudes urgentes por solicitante y estudio</h2>
+          <p className="text-sm text-gray-600">Urgencia solicitada por el cliente · uso interno</p>
         </div>
-        <select value={month} onChange={e => setMonth(e.target.value)}
-          className="px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white outline-none focus:ring-2 focus:ring-primary">
-          {months.map(m => <option key={m} value={m}>{monthLabel(m)}</option>)}
-        </select>
+        <label className="toolbar-field">
+          <span>Mes</span>
+          <select value={month} onChange={e => setMonth(e.target.value)}
+            className="px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white outline-none focus:ring-2 focus:ring-primary">
+            {months.map(m => <option key={m} value={m}>{monthLabel(m)}</option>)}
+          </select>
+        </label>
       </div>
       {result?.state !== 'ready' ? <MetricState result={result} /> : rows.length === 0 ? (
-        <p className="text-sm text-gray-400">Sin datos suficientes para {monthLabel(month)}.</p>
+        <p className="text-sm text-gray-600">Sin datos suficientes para {monthLabel(month)}.</p>
       ) : (
         <>
         {/* Móvil: tarjetas compactas */}
@@ -61,7 +64,7 @@ export default function UrgencyStatsPanel() {
         <div className="hidden sm:block overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-xs text-gray-500 uppercase tracking-wide border-b">
+              <tr className="text-left text-xs text-gray-500 border-b">
                 <th className="py-2 pr-3 font-semibold">Solicitante</th>
                 <th className="py-2 pr-3 font-semibold">Estudio</th>
                 <th className="py-2 pr-3 font-semibold text-right">Solicitudes</th>
@@ -77,10 +80,10 @@ export default function UrgencyStatsPanel() {
                   <td className="py-2 pr-3 text-right tabular-nums">{r.total_requests}</td>
                   <td className="py-2 pr-3 text-right tabular-nums font-semibold">{r.urgent_requests}</td>
                   <td className="py-2 text-right">
-                    {r.urgent_pct === null ? <span className="text-gray-400">—</span> : (
+                    {r.urgent_pct === null ? <span className="text-gray-500">—</span> : (
                       <div className="flex items-center justify-end gap-2">
                         <div className="w-16 h-1.5 bg-gray-100 rounded-full overflow-hidden hidden sm:block">
-                          <div className={`h-full ${r.urgent_pct >= 50 ? 'bg-red-500' : 'bg-accent-400'}`} style={{ width: `${r.urgent_pct}%` }} />
+                          <div className={`h-full ${r.urgent_pct >= 50 ? 'bg-red-700' : 'bg-accent-400'}`} style={{ width: `${r.urgent_pct}%` }} />
                         </div>
                         <span className="tabular-nums">{Math.round(r.urgent_pct)}%</span>
                       </div>
