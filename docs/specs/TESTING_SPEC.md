@@ -4,9 +4,21 @@ Revisión: **20/11/2026** · Código de referencia: **`c857a727c8e7640bbce8daada
 
 Fuente oficial de requisitos: [PRODUCT_REQUIREMENTS.md](PRODUCT_REQUIREMENTS.md).
 
-## Reconstrucción backend M16 — ejecución local del 23/11/2026
+## M16 + M16b — integración y activación del 23/11/2026
 
-Base `a61450c`; no confundir con las ejecuciones históricas que siguen. [Informe](../../report.md),
+| Suite | Resultado | Clase / alcance |
+|---|---|---|
+| Integración Codex 1 + Codex 2 | Node 173/173, Python 52/52, build, UI 31/31 y 36/36, PG 21/21 y 25/25 | Local; UI con servicios simulados. [Informe](../validation/client-experience-integration-20261123/REPORT.md). |
+| Matriz frontend antiguo/nuevo × M15/M16/M16+M16b | Antiguo 7/7 creaciones con M16b | PostgreSQL 17 local real con adaptadores reales. [Preparación](../validation/m16b-preparation-20261123/REPORT.md). |
+| M1–M16b limpia / M15→M16b | 21/21 y 26/26 | PostgreSQL 17 local real; incluye rollback de M16b = estado M16. |
+| Producción: historial y postchecks | 17/17; valores esperados | Remoto, solo lectura. |
+| Producción: huella de funciones | 107/107 idénticas a local M1–M16b | Remoto, solo lectura. |
+| Producción: RPC HTTP sin sesión | 401 PT401 / 42501 | Remoto real, sin escrituras. |
+| Creación/listado con sesiones reales | NO VERIFICADO | Sin sesiones reutilizables ni tickets autorizados. |
+
+### Reconstrucción backend M16 — ejecución local del 23/11/2026
+
+Base `a61450c`; no confundir con las ejecuciones históricas que siguen. [Informe](../../REPORT-backend-codex1.md),
 [handoff](../validation/client-experience-contract-handoff.md).
 
 | Suite independiente | Resultado | Alcance |

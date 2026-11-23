@@ -6,8 +6,8 @@ Fuente oficial de requisitos: [PRODUCT_REQUIREMENTS.md](PRODUCT_REQUIREMENTS.md)
 
 ## Extensión local M16 — 23/11/2026
 
-Base `a61450c`; pendiente de aplicación remota. [Contrato](../validation/client-experience-contract-handoff.md),
-[informe y pruebas](../../report.md). Matriz interna M1–M15 sin cambios.
+Base `a61450c`; M16 y M16b aplicadas en producción el 23/11/2026 ([activación](../validation/m16-activation-20261123/REPORT.md)). [Contrato](../validation/client-experience-contract-handoff.md),
+[informe y pruebas](../../REPORT-backend-codex1.md). Matriz interna M1–M15 sin cambios.
 
 | Operación | Permiso efectivo / alcance |
 |---|---|

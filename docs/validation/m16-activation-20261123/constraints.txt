@@ -1,0 +1,6 @@
+      "conname": "requests_requested_priority_check",
+      "d": "CHECK ((requested_priority = ANY (ARRAY['low'::text, 'medium'::text, 'high'::text, 'urgent'::text])))"
+      "conname": "requests_requested_subsystem_fkey",
+      "d": "FOREIGN KEY (requested_subsystem_id, system_id) REFERENCES catalog_subsystems(id, system_id)"
+      "conname": "requests_requester_name_source_check",
+      "d": "CHECK ((requester_name_source = ANY (ARRAY['verified_name'::text, 'username'::text, 'declared'::text, 'internal_correction'::text])))"

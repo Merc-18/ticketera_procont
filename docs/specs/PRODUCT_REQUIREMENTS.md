@@ -24,11 +24,13 @@ Ticketera centraliza solicitudes de clientes y trabajo interno de Procont Busine
 
 Los requisitos de creación, cuenta y adjuntos mantienen pendientes **posteriores a M15** aun cuando antes funcionaron. El alcance detallado de cada evidencia está en [TESTING_SPEC.md](TESTING_SPEC.md). No se suman resultados entre commits.
 
-## Decisiones backend actualizadas — 23/11/2026 (M16 local)
+## Decisiones backend actualizadas — 23/11/2026 (M16 + M16b)
+
+> **Producción 23/11/2026 15:55 UTC:** M16 (`20261123000100_client_request_data_security.sql`, sha256 `ecec0b9a…3f102`) y M16b (`20261123000200_client_legacy_payload_compat.sql`, sha256 `8adce4bb…d036`) **aplicadas** en `xsxdpaiivklqeudgqoqf`; historial 17/17 y funciones remotas idénticas a la instalación probada (107/107). [Activación](../validation/m16-activation-20261123/REPORT.md).
 
 Esta actualización usa base `a61450c93f5180ecd623d945b100424a47a3a5d3`; prevalece sobre
 los textos históricos más abajo cuando difieran. No modifica su fecha/evidencia remota.
-[Contrato de integración](../validation/client-experience-contract-handoff.md), [validación](../../report.md).
+[Contrato de integración](../validation/client-experience-contract-handoff.md), [validación](../../REPORT-backend-codex1.md).
 
 | ID | Decisión final | Aceptación / estado local |
 |---|---|---|
@@ -40,8 +42,12 @@ los textos históricos más abajo cuando difieran. No modifica su fecha/evidenci
 | TICKET-014 | Subproyecto pertenece al producto catalog_systems identificado por system_id, no a projects operativo. RPC de hijos activos autorizados y validación nuevamente al crear. | CUMPLE local: pertenencia/actividad/permiso y selección original conservada. |
 | CLIENT-007 | limit 1..100, offset0..100000 y orden created_at desc/id desc. Aislamiento en todas las páginas; sin total nuevo ni snapshot transaccional. | CUMPLE local por RPC sobre106 solicitudes; controles visuales son del Agente2. |
 
-M16 está preparada y probada únicamente en PostgreSQL aislado. No declarar esta ampliación
-activa en producción ni transformar resultados locales en evidencias post-M16 remotas.
+| TICKET-002b (M16b) | Compatibilidad con el frontend anterior: si un cliente Quipu envía `requester_name`, solo se valida su forma (string 1–200) y se descarta; el nombre siempre proviene de la identidad y el valor enviado no se almacena. QuipuFac sin cambios. | CUMPLE local (matriz antiguo/nuevo y batería 21/21, 26/26); en producción, código idéntico al probado. Creación real NO VERIFICADA (sin tickets autorizados). |
+| TICKET-014b (M16b) | Si el payload no incluye la clave `subsystem_id` (frontend anterior), se acepta NULL al crear y el subproyecto se exige al aprobar, como en M11. Con la clave, pertenencia/actividad se validan y `null` explícito se rechaza si el producto lo exige. | CUMPLE local; en producción, código idéntico al probado. |
+
+Estado: M16 y M16b **aplicadas en producción** el 23/11/2026. Los criterios marcados «CUMPLE local» se ejecutaron sobre el mismo
+código SQL hoy desplegado (comparación 107/107), pero no con sesiones reales de clientes: los flujos autenticados con proveedores
+siguen NO VERIFICADOS en producción hasta una prueba autorizada.
 
 ## Dependencias y restricciones
 

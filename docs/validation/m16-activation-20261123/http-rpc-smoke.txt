@@ -1,0 +1,7 @@
+client_subprojects           401 PT401 Client session unavailable
+client_list_tickets          401 PT401 Client session unavailable
+client_ticket_detail         401 PT401 Client session unavailable
+client_session_info          401 PT401 Client session unavailable
+submit_client_request        401 42501 permission denied for function submit_client_reque
+GET requests (anon)          401
+GET requests body            {"code":"42501","details":null,"hint":"Grant the required privileges to the current role with: GRANT SELECT ON public.re

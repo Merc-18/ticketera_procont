@@ -1,0 +1,33 @@
+{
+ "client_submit_request_exec_expected_anon_auth_service": [
+  "anon",
+  "authenticated",
+  "service_role"
+ ],
+ "history_m16_m16b_expected_2": 2,
+ "legacy_subsystem_rule_expected_true": true,
+ "quipu_name_discard_expected_true": true,
+ "submit_client_request_public_exec_expected_false": false
+}
+{
+ "anon_exec_client_subprojects_expected_true": true,
+ "client_owns_request_public_exec_expected_false": false,
+ "historical_new_fields_null_expected_4": 4,
+ "historical_urgent_expected_1": 1,
+ "identities_expected_quipu2_quipufac1": {
+  "quipu": 2,
+  "quipufac": 1
+ },
+ "links_expected_quipu1_quipufac2": {
+  "quipu": 1,
+  "quipufac": 2
+ },
+ "links_owned_after_m16_expected_3": 3,
+ "m16_triggers_expected_3": 3,
+ "new_columns_expected_3": 3,
+ "new_unique_expected_1": 1,
+ "old_m13_unique_expected_0": 0,
+ "requested_priority_default": "'medium'::text",
+ "requests_total_expected_4": 4,
+ "submit_client_request_public_exec_expected_false": false
+}

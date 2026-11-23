@@ -4,11 +4,13 @@ Revisión: **20/11/2026** · Código de referencia: **`c857a727c8e7640bbce8daada
 
 Fuente oficial de requisitos: [PRODUCT_REQUIREMENTS.md](PRODUCT_REQUIREMENTS.md).
 
-## M16 local — posterior a M15, sin activación remota
+## M16 + M16b — posteriores a M15
+
+> **Producción 23/11/2026 15:55 UTC:** M16 (`20261123000100_client_request_data_security.sql`, sha256 `ecec0b9a…3f102`) y M16b (`20261123000200_client_legacy_payload_compat.sql`, sha256 `8adce4bb…d036`) **aplicadas** en `xsxdpaiivklqeudgqoqf`; historial 17/17 y funciones remotas idénticas a la instalación probada (107/107). [Activación](../validation/m16-activation-20261123/REPORT.md).
 
 Revisión de esta ampliación: 23/11/2026; base `a61450c93f5180ecd623d945b100424a47a3a5d3`.
 El estado remoto histórico 15/15 de las secciones siguientes no se volvió a consultar.
-M16 **no aplicada**. [Handoff](../validation/client-experience-contract-handoff.md), [informe](../../report.md).
+M16 y M16b **aplicadas** (ver aviso superior); texto original de preparación conservado. M16b (`20261123000200_client_legacy_payload_compat.sql`) solo reemplaza `public.submit_client_request` y `public.client_submit_request`; sin columnas, datos, RLS ni permisos nuevos. [Handoff](../validation/client-experience-contract-handoff.md), [informe](../../REPORT-backend-codex1.md).
 
 | Archivo nuevo | Objetivo / datos |
 |---|---|

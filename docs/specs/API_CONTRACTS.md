@@ -4,12 +4,16 @@ Revisión: **20/11/2026** · Código de referencia: **`c857a727c8e7640bbce8daada
 
 Fuente oficial de requisitos: [PRODUCT_REQUIREMENTS.md](PRODUCT_REQUIREMENTS.md).
 
-## Ampliación local M16 — 23/11/2026
+## Ampliación M16 + M16b — 23/11/2026
+
+> **Producción 23/11/2026 15:55 UTC:** M16 (`20261123000100_client_request_data_security.sql`, sha256 `ecec0b9a…3f102`) y M16b (`20261123000200_client_legacy_payload_compat.sql`, sha256 `8adce4bb…d036`) **aplicadas** en `xsxdpaiivklqeudgqoqf`; historial 17/17 y funciones remotas idénticas a la instalación probada (107/107). [Activación](../validation/m16-activation-20261123/REPORT.md).
 
 Base comprobada: `a61450c93f5180ecd623d945b100424a47a3a5d3`; handoff
-`8fabd88e99cc0e53dbc43c3402730d785c148a7a`. **Preparada, no desplegada**.
+`8fabd88e99cc0e53dbc43c3402730d785c148a7a`. Inicialmente preparada en local; **aplicada en producción el 23/11/2026**.
+M16b no cambia firmas: `client_submit_request` acepta además el payload del frontend anterior
+(`requester_name` Quipu ignorado y no almacenado; sin clave `subsystem_id` se acepta NULL hasta la aprobación).
 El [contrato de coordinación](../validation/client-experience-contract-handoff.md) es la definición
-exacta de la ampliación; [informe backend](../../report.md). Los contratos de login Edge no cambian.
+exacta de la ampliación; [informe backend](../../REPORT-backend-codex1.md). Los contratos de login Edge no cambian.
 
 - Nueva RPC `client_subprojects(p_session_token text,p_system_id uuid) RETURNS jsonb`: array
   `{id,system_id,name}`, solo hijos activos de producto permitido por sesión/contexto.

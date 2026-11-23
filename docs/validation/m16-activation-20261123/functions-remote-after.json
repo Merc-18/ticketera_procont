@@ -1,0 +1,1193 @@
+{
+ "app_private.add_flows(p_project uuid, p_type text, p_dev uuid, p_admin uuid)": {
+  "body_md5": "f3263b880531702862589abae7b4bafc",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "void",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "app_private.assert_payload(p jsonb, allowed text[])": {
+  "body_md5": "48d39062f7e44e36550aa89de1c29b1c",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "void",
+  "secdef": false,
+  "volatile": "v"
+ },
+ "app_private.authorize_account_actor(p_actor uuid, p_role text)": {
+  "body_md5": "3fff7d874b0abaf75f8103d745fef4e9",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "void",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "app_private.board_apply(p_project_id uuid, p_action text, p_payload jsonb, p_command_id uuid, p_bulk boolean)": {
+  "body_md5": "571d3063730f8f5822c05366b55c1b69",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "jsonb",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "app_private.board_assignment_audit()": {
+  "body_md5": "2e3c7d1da7ac0b34bea6329667059c8e",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "trigger",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "app_private.board_checklist_audit()": {
+  "body_md5": "fe4cd80a949905013678216345c24211",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "trigger",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "app_private.board_checklist_lock()": {
+  "body_md5": "3f4600334864ddacaeeb37da464b8fe0",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "trigger",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "app_private.board_context(p_project_id uuid)": {
+  "body_md5": "08bd348450d313067372d9f7b48d23df",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "boolean",
+  "secdef": true,
+  "volatile": "s"
+ },
+ "app_private.board_creation_payload(p jsonb)": {
+  "body_md5": "efb1674b5f95719c09f5e548f6cd39e3",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "jsonb",
+  "secdef": false,
+  "volatile": "v"
+ },
+ "app_private.board_event(p_request_id uuid, p_action text, p_details jsonb, p_actor_id uuid)": {
+  "body_md5": "49e7a035e118883fbf255507cc3435cc",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "void",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "app_private.board_flow_guard()": {
+  "body_md5": "509be3b4ec4a08759e81e99164c07e26",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "trigger",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "app_private.board_phases(p_type text)": {
+  "body_md5": "d8d4ec34a0469a005b0f5f3e018b39f6",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "text[]",
+  "secdef": false,
+  "volatile": "i"
+ },
+ "app_private.board_priority_audit()": {
+  "body_md5": "669d88e7eb6660e8c607129957eaa471",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "trigger",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "app_private.board_project_guard()": {
+  "body_md5": "1e007bbc52bcc783bd16ac29613a298c",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "trigger",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "app_private.board_snapshot(p_project_id uuid)": {
+  "body_md5": "66c449f9bb33a5d4f9f9379998f0241f",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "jsonb",
+  "secdef": true,
+  "volatile": "s"
+ },
+ "app_private.bootstrap_superadmin(p_user_id uuid)": {
+  "body_md5": "248d6ff090d9a34378f3052e0a0bb2fb",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "void",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "app_private.can_read_project(p_id uuid)": {
+  "body_md5": "98b70bed1e8dde095bab21991c84eedc",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "authenticated"
+  ],
+  "result": "boolean",
+  "secdef": true,
+  "volatile": "s"
+ },
+ "app_private.check_area_hierarchy()": {
+  "body_md5": "52e4404e848adbcf609e47b966363f2a",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "trigger",
+  "secdef": false,
+  "volatile": "v"
+ },
+ "app_private.check_project_flows()": {
+  "body_md5": "cde8582e3d34aaed19ed727e1832543a",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "trigger",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "app_private.check_request_project()": {
+  "body_md5": "162c459496d70e1ba6c1ef42c27342cc",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "trigger",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "app_private.client_identity(p_provider text, p_ruc text, p_subject text, p_subject_source text, p_username text, p_verified_name text)": {
+  "body_md5": "4fe341a97d6af071c2bb776d144640ff",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "uuid",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "app_private.client_owns_request(p_identity_id uuid, p_request_id uuid)": {
+  "body_md5": "303c10ce05da29fb9caba9ff3098f65e",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "boolean",
+  "secdef": true,
+  "volatile": "s"
+ },
+ "app_private.client_session(p_token text)": {
+  "body_md5": "4020bec9ff3b9e58a81b4380cff7443e",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "app_private.client_sessions",
+  "secdef": true,
+  "volatile": "s"
+ },
+ "app_private.client_studio(p_company uuid)": {
+  "body_md5": "c091cd597b95c04ee27b1cfa6d19e9d0",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "uuid",
+  "secdef": true,
+  "volatile": "s"
+ },
+ "app_private.client_ticket_summary(p_request_id uuid)": {
+  "body_md5": "97828768d63157994ffaa4f3883e5a5e",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "jsonb",
+  "secdef": true,
+  "volatile": "s"
+ },
+ "app_private.client_token_hash(p_token text)": {
+  "body_md5": "b5fe0532ddb53eda455ba1469f86afcb",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "text",
+  "secdef": false,
+  "volatile": "i"
+ },
+ "app_private.enforce_attachment_bytes()": {
+  "body_md5": "da314a9e7488af6ccd46312126dbc518",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "trigger",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "app_private.final_phase(p_flow_type text)": {
+  "body_md5": "dea82ca4eec0264620990de7166d73af",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "text",
+  "secdef": false,
+  "volatile": "i"
+ },
+ "app_private.guard_client_identity_scope()": {
+  "body_md5": "3bc65c893df5e5020561db8b6a38cce3",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "trigger",
+  "secdef": false,
+  "volatile": "v"
+ },
+ "app_private.guard_client_request_link()": {
+  "body_md5": "cdbf044dc671cb7c96d4eac2c4eb58bc",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "trigger",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "app_private.guard_original_client_inputs()": {
+  "body_md5": "17079fd768f150d61d0724f94bd8135c",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "trigger",
+  "secdef": false,
+  "volatile": "v"
+ },
+ "app_private.guard_request_classification()": {
+  "body_md5": "348614bbbd50ac23017062c1121d1846",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "trigger",
+  "secdef": false,
+  "volatile": "v"
+ },
+ "app_private.has_role(allowed text[])": {
+  "body_md5": "bb03abbc494755c5c4781d07efe5922a",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "authenticated"
+  ],
+  "result": "boolean",
+  "secdef": true,
+  "volatile": "s"
+ },
+ "app_private.immutable_board_history()": {
+  "body_md5": "8d12ed65f6dca62ae317f135d3385c3b",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "trigger",
+  "secdef": false,
+  "volatile": "v"
+ },
+ "app_private.lock_flow_project_metrics()": {
+  "body_md5": "da00f80728f96ef89df21576f5c65706",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "trigger",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "app_private.log_request_event()": {
+  "body_md5": "773bfbf52eb69fa4f4033c1ef272a0dd",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "trigger",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "app_private.metrics_month(p_month text)": {
+  "body_md5": "ad47aeef440adc5709ce7cd0979994c5",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "date",
+  "secdef": false,
+  "volatile": "s"
+ },
+ "app_private.next_number(p_series text)": {
+  "body_md5": "4f7d4b5e6de1510aebdbce23c41eaa72",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "text",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "app_private.normalize_requester_name(p_name text)": {
+  "body_md5": "606ceddd398886cdfbc9507d3e3347c9",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "text",
+  "secdef": false,
+  "volatile": "i"
+ },
+ "app_private.project_number()": {
+  "body_md5": "5870b6fa67c7bdeb1f4ea9f1840eb941",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "trigger",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "app_private.provision_auth_profile(p_user_id uuid)": {
+  "body_md5": "1ab175007268b300a34d2e5a65f3bf9b",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "void",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "app_private.reject_with_public_message(p_request_id uuid, p_public_reason text, p_internal_notes text)": {
+  "body_md5": "fd9449b942a20a28ba702ae33c32fd49",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "void",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "app_private.remember(p_operation text, p_key uuid, p_payload jsonb, p_result jsonb)": {
+  "body_md5": "40579a22654e242fe02f15039f889e21",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "jsonb",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "app_private.replay(p_operation text, p_key uuid, p_payload jsonb)": {
+  "body_md5": "875d3741f96722c40ae3950db14f3033",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "jsonb",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "app_private.request_general_status(p_request_id uuid)": {
+  "body_md5": "5af73cbe6a24399c2f76cfbee3c8549e",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "text",
+  "secdef": true,
+  "volatile": "s"
+ },
+ "app_private.request_number()": {
+  "body_md5": "906da920c6973201cba1b843451d19b6",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "trigger",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "app_private.require_public_requester_name()": {
+  "body_md5": "96cf38eb8f8de82b0c4df50706623f2b",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "trigger",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "app_private.require_role(allowed text[])": {
+  "body_md5": "41df2e015b16535dd9e3e7deaf875f5d",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "void",
+  "secdef": false,
+  "volatile": "v"
+ },
+ "app_private.set_account_permissions(p_actor uuid, p_user uuid, p_role text, p_active boolean)": {
+  "body_md5": "ead9fe8b7147bc60a68170b83451989b",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "void",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "app_private.sync_request_status(p_request_id uuid, p_cause jsonb)": {
+  "body_md5": "ca3fa6f80eccf55e1c2e8965cb0a18b3",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "void",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "app_private.ticket_performance(p_studio_id uuid)": {
+  "body_md5": "96d2594403a42bc3fe8f3def19f0b21c",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "TABLE(request_id uuid, request_number text, project_id uuid, studio_id uuid, general_status text, first_started_at timestamp with time zone, completed_at timestamp with time zone, cycle_time_seconds numeric, lead_time_seconds numeric, metric_status text)",
+  "secdef": true,
+  "volatile": "s"
+ },
+ "app_private.touch_updated_at()": {
+  "body_md5": "0729a217d3533603418200ea4f71e9d1",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "trigger",
+  "secdef": false,
+  "volatile": "v"
+ },
+ "app_private.trg_flow_phase()": {
+  "body_md5": "5f4899db88a2ad07bbf4ecef686d02c7",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "trigger",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "app_private.trg_project_block()": {
+  "body_md5": "e6e787bd20f86d515fd4a1389b3878f8",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "trigger",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "app_private.trg_request_status()": {
+  "body_md5": "d6f82f3874571873890c9db2e6652d18",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "trigger",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "app_private.trg_review_event_status()": {
+  "body_md5": "50c48eb8da24c38907658721cbb2bdde",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "trigger",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "app_private.valid_phase(flow_type text, phase text)": {
+  "body_md5": "4b7b2b529b1d6df9f2bdcb3a54d39e89",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "authenticated"
+  ],
+  "result": "boolean",
+  "secdef": false,
+  "volatile": "i"
+ },
+ "app_private.validate_assignment()": {
+  "body_md5": "a224e6910af12a74de7bd0eeda1cf13c",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "trigger",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "app_private.validate_checklist()": {
+  "body_md5": "e7d58c9ba41af6b2dabc82c4fb8fd89f",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "trigger",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "public.admin_account_begin(p_actor_id uuid, p_request_id uuid, p_mode text, p_email text, p_full_name text, p_role text)": {
+  "body_md5": "9576fdde445ab6b4a22fba5822a18877",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "service_role"
+  ],
+  "result": "jsonb",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "public.admin_account_finish(p_actor_id uuid, p_request_id uuid)": {
+  "body_md5": "23a5ea288ec8eee1502d4c2b441af29e",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "service_role"
+  ],
+  "result": "uuid",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "public.admin_account_record(p_actor_id uuid, p_request_id uuid, p_user_id uuid)": {
+  "body_md5": "441e83ec543f3804cf967514a2a8026a",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "service_role"
+  ],
+  "result": "void",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "public.admin_update_user(p_user_id uuid, p_role text, p_is_active boolean)": {
+  "body_md5": "a2eb787de7db22c8590deb1075959e98",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "authenticated"
+  ],
+  "result": "void",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "public.approve_request(p_request_id uuid, p_payload jsonb, p_idempotency_key uuid)": {
+  "body_md5": "8706949a5c09c858e86b1d602eda87e5",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "authenticated"
+  ],
+  "result": "jsonb",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "public.assign_request_studio_code(p_request_id uuid, p_studio_code_id uuid)": {
+  "body_md5": "0020027922c6c33c8f0d9af0d23fb1ba",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "authenticated"
+  ],
+  "result": "void",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "public.change_project_type(p_project_id uuid, p_project_type text)": {
+  "body_md5": "806eb89613799995a539146d6b28d6eb",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "authenticated"
+  ],
+  "result": "projects",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "public.classify_request(p_request_id uuid, p_classification jsonb)": {
+  "body_md5": "74ecf76c2f8d16555f07999d51640cc0",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "authenticated"
+  ],
+  "result": "void",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "public.client_exchange_entry_code(p_provider text, p_code_hash text, p_token_hash text, p_expires_at timestamp with time zone)": {
+  "body_md5": "6b344e43cd59f03754bdcb80898e9fbc",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "service_role"
+  ],
+  "result": "void",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "public.client_issue_entry_code(p_provider text, p_ruc text, p_subject text, p_subject_source text, p_username text, p_verified_name text, p_code_hash text, p_expires_at timestamp with time zone)": {
+  "body_md5": "5ca277a7a70c68f6804232a6d6f48d13",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "service_role"
+  ],
+  "result": "void",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "public.client_list_tickets(p_session_token text, p_limit integer, p_offset integer)": {
+  "body_md5": "d9e2fecb9a57948de69bb57757960365",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "anon",
+   "authenticated",
+   "service_role"
+  ],
+  "result": "jsonb",
+  "secdef": true,
+  "volatile": "s"
+ },
+ "public.client_login_throttle(p_subject_key text, p_ip_key text)": {
+  "body_md5": "4c7291ce2e67c8cf05f6923e9b912b11",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "service_role"
+  ],
+  "result": "boolean",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "public.client_logout(p_session_token text)": {
+  "body_md5": "4ba2a19cc0ada5bfdacf9b34d6dc6f05",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "anon",
+   "authenticated",
+   "service_role"
+  ],
+  "result": "void",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "public.client_open_session(p_provider text, p_ruc text, p_subject text, p_subject_source text, p_username text, p_verified_name text, p_token_hash text, p_expires_at timestamp with time zone)": {
+  "body_md5": "8e39a33f242c01e928dd2f64541ebeb3",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "service_role"
+  ],
+  "result": "void",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "public.client_products(p_session_token text)": {
+  "body_md5": "877874f7bdee925e7a9c9fb06692a158",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "anon",
+   "authenticated",
+   "service_role"
+  ],
+  "result": "jsonb",
+  "secdef": true,
+  "volatile": "s"
+ },
+ "public.client_reserve_attachments(p_session_token text, p_request_id uuid, p_files jsonb)": {
+  "body_md5": "86dfdafcd43b2d9dc2f2964e45e35ffb",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "anon",
+   "authenticated",
+   "service_role"
+  ],
+  "result": "jsonb",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "public.client_session_info(p_session_token text)": {
+  "body_md5": "612c93366be6ff4c75301a1247cdb5f6",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "anon",
+   "authenticated",
+   "service_role"
+  ],
+  "result": "jsonb",
+  "secdef": true,
+  "volatile": "s"
+ },
+ "public.client_submit_request(p_session_token text, p_payload jsonb, p_idempotency_key uuid)": {
+  "body_md5": "9851cc64af9dcef6d7767f04d4b2eb4b",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "anon",
+   "authenticated",
+   "service_role"
+  ],
+  "result": "jsonb",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "public.client_subprojects(p_session_token text, p_system_id uuid)": {
+  "body_md5": "2792178e113b78f929e8cda599c33313",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "anon",
+   "authenticated",
+   "service_role"
+  ],
+  "result": "jsonb",
+  "secdef": true,
+  "volatile": "s"
+ },
+ "public.client_ticket_detail(p_session_token text, p_request_id uuid)": {
+  "body_md5": "c198fad71851f7f298eea603b3779ca2",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "anon",
+   "authenticated",
+   "service_role"
+  ],
+  "result": "jsonb",
+  "secdef": true,
+  "volatile": "s"
+ },
+ "public.create_internal_project(p_payload jsonb, p_idempotency_key uuid)": {
+  "body_md5": "466b5398692bcf34f258c62cab61a120",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "authenticated"
+  ],
+  "result": "jsonb",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "public.get_board_ticket(p_project_id uuid)": {
+  "body_md5": "641240949970ea0b7e4ab882bd51ff88",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "authenticated"
+  ],
+  "result": "jsonb",
+  "secdef": true,
+  "volatile": "s"
+ },
+ "public.get_requester_urgency_month(p_month date, p_studio_id uuid)": {
+  "body_md5": "527318135246773261d3a982067ac3e4",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "authenticated"
+  ],
+  "result": "jsonb",
+  "secdef": true,
+  "volatile": "s"
+ },
+ "public.get_ticket_performance(p_studio_id uuid)": {
+  "body_md5": "edd2932f04f59b883a342438f7ceb1fe",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "authenticated"
+  ],
+  "result": "TABLE(request_id uuid, request_number text, project_id uuid, studio_id uuid, general_status text, first_started_at timestamp with time zone, completed_at timestamp with time zone, cycle_time_seconds numeric, lead_time_seconds numeric, metric_status text)",
+  "secdef": true,
+  "volatile": "s"
+ },
+ "public.get_ticket_performance_summary(p_studio_id uuid)": {
+  "body_md5": "7ab74ac64e0e32b097f42b5a092b8df5",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "authenticated"
+  ],
+  "result": "jsonb",
+  "secdef": true,
+  "volatile": "s"
+ },
+ "public.metrics_monthly_urgency(p_month text)": {
+  "body_md5": "c2c96f205a93ed296b45f321754a3693",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "authenticated"
+  ],
+  "result": "jsonb",
+  "secdef": true,
+  "volatile": "s"
+ },
+ "public.metrics_requester_urgency(p_request_id uuid, p_month text)": {
+  "body_md5": "5c83e1f17d6d51ea2258b01a830932ca",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "authenticated"
+  ],
+  "result": "jsonb",
+  "secdef": true,
+  "volatile": "s"
+ },
+ "public.metrics_time_averages(p_period_days integer, p_studio_id uuid)": {
+  "body_md5": "585f0bfa9ead6de01d089f8d5d2bb33d",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "authenticated"
+  ],
+  "result": "jsonb",
+  "secdef": true,
+  "volatile": "s"
+ },
+ "public.operate_board_ticket(p_project_id uuid, p_action text, p_payload jsonb, p_idempotency_key uuid)": {
+  "body_md5": "6087fe8b69719f2819d909a5b9ea36b7",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "authenticated"
+  ],
+  "result": "jsonb",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "public.operate_board_tickets(p_project_ids uuid[], p_action text, p_payload jsonb, p_idempotency_key uuid)": {
+  "body_md5": "235f59185fc277e854ecee5bdc370aff",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "authenticated"
+  ],
+  "result": "jsonb",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "public.projects(requests)": {
+  "body_md5": "8ebde8734847252b5165b706165af208",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "authenticated"
+  ],
+  "result": "SETOF projects",
+  "secdef": false,
+  "volatile": "s"
+ },
+ "public.publish_rejection_reason(p_request_id uuid, p_public_reason text)": {
+  "body_md5": "cc75628c11de219213aaaa9a6399ef62",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "authenticated"
+  ],
+  "result": "void",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "public.purge_project(p_project_id uuid)": {
+  "body_md5": "78b2aa4aa94ba7933b3c864536d7c705",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "authenticated"
+  ],
+  "result": "void",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "public.reject_request(p_request_id uuid, p_reason text)": {
+  "body_md5": "4387049aa3400fc672796e13d73b9952",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "authenticated"
+  ],
+  "result": "void",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "public.reject_request_with_notes(p_request_id uuid, p_public_reason text, p_internal_notes text)": {
+  "body_md5": "a4e36fd602ccb9d40ad9298799126afe",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "authenticated"
+  ],
+  "result": "void",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "public.request_attachment_allowed(p_name text)": {
+  "body_md5": "00f716931a4ce33513c10db056b1d22d",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "anon",
+   "authenticated"
+  ],
+  "result": "boolean",
+  "secdef": true,
+  "volatile": "s"
+ },
+ "public.requests(projects)": {
+  "body_md5": "08159a2286afbf105308e3134b87a9ac",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "authenticated"
+  ],
+  "result": "SETOF requests",
+  "secdef": false,
+  "volatile": "s"
+ },
+ "public.reserve_board_evidence(p_project_id uuid, p_upload_key uuid, p_file_name text, p_size_bytes bigint, p_mime_type text)": {
+  "body_md5": "d7d26668d04bc7bca575fe218d7fd4e8",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "authenticated"
+  ],
+  "result": "jsonb",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "public.reserve_request_attachment(p_request_id uuid, p_tracking_token uuid, p_upload_key uuid, p_file_name text, p_size_bytes bigint, p_mime_type text)": {
+  "body_md5": "b34ad20fd2bf679b43171c0bba9f4589",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "anon",
+   "authenticated"
+  ],
+  "result": "jsonb",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "public.reserve_request_attachments(p_request_id uuid, p_tracking_token uuid, p_files jsonb)": {
+  "body_md5": "79b32eb4fe322d66f5224c0cd5a55874",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "anon",
+   "authenticated"
+  ],
+  "result": "jsonb",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "public.set_client_company_studio(p_ruc text, p_studio_id uuid)": {
+  "body_md5": "28551a86c54822060ba872bbba201090",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "authenticated"
+  ],
+  "result": "void",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "public.start_request_review(p_request_id uuid)": {
+  "body_md5": "224308eecb84f13e61efd3fe90d78b69",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "authenticated"
+  ],
+  "result": "void",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "public.submit_classified_request(p_payload jsonb, p_classification jsonb, p_idempotency_key uuid)": {
+  "body_md5": "c393eec0f5de3d5430f70ed91e037c6d",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "authenticated"
+  ],
+  "result": "jsonb",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "public.submit_client_request(p_payload jsonb, p_idempotency_key uuid)": {
+  "body_md5": "5c6ff8f7168fa532c19b1cdb5b9d9c67",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": null,
+  "result": "jsonb",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "public.submit_request(p_payload jsonb, p_idempotency_key uuid)": {
+  "body_md5": "8971fa27f0777981a205158718f75fd2",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "authenticated"
+  ],
+  "result": "jsonb",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "public.track_request(p_request_number text, p_tracking_token uuid)": {
+  "body_md5": "76630b6540f599e275c93dd174211108",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "anon",
+   "authenticated"
+  ],
+  "result": "jsonb",
+  "secdef": true,
+  "volatile": "s"
+ },
+ "public.track_request_status(p_request_number text)": {
+  "body_md5": "0dee1abccdccef9f5612280489d79e87",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "anon",
+   "authenticated"
+  ],
+  "result": "jsonb",
+  "secdef": true,
+  "volatile": "v"
+ },
+ "public.update_request_details(p_request_id uuid, p_area text, p_requester_name text)": {
+  "body_md5": "b830fd92bce715dd4c9920a25600a137",
+  "config": [
+   "search_path=\"\""
+  ],
+  "exec": [
+   "authenticated"
+  ],
+  "result": "void",
+  "secdef": true,
+  "volatile": "v"
+ }
+}
