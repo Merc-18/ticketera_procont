@@ -1,0 +1,24 @@
+PASS Pre-M16 provider_id collision reproduced: B could read A ticket after username overwrite
+PASS Transactional rollback restores schema/functions/ACLs and all historical rows before commit
+PASS Upgrade preserves every old column including urgency, ownership and audit; new historical fields NULL; username/enterprise sessions remain valid
+PASS Ambiguous old provider_id links/sessions/codes fail closed without reassignment or historical-row updates
+PASS All existing owners/effective ACL definitions preserved; M14 and internal M15 bodies unchanged
+PASS Six identities isolate every cross-UUID list/detail combination; case-sensitive Quipu usernames and same provider_id cannot collapse
+PASS Same-RUC QuipuFac sessions share enterprise tickets with each original declared name; other RUC/provider denied
+PASS Quipu name is derived and cannot be impersonated; QuipuFac name required per ticket; caller cannot choose owner/studio/provenance
+PASS All four priorities and medium default persist independently from both urgency values; no inference or rejected valid combinations
+PASS Existing monthly urgency metric uses the independent original boolean; M11 function body/permissions unchanged
+PASS Staff SELECT and existing requests(projects) embedding expose requested_priority; admin-approved projects.priority remains independent
+PASS Authorized active child catalogs and all four direct/platform product rules hold; fixed-platform creation works
+PASS Eight simultaneous platform-code exchanges have exactly one winner and preserve verified username for authenticated creation
+PASS Original subproject survives staff classification; missing/foreign/inactive/malformed children rejected; empty required catalog accepts NULL
+PASS 106 owned tickets paginate stably through timestamp ties without duplicates or foreign rows; defaults/limits, named RPC arguments and JSON fields match handoff
+PASS Eight concurrent retries create once; replay keys remain per identity and changed payload cannot duplicate
+PASS Authorized staff correction remains available and does not retain false upstream-name verification
+PASS Own attachment reservation and Storage SQL policy work; foreign reservation denied (Storage stub, not HTTP upload)
+PASS Absent, wrong, expired and revoked sessions cannot list/detail/create/replay/subprojects/reserve
+PASS Immutable identity scope and ticket links prevent ownership reassignment
+PASS Real ACLs deny direct client reads; RLS still denies rows even with temporary test-only SELECT grants; internal viewer reads preserved
+PASS Active superadmin/admin/developer keep both internal RPC creation and idempotent replay under M16
+PASS M14, M15 effective permissions and editor authorization preserved; public REQ response remains exactly number/status
+23 M16 upgrade groups passed; persistent local cluster stopped.

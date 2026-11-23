@@ -4,6 +4,26 @@ Revisión: **20/11/2026** · Código de referencia: **`c857a727c8e7640bbce8daada
 
 Fuente oficial de requisitos: [PRODUCT_REQUIREMENTS.md](PRODUCT_REQUIREMENTS.md).
 
+## M16 local — posterior a M15, sin activación remota
+
+Revisión de esta ampliación: 23/11/2026; base `a61450c93f5180ecd623d945b100424a47a3a5d3`.
+El estado remoto histórico 15/15 de las secciones siguientes no se volvió a consultar.
+M16 **no aplicada**. [Handoff](../validation/client-experience-contract-handoff.md), [informe](../../report.md).
+
+| Archivo nuevo | Objetivo / datos |
+|---|---|
+| `20261123000100_client_request_data_security.sql` | Requests añade requested_priority, requested_subsystem_id y requester_name_source nullable; default medium separado conserva null histórico. FK compuesta hijo/producto. Snapshots privados username en enlaces/sesiones/códigos, unicidad de identidad con username exacto y NULLS NOT DISTINCT para empresa QuipuFac. Triggers conservan alcance/propiedad/entradas originales; RPC client_subprojects y reemplazos compatibles de creación/consulta/capacidades. |
+
+M1–M15 sin cambios. Sin DML de migración sobre filas de negocio, relleno de históricos,
+reasignaciones, catálogo nuevo ni cambio de propietarios. Prioridad solicitada no cambia urgencia,
+métricas M11 ni prioridad administrativa. Clasificación interna puede cambiar subsystem_id sin
+alterar el subproyecto original solicitado. QuipuFac comparte tickets por identidad empresarial.
+
+PostgreSQL 15+ necesario por NULLS NOT DISTINCT; pruebas realizadas con 17.12. Instalación
+limpia y actualización M15→M16 preservan todas las columnas anteriores. Rollback probado antes
+de COMMIT en base desechable; no se autoriza un down remoto ni reabrir permisos M15.
+
+
 ## Estado y reglas de mantenimiento
 
 Las **15 migraciones están aplicadas** según evidencia remota de activación de M15 del 20/11/2026, conservada en [EVIDENCE_20261120.md](EVIDENCE_20261120.md). En esta revisión documental **no se ejecutó SQL ni se volvió a consultar la base**: se contrastó el historial conservado 15/15 con los quince nombres del commit y sus hashes. Management API se usó únicamente con GET para proyecto/funciones/configuración no secreta.

@@ -2,7 +2,9 @@
 
 Revisión: 23/11/2026. Base comprobada: `a61450c93f5180ecd623d945b100424a47a3a5d3`.
 Rama backend: `rebuild/ticketera-client-data-security-20261123`.
-Estado inicial: contrato definido; M16 y pruebas locales en preparación. **No desplegado**.
+Handoff inicial: `8fabd88e99cc0e53dbc43c3402730d785c148a7a`.
+Estado actualizado: M16 implementada y validada localmente; **no desplegada**.
+Instalación limpia21/21 grupos y upgrade25/25, incluyendo adaptador del Agente2 contra SQL real; informe versionado en `report.md` del repositorio backend.
 Las decisiones nuevas del usuario prevalecen sobre documentos históricos de main.
 Este archivo versionado y su copia `.agent-coordination/client-experience-contract-handoff.md`
 son la referencia de integración. Backend no modifica `src/**` ni `contracts/client-access-client.*`.
@@ -30,7 +32,9 @@ No es JWT interno. No enviar `identity_id`, `company_id`, `studio_id` ni roles e
 
 **Quipu:** identidad individual delimitada por proveedor/RUC/username exacto, sensible a
 mayúsculas. El UUID de identidad Ticketera y el subject del proveedor siguen siendo internos;
-un provider_id nunca puede agrupar usernames distintos. No se unen cuentas por nombre/estudio.
+un provider_id nunca puede agrupar usernames distintos. No se unen cuentas por nombre/estudio. El mismo username exacto conserva su cuenta
+entre acceso directo y plataforma aunque difiera el subject; varias identidades históricas
+candidatas para ese mismo username requieren revisión (22023), sin elegir ni fusionar filas.
 Nombre readonly: `verified_name` si `name_verified === true` y no vacío; si no, username exacto,
 etiquetado «Usuario autenticado», sin afirmar que sea nombre personal verificado. El servidor
 deriva el mismo valor. Si falta una etiqueta confiable, no inventarla y no enviar solicitud.

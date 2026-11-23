@@ -1,0 +1,9 @@
+PASS Pre-M16 provider_id collision reproduced: B could read A ticket after username overwrite
+PASS Transactional rollback restores schema/functions/ACLs and all historical rows before commit
+PASS Upgrade preserves every old column including urgency, ownership and audit; new historical fields NULL; username/enterprise sessions remain valid
+PASS Ambiguous old provider_id links/sessions/codes fail closed without reassignment or historical-row updates
+Traceback (most recent call last):
+  File "/home/procont/projects/ticketera-procont/.agent-workspaces/agent1/supabase/tests/client_data_security_local.py", line 225, in <module>
+    assert old_functions['public.'+name]==new_functions['public.'+name]
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+KeyError: 'public.submit_request(jsonb,uuid)'

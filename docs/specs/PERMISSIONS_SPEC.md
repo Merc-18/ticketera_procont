@@ -4,6 +4,26 @@ Revisión: **20/11/2026** · Código de referencia: **`c857a727c8e7640bbce8daada
 
 Fuente oficial de requisitos: [PRODUCT_REQUIREMENTS.md](PRODUCT_REQUIREMENTS.md).
 
+## Extensión local M16 — 23/11/2026
+
+Base `a61450c`; pendiente de aplicación remota. [Contrato](../validation/client-experience-contract-handoff.md),
+[informe y pruebas](../../report.md). Matriz interna M1–M15 sin cambios.
+
+| Operación | Permiso efectivo / alcance |
+|---|---|
+| client_subprojects | EXECUTE anon/authenticated/service_role, pero capacidad cliente vigente y producto permitido obligatorios. No grants nuevos de tablas. |
+| Listado/detalle/reserva | Solo identidad propia; Quipu username exacto, QuipuFac cuenta empresarial compartida por RUC. Otro RUC/proveedor denegado. |
+| Creación client_submit_request | Validación de sesión antes de replay; estudio desde empresa, producto/hijo activos y autorizados. No propietario elegido por navegador. |
+| submit_client_request | Sigue sin EXECUTE para PUBLIC/anon/authenticated/service_role; wrapper propietario lo llama internamente. |
+| Abrir sesión/emitir/canjear código | Firmas y ACL existentes: solo servidor técnico; snapshots privados validan username de capacidades nuevas. |
+| requested_priority lectura interna | SELECT de requests y embedding existente bajo perfil activo/RLS. Prioridad administrativa y aprobación intactas. |
+| Tablas privadas | RLS y ACL cerradas; funciones privadas nuevas también revocadas a PUBLIC. |
+
+Los tests comprueban permisos efectivos y SELECT bajo roles reales PostgreSQL, no solo cadenas
+REVOKE en SQL. Con grants SELECT/USAGE temporales de fixture, RLS privada sigue sin devolver filas
+al público/externo. Dichos grants se retiran antes de terminar la prueba, nunca en remoto.
+
+
 ## Capas que no se deben confundir
 
 1. **Frontend:** visibilidad, botones y `canEdit/canManageProfile` facilitan uso; no autorizan al servidor.
