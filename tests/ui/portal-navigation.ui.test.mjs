@@ -77,9 +77,12 @@ const productOptions = page => page.$$eval('#ticket-product option', o => o.map(
 for (const [label, viewport] of Object.entries(VIEWPORTS)) {
   test(`[${label}] 1. /portal muestra dos accesos públicos e ingreso del personal`, async () => {
     const page = await open(viteMock.url, '/portal', viewport)
-    for (const name of [/Nueva Solicitud/, /Rastrear Solicitud/, /Ingreso del personal/]) {
+    for (const name of [/Nueva Solicitud/, /Ingreso del personal/]) {
       assert.equal(await page.getByRole('button', { name }).count(), 1, String(name))
     }
+    // «Rastrear Solicitud» ya no navega: contiene el formulario de seguimiento público.
+    assert.equal(await page.getByRole('heading', { name: 'Rastrear Solicitud' }).count(), 1)
+    assert.equal(await page.locator('#seguimiento #tracking-number').count(), 1)
     assert.equal(await page.getByRole('button', { name: /Mis tickets/ }).count(), 0)
     assert.equal(await page.locator('.portal-option').count(), 2)
     await shot(page, `${label}-01-portal`); await done(page)
@@ -179,15 +182,15 @@ for (const [label, viewport] of Object.entries(VIEWPORTS)) {
     await done(page)
   })
 
-  test(`[${label}] 11. Rastrear Solicitud es público y muestra solo número y estado`, async () => {
+  test(`[${label}] 11. Rastrear Solicitud es público, ocurre en el portal y muestra solo número y estado`, async () => {
     const page = await open(viteMock.url, '/portal', viewport)
-    await page.getByRole('button', { name: /Rastrear Solicitud/ }).click(); await page.waitForURL('**/tracking')
-    await page.locator('input').first().fill('REQ26-9201')
-    await page.locator('form button[type=submit]').click()
+    await page.locator('#tracking-number').fill('REQ26-9201')
+    await page.locator('#seguimiento form button[type=submit]').click()
     await page.getByText('REQ26-9201').first().waitFor()
     await page.getByText('Trabajo en proceso').first().waitFor()
     const call = fixture.log.findLast(r => r.path.endsWith('/rpc/track_request_status'))
     assert.deepEqual(JSON.parse(call.body), { p_request_number: 'REQ26-9201' })
+    assert.equal(path(page), '/portal', 'sin navegar a otra pantalla')
     await shot(page, `${label}-11-rastrear`); await done(page)
   })
 }
@@ -434,7 +437,7 @@ for (const [label, viewport] of Object.entries(VIEWPORTS)) {
     seen.add(await footerCheck(page, 'Nuevo ticket'))
     await page.getByRole('link', { name: /Mis tickets/ }).click(); await page.locator('main a:visible', { hasText: 'REQ26-9001' }).first().waitFor()
     seen.add(await footerCheck(page, 'Mis tickets'))
-    await page.goto(viteMock.url + '/tracking'); seen.add(await footerCheck(page, 'Seguimiento público'))
+    await page.goto(viteMock.url + '/tracking'); await page.waitForURL('**/portal#seguimiento'); seen.add(await footerCheck(page, 'Seguimiento público (enlace antiguo)'))
     await page.goto(viteMock.url + '/login'); seen.add(await footerCheck(page, 'Login del personal'))
     await page.goto(viteMock.url + '/portal'); await staffLogin(page, 'superadmin'); seen.add(await footerCheck(page, 'Panel interno'))
     await page.reload(); await page.locator('nav[aria-label="Secciones"]').waitFor(); seen.add(await footerCheck(page, 'Panel tras recargar'))

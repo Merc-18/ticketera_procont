@@ -1,0 +1,23 @@
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✔ [light] portal: dos tarjetas; «Rastrear Solicitud» contiene icono, título, texto, campo y Buscar (1984.405204ms)
+✔ [light] vacío y formato inválido: error bajo el campo, foco y ninguna consulta (662.237065ms)
+✔ [light] encontrado (botón) y sucesiva (Enter): solo número y estado; sin navegar (312.26688ms)
+✔ [light] cargando, error de servicio y reintento (317.465446ms)
+✔ [light] enlace antiguo /tracking → /portal#seguimiento con el foco en el campo (156.211038ms)
+✔ [dark] portal: dos tarjetas; «Rastrear Solicitud» contiene icono, título, texto, campo y Buscar (154.999518ms)
+✔ [dark] vacío y formato inválido: error bajo el campo, foco y ninguna consulta (657.414105ms)
+✔ [dark] encontrado (botón) y sucesiva (Enter): solo número y estado; sin navegar (308.616753ms)
+✔ [dark] cargando, error de servicio y reintento (322.035759ms)
+✔ [dark] enlace antiguo /tracking → /portal#seguimiento con el foco en el campo (151.073519ms)
+✔ /cliente: ya no repite el formulario; enlaza al seguimiento del portal (214.677628ms)
+✔ Mis tickets autenticado (fixtures) conserva el detalle completo; el seguimiento público no lo sustituye (429.131266ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6063.389242

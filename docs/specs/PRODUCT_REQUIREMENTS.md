@@ -59,7 +59,7 @@ No forman parte del alcance: cambiar las plataformas externas, migrar datos de o
 
 1. Visitante → `/portal` → Nueva Solicitud → `/cliente` → elige **uno** de los dos métodos → sesión Ticketera → `/cliente/nuevo` → formulario → recibo REQ → Mis tickets → detalle propio → Salir.
 2. Visitante → Mis tickets → ingreso si es necesario → listado de su identidad. La identidad QuipuFac empresarial no hereda los tickets del usuario Quipu aunque coincidan RUC y estudio.
-3. Visitante → Rastrear Solicitud → `/tracking` → REQ → número y estado exclusivamente.
+3. Visitante → `/portal`, tarjeta «Rastrear Solicitud» → REQ → número y estado exclusivamente, en la misma pantalla (desde el 23/11/2026; `/tracking` redirige a `/portal#seguimiento`).
 4. Plataforma → servidor con secreto propio → código temporal → enlace con fragmento → `/cliente/acceso/{proveedor}` → canje/confirmación → formulario de producto fijo.
 5. Personal → ingreso interno → Requests/Pendientes → clasificación → aceptar con responsable y prioridad o rechazar con motivo público → Development → trabajo/checklist/evidencias → Done → reapertura explícita si corresponde.
 
@@ -569,7 +569,7 @@ Cada entrada contiene nombre, descripción/regla, comportamiento esperado, acept
 | Regla exacta | Buscar por REQ sin login, devolver solo request_number y estado general; no UUID ni texto privado. |
 | Comportamiento esperado | Respuesta con exactamente dos campos para REQ existente; 10 consultas por IP/minuto y 300 globales/minuto. |
 | Criterio de aceptación | Respuesta con exactamente dos campos para REQ existente; 10 consultas por IP/minuto y 300 globales/minuto. |
-| Implementación frontend/servidor | [src/components/requests/RequestTracking.tsx](../../src/components/requests/RequestTracking.tsx); `track_request_status`; M10. |
+| Implementación frontend/servidor | [src/components/requests/PortalTracking.tsx](../../src/components/requests/PortalTracking.tsx); `track_request_status` (sin cambios); M10. |
 | Prueba correspondiente | [supabase/tests/request_tracking_local.py](../../supabase/tests/request_tracking_local.py) |
 | Evidencia y alcance | [E-M15](TESTING_SPEC.md#e-m15) |
 | Estado actual | **CUMPLE** |

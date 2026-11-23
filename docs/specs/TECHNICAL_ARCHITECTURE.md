@@ -124,7 +124,7 @@ M15 retira la ejecución **directa** del helper antiguo. No revoca `client_submi
 
 ```mermaid
 flowchart LR
-  X[REQ sin sesión] --> T[RequestTracking]
+  X[REQ sin sesión] --> T[PortalTracking en /portal]
   T --> R[track_request_status]
   R --> L[Contador 10 por IP/min y 300 global/min]
   L --> G[Estado general derivado]
@@ -206,13 +206,13 @@ El inventario completo y los consumidores están en [CODE_INVENTORY.md](CODE_INV
 
 | Ruta | Parámetros / destino | Componente | Sesión y comportamiento |
 |---|---|---|---|
-| `/portal` | Dos tarjetas (Nueva Solicitud, Rastrear Solicitud) e ingreso interno; tres hasta el 23/11/2026 | `PublicLanding` | Público; botones navegan a cliente/tracking o abren modal separado. |
+| `/portal` | Dos tarjetas (Nueva Solicitud, Rastrear Solicitud) e ingreso interno; tres hasta el 23/11/2026 | `PublicLanding`, `PortalTracking` | Público; «Nueva Solicitud» navega a /cliente; «Rastrear Solicitud» consulta el REQ en la propia tarjeta (solo número y estado, `track_request_status`), sin salir de /portal (desde el 23/11/2026). |
 | `/cliente` | Query `ir=nuevo` o `ir=tickets` en lista blanca | `ClientHome` | Público; exactamente dos métodos; flag compilado controla disponibilidad. |
 | `/cliente/nuevo` | Sin UUID de estudio en URL | `ClientWorkspace` + `ClientNewTicket` + `PublicRequestForm` | Capacidad válida; sin asociación muestra aviso y bloquea envío. |
 | `/cliente/tickets` | Lista de identidad | `ClientWorkspace` + `MyTickets` | Capacidad válida; tabla escritorio/tarjetas móvil, primer lote de 100. |
 | `/cliente/tickets/:id` | UUID del ticket | `ClientWorkspace` + `ClientTicketDetail` | Sesión y propiedad; ajeno/inexistente mismo PT404; no destruye sesión. |
 | `/cliente/acceso/:provider` | provider quipu/quipufac y fragmento `#code=...` | `ClientLaunch` | Canje de un uso, elimina fragmento y confirma identidad; no supone secreto en navegador. |
-| `/tracking` | REQ en formulario | `RequestTracking` | Público, solo número/estado; no comparte autenticación con Mis tickets. |
+| `/tracking` | Enlace antiguo | Redirección | Redirige a `/portal#seguimiento` con el foco en el campo REQ. La pantalla `RequestTracking` se retiró el 23/11/2026 (D-039). |
 | `/request` | Redirección replace a `/cliente` | `Navigate` en App | Ningún formulario anónimo. |
 | `/login` | Correo/contraseña internos | `LoginForm` | Supabase Auth y perfil activo; no login de cliente. |
 | `/` | Dashboard/Boards/Requests/Equipo | `ProtectedRoute` + Dashboard en App | Personal con perfil activo; pestañas/subpestañas por rol. |

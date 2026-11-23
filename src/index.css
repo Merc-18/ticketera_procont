@@ -83,6 +83,25 @@ body {
 .icon-tile { width: 48px; height: 48px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; background: var(--p-tint); color: var(--p-action); flex-shrink: 0; }
 .portal-option:first-child .icon-tile { background: var(--p-accent-tint); }
 .public-footer { color: var(--p-muted); font-size: 13px; margin-top: 72px; }
+/* Seguimiento público integrado en la tarjeta «Rastrear Solicitud» (solo número REQ y estado general).
+   La tarjeta contiene un formulario: no es un enlace, no se eleva al pasar el puntero (Taste cards.md). */
+.portal-option-static { cursor: default; }
+.portal-tracking { display: flex; flex-direction: column; align-items: flex-start; width: 100%; flex: 1; }
+.portal-tracking-form { width: 100%; margin-top: 24px; }
+.portal-tracking-form > label { display: block; font-size: 14px; font-weight: 500; color: var(--p-ink-2); margin-bottom: 8px; }
+.portal-tracking-row { display: flex; gap: 12px; align-items: stretch; }
+.portal-tracking-row > .ui-input { flex: 1; min-width: 0; font-size: 16px; }
+.portal-tracking-row > .ui-button { flex-shrink: 0; }
+.portal-option .portal-tracking-hint { margin-top: 8px; color: var(--p-muted); }
+.portal-tracking-result { width: 100%; }
+.portal-option .portal-tracking-note { margin-top: 16px; color: var(--p-ink-2); }
+.tracking-outcome { margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 16px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--p-tint-weak); }
+.tracking-outcome .tracking-number { font-size: 20px; font-weight: 500; color: var(--p-action); }
+.tracking-error { margin-top: 16px; width: 100%; display: flex; flex-direction: column; align-items: flex-start; gap: 12px; padding: 16px; border: 1px solid var(--danger); border-radius: var(--r-md); background: var(--danger-bg); }
+.portal-option .tracking-error p { color: var(--danger); }
+/* Emil: el resultado es respuesta a una acción → entrada breve solo de opacidad (150 ms); con teclado, ninguna. */
+html:not([data-input=keyboard]) .tracking-outcome, html:not([data-input=keyboard]) .tracking-error { transition: opacity 150ms var(--ease-out); }
+@starting-style { html:not([data-input=keyboard]) .tracking-outcome, html:not([data-input=keyboard]) .tracking-error { opacity: 0; } }
 .ui-button { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: var(--r-sm); padding: 10px 20px; font-weight: 500; font-size: 14px; border: 1px solid transparent; }
 .ui-button-primary { background: var(--p-action-fill); color: var(--p-action-ink); }
 .ui-button-secondary { background: var(--p-surface); color: var(--p-action); border-color: var(--line); }
@@ -195,7 +214,7 @@ html[data-input=keyboard] *, html[data-input=keyboard] *::before, html[data-inpu
 .ui-button-primary:active:not(:disabled) { background: var(--p-action-fill-active); }
 .ui-button-secondary:active:not(:disabled) { background: var(--p-tint); }
 @media (hover: hover) and (pointer: fine) {
-  .portal-option:hover { transform: translateY(-2px); border-color: var(--field-line); transition-duration: 150ms; }
+  .portal-option:not(.portal-option-static):hover { transform: translateY(-2px); border-color: var(--field-line); transition-duration: 150ms; }
   .provider-card:hover:not(:disabled) { border-color: var(--field-line); transition-duration: 150ms; }
   .ui-button:hover:not(:disabled) { transform: translateY(-1px); transition-duration: 150ms; }
   .ui-button-primary:hover:not(:disabled) { background: var(--p-action-fill-hover); }
@@ -240,6 +259,7 @@ html:not([data-input=keyboard]) .modal-backdrop { transition: opacity 200ms var(
   .portal-main, .client-main { padding-block: 32px; }
   .portal-heading { margin-bottom: 32px; }
   .portal-options { grid-template-columns: 1fr; }
+  .portal-tracking-row { flex-direction: column; }
   .portal-option { min-height: 240px; }
   .public-nav .ui-button { padding-inline: 12px; font-size: 13px; }
   .public-nav > .page-wrap { gap: 12px; }

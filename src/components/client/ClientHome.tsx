@@ -8,10 +8,6 @@ import { BRAND } from '../../theme/brand'
 import { clientPortal, CLIENT_PORTAL_LOGIN_ENABLED } from '../../lib/client-portal-api'
 import { clientSessionStore } from '../../lib/client-session-store'
 import { validateLogin, type AuthType, type ClientLoginInput } from '../../lib/client-portal'
-import { operations } from '../../lib/api'
-import type { PublicTracking } from '../../lib/operations'
-import { GENERAL_STATUS } from '../../lib/request-status'
-import { errorMessage } from '../../lib/supabase-errors'
 import { preloadClientArea } from '../../lib/client-routes'
 import ThemeToggle from '../ui/ThemeToggle'
 
@@ -101,7 +97,10 @@ export default function ClientHome() {
           {type && CLIENT_PORTAL_LOGIN_ENABLED && <LoginForm key={type} type={type} onChange={() => setType(null)}
             onSuccess={() => navigate(destination)} />}
 
-          <PublicSearch />
+          {/* La consulta pública por REQ vive en la tarjeta «Rastrear Solicitud» del portal (un solo formulario). */}
+          <p className="public-search">¿Solo quieres conocer el estado de una solicitud?{' '}
+            <Link to="/portal#seguimiento" className="font-medium text-brand-700 underline underline-offset-4">Rastréala en el portal con su número REQ</Link>.
+          </p>
 
           <p className="public-footer">© {new Date().getFullYear()} {BRAND.company}</p>
         </div>
@@ -194,58 +193,5 @@ function LoginForm({ type, onChange, onSuccess }: { type: AuthType; onChange: ()
       </button>
       <p className="mt-3 text-xs text-gray-500 text-center">Usa las mismas credenciales de {label}.</p>
     </form>
-  )
-}
-
-const CURRENT_PREFIX = `REQ${new Date().getFullYear().toString().slice(2)}-`
-
-/** Búsqueda general pública: solo número y estado general (track_request_status). */
-function PublicSearch() {
-  const [value, setValue] = useState('')
-  const [result, setResult] = useState<PublicTracking | null>(null)
-  const [notFound, setNotFound] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
-
-  const search = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setResult(null); setNotFound(false); setError(null)
-    if (!value.trim()) { setError('Escribe el número REQ del ticket.'); return }
-    setLoading(true)
-    try {
-      const raw = value.trim()
-      const full = /^\d+$/.test(raw) ? `${CURRENT_PREFIX}${raw.padStart(3, '0')}` : raw.toUpperCase()
-      const found = await operations.trackRequest(full)
-      if (found) setResult(found); else setNotFound(true)
-    } catch (err) {
-      setError(errorMessage(err))
-    } finally { setLoading(false) }
-  }
-  const status = result ? GENERAL_STATUS[result.status] : null
-
-  return (
-    <section aria-labelledby="public-search" className="public-search">
-      <h2 id="public-search" className="font-medium">Consultar estado de un ticket</h2>
-      <p className="text-gray-600 text-sm mb-4">Solo se muestra el número y el estado general.</p>
-      <form onSubmit={search} noValidate className="flex flex-col sm:flex-row sm:items-end gap-3">
-        <div className="flex-1 min-w-0">
-          <label htmlFor="public-req" className="block text-sm font-medium text-gray-700 mb-1">Número de ticket</label>
-          <input id="public-req" value={value} onChange={e => setValue(e.target.value)} placeholder={`${CURRENT_PREFIX}001`}
-            aria-invalid={!!error || undefined} aria-describedby={error ? 'public-req-error' : undefined} className="ui-input w-full" />
-        </div>
-        <button type="submit" disabled={loading}
-          className="ui-button ui-button-secondary">
-          {loading ? 'Buscando…' : 'Buscar'}
-        </button>
-      </form>
-      {result && status && (
-        <div role="status" className="mt-4 flex flex-wrap items-center justify-between gap-3 bg-surface border border-gray-300 rounded-lg px-4 py-3">
-          <span className="font-medium font-mono text-brand-700">{result.request_number}</span>
-          <span className={`inline-flex items-center gap-1.5 text-sm font-medium px-3 py-1 rounded-full border ${status.tone}`}><Icon name={status.icon} size={14} />{status.label}</span>
-        </div>
-      )}
-      {notFound && <p role="status" className="mt-4 text-sm text-gray-700">No se encontró un ticket con ese número.</p>}
-      {error && <p id="public-req-error" role="alert" className="mt-4 text-sm text-red-700 bg-red-50 rounded-lg px-3 py-2">{error}</p>}
-    </section>
   )
 }

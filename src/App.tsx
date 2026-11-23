@@ -2,13 +2,12 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { lazy, Suspense, useState, useEffect } from 'react'
 import { useAuth } from './hooks/useAuth'
 import ProtectedRoute from './components/auth/ProtectedRoute'
-import BoardSelector from './components/boards/BoardSelector'
 import PublicLanding from './components/requests/PublicLanding'
 import NotificationBell from './components/notifications/NotificationBell'
 import BrandLogo from './components/ui/BrandLogo'
 import ControlLabel from './components/ui/ControlLabel'
 import type { IconName } from './components/ui/Icon'
-import { loadClientHome, loadRequestTracking, loadClientLaunch, loadClientWorkspace, loadClientNewTicket, loadMyTickets, loadClientTicketDetail } from './lib/client-routes'
+import { loadClientHome, loadClientLaunch, loadClientWorkspace, loadClientNewTicket, loadMyTickets, loadClientTicketDetail } from './lib/client-routes'
 import { usePendingCount } from './hooks/usePendingCount'
 import { errorMessage } from './lib/supabase-errors'
 import { toast } from './lib/toast'
@@ -16,7 +15,12 @@ import ThemeToggle from './components/ui/ThemeToggle'
 
 // Las vistas internas se descargan al abrir su sección, sin cambiar rutas ni permisos.
 const DashboardView = lazy(() => import('./components/dashboard/DashboardView'))
-const KanbanBoard = lazy(() => import('./components/boards/KanbanBoard'))
+const loadKanbanBoard = () => import('./components/boards/KanbanBoard')
+const loadBoardSelector = () => import('./components/boards/BoardSelector')
+const KanbanBoard = lazy(loadKanbanBoard)
+// El selector de tablero solo existe en la pestaña Boards: viaja con ella (JS por vista, Taste perf.md).
+const BoardSelector = lazy(loadBoardSelector)
+const preloadBoards = () => { for (const load of [loadKanbanBoard, loadBoardSelector]) load().catch(() => undefined) }
 const RequestInbox = lazy(() => import('./components/requests/RequestInbox'))
 const UserManagementPanel = lazy(() => import('./components/admin/UserManagementPanel'))
 const WorkloadView = lazy(() => import('./components/admin/WorkloadView'))
@@ -24,7 +28,6 @@ const PapeleraView = lazy(() => import('./components/admin/PapeleraView'))
 const CatalogsPanel = lazy(() => import('./components/admin/CatalogsPanel'))
 // Rutas públicas secundarias y espacio del cliente: fuera del JavaScript inicial del portal (Taste perf.md).
 const LoginForm = lazy(() => import('./components/auth/LoginForm'))
-const RequestTracking = lazy(loadRequestTracking)
 const ClientHome = lazy(loadClientHome)
 const ClientLaunch = lazy(loadClientLaunch)
 const ClientWorkspace = lazy(loadClientWorkspace)
@@ -112,6 +115,7 @@ function Dashboard() {
                 <button
                   key={tab}
                   onClick={() => setCurrentTab(tab)}
+                  {...(tab === 'boards' ? { onPointerEnter: preloadBoards, onFocus: preloadBoards, onTouchStart: preloadBoards } : {})}
                   aria-current={currentTab === tab ? 'page' : undefined}
                   className={`px-3 sm:px-4 py-2 rounded-md font-medium text-sm transition flex items-center gap-1.5 ${
                     currentTab === tab
@@ -131,10 +135,12 @@ function Dashboard() {
 
             {/* Board Selector (solo si está en boards) */}
             {currentTab === 'boards' && (
-              <BoardSelector
-                currentBoard={currentBoard}
-                onChange={setCurrentBoard}
-              />
+              <Suspense fallback={null}>
+                <BoardSelector
+                  currentBoard={currentBoard}
+                  onChange={setCurrentBoard}
+                />
+              </Suspense>
             )}
           </div>
         </nav>
@@ -252,7 +258,8 @@ function App() {
         <Route path="/portal" element={<PublicLanding />} />
         {/* Recorrido anónimo retirado: Nueva Solicitud exige ingreso Quipu/QuipuFac. */}
         <Route path="/request" element={<Navigate to="/cliente" replace />} />
-        <Route path="/tracking" element={<RequestTracking />} />
+        {/* Pantalla de seguimiento retirada: los enlaces antiguos llegan al formulario integrado del portal. */}
+        <Route path="/tracking" element={<Navigate to="/portal#seguimiento" replace />} />
         {/* Portal de clientes Quipu/QuipuFac (sesión propia, separada del personal interno). */}
         <Route path="/cliente" element={<ClientHome />} />
         <Route path="/cliente/acceso/:provider" element={<ClientLaunch />} />

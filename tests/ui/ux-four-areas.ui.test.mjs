@@ -194,8 +194,8 @@ for (const [size, viewport] of Object.entries(SIZES)) {
     await page.locator('main a:visible', { hasText: 'REQ26-9001' }).first().click()
     await page.getByText('Descripción', { exact: true }).waitFor()
     await capture(page, `${size}-06-detalle`)
-    await page.goto(base + '/tracking'); await page.locator('#tracking-number').fill('REQ26-9201')
-    await page.locator('form button[type=submit]').click(); await page.getByText('Trabajo en proceso').first().waitFor()
+    await page.goto(base + '/portal'); await page.locator('#tracking-number').fill('REQ26-9201')
+    await page.locator('#seguimiento form button[type=submit]').click(); await page.getByText('Trabajo en proceso').first().waitFor()
     await capture(page, `${size}-07-seguimiento-publico`)
     assert.equal(await page.getByText('Descripción', { exact: true }).count(), 0)
     assert.equal(await page.locator('main ol').count(), 0, 'sin recorrido inferido ni historial público')
@@ -295,11 +295,11 @@ test('UX métricas: ausencia de registros, contrato no disponible y error son es
 
 test('UX seguimiento: cada respuesta pública muestra exclusivamente su número y estado actual', async () => {
   const page = await open(SIZES.desktop)
-  await page.goto(base + '/tracking')
+  await page.goto(base + '/portal')
   for (const status of ['received', 'in_review', 'approved_backlog', 'in_progress', 'done', 'blocked', 'rejected']) {
     await page.route(`${fixture.url}/rest/v1/rpc/track_request_status`, route => route.fulfill({ status: 200, contentType: 'application/json', headers: { 'Access-Control-Allow-Origin': '*' }, body: JSON.stringify({ request_number: 'REQ26-9201', status }) }))
     await page.fill('#tracking-number', 'REQ26-9201')
-    await page.locator('form button[type=submit]').click()
+    await page.locator('#seguimiento form button[type=submit]').click()
     const result = page.getByTestId('public-tracking-result')
     await result.waitFor()
     assert.equal(await result.locator('span').count(), 1, `${status}: un solo estado`)

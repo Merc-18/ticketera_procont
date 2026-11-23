@@ -3,7 +3,6 @@
 // para que cambiar de vista no muestre un intervalo vacío (rendimiento percibido) sin engordar el
 // JavaScript inicial del portal (Taste perf.md).
 export const loadClientHome = () => import('../components/client/ClientHome')
-export const loadRequestTracking = () => import('../components/requests/RequestTracking')
 export const loadClientLaunch = () => import('../components/client/ClientLaunch')
 export const loadClientWorkspace = () => import('../components/client/ClientWorkspace')
 export const loadClientNewTicket = () => import('../components/client/ClientNewTicket')

@@ -1,0 +1,107 @@
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✔ [escritorio] 1. /portal muestra dos accesos públicos e ingreso del personal (3036.828043ms)
+✔ [escritorio] 2. Nueva Solicitud navega a /cliente (selección Quipu/QuipuFac) (666.873928ms)
+✔ [escritorio] 3. /request no abre el formulario público y redirige al ingreso (157.45609ms)
+✔ [escritorio] 4-5. Quipu pide RUC, usuario y contraseña; QuipuFac solo RUC y contraseña (289.583255ms)
+✔ [escritorio] 6. Login desactivado: estado inequívocamente no operativo (408.353192ms)
+✔ [escritorio] 7. Login válido conduce a /cliente/nuevo con productos de la sesión; Salir cierra (577.123229ms)
+✔ [escritorio] 8-9. Sin sesión no se entra a /cliente/nuevo ni a /cliente/tickets; tras ingresar vuelve al destino (603.022483ms)
+✔ [escritorio] 10. Mis tickets y detalle: solo la identidad autenticada; ajeno no visible (473.342146ms)
+✔ [escritorio] 11. Rastrear Solicitud es público, ocurre en el portal y muestra solo número y estado (282.270373ms)
+✔ [movil] 1. /portal muestra dos accesos públicos e ingreso del personal (153.573886ms)
+✔ [movil] 2. Nueva Solicitud navega a /cliente (selección Quipu/QuipuFac) (229.295273ms)
+✔ [movil] 3. /request no abre el formulario público y redirige al ingreso (164.525371ms)
+✔ [movil] 4-5. Quipu pide RUC, usuario y contraseña; QuipuFac solo RUC y contraseña (327.719535ms)
+✔ [movil] 6. Login desactivado: estado inequívocamente no operativo (271.062879ms)
+✔ [movil] 7. Login válido conduce a /cliente/nuevo con productos de la sesión; Salir cierra (583.457662ms)
+✔ [movil] 8-9. Sin sesión no se entra a /cliente/nuevo ni a /cliente/tickets; tras ingresar vuelve al destino (500.368655ms)
+✔ [movil] 10. Mis tickets y detalle: solo la identidad autenticada; ajeno no visible (437.893279ms)
+✔ [movil] 11. Rastrear Solicitud es público, ocurre en el portal y muestra solo número y estado (224.869459ms)
+✔ [escritorio] 12. Acceso interno independiente: cuatro roles con sus pestañas aprobadas (2504.015344ms)
+✔ [movil] 12. Acceso interno independiente: cuatro roles con sus pestañas aprobadas (2447.168971ms)
+✔ 13. Exportaciones sin métricas SLA ficticias; datos por ticket del servidor y ausencias explícitas (671.43476ms)
+✔ 14. No se disparan alertas SLA heredadas (sin inserciones de notificaciones al cargar el tablero) (1972.142134ms)
+✔ 13A. Cero terminados (1.500 registros sin terminar): mensaje correcto y sin descarga (1424.628613ms)
+✔ 13C/D. Más de 1.000 registros con terminados fuera de la primera página: no se omiten (1434.167714ms)
+✔ 13E/G/H. 1.200 sin terminar + 2.500 terminados: tres páginas ordenadas, sin duplicados ni pérdidas; null intactos (1718.80077ms)
+✔ 13F. Error en la segunda página: no se descarga un CSV parcial y se informa el error (1413.543125ms)
+✔ [escritorio] integración: formulario crea Quipu y QuipuFac con adjunto simulado y separa Mis tickets (904.649442ms)
+✔ [movil] integración: formulario crea Quipu y QuipuFac con adjunto simulado y separa Mis tickets (866.689103ms)
+✔ integración: Planner procesa Excel real y conserva payload/acuse de la RPC interna (1026.144115ms)
+✔ [escritorio] Versión de la compilación visible y estable en todas las pantallas (1408.705295ms)
+✔ [movil] Versión de la compilación visible y estable en todas las pantallas (1379.952606ms)
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✔ [light] portal: dos tarjetas; «Rastrear Solicitud» contiene icono, título, texto, campo y Buscar (3880.1393ms)
+✔ [light] vacío y formato inválido: error bajo el campo, foco y ninguna consulta (874.666953ms)
+✔ [light] encontrado (botón) y sucesiva (Enter): solo número y estado; sin navegar (411.692477ms)
+✔ [light] cargando, error de servicio y reintento (416.895839ms)
+✔ [light] enlace antiguo /tracking → /portal#seguimiento con el foco en el campo (208.220273ms)
+✔ [dark] portal: dos tarjetas; «Rastrear Solicitud» contiene icono, título, texto, campo y Buscar (202.143498ms)
+✔ [dark] vacío y formato inválido: error bajo el campo, foco y ninguna consulta (708.759725ms)
+✔ [dark] encontrado (botón) y sucesiva (Enter): solo número y estado; sin navegar (361.744134ms)
+✔ [dark] cargando, error de servicio y reintento (378.004519ms)
+✔ [dark] enlace antiguo /tracking → /portal#seguimiento con el foco en el campo (208.637268ms)
+✔ /cliente: ya no repite el formulario; enlaza al seguimiento del portal (239.737105ms)
+✔ Mis tickets autenticado (fixtures) conserva el detalle completo; el seguimiento público no lo sustituye (574.525701ms)
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✔ claro por defecto: sin preferencia guardada no se cambia el tema (3201.183474ms)
+✔ selector accesible: grupo con nombre, Lucide Sun/Moon, tooltip, 44 px y foco visible (235.596637ms)
+✔ puntero: un único fundido de página (View Transition); se guarda solo la palabra del tema (593.120564ms)
+✔ teclado: el cambio no se anima (Emil) y es inmediato (192.080722ms)
+✔ movimiento reducido: el fundido se conserva solo como opacidad breve (120 ms) (260.013634ms)
+✔ persistencia sin destello: navegar, recargar y las rutas públicas abren ya en oscuro (988.553211ms)
+✔ sesión del cliente (fixtures): el tema se mantiene al entrar, navegar y salir (906.513744ms)
+✔ panel interno (fixtures): selector en la banda, se mantiene al entrar y al cerrar sesión (1725.560888ms)
+﹣ [UX desktop] carga de ambos ingresos sin cambiar su comportamiento (222.066641ms) # SKIP
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✔ [UX desktop] portal, proveedores y accesibilidad de ingreso (3091.446835ms)
+✔ [UX desktop] nuevo ticket, adjuntos, lista privada, detalle y seguimiento (1436.431181ms)
+✔ [UX desktop] panel Enterprise, bandeja, ocho fases y las cuatro vistas (2633.565744ms)
+﹣ [UX laptop] carga de ambos ingresos sin cambiar su comportamiento (0.267838ms) # SKIP
+✔ [UX laptop] portal, proveedores y accesibilidad de ingreso (1371.371203ms)
+✔ [UX laptop] nuevo ticket, adjuntos, lista privada, detalle y seguimiento (1232.735378ms)
+✔ [UX laptop] panel Enterprise, bandeja, ocho fases y las cuatro vistas (2347.25827ms)
+﹣ [UX tablet] carga de ambos ingresos sin cambiar su comportamiento (0.258488ms) # SKIP
+✔ [UX tablet] portal, proveedores y accesibilidad de ingreso (1233.168868ms)
+✔ [UX tablet] nuevo ticket, adjuntos, lista privada, detalle y seguimiento (1197.249847ms)
+✔ [UX tablet] panel Enterprise, bandeja, ocho fases y las cuatro vistas (2282.831816ms)
+﹣ [UX movil] carga de ambos ingresos sin cambiar su comportamiento (0.159322ms) # SKIP
+✔ [UX movil] portal, proveedores y accesibilidad de ingreso (1202.353613ms)
+✔ [UX movil] nuevo ticket, adjuntos, lista privada, detalle y seguimiento (1201.009179ms)
+✔ [UX movil] panel Enterprise, bandeja, ocho fases y las cuatro vistas (2307.901959ms)
+✔ UX motion: hover, pulsación, teclado y reduced-motion no alteran el contenido (486.068206ms)
+✔ UX Kanban: arrastre real y cancelación no envían una operación de negocio (1252.211461ms)
+✔ UX métricas: ausencia de registros, contrato no disponible y error son estados distintos (990.836833ms)
+✔ UX seguimiento: cada respuesta pública muestra exclusivamente su número y estado actual (1204.920755ms)
+﹣ [UX desktop] presupuesto real y carga diferida de vistas internas y Planner (0.193595ms) # SKIP
+﹣ [UX movil] presupuesto real y carga diferida de vistas internas y Planner (0.075381ms) # SKIP
+✔ [M16 desktop] identidad, urgencia independiente, prioridad, subproyecto y detalle (2008.495554ms)
+✔ [M16 desktop] bandeja y modal distinguen prioridad solicitada y definitiva (1143.083889ms)
+✔ [M16 laptop] identidad, urgencia independiente, prioridad, subproyecto y detalle (1840.982334ms)
+✔ [M16 laptop] bandeja y modal distinguen prioridad solicitada y definitiva (1141.814964ms)
+✔ [M16 tablet] identidad, urgencia independiente, prioridad, subproyecto y detalle (1940.604269ms)
+✔ [M16 tablet] bandeja y modal distinguen prioridad solicitada y definitiva (1155.941919ms)
+✔ [M16 movil] identidad, urgencia independiente, prioridad, subproyecto y detalle (1894.026979ms)
+✔ [M16 movil] bandeja y modal distinguen prioridad solicitada y definitiva (1136.194598ms)
+✔ M16 paginación: 137 tickets empresariales, error recuperable, offset real y fin confirmado (1377.279638ms)
+✔ M16 subproyectos: cambio limpia, catálogo vacío, error y respuesta tardía (792.939782ms)
+✔ M16 identidad: username exacto readonly, otro usuario y ticket ajeno/inexistente (928.658344ms)
+✔ M16 envío incierto: conserva clave/payload, cancela solo antes de enviar y reinicia tras confirmar (836.174379ms)
+✔ M16 estados: etiqueta ausente, lista vacía/error y PT401 (958.461201ms)
+✔ M16 QuipuFac: otro RUC no comparte solicitudes de la empresa (494.576488ms)
+ℹ tests 87
+ℹ suites 0
+ℹ pass 81
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 6
+ℹ todo 0
+ℹ duration_ms 43860.914898

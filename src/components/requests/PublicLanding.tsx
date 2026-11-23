@@ -6,7 +6,8 @@ import Icon from '../ui/Icon'
 import PasswordField from '../ui/PasswordField'
 import ModalFocus from '../ui/ModalFocus'
 import { BRAND } from '../../theme/brand'
-import { loadClientHome, loadRequestTracking, preloadOnIntent } from '../../lib/client-routes'
+import { loadClientHome, preloadOnIntent } from '../../lib/client-routes'
+import PortalTracking from './PortalTracking'
 import ThemeToggle from '../ui/ThemeToggle'
 
 function LoginModal({ onClose }: { onClose: () => void }) {
@@ -143,12 +144,8 @@ export default function PublicLanding() {
                 <p>Ingresa con Quipu o QuipuFac y registra tu solicitud al {BRAND.teamLabel}.</p>
                 <span className="option-action">Ingresar<Icon name="arrow" /></span>
               </button>
-              <button onClick={() => navigate('/tracking')} {...preloadOnIntent(loadRequestTracking)} className="portal-option">
-                <span className="icon-tile"><Icon name="search" size={26} /></span>
-                <h2>Rastrear Solicitud</h2>
-                <p>Consulta el estado de una solicitud existente con tu número de seguimiento.</p>
-                <span className="option-action">Ver estado<Icon name="arrow" /></span>
-              </button>
+              {/* Seguimiento público integrado: la consulta ocurre aquí mismo, sin otra pantalla. */}
+              <div className="portal-option portal-option-static"><PortalTracking /></div>
             </div>
             <p className="public-footer">© {new Date().getFullYear()} {BRAND.company}</p>
           </div>

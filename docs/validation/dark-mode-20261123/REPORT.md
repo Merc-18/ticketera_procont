@@ -139,3 +139,13 @@ Observaciones:
 - **(b)** Las pruebas se hicieron en Chromium emulado: no en Safari ni Firefox, ni con lectores de pantalla reales. En navegadores sin View Transitions el cambio es instantáneo.
 - **(c)** Los tres recorridos con JavaScript en WARN siguen igual (+1,7 KiB).
 - **(d)** Todo está **sin publicar**: el usuario revisará antes de autorizar.
+
+## 9. Publicación conjunta con el seguimiento integrado (23/11/2026)
+
+El usuario autorizó publicar el modo oscuro junto con un segundo cambio: el seguimiento público dentro de la tarjeta «Rastrear Solicitud» ([`../portal-tracking-20261123/REPORT.md`](../portal-tracking-20261123/REPORT.md), D-039). Sobre el código conjunto se repitieron estas validaciones:
+
+- 173 pruebas unitarias, 81 UI y 36 UX;
+- tokens 56/56;
+- re-auditoría de 120 + 120 pantallas: 0 contrastes insuficientes en los dos temas.
+
+El presupuesto de JavaScript queda con portal, dashboard y bandeja en PASS, y los mismos tres WARN de antes. La evidencia de este informe no se modificó; la del cambio conjunto está en esa carpeta.
