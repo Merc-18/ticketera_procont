@@ -24,6 +24,25 @@ Ticketera centraliza solicitudes de clientes y trabajo interno de Procont Busine
 
 Los requisitos de creación, cuenta y adjuntos mantienen pendientes **posteriores a M15** aun cuando antes funcionaron. El alcance detallado de cada evidencia está en [TESTING_SPEC.md](TESTING_SPEC.md). No se suman resultados entre commits.
 
+## Decisiones backend actualizadas — 23/11/2026 (M16 local)
+
+Esta actualización usa base `a61450c93f5180ecd623d945b100424a47a3a5d3`; prevalece sobre
+los textos históricos más abajo cuando difieran. No modifica su fecha/evidencia remota.
+[Contrato de integración](../validation/client-experience-contract-handoff.md), [validación](../../report.md).
+
+| ID | Decisión final | Aceptación / estado local |
+|---|---|---|
+| AUTH-003 | Quipu conserva aislamiento por RUC/proveedor/username exacto. Un provider_id nunca reemplaza otro username. No reasignar propiedad histórica ambigua. | CUMPLE local: dos casos sensibles a mayúsculas y colisión provider_id probados; remoto NO VERIFICADO. |
+| AUTH-004 / CLIENT-004 | QuipuFac es cuenta empresarial por RUC. Sus sesiones comparten todos los tickets de la empresa, con el nombre declarado de cada ticket; otro RUC y Quipu están separados. | CUMPLE local en listado y detalle; remoto NO VERIFICADO. |
+| TICKET-002 | Quipu obtiene nombre de verified_name confiable o username autenticado readonly; QuipuFac mantiene nombre declarado obligatorio, sin conceder permisos. | CUMPLE local: suplantación/requeridos y procedencia probados. |
+| TICKET-004 | urgent_requested conserva bandera booleana y métricas propias. No inferirla desde prioridad solicitada ni a la inversa. | CUMPLE local: cuatro prioridades × dos booleanos y métricas existentes. |
+| TICKET-013 | requested_priority admite low/medium/high/urgent, default medium para nuevas solicitudes, null histórico; independiente e inmutable frente a projects.priority administrativa. | CUMPLE local: persistencia, validación, lectura interna y aprobación sin alteración. |
+| TICKET-014 | Subproyecto pertenece al producto catalog_systems identificado por system_id, no a projects operativo. RPC de hijos activos autorizados y validación nuevamente al crear. | CUMPLE local: pertenencia/actividad/permiso y selección original conservada. |
+| CLIENT-007 | limit 1..100, offset0..100000 y orden created_at desc/id desc. Aislamiento en todas las páginas; sin total nuevo ni snapshot transaccional. | CUMPLE local por RPC sobre106 solicitudes; controles visuales son del Agente2. |
+
+M16 está preparada y probada únicamente en PostgreSQL aislado. No declarar esta ampliación
+activa en producción ni transformar resultados locales en evidencias post-M16 remotas.
+
 ## Dependencias y restricciones
 
 Frontend React/TypeScript/Vite; Supabase PostgreSQL con M1–M15; Edge `client-login`; Storage privado; Supabase Auth y Edge `admin-users` para personal; catálogos activos; asociación RUC→estudio; proveedor externo accesible con contrato explícito; origen autorizado. Vercel sirve la SPA y GitHub conserva el código. No hay un servidor Node de aplicación en producción.

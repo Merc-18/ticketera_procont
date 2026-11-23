@@ -4,6 +4,26 @@ Revisión: **20/11/2026** · Código de referencia: **`c857a727c8e7640bbce8daada
 
 Fuente oficial de requisitos: [PRODUCT_REQUIREMENTS.md](PRODUCT_REQUIREMENTS.md).
 
+## Reconstrucción backend M16 — ejecución local del 23/11/2026
+
+Base `a61450c`; no confundir con las ejecuciones históricas que siguen. [Informe](../../report.md),
+[handoff](../validation/client-experience-contract-handoff.md).
+
+| Suite independiente | Resultado | Alcance |
+|---|---|---|
+| M1–M16 instalación limpia | 21/21 grupos | PostgreSQL17.12 real + adaptador leído del Agente2, Auth/Storage stubs. [JSON](../validation/client-data-security-clean-20261123.json). |
+| M15→M16 con históricos | 25/25 grupos | Reproduce colisión anterior, rollback transaccional, datos preservados, sin reasignación. [JSON](../validation/client-data-security-upgrade-20261123.json). |
+| Node existente | 171/171 | Unitarias/transportes simulados; no login real ni E2E. |
+| Preparación Supabase | 8/8 | Unitarias Python del manifiesto histórico y migraciones actuales. |
+
+Logs separados y fallos iniciales del arnés conservados en
+[directorio de evidencias](../validation/client-data-security-20261123/). No sumar suites.
+Pruebas propias de M16 no requieren servicios externos ni aceptan DSN remoto. Exigen --work-root
+persistente y detienen cada servidor en finally. Versiones/checksums de paquetes oficiales PGDG
+se conservan junto al runtime en `.agent-backups/postgresql17-runtime` del workspace anfitrión.
+No se ejecutaron UI/Chromium ni se certificó Supabase HTTP real en esta entrega backend.
+
+
 ## Clasificación obligatoria
 
 | Clase | Qué acredita | Qué no acredita |

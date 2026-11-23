@@ -4,6 +4,28 @@ Revisión: **20/11/2026** · Código de referencia: **`c857a727c8e7640bbce8daada
 
 Fuente oficial de requisitos: [PRODUCT_REQUIREMENTS.md](PRODUCT_REQUIREMENTS.md).
 
+## M16 reconstruida localmente — 23/11/2026
+
+Base `a61450c`; handoff `8fabd88e99cc0e53dbc43c3402730d785c148a7a`. **No aplicada remotamente**.
+[Informe con evidencias](../../report.md), [contrato exacto](../validation/client-experience-contract-handoff.md).
+
+Auditoría focalizada: M13 sí filtra por identity_id, pero su UPSERT podía sobrescribir username
+al reutilizar provider_id en otro usuario del mismo RUC. Reproducido localmente, sin afirmar
+incidente remoto del piloto (que usa fallback username). M16 incluye username exacto en unicidad,
+impide mutar alcance/propiedad y valida snapshots privados de capacidades y enlaces nuevos.
+
+Históricos username siguen disponibles; links provider_id sin evidencia quedan denegados y
+preservados, sin reasignación automática. Sus sesiones/códigos antiguos sin snapshot fallan
+cerrados para impedir adoptar username sobrescrito; un nuevo login legítimo no reconstruye
+propiedad histórica ambigua. QuipuFac conserva identidad empresarial y comparte dentro del RUC.
+El nombre declarado se guarda por ticket y no concede acceso.
+
+requested_priority y urgent_requested son independientes; se conserva la semántica histórica de
+urgencia y las métricas. No se amplían permisos de creación directa M15 ni tablas privadas.
+Los tests son PostgreSQL real con fixtures Auth/Storage, no E2E de Supabase alojado. No se usan
+credenciales reales, proveedores ni escrituras remotas.
+
+
 ## Modelo de confianza
 
 El navegador es no confiable. Las claves públicas solo identifican el proyecto/gateway y no autorizan por sí solas una operación. Contraseña externa solo pasa a `client-login`; nunca a RPC ni tablas. Tokens/roles de Quipu/QuipuFac no crean perfiles internos. Estudio, identity_id, contexto de entrada y productos los decide servidor. [Permisos por capa](PERMISSIONS_SPEC.md).
