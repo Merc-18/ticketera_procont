@@ -1,0 +1,23 @@
+✔ flujo Development definitivo: ocho fases en orden; Administrative solo histórico (1.012303ms)
+✔ Done con checklist pendiente exige confirmación; sin pendientes o sin cierre, no (0.224162ms)
+✔ reapertura: destinos admitidos excluyen la fase final (0.117757ms)
+✔ operaciones usan el contrato nuevo con payload estricto e idempotencia (0.72916ms)
+✔ acciones masivas: una sola llamada a operate_board_tickets (0.253899ms)
+✔ errores del servidor se traducen sin perder la causa (bloqueo, checklist, permisos) (0.946451ms)
+✔ sin escrituras directas a fases, responsables, progreso, estado, prioridad ni bloqueo (1.213025ms)
+✔ sin registro de actividad ni notificaciones de asignación/bloqueo desde el navegador (1.26817ms)
+✔ las pantallas del tablero usan las cuatro RPC del contrato (1.801057ms)
+✔ Done retry preserves its operation key through Kanban after a lost reply (2.359772ms)
+✔ concurrent snapshot and mutation errors retain each call’s own cause (0.327714ms)
+✔ partial evidence retry skips delivered keys and retries only the pending file (0.437434ms)
+✔ a lost upload acknowledgement is resolved by exact stored path, size and MIME without overwrite (0.232092ms)
+✔ an unrelated/mismatched stored object or failed lookup never becomes an acknowledged upload (0.316727ms)
+✔ a document without browser MIME uses the shared extension mapping without changing its bytes (0.949332ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 84.610166

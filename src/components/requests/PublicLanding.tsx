@@ -120,12 +120,14 @@ export default function PublicLanding() {
         </div>
       </nav>
       <main id="main-content" tabIndex={-1} className="wrap page-wrap portal-main">
-        {/* Taste: cada bloque con un único .wrap; la cabecera entra una vez con el kit (data-enter). */}
+        {/* Taste: cada bloque con un único .wrap del mismo ancho; la medida de lectura va en .hero-text. */}
         <div className="portal-heading hero" data-enter>
           <div className="wrap">
-            <span className="eyebrow">Ticketera Procont</span>
-            <h1>Mesa de solicitudes</h1>
-            <p>Registra una solicitud o rastrea su estado con tu número REQ.</p>
+            <div className="hero-text">
+              <span className="eyebrow">Ticketera Procont</span>
+              <h1>Mesa de solicitudes</h1>
+              <p>Registra una solicitud o rastrea su estado con tu número REQ.</p>
+            </div>
           </div>
         </div>
         <div className="portal-access">

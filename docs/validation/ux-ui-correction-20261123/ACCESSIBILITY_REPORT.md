@@ -60,3 +60,15 @@ Ningún control visible queda por debajo de 44 px.
 
 - El selector de prioridad del modal de proyecto tiene una etiqueta `sr-only` («Prioridad definitiva»). Su texto visible es «Prioridad: Alto», que contiene la etiqueta, así que cumple 2.5.3.
 - No se probó con lectores de pantalla reales (NVDA, VoiceOver); la verificación es automática más inspección del DOM.
+
+## Cierre (re-auditoría `202611231439`, 115 pantallas)
+
+| Métrica | Valor |
+|---|---|
+| Textos bajo 4,5:1 · lectura < 16 px · texto < 13 px | 0 · 0 · 0 |
+| Campos sin etiqueta · controles sin nombre · saltos de encabezado | 0 · 0 · 0 |
+| Pantallas con `h1` | 115/115 |
+| Emoji renderizado · colores con matiz violeta (255–320°) | 0 · 0 (35 colores distintos analizados) |
+| Desbordamiento (incluido 320 px) | 0 |
+
+Los cambios del cierre no alteran el contraste: el copyright conserva su color `--p-muted` (6,13:1 sobre el fondo `#E2E8F0`) y la cabecera conserva su texto. Foco con teclado: 54/54 paradas con anillo visible y sin transición. La carga diferida añade un estado «Cargando vista…» con `role=status`, que se anuncia a los lectores de pantalla. Fuente: [`cierre/data/reaudit-results.json`](cierre/data/reaudit-results.json).

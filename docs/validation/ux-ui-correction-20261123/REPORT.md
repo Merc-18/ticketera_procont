@@ -9,7 +9,29 @@
 | Alcance | Solo frontend: `src/**`, `index.html`, `tailwind.config.ts`, `public/assets/motion/`, `public/share.jpg`, pruebas UI y documentación |
 | Sin cambios | `supabase/**`, SQL, migraciones M1–M16b, RPC, RLS, Edge Functions, autenticación, contratos de API, datos, variables de Supabase y Vercel, dependencias (`package.json` y lockfile intactos) |
 | Entorno de evidencia | Build local con el servidor de datos ficticios del repositorio, red externa bloqueada (0 peticiones externas). **No es producción** |
-| Re-auditoría | Versión 202611231424: 115 pantallas, 4 áreas, 5 anchos más 320 px |
+| Re-auditoría | Versión 202611231424: 115 pantallas, 4 áreas, 5 anchos más 320 px. Cierre: versión 202611231439 ([`cierre/`](cierre/)) |
+| Etapas | Corrección: commit `9fc4afa`. **Cierre de parciales:** commit siguiente sobre `9fc4afa`; el SHA queda en `.agent-backups/…bundle.sha256` |
+
+## 0. Cierre de los dos hallazgos parciales (segunda etapa)
+
+Los dos parciales de `9fc4afa` eran **H-01** (gate Taste en OPEN 14) y **H-20** (JavaScript por vista en WARN). En los dos se corrigió todo lo accionable, con evidencia antes y después. Lo que queda no es corregible sin romper una restricción del encargo, así que se registra como **EXCEPCIÓN DOCUMENTADA** y no como corregido.
+
+| Hallazgo | Qué faltaba | Qué se corrigió (evidencia) | Por qué no se puede cerrar del todo |
+|---|---|---|---|
+| H-01 | `GATE: PASS` | Medida de 760 px movida a `.hero-text` y copyright sin línea. Checker de `/portal` con las opciones del gate: **48 → 43 FAIL** (`section-air` 3 → 0, `container-edges` 12 → 9 = solo los elementos con waiver). Logs en `cierre/data/taste-gate/` | Las rondas están agotadas y no se reinician. Los FAIL restantes (hero a pantalla completa, una sección por pantalla, botón en el hero, momento animado, un h2 por sección) cambian la composición aprobada D-033 o contradicen a Emil. El gate sigue en **OPEN 14** |
+| H-20 | Recorridos > 450 KiB | Vistas y modales del tablero y de la bandeja en carga diferida con precarga por intención. **Bandeja 469,7 → 445,9 (PASS)**, Kanban 640,5 → 567,9, importador 805,9 → 782,6. `cierre/data/browser-bundle.json` | Los 3 WARN restantes (máximo 782,6, todos < 900) son Supabase, `@hello-pangea/dnd`, `xlsx` y la capa de movimiento obligatoria del kit. `xlsx.mini` quitaría la lectura de `.xls`. Requiere cambiar dependencias o funciones; no autorizado |
+
+Pruebas del cierre (solo las afectadas):
+
+| Suite | Resultado |
+|---|---|
+| `tsc` y build | PASS |
+| Unitarias del tablero | 15/15 |
+| Navegación del portal | 31/31 |
+| UX sobre build de producción | 36/36 |
+| Re-auditoría automática | 115 pantallas: contraste, lectura, etiquetas, encabezados, desbordamiento, emoji y violeta en 0; movimiento sin cambios |
+
+Se añadieron 45 capturas, solo de las vistas modificadas. Las 115 originales no se tocaron.
 
 ## 1. Mandato y restricciones cumplidas
 
@@ -95,7 +117,7 @@ El detalle por hallazgo está en [REMEDIATION_MATRIX.md](REMEDIATION_MATRIX.md).
 
 | Métrica | Auditoría | Final |
 |---|---|---|
-| Hallazgos abiertos | 25 | 0 abiertos; 2 parciales (H-01 gate OPEN, H-20 JS en WARN) |
+| Hallazgos abiertos | 25 | 0 abiertos; 23 corregidos (4 con observación); 2 excepciones documentadas (H-01 gate OPEN 14; H-20 3 WARN y 0 FAIL) |
 | Textos bajo 4,5:1 | 525 [SIM] | **0** |
 | Lectura < 16 px / texto < 13 px | 210 / 80 | **0 / 0** |
 | Campos sin etiqueta visible | 160 | **0** |
@@ -106,7 +128,8 @@ El detalle por hallazgo está en [REMEDIATION_MATRIX.md](REMEDIATION_MATRIX.md).
 | Borde de campo | 1,39:1 | 4,55:1 |
 | Botón principal de validación | 3,15:1 | 9,90:1 |
 | Bundle inicial | 449,8 KB | 379,0 KB |
-| Taste | PASS 7 · PARTIAL 18 · FAIL 6 | PASS 25 · PARTIAL 5 · FAIL 2 (excepciones) |
+| Taste | PASS 7 · PARTIAL 18 · FAIL 6 | PASS 26 · PARTIAL 4 · FAIL 2 (excepciones) |
+| JS por recorrido > 450 KiB | 4 de 8 (auditoría y también en `9fc4afa`) | **3 de 8** (0 FAIL) |
 | Emil | PASS 15 · PARTIAL 5 · FAIL 1 | PASS 21 (2 no verificables) |
 
 Capturas «antes»: [`../ux-ui-audit-20261123/screenshots/`](../ux-ui-audit-20261123/screenshots/). Capturas «después»: [`screenshots/`](screenshots/), 115 archivos con sha256 en [`screenshots-manifest.json`](screenshots-manifest.json).
@@ -138,7 +161,7 @@ No se debilitó ninguna aserción de seguridad ni de contrato.
 
 - [TASTE_COMPLIANCE.md](TASTE_COMPLIANCE.md):
   - gate del build nuevo en **OPEN 14 (rondas agotadas)** con 5 waivers;
-  - checker sobre `/cliente` y `/tracking`;
+  - checker sobre `/cliente` y `/tracking`; en el cierre, checker de `/portal` antes y después (48 → 43);
   - matriz T1–T33.
 - [EMIL_COMPLIANCE.md](EMIL_COMPLIANCE.md): inventario de movimiento y matriz E1–E23.
 
@@ -146,31 +169,31 @@ No se debilitó ninguna aserción de seguridad ni de contrato.
 
 - [ACCESSIBILITY_REPORT.md](ACCESSIBILITY_REPORT.md): WCAG 2.2 AA, PASS en los criterios evaluados.
 - [RESPONSIVE_REPORT.md](RESPONSIVE_REPORT.md): 0 desbordamiento.
-- [PERFORMANCE_REPORT.md](PERFORMANCE_REPORT.md): 4 vistas PASS, 4 WARN y 0 FAIL.
+- [PERFORMANCE_REPORT.md](PERFORMANCE_REPORT.md): 5 recorridos PASS, 3 WARN y 0 FAIL, con el análisis por módulo de lo que queda.
 
 ## 7. Incompatibilidades y decisiones documentadas
 
 1. **Escala de presión.** Emil pide .95–.98 y Taste .985 → se aplica `.98` más 1 px, el rango que pidió el usuario.
 2. **Reglas de landing de Taste frente a la composición aprobada (D-033).** Las reglas en conflicto son:
    - hero a pantalla completa, una sección por pantalla y `cta` dentro del hero;
-   - `moment-none`, `one-heading` y `container-edges` de la medida de 760 px.
+   - `moment-none` y `one-heading`. (Los `container-edges` de la medida de 760 px, `spill` y `section-air` se corrigieron en el cierre.)
 
    Siguen como FAIL del gate (excepción autorizada T7/T11) y no se convierten en PASS.
 3. **Tipo frase frente a los nombres que dio el usuario.** «Nueva Solicitud» y «Rastrear Solicitud» mantienen sus mayúsculas.
 4. **CSV.** Las columnas de prioridad exportadas mantienen «Alta/Media/Baja». Es un formato de datos cubierto por `tests/ticket-export.test.mjs`; en pantalla se usa Bajo/Medio/Alto/Urgente.
 5. **Marcador de datos `🔴 URGENTE`.** Se lee de observaciones históricas guardadas en BD; no se renderiza como icono.
-6. **JS por vista.** Las vistas en WARN dependen de librerías; bajarlas exige cambiar dependencias, algo que no estaba autorizado.
+6. **JS por vista.** Los 3 recorridos en WARN dependen de librerías (Supabase, dnd, xlsx) y de la capa de movimiento obligatoria; bajarlos exige cambiar dependencias o funciones, algo que no está autorizado.
 
 ## 8. Veredicto
 
 **APROBADO CON OBSERVACIONES.**
 
-Se resolvieron los 25 hallazgos: 19 corregidos, 4 corregidos con observación y 2 parciales. También se corrigieron los 8 hallazgos nuevos detectados en el camino. Las métricas automáticas de accesibilidad quedan en cero en 115 pantallas, y Emil cumple en todo lo verificable.
+Se resolvieron los 25 hallazgos: 19 corregidos, 4 corregidos con observación y 2 excepciones documentadas (H-01 y H-20, con todo lo accionable corregido y medido). También se corrigieron los 8 hallazgos nuevos detectados en el camino (H-29 queda como observación). Las métricas automáticas de accesibilidad quedan en cero en 115 pantallas, y Emil cumple en todo lo verificable.
 
 No se declara APROBADO por estas observaciones:
 
-- **(a)** El gate Taste del build corregido está en **OPEN 14**, no en PASS. Sus FAIL son reglas de landing incompatibles con la composición aprobada; las rondas están agotadas y el histórico OPEN 19 se conserva.
-- **(b)** Cuatro vistas superan el WARN de 450 KiB de JavaScript (ninguna llega al FAIL de 900).
+- **(a)** El gate Taste del build corregido está en **OPEN 14**, no en PASS. Los FAIL accionables se corrigieron (checker 48 → 43); los restantes son reglas de landing incompatibles con la composición aprobada. Las rondas están agotadas y el histórico OPEN 19 se conserva.
+- **(b)** Tres recorridos superan el WARN de 450 KiB de JavaScript (cliente acumulado 466,6, Kanban 567,9, importador 782,6; ninguno llega al FAIL de 900). Reducirlos exige cambiar dependencias.
 - **(c)** No hubo pruebas en dispositivos reales ni con lectores de pantalla.
 - **(d)** Toda la evidencia es de un build local con datos ficticios; el cambio **no está desplegado**.
 

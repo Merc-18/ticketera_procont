@@ -27,12 +27,37 @@ Según `gate.md`, con las rondas agotadas el gate queda OPEN y el agente debe de
 
 | Regla | Elemento | Motivo |
 |---|---|---|
-| `hero-fill`, `hero-screen` ×2, `one-section`, `section-height`, `section-air` | cabecera y accesos del portal | Taste pide una sección por pantalla y un hero a pantalla completa. El portal aprobado (D-033) es una mesa operativa: cabecera más dos tarjetas en la primera pantalla. Estirar a 100vh empuja los accesos bajo el pliegue y empeora la tarea principal. Es la excepción autorizada del 20/11 (T7) |
+| `hero-fill`, `hero-screen` ×2, `one-section`, `section-height` | cabecera y accesos del portal | Taste pide una sección por pantalla y un hero a pantalla completa. El portal aprobado (D-033) es una mesa operativa: cabecera más dos tarjetas en la primera pantalla. Estirar a 100vh empuja los accesos bajo el pliegue y empeora la tarea principal. Es la excepción autorizada del 20/11 (T7) |
 | `cta` ×2 | hero | Las acciones son las dos tarjetas que aprobó el usuario («Nueva Solicitud», «Rastrear Solicitud»), no botones dentro del hero |
 | `moment-none` | página | Taste pide un «momento» por página. Emil lo desaconseja en una interfaz de uso frecuente. Excepción autorizada (T11). Existe la entrada `m-enter` del kit |
 | `one-heading` | dos h2 de tarjeta | Las dos tarjetas son el contenido aprobado; un solo h2 ocultaría un acceso |
-| `container-edges` ×3 | hero, `.wrap` de 760 px, pie de versión | La medida de lectura de 760 px de la cabecera se mantiene a propósito; el pie de versión es metadato global |
-| `spill` | «© 2026 Procont Business» | Lo genera la misma medida de 760 px frente a la rejilla de tarjetas |
+| `container-edges` ×3 | hero, `.wrap` de 760 px, pie de versión | **Cierre: los 2 de la cabecera están corregidos** (ver §1b). Queda el pie de versión, metadato global (D-023), cubierto por waiver |
+| `spill` | «© 2026 Procont Business» | **Cierre: corregido** (venía de la misma medida de 760 px; ver §1b) |
+| `section-air` | línea superior del copyright | **Cierre: corregido** (separación por aire, sin línea; ver §1b) |
+
+## 1b. Cierre: FAIL accionables del gate corregidos sin cambiar la composición
+
+Las rondas del gate están agotadas y **no se reinician**. Para comprobar los ajustes se ejecutó el mismo checker (`consistency.mjs`) sobre `/portal` con las opciones del gate (`--page software`, la misma categoría y la misma acción principal, 1440 y 390 px), fuera de rondas, antes y después del cambio. El conteo es por ancho y sin waivers, así que no se compara con el «14» del gate, que agrupa por regla.
+
+| Ajuste | Regla | Antes → después |
+|---|---|---|
+| La medida de 760 px pasa del `.wrap` de la cabecera a un `div.hero-text`: todos los bloques comparten el mismo contenedor y el texto ocupa la misma posición | `container-edges` (cabecera: márgenes 80/600; «0 .hero-text»), `spill` | `container-edges` 12 → 9; los 9 restantes son exactamente los 4 elementos con waiver (`div#root`, pie de versión, h2 de cada tarjeta) en los dos anchos |
+| El copyright se separa con aire (72 px) en lugar de una línea superior | `section-air` (SR-3) | 3 → 0 |
+| **Total checker `/portal`** | — | **48 FAIL → 43 FAIL** (4 WARN sin cambio) |
+
+Logs: [antes](cierre/data/taste-gate/checker-portal-antes.log), [después](cierre/data/taste-gate/checker-portal-despues.log), [script](cierre/data/taste-gate/checker-portal.mjs). Capturas del portal después del ajuste: [`cierre/screenshots/*-01-portal.png`](cierre/screenshots/).
+
+**FAIL no accionables (y por qué):**
+
+| Regla | Lo que exige | Por qué no se aplica |
+|---|---|---|
+| `hero-fill`, `hero-screen`, `one-section`, `section-height` | Hero de 100svh solo; cada sección de una o dos pantallas exactas | Empujaría las dos tarjetas de acceso, que son la tarea principal, debajo del pliegue. Cambia la composición aprobada (D-033). Excepción autorizada T7 |
+| `cta` | Botón dentro del hero y en la sección de cierre | Las acciones aprobadas son las dos tarjetas («Nueva Solicitud», «Rastrear Solicitud»). Un botón extra duplicaría la acción |
+| `moment-none` | Un «momento» animado por página | Emil desaconseja animación decorativa en interfaz frecuente. Excepción autorizada T11 |
+| `one-heading` | Un solo h2 por sección | Hay dos tarjetas aprobadas con su h2; unirlas ocultaría un acceso |
+| `flush`, `container-edges` (waiver) | — | Cubiertos por los 5 waivers en `waivers.json` |
+
+**Estado del gate: sigue en `OPEN 14 (rounds used up)`.** No se reinicia ni se presenta como PASS. Todos los criterios accionables están corregidos con evidencia.
 
 ## 2. Checker `consistency.mjs` sobre otras rutas (fuera de rondas)
 
@@ -48,13 +73,13 @@ Todas las comprobaciones básicas del checker (contraste, foco, tamaños, idioma
 | # | Criterio | Antes | Después | Evidencia |
 |---|---|---|---|---|
 | T1 | Clase de negocio declarada | PASS | PASS | `index.html` |
-| T2 | Gate armado y ejecutado | PARTIAL | **PARTIAL**: gate sobre el portal, checker sobre `/cliente` y `/tracking`. El panel requiere sesión, así que se evalúa con la re-auditoría y no con el gate | §1–2 |
+| T2 | Gate armado y ejecutado | PARTIAL | **PARTIAL**: gate sobre el portal, checker sobre `/cliente` y `/tracking`. El panel requiere sesión, así que se evalúa con la re-auditoría y no con el gate | §1–2. No accionable: el gate no permite repetir rondas |
 | T3 | Terminar en PASS u OPEN con los FAIL en el informe | PARTIAL | **PASS** (OPEN 14 informado con waivers en `waivers.json`; no es `GATE: PASS`) | §1 |
-| T4 | Comprobar el build publicado y repetir tras cada cambio | FAIL | **PARTIAL**: gate sobre el build corregido; checker y re-auditoría repetidos tras las últimas correcciones. Las rondas del gate se agotaron antes de los ajustes residuales del panel, que no afectan al portal | §1–2 |
+| T4 | Comprobar el build publicado y repetir tras cada cambio | FAIL | **PARTIAL**: gate sobre el build corregido; checker (portal, cliente, tracking) y re-auditoría repetidos tras cada cambio posterior. El gate en sí no puede repetirse porque sus rondas están agotadas | §1–2, §1b |
 | T5 | Paleta y tipografía del cliente | PARTIAL | **PASS**: paleta oficial (D-037); tipografía `host` | `brand.ts` |
 | T6 | Kit y capa de movimiento | FAIL | **PASS**: `public/assets/motion/` sin editar; aliases del kit en `:root` | sha256 en el REPORT |
 | T7 | Una sección por pantalla; hero solo en la primera | FAIL (exc.) | **FAIL (excepción autorizada)** | §1 |
-| T8 | Bordes iguales | PARTIAL | **PARTIAL**: `container-edges` en la cabecera de 760 px | §1 |
+| T8 | Bordes iguales | PARTIAL | **PASS** (cierre): un solo contenedor por bloque; la medida de lectura va en `.hero-text`. Los `container-edges` que quedan son los 4 con waiver | §1b |
 | T9 | La tarjeta enlazada sube 2 px | PASS | PASS | `motion.hoverBeforeClick` −2 px |
 | T10 | Hover −1 px; presión +1 px y escala | PARTIAL | **PASS con incompatibilidad**: −1 px y `translateY(1px) scale(.98)`. Taste dice .985 y Emil .95–.98; se aplica .98 | `pressedTransform` |
 | T11 | Entrada del hero y momento | FAIL (exc.) | **FAIL (excepción autorizada)**: hay entrada `m-enter` pero no momento | §1 |
@@ -76,9 +101,9 @@ Todas las comprobaciones básicas del checker (contraste, foco, tamaños, idioma
 | T27 | Formularios: errores por campo, botón activo, estado | PARTIAL | **PASS** | H-11 |
 | T28 | Objetivos de 44 px | PARTIAL | **PASS** (los únicos < 24 px son el skip link oculto 1×1 y el input de archivo oculto) | ACCESSIBILITY_REPORT |
 | T29 | Nada fuera de pantalla a 320/390 | PASS | PASS | `overflow320` = 0 en 6 rutas |
-| T30 | Presupuesto JS 450/900 KiB | PARTIAL | **PARTIAL**: portal, `/tracking`, `/cliente/nuevo` directo y dashboard en PASS; cliente acumulado, bandeja, Kanban e importador en WARN (ninguno en FAIL) | PERFORMANCE_REPORT |
+| T30 | Presupuesto JS 450/900 KiB | PARTIAL | **PARTIAL** (cierre): portal, `/tracking`, `/cliente/nuevo` directo, dashboard y **bandeja** en PASS; cliente acumulado 466,6, Kanban 567,9 e importador 782,6 en WARN, ninguno en FAIL. No accionable sin cambiar dependencias (PERFORMANCE_REPORT) | [`cierre/data/browser-bundle.json`](cierre/data/browser-bundle.json) |
 | T31 | Cabecera con `og:*` | PARTIAL | **PASS** | `index.html`, `public/share.jpg` |
 | T32 | Copy y lint de copy | NO VERIFICADO | **PARTIAL**: el checker marca `copy-headline` en `/cliente` («¿Qué producto utilizas para ingresar?» no nombra el producto) y `copy-buttons` WARN («Buscar»). Son textos funcionales aprobados y se mantienen | logs |
 | T33 | Fotografía y escenas | N/A | N/A | — |
 
-**Totales Taste.** Antes: PASS 7 · PARTIAL 18 · FAIL 6 · NO VERIFICADO 1 · N/A 1. **Después: PASS 25 · PARTIAL 5 (T2, T4, T8, T30, T32) · FAIL 2 (T7 y T11, ambas excepciones autorizadas) · N/A 1.**
+**Totales Taste.** Antes: PASS 7 · PARTIAL 18 · FAIL 6 · NO VERIFICADO 1 · N/A 1. Corrección (`9fc4afa`): PASS 25 · PARTIAL 5 · FAIL 2 · N/A 1. **Cierre: PASS 26 · PARTIAL 4 (T2, T4, T30, T32: ninguno accionable sin romper una restricción; ver la tabla) · FAIL 2 (T7 y T11, excepciones autorizadas) · N/A 1.**

@@ -3,14 +3,9 @@ import { PRIORITY_LABEL } from '../../lib/constants'
 import Icon, { type IconName } from '../ui/Icon'
 import ScrollHint from '../ui/ScrollHint'
 import { DragDropContext, DropResult } from '@hello-pangea/dnd'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, lazy, Suspense } from 'react'
 import BoardColumn from './BoardColumn'
-import ProjectListView from './ProjectListView'
-import TableView from './TableView'
-import GanttView from './GanttView'
-import RoadmapView from './RoadmapView'
-import ProjectModal from '../projects/ProjectModal'
-import NewProjectModal from '../projects/NewProjectModal'
+import { preloadOnIntent } from '../../lib/client-routes'
 import { useProjects } from '../../hooks/useProjects'
 import { useUsers } from '../../hooks/useUsers'
 import { useAuth } from '../../hooks/useAuth'
@@ -22,6 +17,26 @@ import { useCatalogs } from '../../hooks/useCatalogs'
 import { board } from '../../lib/api'
 import { actionKey, needsPendingConfirmation, type BoardTicket, type Phase } from '../../lib/board'
 import { DoneConfirmDialog } from '../projects/BoardDialogs'
+
+// Vistas y modales secundarios del tablero en carga diferida (Taste perf.md: JS por vista). Se piden por
+// intención (puntero, foco o toque sobre el control que los abre) para que no haya intervalo vacío.
+const loadTableView = () => import('./TableView')
+const loadGanttView = () => import('./GanttView')
+const loadRoadmapView = () => import('./RoadmapView')
+const loadProjectListView = () => import('./ProjectListView')
+const loadProjectModal = () => import('../projects/ProjectModal')
+const loadNewProjectModal = () => import('../projects/NewProjectModal')
+const TableView = lazy(loadTableView)
+const GanttView = lazy(loadGanttView)
+const RoadmapView = lazy(loadRoadmapView)
+const ProjectListView = lazy(loadProjectListView)
+const ProjectModal = lazy(loadProjectModal)
+const NewProjectModal = lazy(loadNewProjectModal)
+const VIEW_LOADERS: Record<string, (() => Promise<unknown>) | undefined> = { table: loadTableView, gantt: loadGanttView, roadmap: loadRoadmapView }
+const STATUS_LOADERS: Record<string, (() => Promise<unknown>) | undefined> = { completed: loadProjectListView, archived: loadProjectListView }
+const noop = () => Promise.resolve()
+const preloadModal = () => { loadProjectModal().catch(() => undefined) }
+const viewLoading = <div role="status" className="py-12 text-center text-gray-600">Cargando vista…</div>
 
 
 type BoardType = 'development' | 'administrative'
@@ -303,6 +318,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
               key={opt.value}
               aria-pressed={statusFilter === opt.value}
               onClick={() => setStatusFilter(opt.value)}
+              {...preloadOnIntent(STATUS_LOADERS[opt.value] ?? noop)}
               className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${statusFilter === opt.value ? 'bg-brand-100 text-brand-700' : 'text-gray-600 hover:text-brand-700'}`}
             >
               <ControlLabel icon={opt.icon}>{opt.label}</ControlLabel>
@@ -416,6 +432,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
         {canManage && boardType === 'development' && (
           <button
             onClick={() => setShowNewModal(true)}
+            {...preloadOnIntent(loadNewProjectModal)}
             className="ml-auto ui-button ui-button-primary"
           >
             <ControlLabel icon="plus">Nuevo proyecto</ControlLabel>
@@ -427,6 +444,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
               key={vm.value}
               aria-pressed={viewMode === vm.value}
               onClick={() => setViewMode(vm.value)}
+              {...preloadOnIntent(VIEW_LOADERS[vm.value] ?? noop)}
               title={vm.label}
               className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${viewMode === vm.value ? 'bg-brand-100 text-brand-700' : 'text-gray-600 hover:text-brand-700'}`}
             >
@@ -436,6 +454,9 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
         </div>
       </div>
 
+      {/* Tarjetas y filas abren el modal del proyecto: se precarga al acercarse (delegación, sin caja). */}
+      <div className="contents" onPointerOver={preloadModal} onFocusCapture={preloadModal} onTouchStartCapture={preloadModal}>
+      <Suspense fallback={viewLoading}>
       {/* ── VISTA TABLA ── */}
       {viewMode === 'table' && (
         <TableView
@@ -511,6 +532,9 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
         />
       )}
 
+      </Suspense>
+      </div>
+
       {/* Cargar más */}
       {hasMore && (
         <div className="flex justify-center mt-4">
@@ -579,13 +603,13 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
 
       {/* Project Modal */}
       {selectedProject && (
-        <ProjectModal
+        <Suspense fallback={null}><ProjectModal
           project={selectedProject.project}
           flows={(selectedProject.project as any).project_flows || []}
           onClose={() => setSelectedProject(null)}
           onUpdate={reload}
           updateProject={updateProject}
-        />
+        /></Suspense>
       )}
 
       {pendingClose && (
@@ -595,10 +619,10 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
 
       {/* New Project Modal */}
       {showNewModal && (
-        <NewProjectModal
+        <Suspense fallback={null}><NewProjectModal
           onClose={() => setShowNewModal(false)}
           onCreate={createProject}
-        />
+        /></Suspense>
       )}
     </>
   )

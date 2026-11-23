@@ -52,3 +52,18 @@ Las mediciones son de la re-auditoría final ([`data/reaudit-results.json`](data
 
 - **Escala de presión.** Emil pide 0,95–0,98 y Taste pide .985 más 1 px. Se aplica `scale(.98)` más 1 px, dentro del rango que pidió el usuario. En Taste queda como «PASS con incompatibilidad» (T10).
 - **Momento por página.** Taste exige un momento asignado; Emil desaconseja animación decorativa en interfaz frecuente. Gana Emil, y en el gate Taste queda como FAIL de excepción autorizada (T11).
+
+## Cierre: criterios conservados (re-auditoría `202611231439`)
+
+Los cambios del cierre (carga diferida de vistas y modales del tablero y la bandeja; medida de la cabecera del portal en `.hero-text`; copyright sin línea) no añaden ni quitan animaciones. Los valores medidos coinciden con los de la corrección ([`cierre/data/reaudit-results.json`](cierre/data/reaudit-results.json)):
+
+| Medición | Valor |
+|---|---|
+| Hover antes del primer clic | `pointer`, 0,15 s, `transform, opacity, background-color, border-color, color, box-shadow`, −2 px |
+| Presión | `matrix(0.98, 0, 0, 0.98, 0, 1)` |
+| Movimiento reducido | `transform: none`; opacidad y colores con 0,15 s |
+| Foco con teclado | 54/54 paradas `tab-*` con anillo visible y `transition 0s` |
+
+**E18 (rendimiento percibido).** Las nuevas cargas diferidas se piden por intención (puntero, foco o toque sobre el control que las abre). Así, al abrir un modal o cambiar de vista normalmente el chunk ya está descargado. Si no lo está, el modal no muestra una pantalla intermedia (`fallback` nulo) y las vistas muestran «Cargando vista…» con `role=status`.
+
+**Totales Emil después del cierre: PASS 21 · NO VERIFICADO 2 (E22 y E23, sin cambios).**

@@ -1,0 +1,782 @@
+{
+ "assets/index-CnLsmMJb.js": {
+  "total": 377769,
+  "dynamicImports": [
+   "assets/ClientHome-CoLvvLcB.js",
+   "assets/RequestTracking-Dy_y2gPw.js",
+   "assets/ClientLaunch-DlS-kMT5.js",
+   "assets/ClientWorkspace-ByD_4EG7.js",
+   "assets/ClientNewTicket-v03a-79Z.js",
+   "assets/MyTickets-xkA8TmAF.js",
+   "assets/ClientTicketDetail-D-hhOUJo.js",
+   "assets/DashboardView-DLrichkM.js",
+   "assets/KanbanBoard-DPXYUkR3.js",
+   "assets/RequestInbox-CV1PFBRM.js",
+   "assets/UserManagementPanel-tNvHttH9.js",
+   "assets/WorkloadView-y2Laz0u1.js",
+   "assets/PapeleraView-BMg1fMxM.js",
+   "assets/CatalogsPanel-8unWzhFs.js",
+   "assets/LoginForm-CAcLKMYm.js"
+  ],
+  "mods": [
+   [
+    "npm:@supabase/auth-js",
+    243639
+   ],
+   [
+    "npm:react-dom",
+    133928
+   ],
+   [
+    "npm:@supabase/realtime-js",
+    94959
+   ],
+   [
+    "npm:@supabase/storage-js",
+    86470
+   ],
+   [
+    "npm:@supabase/postgrest-js",
+    47611
+   ],
+   [
+    "npm:@remix-run/router",
+    29661
+   ],
+   [
+    "npm:react-router",
+    21073
+   ],
+   [
+    "npm:@supabase/supabase-js",
+    15853
+   ],
+   [
+    "npm:iceberg-js",
+    15836
+   ],
+   [
+    "src/App.tsx",
+    13954
+   ],
+   [
+    "npm:react-router-dom",
+    11724
+   ],
+   [
+    "npm:@supabase/functions-js",
+    10134
+   ],
+   [
+    "npm:react",
+    8954
+   ],
+   [
+    "src/components/requests/PublicLanding.tsx",
+    8576
+   ],
+   [
+    "src/components/notifications/NotificationBell.tsx",
+    5524
+   ],
+   [
+    "npm:scheduler",
+    4574
+   ],
+   [
+    "src/components/ui/Icon.tsx",
+    3469
+   ],
+   [
+    "src/lib/auth-controller.ts",
+    3073
+   ],
+   [
+    "src/lib/supabase-errors.ts",
+    2999
+   ],
+   [
+    "src/hooks/useNotifications.ts",
+    2548
+   ],
+   [
+    "src/components/ui/InteractionMode.tsx",
+    2179
+   ],
+   [
+    "npm:tslib",
+    2160
+   ],
+   [
+    "\u0000vite/preload-helper.js",
+    1928
+   ],
+   [
+    "src/components/auth/ProtectedRoute.tsx",
+    1734
+   ],
+   [
+    "src/components/ui/ModalFocus.tsx",
+    1626
+   ],
+   [
+    "src/components/ui/ControlLabel.tsx",
+    1489
+   ],
+   [
+    "src/components/ErrorBoundary.tsx",
+    1416
+   ],
+   [
+    "src/lib/client-routes.ts",
+    1311
+   ],
+   [
+    "\u0000vite/modulepreload-polyfill.js",
+    1280
+   ],
+   [
+    "src/lib/supabase-config.ts",
+    1261
+   ],
+   [
+    "src/main.tsx",
+    1127
+   ],
+   [
+    "src/components/ui/Toaster.tsx",
+    1125
+   ],
+   [
+    "src/components/ui/BrandLogo.tsx",
+    1057
+   ],
+   [
+    "src/hooks/usePendingCount.ts",
+    1057
+   ],
+   [
+    "src/components/boards/BoardSelector.tsx",
+    1050
+   ],
+   [
+    "src/components/ui/PasswordField.tsx",
+    737
+   ],
+   [
+    "src/lib/access.ts",
+    723
+   ],
+   [
+    "src/lib/supabase.ts",
+    722
+   ],
+   [
+    "src/hooks/useAuth.ts",
+    462
+   ],
+   [
+    "src/lib/toast.ts",
+    448
+   ],
+   [
+    "src/components/ui/BuildVersion.tsx",
+    243
+   ],
+   [
+    "src/theme/brand.ts",
+    209
+   ],
+   [
+    "\u0000commonjsHelpers.js",
+    140
+   ],
+   [
+    "src/index.css",
+    0
+   ],
+   [
+    "index.html",
+    0
+   ]
+  ]
+ },
+ "assets/DashboardView-DLrichkM.js": {
+  "total": 19658,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/components/dashboard/DashboardView.tsx",
+    17625
+   ],
+   [
+    "src/components/metrics/UrgencyStatsPanel.tsx",
+    6729
+   ],
+   [
+    "src/lib/ticket-export.ts",
+    4472
+   ],
+   [
+    "src/hooks/useDashboardData.ts",
+    2785
+   ]
+  ]
+ },
+ "assets/KanbanBoard-DPXYUkR3.js": {
+  "total": 137331,
+  "dynamicImports": [
+   "assets/TableView-D1GJ04ty.js",
+   "assets/GanttView-Bybdi1-1.js",
+   "assets/RoadmapView-DHtTMOHQ.js",
+   "assets/ProjectListView-BmsGEhsZ.js",
+   "assets/ProjectModal-Ccrbpz4k.js",
+   "assets/NewProjectModal-DoWvGPtG.js"
+  ],
+  "mods": [
+   [
+    "npm:@hello-pangea/dnd",
+    189816
+   ],
+   [
+    "src/components/boards/KanbanBoard.tsx",
+    30336
+   ],
+   [
+    "npm:react-redux",
+    23898
+   ],
+   [
+    "src/components/projects/BoardDialogs.tsx",
+    10884
+   ],
+   [
+    "src/components/boards/ProjectCard.tsx",
+    10432
+   ],
+   [
+    "npm:redux",
+    6742
+   ],
+   [
+    "npm:react-is",
+    6169
+   ],
+   [
+    "npm:use-sync-external-store",
+    4893
+   ],
+   [
+    "src/hooks/useProjects.ts",
+    3771
+   ],
+   [
+    "npm:css-box-model",
+    3452
+   ],
+   [
+    "npm:hoist-non-react-statics",
+    2832
+   ],
+   [
+    "src/components/boards/BoardColumn.tsx",
+    2760
+   ],
+   [
+    "npm:@babel/runtime",
+    2254
+   ],
+   [
+    "npm:memoize-one",
+    1326
+   ],
+   [
+    "npm:use-memo-one",
+    1074
+   ],
+   [
+    "npm:raf-schd",
+    601
+   ],
+   [
+    "src/components/ui/ScrollHint.tsx",
+    280
+   ],
+   [
+    "npm:tiny-invariant",
+    118
+   ]
+  ]
+ },
+ "assets/RequestInbox-CV1PFBRM.js": {
+  "total": 12002,
+  "dynamicImports": [
+   "assets/PlannerImportModal-Bpe4shg3.js",
+   "assets/RequestValidationModal-CKGd0CSK.js"
+  ],
+  "mods": [
+   [
+    "src/components/requests/RequestInbox.tsx",
+    20421
+   ],
+   [
+    "src/hooks/useRequests.ts",
+    1493
+   ]
+  ]
+ },
+ "assets/UserManagementPanel-tNvHttH9.js": {
+  "total": 16028,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/components/admin/UserManagementPanel.tsx",
+    16672
+   ],
+   [
+    "src/components/admin/UserModal.tsx",
+    9981
+   ]
+  ]
+ },
+ "assets/WorkloadView-y2Laz0u1.js": {
+  "total": 6585,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/components/admin/WorkloadView.tsx",
+    10538
+   ]
+  ]
+ },
+ "assets/useUsers-C5F0yqzm.js": {
+  "total": 3493,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/hooks/useUsers.ts",
+    3699
+   ],
+   [
+    "src/lib/account-admin.ts",
+    1454
+   ]
+  ]
+ },
+ "assets/PapeleraView-BMg1fMxM.js": {
+  "total": 4864,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/components/admin/PapeleraView.tsx",
+    7989
+   ]
+  ]
+ },
+ "assets/CatalogsPanel-8unWzhFs.js": {
+  "total": 12496,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/components/admin/CatalogsPanel.tsx",
+    13169
+   ],
+   [
+    "src/components/admin/AreasPanel.tsx",
+    8101
+   ]
+  ]
+ },
+ "assets/LoginForm-CAcLKMYm.js": {
+  "total": 2278,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/components/auth/LoginForm.tsx",
+    3872
+   ]
+  ]
+ },
+ "assets/ClientHome-CoLvvLcB.js": {
+  "total": 5170,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/components/client/ClientHome.tsx",
+    8573
+   ]
+  ]
+ },
+ "assets/RequestTracking-Dy_y2gPw.js": {
+  "total": 3233,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/components/requests/RequestTracking.tsx",
+    5435
+   ],
+   [
+    "src/lib/tracking-handoff.ts",
+    124
+   ]
+  ]
+ },
+ "assets/ClientLaunch-DlS-kMT5.js": {
+  "total": 3068,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/components/client/ClientLaunch.tsx",
+    4994
+   ]
+  ]
+ },
+ "assets/ClientNewTicket-v03a-79Z.js": {
+  "total": 15342,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/components/requests/PublicRequestForm.tsx",
+    23543
+   ],
+   [
+    "src/components/client/ClientNewTicket.tsx",
+    2543
+   ]
+  ]
+ },
+ "assets/api-BLtmPmrR.js": {
+  "total": 11151,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/lib/operations.ts",
+    6088
+   ],
+   [
+    "src/lib/board.ts",
+    4485
+   ],
+   [
+    "src/lib/metrics-adapter.ts",
+    3627
+   ],
+   [
+    "contracts/board-operations-client.mjs",
+    2627
+   ],
+   [
+    "src/lib/api.ts",
+    131
+   ]
+  ]
+ },
+ "assets/ClientTicketDetail-D-hhOUJo.js": {
+  "total": 4577,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/components/client/ClientTicketDetail.tsx",
+    7254
+   ]
+  ]
+ },
+ "assets/MyTickets-xkA8TmAF.js": {
+  "total": 7343,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/components/client/MyTickets.tsx",
+    10055
+   ],
+   [
+    "src/components/client/useSubprojectNames.ts",
+    1194
+   ],
+   [
+    "src/components/client/ClientTicketStatus.tsx",
+    568
+   ]
+  ]
+ },
+ "assets/RequestedPriority-ByBgdyU8.js": {
+  "total": 442,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/components/requests/RequestedPriority.tsx",
+    527
+   ]
+  ]
+ },
+ "assets/ClientWorkspace-ByD_4EG7.js": {
+  "total": 4184,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/components/client/ClientWorkspace.tsx",
+    6729
+   ]
+  ]
+ },
+ "assets/useCatalogs-CDDkePlp.js": {
+  "total": 1716,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/hooks/useCatalogs.ts",
+    2732
+   ]
+  ]
+ },
+ "assets/client-session-store-mLQlkwt-.js": {
+  "total": 12657,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/lib/client-portal.ts",
+    15848
+   ],
+   [
+    "contracts/client-access-client.mjs",
+    2966
+   ],
+   [
+    "src/lib/client-session-store.ts",
+    703
+   ],
+   [
+    "src/lib/client-portal-api.ts",
+    584
+   ],
+   [
+    "src/components/client/MockBanner.tsx",
+    40
+   ]
+  ]
+ },
+ "assets/client-request-data-DPr4ph1Q.js": {
+  "total": 81,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/lib/client-request-data.ts",
+    95
+   ]
+  ]
+ },
+ "assets/ticket-security-client-4vZ5a1UD.js": {
+  "total": 1901,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "contracts/ticket-security-client.mjs",
+    1477
+   ],
+   [
+    "src/lib/request-status.ts",
+    1099
+   ]
+  ]
+ },
+ "assets/TableView-D1GJ04ty.js": {
+  "total": 6919,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/components/boards/TableView.tsx",
+    11168
+   ]
+  ]
+ },
+ "assets/GanttView-Bybdi1-1.js": {
+  "total": 6894,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/components/boards/GanttView.tsx",
+    11422
+   ]
+  ]
+ },
+ "assets/RoadmapView-DHtTMOHQ.js": {
+  "total": 5607,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/components/boards/RoadmapView.tsx",
+    9515
+   ]
+  ]
+ },
+ "assets/ProjectListView-BmsGEhsZ.js": {
+  "total": 2940,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/components/boards/ProjectListView.tsx",
+    4908
+   ]
+  ]
+ },
+ "assets/ProjectModal-Ccrbpz4k.js": {
+  "total": 32846,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/components/projects/ProjectModal.tsx",
+    34216
+   ],
+   [
+    "src/components/projects/ChecklistSection.tsx",
+    10635
+   ],
+   [
+    "src/components/projects/CommentsSection.tsx",
+    8720
+   ],
+   [
+    "src/components/projects/EvidenceSection.tsx",
+    4258
+   ],
+   [
+    "src/hooks/useChecklist.ts",
+    2434
+   ],
+   [
+    "src/hooks/useBoardTicket.ts",
+    538
+   ],
+   [
+    "src/lib/notifications.ts",
+    403
+   ]
+  ]
+ },
+ "assets/AttachmentPicker-DDRsn9Wv.js": {
+  "total": 5599,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/components/requests/AttachmentPicker.tsx",
+    5509
+   ],
+   [
+    "src/lib/attachment-prep.ts",
+    4030
+   ]
+  ]
+ },
+ "assets/NewProjectModal-DoWvGPtG.js": {
+  "total": 6299,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/components/projects/NewProjectModal.tsx",
+    10808
+   ]
+  ]
+ },
+ "assets/PlannerImportModal-Bpe4shg3.js": {
+  "total": 343053,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "npm:xlsx",
+    709932
+   ],
+   [
+    "src/components/requests/PlannerImportModal.tsx",
+    17982
+   ]
+  ]
+ },
+ "assets/useAreas-CAUs4t2p.js": {
+  "total": 1286,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/hooks/useAreas.ts",
+    2173
+   ]
+  ]
+ },
+ "assets/AreaInput-DEBZgqGz.js": {
+  "total": 636,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/components/ui/AreaInput.tsx",
+    994
+   ]
+  ]
+ },
+ "assets/RequestValidationModal-CKGd0CSK.js": {
+  "total": 14663,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/components/requests/RequestValidationModal.tsx",
+    22015
+   ],
+   [
+    "src/components/metrics/RequesterUrgencySummary.tsx",
+    2307
+   ]
+  ]
+ },
+ "assets/MetricState-Ph1W5DNA.js": {
+  "total": 464,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/components/metrics/MetricState.tsx",
+    652
+   ]
+  ]
+ },
+ "assets/constants-DVLY2EY1.js": {
+  "total": 1001,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/lib/constants.ts",
+    1253
+   ]
+  ]
+ },
+ "assets/RequestTimeline-BvvpiNJD.js": {
+  "total": 7792,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/components/requests/RequestTimeline.tsx",
+    10808
+   ]
+  ]
+ },
+ "assets/attachments-Cq3Fl6uf.js": {
+  "total": 1710,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/lib/attachment-delivery.ts",
+    1457
+   ],
+   [
+    "src/lib/attachments.ts",
+    1073
+   ]
+  ]
+ },
+ "assets/rpc-attempt-B1DJ_B50.js": {
+  "total": 551,
+  "dynamicImports": [],
+  "mods": [
+   [
+    "src/lib/rpc-attempt.ts",
+    1074
+   ]
+  ]
+ }
+}

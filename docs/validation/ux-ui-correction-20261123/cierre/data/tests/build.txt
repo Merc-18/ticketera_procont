@@ -1,0 +1,54 @@
+
+> ticketera-controlling@1.0.0 build
+> tsc && vite build
+
+vite v5.4.21 building for production...
+transforming...
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✓ 235 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                   1.65 kB │ gzip:   0.71 kB
+dist/assets/index-CxnUXDsS.css                   56.89 kB │ gzip:  11.20 kB
+dist/assets/client-request-data-DPr4ph1Q.js       0.08 kB │ gzip:   0.10 kB
+dist/assets/RequestedPriority-Bk29NM9m.js         0.44 kB │ gzip:   0.28 kB
+dist/assets/MetricState-nKW976dp.js               0.46 kB │ gzip:   0.30 kB
+dist/assets/rpc-attempt-B1DJ_B50.js               0.55 kB │ gzip:   0.38 kB
+dist/assets/AreaInput-pmgRZ88C.js                 0.64 kB │ gzip:   0.39 kB
+dist/assets/constants-DVLY2EY1.js                 1.00 kB │ gzip:   0.56 kB
+dist/assets/useAreas-DDL7_XWk.js                  1.29 kB │ gzip:   0.71 kB
+dist/assets/attachments-BPoBMzW8.js               1.71 kB │ gzip:   0.96 kB
+dist/assets/useCatalogs-DV7oQUTr.js               1.72 kB │ gzip:   0.79 kB
+dist/assets/ticket-security-client-4vZ5a1UD.js    1.90 kB │ gzip:   0.96 kB
+dist/assets/LoginForm-Q3dACCoP.js                 2.28 kB │ gzip:   0.99 kB
+dist/assets/ProjectListView-ChGbkNhI.js           2.94 kB │ gzip:   1.20 kB
+dist/assets/ClientLaunch-DWLn0be3.js              3.07 kB │ gzip:   1.31 kB
+dist/assets/RequestTracking-D1BBMwa-.js           3.23 kB │ gzip:   1.48 kB
+dist/assets/useUsers-CYXZXMb2.js                  3.49 kB │ gzip:   1.69 kB
+dist/assets/ClientWorkspace-M3oTv3IH.js           4.18 kB │ gzip:   1.81 kB
+dist/assets/ClientTicketDetail-ClKSmKTF.js        4.58 kB │ gzip:   1.76 kB
+dist/assets/PapeleraView-DOtpTVxY.js              4.86 kB │ gzip:   1.76 kB
+dist/assets/ClientHome-ChL6HmcI.js                5.17 kB │ gzip:   2.13 kB
+dist/assets/AttachmentPicker-DO3QQXd4.js          5.60 kB │ gzip:   2.56 kB
+dist/assets/RoadmapView-0NX3-j7u.js               5.61 kB │ gzip:   1.97 kB
+dist/assets/NewProjectModal-Dp8E2W5I.js           6.30 kB │ gzip:   1.79 kB
+dist/assets/WorkloadView-DLEItHFV.js              6.59 kB │ gzip:   2.42 kB
+dist/assets/GanttView-l38pe2yA.js                 6.89 kB │ gzip:   2.66 kB
+dist/assets/TableView-DmGaAxlc.js                 6.92 kB │ gzip:   2.58 kB
+dist/assets/MyTickets-B5aqcuHk.js                 7.34 kB │ gzip:   2.84 kB
+dist/assets/RequestTimeline-14Go--cx.js           7.79 kB │ gzip:   3.12 kB
+dist/assets/api-CFOV_mW9.js                      11.15 kB │ gzip:   4.34 kB
+dist/assets/CatalogsPanel-BcBMLgZq.js            12.50 kB │ gzip:   3.69 kB
+dist/assets/client-session-store-CuFIjwfN.js     12.66 kB │ gzip:   4.54 kB
+dist/assets/RequestInbox-B95mi_8c.js             12.72 kB │ gzip:   3.74 kB
+dist/assets/RequestValidationModal-LsPOXWbK.js   14.66 kB │ gzip:   4.43 kB
+dist/assets/ClientNewTicket-DLI3302e.js          15.34 kB │ gzip:   5.22 kB
+dist/assets/UserManagementPanel-GCF8z0Ui.js      16.03 kB │ gzip:   4.59 kB
+dist/assets/DashboardView-BcQWvbR-.js            19.66 kB │ gzip:   6.38 kB
+dist/assets/ProjectModal-BvUDiOm5.js             32.85 kB │ gzip:   9.94 kB
+dist/assets/KanbanBoard-29IyUULr.js             138.16 kB │ gzip:  42.07 kB
+dist/assets/PlannerImportModal-DkALKgsz.js      343.05 kB │ gzip: 117.38 kB
+dist/assets/index-B_X1PAqM.js                   378.94 kB │ gzip: 113.02 kB
+✓ built in 2.00s

@@ -14,20 +14,41 @@ Para que la carga diferida no se note, las rutas se precargan por intención (`p
 
 ## Presupuesto por vista (KiB de script)
 
-| Vista | Auditoría | **Final** | Veredicto |
+| Vista | Auditoría | Corrección (`9fc4afa`) | **Cierre** | Veredicto |
+|---|---|---|---|---|
+| Portal (inicial, tras scroll) | 442,4 | 393,2 | **393,1** | PASS |
+| `/tracking` (carga en frío) | 442,4 | 386,3 | **386,3** | PASS |
+| `/cliente/nuevo` (carga directa con sesión) | 442,4 | 436,2 | **436,2** | PASS |
+| Dashboard | 463 | 429,6 | **429,6** | PASS |
+| Bandeja (antes de importar) | 500 | 469,7 WARN | **445,9** | **PASS** (antes WARN) |
+| Cliente autenticado (recorrido acumulado) | 442,4 | 466,7 | 466,6 | WARN |
+| Kanban | 667 | 640,5 | **567,9** | WARN |
+| Importador Planner abierto | 836 | 805,9 | **782,6** | WARN |
+
+Ninguna vista llega a FAIL (900 KiB). Fuente del cierre: [`cierre/data/browser-bundle.json`](cierre/data/browser-bundle.json) (UX sobre build de producción, 36/36). Los recorridos del panel son **acumulativos**: el personal entra desde el portal, así que la bandeja y el Kanban incluyen el portal, la capa de movimiento y el dashboard.
+
+## Cierre: optimizaciones seguras aplicadas
+
+Composición medida por módulo antes y después: [`cierre/data/chunk-modules-antes.json`](cierre/data/chunk-modules-antes.json) y [`-despues.json`](cierre/data/chunk-modules-despues.json); el script es [`cierre/data/analyze.mjs`](cierre/data/analyze.mjs).
+
+| Cambio (sin dependencias nuevas ni funciones retiradas) | Efecto |
+|---|---|
+| Tabla, Gantt, Roadmap y la lista de completados/archivados del tablero en carga diferida; precarga al acercar el puntero, el foco o el toque a su botón | Chunk `KanbanBoard` 191,4 → 134,1 KB |
+| Modal de proyecto (32,9 KB) y de nuevo proyecto (6,3 KB) diferidos; precarga al acercarse a una tarjeta o fila, o a «Nuevo proyecto» | idem |
+| Modal de validación de la bandeja (14,7 KB) diferido; precarga al acercarse a la lista de solicitudes, no al botón del importador | Chunk `RequestInbox` 25,6 → 12,7 KB; bandeja **PASS** |
+
+Las pruebas UX que abren estos modales y vistas (validación, modal de proyecto, arrastre cancelado y vistas del tablero) pasan sobre el build de producción.
+
+## Por qué no se puede reducir más sin cambiar dependencias
+
+| Recorrido en WARN | Qué lo compone (KiB decodificados) | Opción evaluada | Decisión |
 |---|---|---|---|
-| Portal (inicial, tras scroll) | 442,4 | **393,2** | PASS |
-| `/tracking` (carga en frío) | 442,4 | **386,3** | PASS |
-| `/cliente/nuevo` (carga directa con sesión) | 442,4 | **436,2** | PASS |
-| Cliente autenticado (recorrido acumulado) | 442,4 | 466,7 | WARN: +24 KiB por la capa de movimiento obligatoria del kit (T6) |
-| Dashboard | 463 | **429,6** | PASS |
-| Bandeja (antes de importar) | 500 | 469,7 | WARN |
-| Kanban | 667 | 640,5 | WARN |
-| Importador Planner abierto | 836 | 805,9 | WARN |
+| Cliente autenticado 466,6 | Inicial 370,3 + capa de movimiento 22,8 + espacio del cliente 73,5 | Quitar la precarga de «Mis tickets» y del detalle (−12) | Seguiría en WARN (≈ 454) y empeoraría la navegación (Emil E18). Se mantiene. La capa de movimiento es obligatoria (T6) y no se edita |
+| Kanban 567,9 | Inicial 370,3 + capa 22,8 + dashboard 37 + tablero 135 (≈ 80 % `@hello-pangea/dnd` y `react-redux`) | Sustituir o quitar el arrastre | Cambia una dependencia y una función. No autorizado |
+| Importador 782,6 | Lo anterior más `xlsx` 335,5 | Usar `xlsx.mini` (250 KB) | No lee `.xls`, que el importador acepta (`accept=".xlsx,.xls"`): quita una función. Descartado |
+| Inicial 370 (todas) | Supabase auth 238 + realtime 93 + storage 84 + postgrest 47 (sin minificar), react-dom 131, router 61 | Cargar el cliente de Supabase de forma diferida | Lo usan de forma síncrona casi todos los hooks; sería una refactorización amplia con riesgo funcional, fuera del alcance «seguro». Sin cambio |
 
-Ninguna vista llega a FAIL (900 KiB).
-
-**WARN restantes.** En las vistas internas lo que queda es código de librerías que la app usa: `@supabase/supabase-js` con realtime (notificaciones), `react-router`, `react-dom`, `@hello-pangea/dnd` (Kanban) y `xlsx` (importador, ya diferido). Bajarlo exige cambiar o sustituir dependencias, y el encargo prohibía hacerlo sin autorización. Queda como H-20 PARCIAL.
+**Conclusión:** los tres WARN restantes están por debajo de 900 KiB (el máximo es 782,6) y reducirlos exige cambiar dependencias o retirar funciones. Se documenta como excepción (H-20) y se conserva el rendimiento actual.
 
 ## Estabilidad y pintado (re-auditoría)
 

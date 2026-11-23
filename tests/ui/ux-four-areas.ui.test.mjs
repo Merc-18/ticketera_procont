@@ -314,7 +314,8 @@ for (const size of ['desktop', 'movil']) {
     const manifest = JSON.parse(readFileSync(`${BUILD_DIR}/.vite/manifest.json`, 'utf8'))
     const plannerFile = manifest['src/components/requests/PlannerImportModal.tsx'].file
     const dashboardFile = manifest['src/components/dashboard/DashboardView.tsx'].file
-    const boardFile = manifest['src/components/boards/KanbanBoard.tsx'].file
+    // Con vistas diferidas que reutilizan su código, Vite indexa la entrada dinámica del tablero por nombre de chunk.
+    const boardFile = (manifest['src/components/boards/KanbanBoard.tsx'] ?? Object.values(manifest).find(e => e.isDynamicEntry && e.name === 'KanbanBoard')).file
     let probe
     const page = await open(SIZES[size], async page => { probe = await observeScripts(page) })
     const sample = async label => {

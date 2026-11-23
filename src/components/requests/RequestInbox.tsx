@@ -7,11 +7,14 @@ import { useAuth } from '../../hooks/useAuth'
 import type { Request } from '../../types/database.types'
 import ModalFocus from '../ui/ModalFocus'
 import { useCatalogs } from '../../hooks/useCatalogs'
-import RequestValidationModal from './RequestValidationModal'
 import Icon from '../ui/Icon'
 
 // XLSX solo forma parte de la descarga iniciada al abrir el importador.
 const PlannerImportModal = lazy(() => import('./PlannerImportModal'))
+// Modal de validación diferido (JS por vista); se pide al acercarse a una solicitud (puntero, foco o toque).
+const loadValidationModal = () => import('./RequestValidationModal')
+const RequestValidationModal = lazy(loadValidationModal)
+const preloadValidation = () => { loadValidationModal().catch(() => undefined) }
 
 const isUrgent = (r: Request) => !!r.urgent_requested || !!r.observations?.startsWith('🔴 URGENTE')
 
@@ -142,7 +145,7 @@ export default function RequestInbox() {
       </div>
 
       {/* Request List */}
-      <div className="grid gap-4">
+      <div className="grid gap-4" onPointerOver={preloadValidation} onFocusCapture={preloadValidation} onTouchStartCapture={preloadValidation}>
         {/* ── Pendientes ── */}
         {activeTab === 'pending' && (
           pendingRequests.length === 0 ? (
@@ -299,7 +302,7 @@ export default function RequestInbox() {
       </div>
 
       {selected && (
-        <RequestValidationModal
+        <Suspense fallback={null}><RequestValidationModal
           key={selected.request.id}
           request={selected.request}
           initialMode={selected.mode}
@@ -309,7 +312,7 @@ export default function RequestInbox() {
           onApprove={async (id, data, attempt) => { await approveRequest(id, data, attempt) }}
           onReject={rejectRequest}
           onClose={() => { setSelected(null); void reload() }}
-        />
+        /></Suspense>
       )}
 
       {/* Planner Import Modal */}

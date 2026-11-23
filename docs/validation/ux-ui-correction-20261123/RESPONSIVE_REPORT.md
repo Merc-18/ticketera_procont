@@ -30,3 +30,9 @@ Las 115 pantallas tienen `overflow 0` ([`data/reaudit-results.json`](data/reaudi
 Se revisaron las capturas de las cuatro áreas en los cinco anchos. No hay texto de interfaz cortado; las métricas `overflow` y la inspección de capturas coinciden. No hay solapamientos ni contenido fuera del contenedor. Manifiesto completo con sha256 por captura: [`screenshots-manifest.json`](screenshots-manifest.json).
 
 **Limitación.** Solo se usó Chromium emulado; no se probó en dispositivos físicos ni en Safari o Firefox.
+
+## Cierre
+
+La re-auditoría `202611231439` mantiene 0 desbordamiento en las 115 pantallas y en las 6 rutas a 320 px. Se añadieron 45 capturas, solo de las vistas modificadas, en los 5 anchos: portal, selección del cliente, bandeja, modal de validación, Kanban, Tabla, Gantt, Roadmap y modal de proyecto. Están en [`cierre/screenshots/`](cierre/screenshots/), con sha256 en [`cierre/screenshots-manifest.json`](cierre/screenshots-manifest.json).
+
+El ajuste del portal (medida en `.hero-text`) no cambia la posición del texto en ningún ancho: el texto sigue empezando en el mismo borde que las tarjetas y conserva la medida de 760 px. En móvil, la medida no interviene porque el contenedor es más estrecho.
