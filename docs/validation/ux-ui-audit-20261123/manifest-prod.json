@@ -1,0 +1,307 @@
+{
+ "kind": "PRODUCCIÓN real (solo lectura, sin credenciales ni envíos)",
+ "base": "https://ticketera-procont.vercel.app",
+ "version": "Versión 202611231118",
+ "captures": [
+  {
+   "file": "desktop-01-portal.png",
+   "route": "/portal",
+   "version": "Versión 202611231118",
+   "resolution": "1920x1080",
+   "area": "Portal",
+   "screen": "01-portal",
+   "date": "2026-11-23T16:41:13.108Z",
+   "sha256": "e94ec74857a66db4b59258a305113ac938dd691adcb661e7267d895a88b50951"
+  },
+  {
+   "file": "desktop-02-seleccion.png",
+   "route": "/cliente",
+   "version": "Versión 202611231118",
+   "resolution": "1920x1080",
+   "area": "Ingreso",
+   "screen": "02-seleccion",
+   "date": "2026-11-23T16:41:14.134Z",
+   "sha256": "969cb27a697376ce04f205c3ae5935e8f8c193ae40fe333f34c8193bcd4ddd55"
+  },
+  {
+   "file": "desktop-03-quipu.png",
+   "route": "/cliente",
+   "version": "Versión 202611231118",
+   "resolution": "1920x1080",
+   "area": "Ingreso",
+   "screen": "03-quipu",
+   "date": "2026-11-23T16:41:14.694Z",
+   "sha256": "1ae8bd2e8bcf1f63b3a5d9f8f19432fc99d73f15804264818527020bbc4849af"
+  },
+  {
+   "file": "desktop-04-quipufac.png",
+   "route": "/cliente",
+   "version": "Versión 202611231118",
+   "resolution": "1920x1080",
+   "area": "Ingreso",
+   "screen": "04-quipufac",
+   "date": "2026-11-23T16:41:15.306Z",
+   "sha256": "42167dc75d472cab18c340cae0285aa8014751a9d809994ede8783a79cbfeab2"
+  },
+  {
+   "file": "desktop-05-seguimiento-publico.png",
+   "route": "/tracking",
+   "version": "Versión 202611231118",
+   "resolution": "1920x1080",
+   "area": "Cliente",
+   "screen": "05-seguimiento-publico",
+   "date": "2026-11-23T16:41:16.332Z",
+   "sha256": "ca9fdd176b14a278b5f6765c6eefa5968258da777e9c8f31108dc0ff16d4eb24"
+  },
+  {
+   "file": "desktop-06-ingreso-personal-modal.png",
+   "route": "/portal",
+   "version": "Versión 202611231118",
+   "resolution": "1920x1080",
+   "area": "Panel interno",
+   "screen": "06-ingreso-personal-modal",
+   "date": "2026-11-23T16:41:17.789Z",
+   "sha256": "67a748a6df0e740ce42fbb9dae73dff3a5b6006f06a94e9983fe778c8b7b7d27"
+  },
+  {
+   "file": "laptop-01-portal.png",
+   "route": "/portal",
+   "version": "Versión 202611231118",
+   "resolution": "1440x900",
+   "area": "Portal",
+   "screen": "01-portal",
+   "date": "2026-11-23T16:41:19.266Z",
+   "sha256": "5069d1cf097fd724bd93dcd813180669f4ddf795bf1d61e56ad83cdf109e15e3"
+  },
+  {
+   "file": "laptop-02-seleccion.png",
+   "route": "/cliente",
+   "version": "Versión 202611231118",
+   "resolution": "1440x900",
+   "area": "Ingreso",
+   "screen": "02-seleccion",
+   "date": "2026-11-23T16:41:20.311Z",
+   "sha256": "dda4b9a845ccf7ec030276794f08ef28bf4a991b77b95a9296273613af5863eb"
+  },
+  {
+   "file": "laptop-03-quipu.png",
+   "route": "/cliente",
+   "version": "Versión 202611231118",
+   "resolution": "1440x900",
+   "area": "Ingreso",
+   "screen": "03-quipu",
+   "date": "2026-11-23T16:41:20.852Z",
+   "sha256": "fb725bf4f366bf3f3ab2583a8ab8325cd323f1f35570be7c21323d7dca32ec4a"
+  },
+  {
+   "file": "laptop-04-quipufac.png",
+   "route": "/cliente",
+   "version": "Versión 202611231118",
+   "resolution": "1440x900",
+   "area": "Ingreso",
+   "screen": "04-quipufac",
+   "date": "2026-11-23T16:41:21.484Z",
+   "sha256": "eb1a29a27291c065a4f7db330e701c45cd353255c434d7b9ed6e8fb9cd73fc63"
+  },
+  {
+   "file": "laptop-05-seguimiento-publico.png",
+   "route": "/tracking",
+   "version": "Versión 202611231118",
+   "resolution": "1440x900",
+   "area": "Cliente",
+   "screen": "05-seguimiento-publico",
+   "date": "2026-11-23T16:41:22.508Z",
+   "sha256": "88059395f0f3373669bf46db241ce12c5459e0206a91738692c8229c986fd7d1"
+  },
+  {
+   "file": "laptop-06-ingreso-personal-modal.png",
+   "route": "/portal",
+   "version": "Versión 202611231118",
+   "resolution": "1440x900",
+   "area": "Panel interno",
+   "screen": "06-ingreso-personal-modal",
+   "date": "2026-11-23T16:41:23.980Z",
+   "sha256": "d94fee79b46e4a612d4ebfe2c04cde6fa99e655617398adbefb0d0f1a2c3bbd4"
+  },
+  {
+   "file": "tablet-01-portal.png",
+   "route": "/portal",
+   "version": "Versión 202611231118",
+   "resolution": "768x1024",
+   "area": "Portal",
+   "screen": "01-portal",
+   "date": "2026-11-23T16:41:25.732Z",
+   "sha256": "760bb362f8e5a37dac8301d0c1a4ace9b762c6df6cc9026fe73bab10cc69573d"
+  },
+  {
+   "file": "tablet-02-seleccion.png",
+   "route": "/cliente",
+   "version": "Versión 202611231118",
+   "resolution": "768x1024",
+   "area": "Ingreso",
+   "screen": "02-seleccion",
+   "date": "2026-11-23T16:41:26.731Z",
+   "sha256": "12c99513d8f750bedb1be9fb91674b2be299763163edb953d1c31d4e56881718"
+  },
+  {
+   "file": "tablet-03-quipu.png",
+   "route": "/cliente",
+   "version": "Versión 202611231118",
+   "resolution": "768x1024",
+   "area": "Ingreso",
+   "screen": "03-quipu",
+   "date": "2026-11-23T16:41:27.275Z",
+   "sha256": "2895370d79d964d0cb46804805564b5296ca90f82ac0956fe42ccd318e220086"
+  },
+  {
+   "file": "tablet-04-quipufac.png",
+   "route": "/cliente",
+   "version": "Versión 202611231118",
+   "resolution": "768x1024",
+   "area": "Ingreso",
+   "screen": "04-quipufac",
+   "date": "2026-11-23T16:41:27.874Z",
+   "sha256": "531393194f60f4f5ea1bd96995777a4c8cb757aa6e1004deccc6ddd2d94398b7"
+  },
+  {
+   "file": "tablet-05-seguimiento-publico.png",
+   "route": "/tracking",
+   "version": "Versión 202611231118",
+   "resolution": "768x1024",
+   "area": "Cliente",
+   "screen": "05-seguimiento-publico",
+   "date": "2026-11-23T16:41:28.886Z",
+   "sha256": "4bb2c4bd1a5b27e8d0e69e1f0d5805b5fee3d4f1b3966e9851772f39388c6fbb"
+  },
+  {
+   "file": "tablet-06-ingreso-personal-modal.png",
+   "route": "/portal",
+   "version": "Versión 202611231118",
+   "resolution": "768x1024",
+   "area": "Panel interno",
+   "screen": "06-ingreso-personal-modal",
+   "date": "2026-11-23T16:41:30.340Z",
+   "sha256": "88453c0d3b29ffb0d3437f8f3f376874a2d69a55847810f246835043999ad009"
+  },
+  {
+   "file": "movil-01-portal.png",
+   "route": "/portal",
+   "version": "Versión 202611231118",
+   "resolution": "390x844",
+   "area": "Portal",
+   "screen": "01-portal",
+   "date": "2026-11-23T16:41:31.751Z",
+   "sha256": "a18421888317f84bc9895f34eebc84c1e2daf8d17d57e7ab8bc36367b2d3f0a2"
+  },
+  {
+   "file": "movil-02-seleccion.png",
+   "route": "/cliente",
+   "version": "Versión 202611231118",
+   "resolution": "390x844",
+   "area": "Ingreso",
+   "screen": "02-seleccion",
+   "date": "2026-11-23T16:41:32.767Z",
+   "sha256": "132d714c5c1328f4b34026fdae45ec8addedb18a464939a8275a3d2e6212b08b"
+  },
+  {
+   "file": "movil-03-quipu.png",
+   "route": "/cliente",
+   "version": "Versión 202611231118",
+   "resolution": "390x844",
+   "area": "Ingreso",
+   "screen": "03-quipu",
+   "date": "2026-11-23T16:41:33.304Z",
+   "sha256": "b53f1cc550e2d325a5697dfbd456ca4742eb333c3bbb1b96eb4fba9c3f26581b"
+  },
+  {
+   "file": "movil-04-quipufac.png",
+   "route": "/cliente",
+   "version": "Versión 202611231118",
+   "resolution": "390x844",
+   "area": "Ingreso",
+   "screen": "04-quipufac",
+   "date": "2026-11-23T16:41:33.920Z",
+   "sha256": "0afb3d461088031968605358b6c9c8a0a8a423e5a215ee807dd8d130414f20c3"
+  },
+  {
+   "file": "movil-05-seguimiento-publico.png",
+   "route": "/tracking",
+   "version": "Versión 202611231118",
+   "resolution": "390x844",
+   "area": "Cliente",
+   "screen": "05-seguimiento-publico",
+   "date": "2026-11-23T16:41:34.915Z",
+   "sha256": "ed352d4ed3939c8e005f1c361e7476f43afd88ffb4be26a0cb4d451390daa787"
+  },
+  {
+   "file": "movil-06-ingreso-personal-modal.png",
+   "route": "/portal",
+   "version": "Versión 202611231118",
+   "resolution": "390x844",
+   "area": "Panel interno",
+   "screen": "06-ingreso-personal-modal",
+   "date": "2026-11-23T16:41:36.369Z",
+   "sha256": "5decd0d4c62e0acddf15cc0b60de73927751ab15820067fa3c185dfe0f2e9cfd"
+  },
+  {
+   "file": "m360-01-portal.png",
+   "route": "/portal",
+   "version": "Versión 202611231118",
+   "resolution": "360x800",
+   "area": "Portal",
+   "screen": "01-portal",
+   "date": "2026-11-23T16:41:37.802Z",
+   "sha256": "a737fec1bea6f4ea2dacd6ec76abc56dc3946ea246ab286a4dd3ecbea9f71ac4"
+  },
+  {
+   "file": "m360-02-seleccion.png",
+   "route": "/cliente",
+   "version": "Versión 202611231118",
+   "resolution": "360x800",
+   "area": "Ingreso",
+   "screen": "02-seleccion",
+   "date": "2026-11-23T16:41:38.850Z",
+   "sha256": "1185a2e5a869ddd1173873b9a191849bf195f57c535207acf5b19ce1b230340a"
+  },
+  {
+   "file": "m360-03-quipu.png",
+   "route": "/cliente",
+   "version": "Versión 202611231118",
+   "resolution": "360x800",
+   "area": "Ingreso",
+   "screen": "03-quipu",
+   "date": "2026-11-23T16:41:39.371Z",
+   "sha256": "ba6ee7a3f5813e64cfc881f816176d9d505ce67416c955711a8eec20c382e40e"
+  },
+  {
+   "file": "m360-04-quipufac.png",
+   "route": "/cliente",
+   "version": "Versión 202611231118",
+   "resolution": "360x800",
+   "area": "Ingreso",
+   "screen": "04-quipufac",
+   "date": "2026-11-23T16:41:39.988Z",
+   "sha256": "ba60b8ed99d3ebec50954ef3ed0e20cc00658aad9eeb3830efe7cf91152de02a"
+  },
+  {
+   "file": "m360-05-seguimiento-publico.png",
+   "route": "/tracking",
+   "version": "Versión 202611231118",
+   "resolution": "360x800",
+   "area": "Cliente",
+   "screen": "05-seguimiento-publico",
+   "date": "2026-11-23T16:41:40.997Z",
+   "sha256": "e1093ab4c5b8bc037644f71a17a73fed68b7b320d9b3c684995bea41945f35e6"
+  },
+  {
+   "file": "m360-06-ingreso-personal-modal.png",
+   "route": "/portal",
+   "version": "Versión 202611231118",
+   "resolution": "360x800",
+   "area": "Panel interno",
+   "screen": "06-ingreso-personal-modal",
+   "date": "2026-11-23T16:41:42.453Z",
+   "sha256": "a389126c2872051c722237bc9e611230a634925382ce9b692ec15e0dffc6f08f"
+  }
+ ]
+}

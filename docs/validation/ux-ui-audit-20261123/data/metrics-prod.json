@@ -1,0 +1,3492 @@
+{
+ "base": "https://ticketera-procont.vercel.app",
+ "at": "2026-11-23T16:41:11.518Z",
+ "screens": [
+  {
+   "vp": "desktop",
+   "area": "Portal",
+   "screen": "01-portal",
+   "url": "/portal",
+   "viewport": [
+    1920,
+    1080
+   ],
+   "overflow": 0,
+   "textChecked": 15,
+   "minContrast": 5.13,
+   "lowContrast": [],
+   "lowContrastCount": 0,
+   "under13px": 0,
+   "under13Samples": [],
+   "readingTextUnder16": 0,
+   "readingSamples": [],
+   "targets": 4,
+   "targetsUnder24": 1,
+   "under24Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "targetsUnder44": 1,
+   "under44Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "unnamedControls": [],
+   "unlabeledFields": [],
+   "headings": [
+    1,
+    2,
+    2
+   ],
+   "headingSkips": 0,
+   "h1Count": 1,
+   "colours": [
+    [
+     "bg #E8EEF5",
+     2004480
+    ],
+    [
+     "bg #F8FAFC",
+     625468
+    ],
+    [
+     "bg #F1E7CF",
+     2304
+    ],
+    [
+     "bg #E4ECF5",
+     2304
+    ],
+    [
+     "text #173D66",
+     20
+    ],
+    [
+     "text #334155",
+     15
+    ],
+    [
+     "text #52657B",
+     4
+    ],
+    [
+     "border #CBD7E5",
+     4
+    ],
+    [
+     "bg #173D66",
+     1
+    ],
+    [
+     "text #F8FAFC",
+     1
+    ],
+    [
+     "border #D5AE54",
+     1
+    ]
+   ],
+   "inputMode": "keyboard"
+  },
+  {
+   "vp": "desktop",
+   "area": "Ingreso",
+   "screen": "02-seleccion",
+   "url": "/cliente",
+   "viewport": [
+    1920,
+    1080
+   ],
+   "overflow": 0,
+   "textChecked": 17,
+   "minContrast": 5.13,
+   "lowContrast": [],
+   "lowContrastCount": 0,
+   "under13px": 0,
+   "under13Samples": [],
+   "readingTextUnder16": 1,
+   "readingSamples": [
+    {
+     "text": "Ingresa el número REQ. Solo se muestra el número y",
+     "size": 14
+    }
+   ],
+   "targets": 6,
+   "targetsUnder24": 1,
+   "under24Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "targetsUnder44": 1,
+   "under44Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "unnamedControls": [],
+   "unlabeledFields": [
+    "input \"Número de ticket\" (aria-label only)"
+   ],
+   "headings": [
+    1,
+    2,
+    2,
+    2
+   ],
+   "headingSkips": 0,
+   "h1Count": 1,
+   "colours": [
+    [
+     "bg #E8EEF5",
+     2004480
+    ],
+    [
+     "bg #F8FAFC",
+     401528
+    ],
+    [
+     "bg #E4ECF5",
+     4608
+    ],
+    [
+     "text #334155",
+     21
+    ],
+    [
+     "text #173D66",
+     14
+    ],
+    [
+     "border #CBD7E5",
+     9
+    ],
+    [
+     "text #52657B",
+     4
+    ],
+    [
+     "text #465B73",
+     3
+    ],
+    [
+     "text #283D54",
+     2
+    ],
+    [
+     "bg #173D66",
+     1
+    ],
+    [
+     "text #F8FAFC",
+     1
+    ]
+   ],
+   "inputMode": "keyboard"
+  },
+  {
+   "vp": "desktop",
+   "area": "Ingreso",
+   "screen": "03-quipu",
+   "url": "/cliente",
+   "viewport": [
+    1920,
+    1080
+   ],
+   "overflow": 0,
+   "textChecked": 24,
+   "minContrast": 5.13,
+   "lowContrast": [],
+   "lowContrastCount": 0,
+   "under13px": 0,
+   "under13Samples": [],
+   "readingTextUnder16": 1,
+   "readingSamples": [
+    {
+     "text": "Ingresa el número REQ. Solo se muestra el número y",
+     "size": 14
+    }
+   ],
+   "targets": 12,
+   "targetsUnder24": 1,
+   "under24Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "targetsUnder44": 2,
+   "under44Samples": [
+    "a \"Saltar al contenido\" 1x1",
+    "button \"Mostrar contraseña\" 44x40"
+   ],
+   "unnamedControls": [],
+   "unlabeledFields": [
+    "input \"Número de ticket\" (aria-label only)"
+   ],
+   "headings": [
+    1,
+    2,
+    2,
+    2,
+    2
+   ],
+   "headingSkips": 0,
+   "h1Count": 1,
+   "colours": [
+    [
+     "bg #E8EEF5",
+     2411910
+    ],
+    [
+     "bg #F8FAFC",
+     853589
+    ],
+    [
+     "bg #EDF3FA",
+     59064
+    ],
+    [
+     "bg #173D66",
+     23457
+    ],
+    [
+     "bg #E4ECF5",
+     4608
+    ],
+    [
+     "text #334155",
+     34
+    ],
+    [
+     "text #173D66",
+     14
+    ],
+    [
+     "border #CBD7E5",
+     11
+    ],
+    [
+     "text #52657B",
+     9
+    ],
+    [
+     "text #F8FAFC",
+     5
+    ],
+    [
+     "text #465B73",
+     3
+    ],
+    [
+     "border #173D66",
+     2
+    ],
+    [
+     "text #283D54",
+     2
+    ]
+   ],
+   "inputMode": "pointer"
+  },
+  {
+   "vp": "desktop",
+   "area": "Ingreso",
+   "screen": "04-quipufac",
+   "url": "/cliente",
+   "viewport": [
+    1920,
+    1080
+   ],
+   "overflow": 0,
+   "textChecked": 23,
+   "minContrast": 5.13,
+   "lowContrast": [],
+   "lowContrastCount": 0,
+   "under13px": 0,
+   "under13Samples": [],
+   "readingTextUnder16": 2,
+   "readingSamples": [
+    {
+     "text": "Usa las mismas credenciales de QuipuFac .",
+     "size": 13
+    },
+    {
+     "text": "Ingresa el número REQ. Solo se muestra el número y",
+     "size": 14
+    }
+   ],
+   "targets": 11,
+   "targetsUnder24": 1,
+   "under24Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "targetsUnder44": 2,
+   "under44Samples": [
+    "a \"Saltar al contenido\" 1x1",
+    "button \"Mostrar contraseña\" 44x40"
+   ],
+   "unnamedControls": [],
+   "unlabeledFields": [
+    "input \"Número de ticket\" (aria-label only)"
+   ],
+   "headings": [
+    1,
+    2,
+    2,
+    2,
+    2
+   ],
+   "headingSkips": 0,
+   "h1Count": 1,
+   "colours": [
+    [
+     "bg #E8EEF5",
+     2235270
+    ],
+    [
+     "bg #F8FAFC",
+     746629
+    ],
+    [
+     "bg #EDF3FA",
+     59064
+    ],
+    [
+     "bg #173D66",
+     23457
+    ],
+    [
+     "bg #E4ECF5",
+     4608
+    ],
+    [
+     "text #334155",
+     31
+    ],
+    [
+     "text #173D66",
+     14
+    ],
+    [
+     "border #CBD7E5",
+     10
+    ],
+    [
+     "text #52657B",
+     9
+    ],
+    [
+     "text #F8FAFC",
+     5
+    ],
+    [
+     "text #465B73",
+     3
+    ],
+    [
+     "text #283D54",
+     2
+    ],
+    [
+     "border #173D66",
+     2
+    ]
+   ],
+   "inputMode": "pointer"
+  },
+  {
+   "vp": "desktop",
+   "area": "Cliente",
+   "screen": "05-seguimiento-publico",
+   "url": "/tracking",
+   "viewport": [
+    1920,
+    1080
+   ],
+   "overflow": 0,
+   "textChecked": 7,
+   "minContrast": 4.94,
+   "lowContrast": [],
+   "lowContrastCount": 0,
+   "under13px": 0,
+   "under13Samples": [],
+   "readingTextUnder16": 0,
+   "readingSamples": [],
+   "targets": 4,
+   "targetsUnder24": 2,
+   "under24Samples": [
+    "a \"Saltar al contenido\" 1x1",
+    "button \"← Inicio\" 49x20"
+   ],
+   "targetsUnder44": 2,
+   "under44Samples": [
+    "a \"Saltar al contenido\" 1x1",
+    "button \"← Inicio\" 49x20"
+   ],
+   "unnamedControls": [],
+   "unlabeledFields": [],
+   "headings": [
+    1
+   ],
+   "headingSkips": 0,
+   "h1Count": 1,
+   "colours": [
+    [
+     "bg #E8EEF5",
+     2004480
+    ],
+    [
+     "bg #F8FAFC",
+     294912
+    ],
+    [
+     "bg #FFFFFF",
+     17696
+    ],
+    [
+     "bg #173D66",
+     10193
+    ],
+    [
+     "bg #D5AE54",
+     256
+    ],
+    [
+     "text #334155",
+     11
+    ],
+    [
+     "border #CBD7E5",
+     3
+    ],
+    [
+     "text #F8FAFC",
+     2
+    ],
+    [
+     "text #5B6F86",
+     1
+    ],
+    [
+     "text #173D66",
+     1
+    ],
+    [
+     "text #465B73",
+     1
+    ],
+    [
+     "text #52657B",
+     1
+    ]
+   ],
+   "inputMode": "keyboard"
+  },
+  {
+   "vp": "desktop",
+   "area": "Panel interno",
+   "screen": "06-ingreso-personal-modal",
+   "url": "/portal",
+   "viewport": [
+    1920,
+    1080
+   ],
+   "overflow": 0,
+   "textChecked": 20,
+   "minContrast": 4.94,
+   "lowContrast": [],
+   "lowContrastCount": 0,
+   "under13px": 0,
+   "under13Samples": [],
+   "readingTextUnder16": 0,
+   "readingSamples": [],
+   "targets": 9,
+   "targetsUnder24": 1,
+   "under24Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "targetsUnder44": 2,
+   "under44Samples": [
+    "a \"Saltar al contenido\" 1x1",
+    "button \"Mostrar contraseña\" 44x40"
+   ],
+   "unnamedControls": [],
+   "unlabeledFields": [],
+   "headings": [
+    1,
+    2,
+    2,
+    2
+   ],
+   "headingSkips": 0,
+   "h1Count": 1,
+   "colours": [
+    [
+     "bg #173D66",
+     2090409
+    ],
+    [
+     "bg #E8EEF5",
+     2004480
+    ],
+    [
+     "bg #F8FAFC",
+     797584
+    ],
+    [
+     "bg #FFFFFF",
+     33616
+    ],
+    [
+     "bg #F1E7CF",
+     2304
+    ],
+    [
+     "bg #E4ECF5",
+     2304
+    ],
+    [
+     "text #334155",
+     26
+    ],
+    [
+     "text #173D66",
+     21
+    ],
+    [
+     "text #52657B",
+     10
+    ],
+    [
+     "border #CBD7E5",
+     7
+    ],
+    [
+     "text #F8FAFC",
+     2
+    ],
+    [
+     "border #D5AE54",
+     1
+    ],
+    [
+     "text #5B6F86",
+     1
+    ]
+   ],
+   "inputMode": "pointer"
+  },
+  {
+   "vp": "laptop",
+   "area": "Portal",
+   "screen": "01-portal",
+   "url": "/portal",
+   "viewport": [
+    1440,
+    900
+   ],
+   "overflow": 0,
+   "textChecked": 15,
+   "minContrast": 5.13,
+   "lowContrast": [],
+   "lowContrastCount": 0,
+   "under13px": 0,
+   "under13Samples": [],
+   "readingTextUnder16": 0,
+   "readingSamples": [],
+   "targets": 4,
+   "targetsUnder24": 1,
+   "under24Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "targetsUnder44": 1,
+   "under44Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "unnamedControls": [],
+   "unlabeledFields": [],
+   "headings": [
+    1,
+    2,
+    2
+   ],
+   "headingSkips": 0,
+   "h1Count": 1,
+   "colours": [
+    [
+     "bg #E8EEF5",
+     1244160
+    ],
+    [
+     "bg #F8FAFC",
+     565468
+    ],
+    [
+     "bg #F1E7CF",
+     2304
+    ],
+    [
+     "bg #E4ECF5",
+     2304
+    ],
+    [
+     "text #173D66",
+     20
+    ],
+    [
+     "text #334155",
+     15
+    ],
+    [
+     "text #52657B",
+     4
+    ],
+    [
+     "border #CBD7E5",
+     4
+    ],
+    [
+     "bg #173D66",
+     1
+    ],
+    [
+     "text #F8FAFC",
+     1
+    ],
+    [
+     "border #D5AE54",
+     1
+    ]
+   ],
+   "inputMode": "keyboard"
+  },
+  {
+   "vp": "laptop",
+   "area": "Ingreso",
+   "screen": "02-seleccion",
+   "url": "/cliente",
+   "viewport": [
+    1440,
+    900
+   ],
+   "overflow": 0,
+   "textChecked": 17,
+   "minContrast": 5.13,
+   "lowContrast": [],
+   "lowContrastCount": 0,
+   "under13px": 0,
+   "under13Samples": [],
+   "readingTextUnder16": 1,
+   "readingSamples": [
+    {
+     "text": "Ingresa el número REQ. Solo se muestra el número y",
+     "size": 14
+    }
+   ],
+   "targets": 6,
+   "targetsUnder24": 1,
+   "under24Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "targetsUnder44": 1,
+   "under44Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "unnamedControls": [],
+   "unlabeledFields": [
+    "input \"Número de ticket\" (aria-label only)"
+   ],
+   "headings": [
+    1,
+    2,
+    2,
+    2
+   ],
+   "headingSkips": 0,
+   "h1Count": 1,
+   "colours": [
+    [
+     "bg #E8EEF5",
+     1244160
+    ],
+    [
+     "bg #F8FAFC",
+     341528
+    ],
+    [
+     "bg #E4ECF5",
+     4608
+    ],
+    [
+     "text #334155",
+     21
+    ],
+    [
+     "text #173D66",
+     14
+    ],
+    [
+     "border #CBD7E5",
+     9
+    ],
+    [
+     "text #52657B",
+     4
+    ],
+    [
+     "text #465B73",
+     3
+    ],
+    [
+     "text #283D54",
+     2
+    ],
+    [
+     "bg #173D66",
+     1
+    ],
+    [
+     "text #F8FAFC",
+     1
+    ]
+   ],
+   "inputMode": "keyboard"
+  },
+  {
+   "vp": "laptop",
+   "area": "Ingreso",
+   "screen": "03-quipu",
+   "url": "/cliente",
+   "viewport": [
+    1440,
+    900
+   ],
+   "overflow": 0,
+   "textChecked": 24,
+   "minContrast": 5.13,
+   "lowContrast": [],
+   "lowContrastCount": 0,
+   "under13px": 0,
+   "under13Samples": [],
+   "readingTextUnder16": 1,
+   "readingSamples": [
+    {
+     "text": "Ingresa el número REQ. Solo se muestra el número y",
+     "size": 14
+    }
+   ],
+   "targets": 12,
+   "targetsUnder24": 1,
+   "under24Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "targetsUnder44": 2,
+   "under44Samples": [
+    "a \"Saltar al contenido\" 1x1",
+    "button \"Mostrar contraseña\" 44x40"
+   ],
+   "unnamedControls": [],
+   "unlabeledFields": [
+    "input \"Número de ticket\" (aria-label only)"
+   ],
+   "headings": [
+    1,
+    2,
+    2,
+    2,
+    2
+   ],
+   "headingSkips": 0,
+   "h1Count": 1,
+   "colours": [
+    [
+     "bg #E8EEF5",
+     1808932.5
+    ],
+    [
+     "bg #F8FAFC",
+     793589
+    ],
+    [
+     "bg #EDF3FA",
+     59064
+    ],
+    [
+     "bg #173D66",
+     23457
+    ],
+    [
+     "bg #E4ECF5",
+     4608
+    ],
+    [
+     "text #334155",
+     34
+    ],
+    [
+     "text #173D66",
+     14
+    ],
+    [
+     "border #CBD7E5",
+     11
+    ],
+    [
+     "text #52657B",
+     9
+    ],
+    [
+     "text #F8FAFC",
+     5
+    ],
+    [
+     "text #465B73",
+     3
+    ],
+    [
+     "border #173D66",
+     2
+    ],
+    [
+     "text #283D54",
+     2
+    ]
+   ],
+   "inputMode": "pointer"
+  },
+  {
+   "vp": "laptop",
+   "area": "Ingreso",
+   "screen": "04-quipufac",
+   "url": "/cliente",
+   "viewport": [
+    1440,
+    900
+   ],
+   "overflow": 0,
+   "textChecked": 23,
+   "minContrast": 5.13,
+   "lowContrast": [],
+   "lowContrastCount": 0,
+   "under13px": 0,
+   "under13Samples": [],
+   "readingTextUnder16": 2,
+   "readingSamples": [
+    {
+     "text": "Usa las mismas credenciales de QuipuFac .",
+     "size": 13
+    },
+    {
+     "text": "Ingresa el número REQ. Solo se muestra el número y",
+     "size": 14
+    }
+   ],
+   "targets": 11,
+   "targetsUnder24": 1,
+   "under24Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "targetsUnder44": 2,
+   "under44Samples": [
+    "a \"Saltar al contenido\" 1x1",
+    "button \"Mostrar contraseña\" 44x40"
+   ],
+   "unnamedControls": [],
+   "unlabeledFields": [
+    "input \"Número de ticket\" (aria-label only)"
+   ],
+   "headings": [
+    1,
+    2,
+    2,
+    2,
+    2
+   ],
+   "headingSkips": 0,
+   "h1Count": 1,
+   "colours": [
+    [
+     "bg #E8EEF5",
+     1676452.5
+    ],
+    [
+     "bg #F8FAFC",
+     686629
+    ],
+    [
+     "bg #EDF3FA",
+     59064
+    ],
+    [
+     "bg #173D66",
+     23457
+    ],
+    [
+     "bg #E4ECF5",
+     4608
+    ],
+    [
+     "text #334155",
+     31
+    ],
+    [
+     "text #173D66",
+     14
+    ],
+    [
+     "border #CBD7E5",
+     10
+    ],
+    [
+     "text #52657B",
+     9
+    ],
+    [
+     "text #F8FAFC",
+     5
+    ],
+    [
+     "text #465B73",
+     3
+    ],
+    [
+     "text #283D54",
+     2
+    ],
+    [
+     "border #173D66",
+     2
+    ]
+   ],
+   "inputMode": "pointer"
+  },
+  {
+   "vp": "laptop",
+   "area": "Cliente",
+   "screen": "05-seguimiento-publico",
+   "url": "/tracking",
+   "viewport": [
+    1440,
+    900
+   ],
+   "overflow": 0,
+   "textChecked": 7,
+   "minContrast": 4.94,
+   "lowContrast": [],
+   "lowContrastCount": 0,
+   "under13px": 0,
+   "under13Samples": [],
+   "readingTextUnder16": 0,
+   "readingSamples": [],
+   "targets": 4,
+   "targetsUnder24": 2,
+   "under24Samples": [
+    "a \"Saltar al contenido\" 1x1",
+    "button \"← Inicio\" 49x20"
+   ],
+   "targetsUnder44": 2,
+   "under44Samples": [
+    "a \"Saltar al contenido\" 1x1",
+    "button \"← Inicio\" 49x20"
+   ],
+   "unnamedControls": [],
+   "unlabeledFields": [],
+   "headings": [
+    1
+   ],
+   "headingSkips": 0,
+   "h1Count": 1,
+   "colours": [
+    [
+     "bg #E8EEF5",
+     1244160
+    ],
+    [
+     "bg #F8FAFC",
+     277632
+    ],
+    [
+     "bg #FFFFFF",
+     17696
+    ],
+    [
+     "bg #173D66",
+     10193
+    ],
+    [
+     "bg #D5AE54",
+     256
+    ],
+    [
+     "text #334155",
+     11
+    ],
+    [
+     "border #CBD7E5",
+     3
+    ],
+    [
+     "text #F8FAFC",
+     2
+    ],
+    [
+     "text #5B6F86",
+     1
+    ],
+    [
+     "text #173D66",
+     1
+    ],
+    [
+     "text #465B73",
+     1
+    ],
+    [
+     "text #52657B",
+     1
+    ]
+   ],
+   "inputMode": "keyboard"
+  },
+  {
+   "vp": "laptop",
+   "area": "Panel interno",
+   "screen": "06-ingreso-personal-modal",
+   "url": "/portal",
+   "viewport": [
+    1440,
+    900
+   ],
+   "overflow": 0,
+   "textChecked": 20,
+   "minContrast": 4.94,
+   "lowContrast": [],
+   "lowContrastCount": 0,
+   "under13px": 0,
+   "under13Samples": [],
+   "readingTextUnder16": 0,
+   "readingSamples": [],
+   "targets": 9,
+   "targetsUnder24": 1,
+   "under24Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "targetsUnder44": 2,
+   "under44Samples": [
+    "a \"Saltar al contenido\" 1x1",
+    "button \"Mostrar contraseña\" 44x40"
+   ],
+   "unnamedControls": [],
+   "unlabeledFields": [],
+   "headings": [
+    1,
+    2,
+    2,
+    2
+   ],
+   "headingSkips": 0,
+   "h1Count": 1,
+   "colours": [
+    [
+     "bg #173D66",
+     1312809
+    ],
+    [
+     "bg #E8EEF5",
+     1244160
+    ],
+    [
+     "bg #F8FAFC",
+     737584
+    ],
+    [
+     "bg #FFFFFF",
+     33616
+    ],
+    [
+     "bg #F1E7CF",
+     2304
+    ],
+    [
+     "bg #E4ECF5",
+     2304
+    ],
+    [
+     "text #334155",
+     26
+    ],
+    [
+     "text #173D66",
+     21
+    ],
+    [
+     "text #52657B",
+     10
+    ],
+    [
+     "border #CBD7E5",
+     7
+    ],
+    [
+     "text #F8FAFC",
+     2
+    ],
+    [
+     "border #D5AE54",
+     1
+    ],
+    [
+     "text #5B6F86",
+     1
+    ]
+   ],
+   "inputMode": "pointer"
+  },
+  {
+   "vp": "tablet",
+   "area": "Portal",
+   "screen": "01-portal",
+   "url": "/portal",
+   "viewport": [
+    768,
+    1024
+   ],
+   "overflow": 0,
+   "textChecked": 15,
+   "minContrast": 5.13,
+   "lowContrast": [],
+   "lowContrastCount": 0,
+   "under13px": 0,
+   "under13Samples": [],
+   "readingTextUnder16": 0,
+   "readingSamples": [],
+   "targets": 4,
+   "targetsUnder24": 1,
+   "under24Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "targetsUnder44": 1,
+   "under44Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "unnamedControls": [],
+   "unlabeledFields": [],
+   "headings": [
+    1,
+    2,
+    2
+   ],
+   "headingSkips": 0,
+   "h1Count": 1,
+   "colours": [
+    [
+     "bg #E8EEF5",
+     758784
+    ],
+    [
+     "bg #F8FAFC",
+     311068
+    ],
+    [
+     "bg #F1E7CF",
+     2304
+    ],
+    [
+     "bg #E4ECF5",
+     2304
+    ],
+    [
+     "text #173D66",
+     20
+    ],
+    [
+     "text #334155",
+     15
+    ],
+    [
+     "text #52657B",
+     4
+    ],
+    [
+     "border #CBD7E5",
+     4
+    ],
+    [
+     "bg #173D66",
+     1
+    ],
+    [
+     "text #F8FAFC",
+     1
+    ],
+    [
+     "border #D5AE54",
+     1
+    ]
+   ],
+   "inputMode": "keyboard"
+  },
+  {
+   "vp": "tablet",
+   "area": "Ingreso",
+   "screen": "02-seleccion",
+   "url": "/cliente",
+   "viewport": [
+    768,
+    1024
+   ],
+   "overflow": 0,
+   "textChecked": 17,
+   "minContrast": 5.13,
+   "lowContrast": [],
+   "lowContrastCount": 0,
+   "under13px": 0,
+   "under13Samples": [],
+   "readingTextUnder16": 1,
+   "readingSamples": [
+    {
+     "text": "Ingresa el número REQ. Solo se muestra el número y",
+     "size": 14
+    }
+   ],
+   "targets": 6,
+   "targetsUnder24": 1,
+   "under24Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "targetsUnder44": 1,
+   "under44Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "unnamedControls": [],
+   "unlabeledFields": [
+    "input \"Número de ticket\" (aria-label only)"
+   ],
+   "headings": [
+    1,
+    2,
+    2,
+    2
+   ],
+   "headingSkips": 0,
+   "h1Count": 1,
+   "colours": [
+    [
+     "bg #E8EEF5",
+     758784
+    ],
+    [
+     "bg #F8FAFC",
+     224440
+    ],
+    [
+     "bg #E4ECF5",
+     4608
+    ],
+    [
+     "text #334155",
+     21
+    ],
+    [
+     "text #173D66",
+     14
+    ],
+    [
+     "border #CBD7E5",
+     9
+    ],
+    [
+     "text #52657B",
+     4
+    ],
+    [
+     "text #465B73",
+     3
+    ],
+    [
+     "text #283D54",
+     2
+    ],
+    [
+     "bg #173D66",
+     1
+    ],
+    [
+     "text #F8FAFC",
+     1
+    ]
+   ],
+   "inputMode": "keyboard"
+  },
+  {
+   "vp": "tablet",
+   "area": "Ingreso",
+   "screen": "03-quipu",
+   "url": "/cliente",
+   "viewport": [
+    768,
+    1024
+   ],
+   "overflow": 0,
+   "textChecked": 24,
+   "minContrast": 5.13,
+   "lowContrast": [],
+   "lowContrastCount": 0,
+   "under13px": 0,
+   "under13Samples": [],
+   "readingTextUnder16": 1,
+   "readingSamples": [
+    {
+     "text": "Ingresa el número REQ. Solo se muestra el número y",
+     "size": 14
+    }
+   ],
+   "targets": 12,
+   "targetsUnder24": 1,
+   "under24Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "targetsUnder44": 2,
+   "under44Samples": [
+    "a \"Saltar al contenido\" 1x1",
+    "button \"Mostrar contraseña\" 44x40"
+   ],
+   "unnamedControls": [],
+   "unlabeledFields": [
+    "input \"Número de ticket\" (aria-label only)"
+   ],
+   "headings": [
+    1,
+    2,
+    2,
+    2,
+    2
+   ],
+   "headingSkips": 0,
+   "h1Count": 1,
+   "colours": [
+    [
+     "bg #E8EEF5",
+     953148
+    ],
+    [
+     "bg #F8FAFC",
+     602020
+    ],
+    [
+     "bg #EDF3FA",
+     46920
+    ],
+    [
+     "bg #173D66",
+     23457
+    ],
+    [
+     "bg #E4ECF5",
+     4608
+    ],
+    [
+     "text #334155",
+     34
+    ],
+    [
+     "text #173D66",
+     14
+    ],
+    [
+     "border #CBD7E5",
+     11
+    ],
+    [
+     "text #52657B",
+     9
+    ],
+    [
+     "text #F8FAFC",
+     5
+    ],
+    [
+     "text #465B73",
+     3
+    ],
+    [
+     "border #173D66",
+     2
+    ],
+    [
+     "text #283D54",
+     2
+    ]
+   ],
+   "inputMode": "pointer"
+  },
+  {
+   "vp": "tablet",
+   "area": "Ingreso",
+   "screen": "04-quipufac",
+   "url": "/cliente",
+   "viewport": [
+    768,
+    1024
+   ],
+   "overflow": 0,
+   "textChecked": 23,
+   "minContrast": 5.13,
+   "lowContrast": [],
+   "lowContrastCount": 0,
+   "under13px": 0,
+   "under13Samples": [],
+   "readingTextUnder16": 2,
+   "readingSamples": [
+    {
+     "text": "Usa las mismas credenciales de QuipuFac .",
+     "size": 13
+    },
+    {
+     "text": "Ingresa el número REQ. Solo se muestra el número y",
+     "size": 14
+    }
+   ],
+   "targets": 11,
+   "targetsUnder24": 1,
+   "under24Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "targetsUnder44": 2,
+   "under44Samples": [
+    "a \"Saltar al contenido\" 1x1",
+    "button \"Mostrar contraseña\" 44x40"
+   ],
+   "unnamedControls": [],
+   "unlabeledFields": [
+    "input \"Número de ticket\" (aria-label only)"
+   ],
+   "headings": [
+    1,
+    2,
+    2,
+    2,
+    2
+   ],
+   "headingSkips": 0,
+   "h1Count": 1,
+   "colours": [
+    [
+     "bg #E8EEF5",
+     882492
+    ],
+    [
+     "bg #F8FAFC",
+     511252
+    ],
+    [
+     "bg #EDF3FA",
+     46920
+    ],
+    [
+     "bg #173D66",
+     23457
+    ],
+    [
+     "bg #E4ECF5",
+     4608
+    ],
+    [
+     "text #334155",
+     31
+    ],
+    [
+     "text #173D66",
+     14
+    ],
+    [
+     "border #CBD7E5",
+     10
+    ],
+    [
+     "text #52657B",
+     9
+    ],
+    [
+     "text #F8FAFC",
+     5
+    ],
+    [
+     "text #465B73",
+     3
+    ],
+    [
+     "text #283D54",
+     2
+    ],
+    [
+     "border #173D66",
+     2
+    ]
+   ],
+   "inputMode": "pointer"
+  },
+  {
+   "vp": "tablet",
+   "area": "Cliente",
+   "screen": "05-seguimiento-publico",
+   "url": "/tracking",
+   "viewport": [
+    768,
+    1024
+   ],
+   "overflow": 0,
+   "textChecked": 7,
+   "minContrast": 4.94,
+   "lowContrast": [],
+   "lowContrastCount": 0,
+   "under13px": 0,
+   "under13Samples": [],
+   "readingTextUnder16": 0,
+   "readingSamples": [],
+   "targets": 4,
+   "targetsUnder24": 2,
+   "under24Samples": [
+    "a \"Saltar al contenido\" 1x1",
+    "button \"← Inicio\" 49x20"
+   ],
+   "targetsUnder44": 2,
+   "under44Samples": [
+    "a \"Saltar al contenido\" 1x1",
+    "button \"← Inicio\" 49x20"
+   ],
+   "unnamedControls": [],
+   "unlabeledFields": [],
+   "headings": [
+    1
+   ],
+   "headingSkips": 0,
+   "h1Count": 1,
+   "colours": [
+    [
+     "bg #E8EEF5",
+     758784
+    ],
+    [
+     "bg #F8FAFC",
+     253440
+    ],
+    [
+     "bg #FFFFFF",
+     17696
+    ],
+    [
+     "bg #173D66",
+     10193
+    ],
+    [
+     "bg #D5AE54",
+     256
+    ],
+    [
+     "text #334155",
+     11
+    ],
+    [
+     "border #CBD7E5",
+     3
+    ],
+    [
+     "text #F8FAFC",
+     2
+    ],
+    [
+     "text #5B6F86",
+     1
+    ],
+    [
+     "text #173D66",
+     1
+    ],
+    [
+     "text #465B73",
+     1
+    ],
+    [
+     "text #52657B",
+     1
+    ]
+   ],
+   "inputMode": "keyboard"
+  },
+  {
+   "vp": "tablet",
+   "area": "Panel interno",
+   "screen": "06-ingreso-personal-modal",
+   "url": "/portal",
+   "viewport": [
+    768,
+    1024
+   ],
+   "overflow": 0,
+   "textChecked": 20,
+   "minContrast": 4.94,
+   "lowContrast": [],
+   "lowContrastCount": 0,
+   "under13px": 0,
+   "under13Samples": [],
+   "readingTextUnder16": 0,
+   "readingSamples": [],
+   "targets": 9,
+   "targetsUnder24": 1,
+   "under24Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "targetsUnder44": 2,
+   "under44Samples": [
+    "a \"Saltar al contenido\" 1x1",
+    "button \"Mostrar contraseña\" 44x40"
+   ],
+   "unnamedControls": [],
+   "unlabeledFields": [],
+   "headings": [
+    1,
+    2,
+    2,
+    2
+   ],
+   "headingSkips": 0,
+   "h1Count": 1,
+   "colours": [
+    [
+     "bg #173D66",
+     803241
+    ],
+    [
+     "bg #E8EEF5",
+     758784
+    ],
+    [
+     "bg #F8FAFC",
+     483184
+    ],
+    [
+     "bg #FFFFFF",
+     33616
+    ],
+    [
+     "bg #F1E7CF",
+     2304
+    ],
+    [
+     "bg #E4ECF5",
+     2304
+    ],
+    [
+     "text #334155",
+     26
+    ],
+    [
+     "text #173D66",
+     21
+    ],
+    [
+     "text #52657B",
+     10
+    ],
+    [
+     "border #CBD7E5",
+     7
+    ],
+    [
+     "text #F8FAFC",
+     2
+    ],
+    [
+     "border #D5AE54",
+     1
+    ],
+    [
+     "text #5B6F86",
+     1
+    ]
+   ],
+   "inputMode": "pointer"
+  },
+  {
+   "vp": "movil",
+   "area": "Portal",
+   "screen": "01-portal",
+   "url": "/portal",
+   "viewport": [
+    390,
+    844
+   ],
+   "overflow": 0,
+   "textChecked": 15,
+   "minContrast": 5.13,
+   "lowContrast": [],
+   "lowContrastCount": 0,
+   "under13px": 0,
+   "under13Samples": [],
+   "readingTextUnder16": 0,
+   "readingSamples": [],
+   "targets": 4,
+   "targetsUnder24": 1,
+   "under24Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "targetsUnder44": 1,
+   "under44Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "unnamedControls": [],
+   "unlabeledFields": [],
+   "headings": [
+    1,
+    2,
+    2
+   ],
+   "headingSkips": 0,
+   "h1Count": 1,
+   "colours": [
+    [
+     "bg #E8EEF5",
+     418640.625
+    ],
+    [
+     "bg #F8FAFC",
+     289596.875
+    ],
+    [
+     "bg #F1E7CF",
+     2304
+    ],
+    [
+     "bg #E4ECF5",
+     2304
+    ],
+    [
+     "text #173D66",
+     20
+    ],
+    [
+     "text #334155",
+     15
+    ],
+    [
+     "text #52657B",
+     4
+    ],
+    [
+     "border #CBD7E5",
+     4
+    ],
+    [
+     "bg #173D66",
+     1
+    ],
+    [
+     "text #F8FAFC",
+     1
+    ],
+    [
+     "border #D5AE54",
+     1
+    ]
+   ],
+   "inputMode": "keyboard"
+  },
+  {
+   "vp": "movil",
+   "area": "Ingreso",
+   "screen": "02-seleccion",
+   "url": "/cliente",
+   "viewport": [
+    390,
+    844
+   ],
+   "overflow": 0,
+   "textChecked": 17,
+   "minContrast": 5.13,
+   "lowContrast": [],
+   "lowContrastCount": 0,
+   "under13px": 0,
+   "under13Samples": [],
+   "readingTextUnder16": 1,
+   "readingSamples": [
+    {
+     "text": "Ingresa el número REQ. Solo se muestra el número y",
+     "size": 14
+    }
+   ],
+   "targets": 6,
+   "targetsUnder24": 1,
+   "under24Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "targetsUnder44": 1,
+   "under44Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "unnamedControls": [],
+   "unlabeledFields": [
+    "input \"Número de ticket\" (aria-label only)"
+   ],
+   "headings": [
+    1,
+    2,
+    2,
+    2
+   ],
+   "headingSkips": 0,
+   "h1Count": 1,
+   "colours": [
+    [
+     "bg #E8EEF5",
+     379969.6875
+    ],
+    [
+     "bg #F8FAFC",
+     175130
+    ],
+    [
+     "bg #E4ECF5",
+     4608
+    ],
+    [
+     "text #334155",
+     21
+    ],
+    [
+     "text #173D66",
+     14
+    ],
+    [
+     "border #CBD7E5",
+     9
+    ],
+    [
+     "text #52657B",
+     4
+    ],
+    [
+     "text #465B73",
+     3
+    ],
+    [
+     "text #283D54",
+     2
+    ],
+    [
+     "bg #173D66",
+     1
+    ],
+    [
+     "text #F8FAFC",
+     1
+    ]
+   ],
+   "inputMode": "keyboard"
+  },
+  {
+   "vp": "movil",
+   "area": "Ingreso",
+   "screen": "03-quipu",
+   "url": "/cliente",
+   "viewport": [
+    390,
+    844
+   ],
+   "overflow": 0,
+   "textChecked": 24,
+   "minContrast": 5.13,
+   "lowContrast": [],
+   "lowContrastCount": 0,
+   "under13px": 0,
+   "under13Samples": [],
+   "readingTextUnder16": 1,
+   "readingSamples": [
+    {
+     "text": "Ingresa el número REQ. Solo se muestra el número y",
+     "size": 14
+    }
+   ],
+   "targets": 12,
+   "targetsUnder24": 1,
+   "under24Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "targetsUnder44": 2,
+   "under44Samples": [
+    "a \"Saltar al contenido\" 1x1",
+    "button \"Mostrar contraseña\" 44x40"
+   ],
+   "unnamedControls": [],
+   "unlabeledFields": [
+    "input \"Número de ticket\" (aria-label only)"
+   ],
+   "headings": [
+    1,
+    2,
+    2,
+    2,
+    2
+   ],
+   "headingSkips": 0,
+   "h1Count": 1,
+   "colours": [
+    [
+     "bg #E8EEF5",
+     590642.8125
+    ],
+    [
+     "bg #F8FAFC",
+     352495.625
+    ],
+    [
+     "bg #EDF3FA",
+     48300
+    ],
+    [
+     "bg #173D66",
+     13777
+    ],
+    [
+     "bg #E4ECF5",
+     4608
+    ],
+    [
+     "text #334155",
+     34
+    ],
+    [
+     "text #173D66",
+     14
+    ],
+    [
+     "border #CBD7E5",
+     11
+    ],
+    [
+     "text #52657B",
+     9
+    ],
+    [
+     "text #F8FAFC",
+     5
+    ],
+    [
+     "text #465B73",
+     3
+    ],
+    [
+     "border #173D66",
+     2
+    ],
+    [
+     "text #283D54",
+     2
+    ]
+   ],
+   "inputMode": "pointer"
+  },
+  {
+   "vp": "movil",
+   "area": "Ingreso",
+   "screen": "04-quipufac",
+   "url": "/cliente",
+   "viewport": [
+    390,
+    844
+   ],
+   "overflow": 0,
+   "textChecked": 23,
+   "minContrast": 5.13,
+   "lowContrast": [],
+   "lowContrastCount": 0,
+   "under13px": 0,
+   "under13Samples": [],
+   "readingTextUnder16": 2,
+   "readingSamples": [
+    {
+     "text": "Usa las mismas credenciales de QuipuFac .",
+     "size": 13
+    },
+    {
+     "text": "Ingresa el número REQ. Solo se muestra el número y",
+     "size": 14
+    }
+   ],
+   "targets": 11,
+   "targetsUnder24": 1,
+   "under24Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "targetsUnder44": 2,
+   "under44Samples": [
+    "a \"Saltar al contenido\" 1x1",
+    "button \"Mostrar contraseña\" 44x40"
+   ],
+   "unnamedControls": [],
+   "unlabeledFields": [
+    "input \"Número de ticket\" (aria-label only)"
+   ],
+   "headings": [
+    1,
+    2,
+    2,
+    2,
+    2
+   ],
+   "headingSkips": 0,
+   "h1Count": 1,
+   "colours": [
+    [
+     "bg #E8EEF5",
+     554762.8125
+    ],
+    [
+     "bg #F8FAFC",
+     305295.625
+    ],
+    [
+     "bg #EDF3FA",
+     48300
+    ],
+    [
+     "bg #173D66",
+     13777
+    ],
+    [
+     "bg #E4ECF5",
+     4608
+    ],
+    [
+     "text #334155",
+     31
+    ],
+    [
+     "text #173D66",
+     14
+    ],
+    [
+     "border #CBD7E5",
+     10
+    ],
+    [
+     "text #52657B",
+     9
+    ],
+    [
+     "text #F8FAFC",
+     5
+    ],
+    [
+     "text #465B73",
+     3
+    ],
+    [
+     "text #283D54",
+     2
+    ],
+    [
+     "border #173D66",
+     2
+    ]
+   ],
+   "inputMode": "pointer"
+  },
+  {
+   "vp": "movil",
+   "area": "Cliente",
+   "screen": "05-seguimiento-publico",
+   "url": "/tracking",
+   "viewport": [
+    390,
+    844
+   ],
+   "overflow": 0,
+   "textChecked": 7,
+   "minContrast": 4.94,
+   "lowContrast": [],
+   "lowContrastCount": 0,
+   "under13px": 0,
+   "under13Samples": [],
+   "readingTextUnder16": 0,
+   "readingSamples": [],
+   "targets": 4,
+   "targetsUnder24": 2,
+   "under24Samples": [
+    "a \"Saltar al contenido\" 1x1",
+    "button \"← Inicio\" 49x20"
+   ],
+   "targetsUnder44": 2,
+   "under44Samples": [
+    "a \"Saltar al contenido\" 1x1",
+    "button \"← Inicio\" 49x20"
+   ],
+   "unnamedControls": [],
+   "unlabeledFields": [],
+   "headings": [
+    1
+   ],
+   "headingSkips": 0,
+   "h1Count": 1,
+   "colours": [
+    [
+     "bg #E8EEF5",
+     315120
+    ],
+    [
+     "bg #F8FAFC",
+     177288
+    ],
+    [
+     "bg #FFFFFF",
+     17248
+    ],
+    [
+     "bg #173D66",
+     13553
+    ],
+    [
+     "bg #D5AE54",
+     256
+    ],
+    [
+     "text #334155",
+     11
+    ],
+    [
+     "border #CBD7E5",
+     3
+    ],
+    [
+     "text #F8FAFC",
+     2
+    ],
+    [
+     "text #5B6F86",
+     1
+    ],
+    [
+     "text #173D66",
+     1
+    ],
+    [
+     "text #465B73",
+     1
+    ],
+    [
+     "text #52657B",
+     1
+    ]
+   ],
+   "inputMode": "keyboard"
+  },
+  {
+   "vp": "movil",
+   "area": "Panel interno",
+   "screen": "06-ingreso-personal-modal",
+   "url": "/portal",
+   "viewport": [
+    390,
+    844
+   ],
+   "overflow": 0,
+   "textChecked": 20,
+   "minContrast": 4.94,
+   "lowContrast": [],
+   "lowContrastCount": 0,
+   "under13px": 0,
+   "under13Samples": [],
+   "readingTextUnder16": 0,
+   "readingSamples": [],
+   "targets": 9,
+   "targetsUnder24": 1,
+   "under24Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "targetsUnder44": 2,
+   "under44Samples": [
+    "a \"Saltar al contenido\" 1x1",
+    "button \"Mostrar contraseña\" 44x40"
+   ],
+   "unnamedControls": [],
+   "unlabeledFields": [],
+   "headings": [
+    1,
+    2,
+    2,
+    2
+   ],
+   "headingSkips": 0,
+   "h1Count": 1,
+   "colours": [
+    [
+     "bg #F8FAFC",
+     424353.5
+    ],
+    [
+     "bg #E8EEF5",
+     418640.625
+    ],
+    [
+     "bg #173D66",
+     343065
+    ],
+    [
+     "bg #FFFFFF",
+     27808
+    ],
+    [
+     "bg #F1E7CF",
+     2304
+    ],
+    [
+     "bg #E4ECF5",
+     2304
+    ],
+    [
+     "text #334155",
+     26
+    ],
+    [
+     "text #173D66",
+     21
+    ],
+    [
+     "text #52657B",
+     10
+    ],
+    [
+     "border #CBD7E5",
+     7
+    ],
+    [
+     "text #F8FAFC",
+     2
+    ],
+    [
+     "border #D5AE54",
+     1
+    ],
+    [
+     "text #5B6F86",
+     1
+    ]
+   ],
+   "inputMode": "pointer"
+  },
+  {
+   "vp": "m360",
+   "area": "Portal",
+   "screen": "01-portal",
+   "url": "/portal",
+   "viewport": [
+    360,
+    800
+   ],
+   "overflow": 0,
+   "textChecked": 15,
+   "minContrast": 5.13,
+   "lowContrast": [],
+   "lowContrastCount": 0,
+   "under13px": 0,
+   "under13Samples": [],
+   "readingTextUnder16": 0,
+   "readingSamples": [],
+   "targets": 4,
+   "targetsUnder24": 1,
+   "under24Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "targetsUnder44": 1,
+   "under44Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "unnamedControls": [],
+   "unlabeledFields": [],
+   "headings": [
+    1,
+    2,
+    2
+   ],
+   "headingSkips": 0,
+   "h1Count": 1,
+   "colours": [
+    [
+     "bg #E8EEF5",
+     386437.5
+    ],
+    [
+     "bg #F8FAFC",
+     265340
+    ],
+    [
+     "bg #F1E7CF",
+     2304
+    ],
+    [
+     "bg #E4ECF5",
+     2304
+    ],
+    [
+     "text #173D66",
+     20
+    ],
+    [
+     "text #334155",
+     15
+    ],
+    [
+     "text #52657B",
+     4
+    ],
+    [
+     "border #CBD7E5",
+     4
+    ],
+    [
+     "bg #173D66",
+     1
+    ],
+    [
+     "text #F8FAFC",
+     1
+    ],
+    [
+     "border #D5AE54",
+     1
+    ]
+   ],
+   "inputMode": "keyboard"
+  },
+  {
+   "vp": "m360",
+   "area": "Ingreso",
+   "screen": "02-seleccion",
+   "url": "/cliente",
+   "viewport": [
+    360,
+    800
+   ],
+   "overflow": 0,
+   "textChecked": 17,
+   "minContrast": 5.13,
+   "lowContrast": [],
+   "lowContrastCount": 0,
+   "under13px": 0,
+   "under13Samples": [],
+   "readingTextUnder16": 1,
+   "readingSamples": [
+    {
+     "text": "Ingresa el número REQ. Solo se muestra el número y",
+     "size": 14
+    }
+   ],
+   "targets": 6,
+   "targetsUnder24": 1,
+   "under24Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "targetsUnder44": 1,
+   "under44Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "unnamedControls": [],
+   "unlabeledFields": [
+    "input \"Número de ticket\" (aria-label only)"
+   ],
+   "headings": [
+    1,
+    2,
+    2,
+    2
+   ],
+   "headingSkips": 0,
+   "h1Count": 1,
+   "colours": [
+    [
+     "bg #E8EEF5",
+     367661.25
+    ],
+    [
+     "bg #F8FAFC",
+     166920
+    ],
+    [
+     "bg #E4ECF5",
+     4608
+    ],
+    [
+     "text #334155",
+     21
+    ],
+    [
+     "text #173D66",
+     14
+    ],
+    [
+     "border #CBD7E5",
+     9
+    ],
+    [
+     "text #52657B",
+     4
+    ],
+    [
+     "text #465B73",
+     3
+    ],
+    [
+     "text #283D54",
+     2
+    ],
+    [
+     "bg #173D66",
+     1
+    ],
+    [
+     "text #F8FAFC",
+     1
+    ]
+   ],
+   "inputMode": "keyboard"
+  },
+  {
+   "vp": "m360",
+   "area": "Ingreso",
+   "screen": "03-quipu",
+   "url": "/cliente",
+   "viewport": [
+    360,
+    800
+   ],
+   "overflow": 0,
+   "textChecked": 24,
+   "minContrast": 5.13,
+   "lowContrast": [],
+   "lowContrastCount": 0,
+   "under13px": 0,
+   "under13Samples": [],
+   "readingTextUnder16": 1,
+   "readingSamples": [
+    {
+     "text": "Ingresa el número REQ. Solo se muestra el número y",
+     "size": 14
+    }
+   ],
+   "targets": 12,
+   "targetsUnder24": 1,
+   "under24Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "targetsUnder44": 2,
+   "under44Samples": [
+    "a \"Saltar al contenido\" 1x1",
+    "button \"Mostrar contraseña\" 44x40"
+   ],
+   "unnamedControls": [],
+   "unlabeledFields": [
+    "input \"Número de ticket\" (aria-label only)"
+   ],
+   "headings": [
+    1,
+    2,
+    2,
+    2,
+    2
+   ],
+   "headingSkips": 0,
+   "h1Count": 1,
+   "colours": [
+    [
+     "bg #E8EEF5",
+     562128.75
+    ],
+    [
+     "bg #F8FAFC",
+     322040
+    ],
+    [
+     "bg #EDF3FA",
+     50560
+    ],
+    [
+     "bg #173D66",
+     12457
+    ],
+    [
+     "bg #E4ECF5",
+     4608
+    ],
+    [
+     "text #334155",
+     34
+    ],
+    [
+     "text #173D66",
+     14
+    ],
+    [
+     "border #CBD7E5",
+     11
+    ],
+    [
+     "text #52657B",
+     9
+    ],
+    [
+     "text #F8FAFC",
+     5
+    ],
+    [
+     "text #465B73",
+     3
+    ],
+    [
+     "border #173D66",
+     2
+    ],
+    [
+     "text #283D54",
+     2
+    ]
+   ],
+   "inputMode": "pointer"
+  },
+  {
+   "vp": "m360",
+   "area": "Ingreso",
+   "screen": "04-quipufac",
+   "url": "/cliente",
+   "viewport": [
+    360,
+    800
+   ],
+   "overflow": 0,
+   "textChecked": 23,
+   "minContrast": 5.13,
+   "lowContrast": [],
+   "lowContrastCount": 0,
+   "under13px": 0,
+   "under13Samples": [],
+   "readingTextUnder16": 2,
+   "readingSamples": [
+    {
+     "text": "Usa las mismas credenciales de QuipuFac .",
+     "size": 13
+    },
+    {
+     "text": "Ingresa el número REQ. Solo se muestra el número y",
+     "size": 14
+    }
+   ],
+   "targets": 11,
+   "targetsUnder24": 1,
+   "under24Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "targetsUnder44": 2,
+   "under44Samples": [
+    "a \"Saltar al contenido\" 1x1",
+    "button \"Mostrar contraseña\" 44x40"
+   ],
+   "unnamedControls": [],
+   "unlabeledFields": [
+    "input \"Número de ticket\" (aria-label only)"
+   ],
+   "headings": [
+    1,
+    2,
+    2,
+    2,
+    2
+   ],
+   "headingSkips": 0,
+   "h1Count": 1,
+   "colours": [
+    [
+     "bg #E8EEF5",
+     529008.75
+    ],
+    [
+     "bg #F8FAFC",
+     285500
+    ],
+    [
+     "bg #EDF3FA",
+     44160
+    ],
+    [
+     "bg #173D66",
+     12457
+    ],
+    [
+     "bg #E4ECF5",
+     4608
+    ],
+    [
+     "text #334155",
+     31
+    ],
+    [
+     "text #173D66",
+     14
+    ],
+    [
+     "border #CBD7E5",
+     10
+    ],
+    [
+     "text #52657B",
+     9
+    ],
+    [
+     "text #F8FAFC",
+     5
+    ],
+    [
+     "text #465B73",
+     3
+    ],
+    [
+     "text #283D54",
+     2
+    ],
+    [
+     "border #173D66",
+     2
+    ]
+   ],
+   "inputMode": "pointer"
+  },
+  {
+   "vp": "m360",
+   "area": "Cliente",
+   "screen": "05-seguimiento-publico",
+   "url": "/tracking",
+   "viewport": [
+    360,
+    800
+   ],
+   "overflow": 0,
+   "textChecked": 7,
+   "minContrast": 4.94,
+   "lowContrast": [],
+   "lowContrastCount": 0,
+   "under13px": 0,
+   "under13Samples": [],
+   "readingTextUnder16": 0,
+   "readingSamples": [],
+   "targets": 4,
+   "targetsUnder24": 2,
+   "under24Samples": [
+    "a \"Saltar al contenido\" 1x1",
+    "button \"← Inicio\" 49x20"
+   ],
+   "targetsUnder44": 2,
+   "under44Samples": [
+    "a \"Saltar al contenido\" 1x1",
+    "button \"← Inicio\" 49x20"
+   ],
+   "unnamedControls": [],
+   "unlabeledFields": [],
+   "headings": [
+    1
+   ],
+   "headingSkips": 0,
+   "h1Count": 1,
+   "colours": [
+    [
+     "bg #E8EEF5",
+     275040
+    ],
+    [
+     "bg #F8FAFC",
+     162528
+    ],
+    [
+     "bg #FFFFFF",
+     15568
+    ],
+    [
+     "bg #173D66",
+     12233
+    ],
+    [
+     "bg #D5AE54",
+     256
+    ],
+    [
+     "text #334155",
+     11
+    ],
+    [
+     "border #CBD7E5",
+     3
+    ],
+    [
+     "text #F8FAFC",
+     2
+    ],
+    [
+     "text #5B6F86",
+     1
+    ],
+    [
+     "text #173D66",
+     1
+    ],
+    [
+     "text #465B73",
+     1
+    ],
+    [
+     "text #52657B",
+     1
+    ]
+   ],
+   "inputMode": "keyboard"
+  },
+  {
+   "vp": "m360",
+   "area": "Panel interno",
+   "screen": "06-ingreso-personal-modal",
+   "url": "/portal",
+   "viewport": [
+    360,
+    800
+   ],
+   "overflow": 0,
+   "textChecked": 20,
+   "minContrast": 4.94,
+   "lowContrast": [],
+   "lowContrastCount": 0,
+   "under13px": 0,
+   "under13Samples": [],
+   "readingTextUnder16": 0,
+   "readingSamples": [],
+   "targets": 9,
+   "targetsUnder24": 1,
+   "under24Samples": [
+    "a \"Saltar al contenido\" 1x1"
+   ],
+   "targetsUnder44": 2,
+   "under44Samples": [
+    "a \"Saltar al contenido\" 1x1",
+    "button \"Mostrar contraseña\" 44x40"
+   ],
+   "unnamedControls": [],
+   "unlabeledFields": [],
+   "headings": [
+    1,
+    2,
+    2,
+    2
+   ],
+   "headingSkips": 0,
+   "h1Count": 1,
+   "colours": [
+    [
+     "bg #F8FAFC",
+     389051
+    ],
+    [
+     "bg #E8EEF5",
+     386437.5
+    ],
+    [
+     "bg #173D66",
+     300585
+    ],
+    [
+     "bg #FFFFFF",
+     25168
+    ],
+    [
+     "bg #F1E7CF",
+     2304
+    ],
+    [
+     "bg #E4ECF5",
+     2304
+    ],
+    [
+     "text #334155",
+     26
+    ],
+    [
+     "text #173D66",
+     21
+    ],
+    [
+     "text #52657B",
+     10
+    ],
+    [
+     "border #CBD7E5",
+     7
+    ],
+    [
+     "text #F8FAFC",
+     2
+    ],
+    [
+     "border #D5AE54",
+     1
+    ],
+    [
+     "text #5B6F86",
+     1
+    ]
+   ],
+   "inputMode": "pointer"
+  }
+ ],
+ "manifest": [
+  {
+   "file": "desktop-01-portal.png",
+   "route": "/portal",
+   "version": "Versión 202611231118",
+   "resolution": "1920x1080",
+   "area": "Portal",
+   "screen": "01-portal",
+   "date": "2026-11-23T16:41:13.108Z",
+   "sha256": "e94ec74857a66db4b59258a305113ac938dd691adcb661e7267d895a88b50951"
+  },
+  {
+   "file": "desktop-02-seleccion.png",
+   "route": "/cliente",
+   "version": "Versión 202611231118",
+   "resolution": "1920x1080",
+   "area": "Ingreso",
+   "screen": "02-seleccion",
+   "date": "2026-11-23T16:41:14.134Z",
+   "sha256": "969cb27a697376ce04f205c3ae5935e8f8c193ae40fe333f34c8193bcd4ddd55"
+  },
+  {
+   "file": "desktop-03-quipu.png",
+   "route": "/cliente",
+   "version": "Versión 202611231118",
+   "resolution": "1920x1080",
+   "area": "Ingreso",
+   "screen": "03-quipu",
+   "date": "2026-11-23T16:41:14.694Z",
+   "sha256": "1ae8bd2e8bcf1f63b3a5d9f8f19432fc99d73f15804264818527020bbc4849af"
+  },
+  {
+   "file": "desktop-04-quipufac.png",
+   "route": "/cliente",
+   "version": "Versión 202611231118",
+   "resolution": "1920x1080",
+   "area": "Ingreso",
+   "screen": "04-quipufac",
+   "date": "2026-11-23T16:41:15.306Z",
+   "sha256": "42167dc75d472cab18c340cae0285aa8014751a9d809994ede8783a79cbfeab2"
+  },
+  {
+   "file": "desktop-05-seguimiento-publico.png",
+   "route": "/tracking",
+   "version": "Versión 202611231118",
+   "resolution": "1920x1080",
+   "area": "Cliente",
+   "screen": "05-seguimiento-publico",
+   "date": "2026-11-23T16:41:16.332Z",
+   "sha256": "ca9fdd176b14a278b5f6765c6eefa5968258da777e9c8f31108dc0ff16d4eb24"
+  },
+  {
+   "file": "desktop-06-ingreso-personal-modal.png",
+   "route": "/portal",
+   "version": "Versión 202611231118",
+   "resolution": "1920x1080",
+   "area": "Panel interno",
+   "screen": "06-ingreso-personal-modal",
+   "date": "2026-11-23T16:41:17.789Z",
+   "sha256": "67a748a6df0e740ce42fbb9dae73dff3a5b6006f06a94e9983fe778c8b7b7d27"
+  },
+  {
+   "file": "laptop-01-portal.png",
+   "route": "/portal",
+   "version": "Versión 202611231118",
+   "resolution": "1440x900",
+   "area": "Portal",
+   "screen": "01-portal",
+   "date": "2026-11-23T16:41:19.266Z",
+   "sha256": "5069d1cf097fd724bd93dcd813180669f4ddf795bf1d61e56ad83cdf109e15e3"
+  },
+  {
+   "file": "laptop-02-seleccion.png",
+   "route": "/cliente",
+   "version": "Versión 202611231118",
+   "resolution": "1440x900",
+   "area": "Ingreso",
+   "screen": "02-seleccion",
+   "date": "2026-11-23T16:41:20.311Z",
+   "sha256": "dda4b9a845ccf7ec030276794f08ef28bf4a991b77b95a9296273613af5863eb"
+  },
+  {
+   "file": "laptop-03-quipu.png",
+   "route": "/cliente",
+   "version": "Versión 202611231118",
+   "resolution": "1440x900",
+   "area": "Ingreso",
+   "screen": "03-quipu",
+   "date": "2026-11-23T16:41:20.852Z",
+   "sha256": "fb725bf4f366bf3f3ab2583a8ab8325cd323f1f35570be7c21323d7dca32ec4a"
+  },
+  {
+   "file": "laptop-04-quipufac.png",
+   "route": "/cliente",
+   "version": "Versión 202611231118",
+   "resolution": "1440x900",
+   "area": "Ingreso",
+   "screen": "04-quipufac",
+   "date": "2026-11-23T16:41:21.484Z",
+   "sha256": "eb1a29a27291c065a4f7db330e701c45cd353255c434d7b9ed6e8fb9cd73fc63"
+  },
+  {
+   "file": "laptop-05-seguimiento-publico.png",
+   "route": "/tracking",
+   "version": "Versión 202611231118",
+   "resolution": "1440x900",
+   "area": "Cliente",
+   "screen": "05-seguimiento-publico",
+   "date": "2026-11-23T16:41:22.508Z",
+   "sha256": "88059395f0f3373669bf46db241ce12c5459e0206a91738692c8229c986fd7d1"
+  },
+  {
+   "file": "laptop-06-ingreso-personal-modal.png",
+   "route": "/portal",
+   "version": "Versión 202611231118",
+   "resolution": "1440x900",
+   "area": "Panel interno",
+   "screen": "06-ingreso-personal-modal",
+   "date": "2026-11-23T16:41:23.980Z",
+   "sha256": "d94fee79b46e4a612d4ebfe2c04cde6fa99e655617398adbefb0d0f1a2c3bbd4"
+  },
+  {
+   "file": "tablet-01-portal.png",
+   "route": "/portal",
+   "version": "Versión 202611231118",
+   "resolution": "768x1024",
+   "area": "Portal",
+   "screen": "01-portal",
+   "date": "2026-11-23T16:41:25.732Z",
+   "sha256": "760bb362f8e5a37dac8301d0c1a4ace9b762c6df6cc9026fe73bab10cc69573d"
+  },
+  {
+   "file": "tablet-02-seleccion.png",
+   "route": "/cliente",
+   "version": "Versión 202611231118",
+   "resolution": "768x1024",
+   "area": "Ingreso",
+   "screen": "02-seleccion",
+   "date": "2026-11-23T16:41:26.731Z",
+   "sha256": "12c99513d8f750bedb1be9fb91674b2be299763163edb953d1c31d4e56881718"
+  },
+  {
+   "file": "tablet-03-quipu.png",
+   "route": "/cliente",
+   "version": "Versión 202611231118",
+   "resolution": "768x1024",
+   "area": "Ingreso",
+   "screen": "03-quipu",
+   "date": "2026-11-23T16:41:27.275Z",
+   "sha256": "2895370d79d964d0cb46804805564b5296ca90f82ac0956fe42ccd318e220086"
+  },
+  {
+   "file": "tablet-04-quipufac.png",
+   "route": "/cliente",
+   "version": "Versión 202611231118",
+   "resolution": "768x1024",
+   "area": "Ingreso",
+   "screen": "04-quipufac",
+   "date": "2026-11-23T16:41:27.874Z",
+   "sha256": "531393194f60f4f5ea1bd96995777a4c8cb757aa6e1004deccc6ddd2d94398b7"
+  },
+  {
+   "file": "tablet-05-seguimiento-publico.png",
+   "route": "/tracking",
+   "version": "Versión 202611231118",
+   "resolution": "768x1024",
+   "area": "Cliente",
+   "screen": "05-seguimiento-publico",
+   "date": "2026-11-23T16:41:28.886Z",
+   "sha256": "4bb2c4bd1a5b27e8d0e69e1f0d5805b5fee3d4f1b3966e9851772f39388c6fbb"
+  },
+  {
+   "file": "tablet-06-ingreso-personal-modal.png",
+   "route": "/portal",
+   "version": "Versión 202611231118",
+   "resolution": "768x1024",
+   "area": "Panel interno",
+   "screen": "06-ingreso-personal-modal",
+   "date": "2026-11-23T16:41:30.340Z",
+   "sha256": "88453c0d3b29ffb0d3437f8f3f376874a2d69a55847810f246835043999ad009"
+  },
+  {
+   "file": "movil-01-portal.png",
+   "route": "/portal",
+   "version": "Versión 202611231118",
+   "resolution": "390x844",
+   "area": "Portal",
+   "screen": "01-portal",
+   "date": "2026-11-23T16:41:31.751Z",
+   "sha256": "a18421888317f84bc9895f34eebc84c1e2daf8d17d57e7ab8bc36367b2d3f0a2"
+  },
+  {
+   "file": "movil-02-seleccion.png",
+   "route": "/cliente",
+   "version": "Versión 202611231118",
+   "resolution": "390x844",
+   "area": "Ingreso",
+   "screen": "02-seleccion",
+   "date": "2026-11-23T16:41:32.767Z",
+   "sha256": "132d714c5c1328f4b34026fdae45ec8addedb18a464939a8275a3d2e6212b08b"
+  },
+  {
+   "file": "movil-03-quipu.png",
+   "route": "/cliente",
+   "version": "Versión 202611231118",
+   "resolution": "390x844",
+   "area": "Ingreso",
+   "screen": "03-quipu",
+   "date": "2026-11-23T16:41:33.304Z",
+   "sha256": "b53f1cc550e2d325a5697dfbd456ca4742eb333c3bbb1b96eb4fba9c3f26581b"
+  },
+  {
+   "file": "movil-04-quipufac.png",
+   "route": "/cliente",
+   "version": "Versión 202611231118",
+   "resolution": "390x844",
+   "area": "Ingreso",
+   "screen": "04-quipufac",
+   "date": "2026-11-23T16:41:33.920Z",
+   "sha256": "0afb3d461088031968605358b6c9c8a0a8a423e5a215ee807dd8d130414f20c3"
+  },
+  {
+   "file": "movil-05-seguimiento-publico.png",
+   "route": "/tracking",
+   "version": "Versión 202611231118",
+   "resolution": "390x844",
+   "area": "Cliente",
+   "screen": "05-seguimiento-publico",
+   "date": "2026-11-23T16:41:34.915Z",
+   "sha256": "ed352d4ed3939c8e005f1c361e7476f43afd88ffb4be26a0cb4d451390daa787"
+  },
+  {
+   "file": "movil-06-ingreso-personal-modal.png",
+   "route": "/portal",
+   "version": "Versión 202611231118",
+   "resolution": "390x844",
+   "area": "Panel interno",
+   "screen": "06-ingreso-personal-modal",
+   "date": "2026-11-23T16:41:36.369Z",
+   "sha256": "5decd0d4c62e0acddf15cc0b60de73927751ab15820067fa3c185dfe0f2e9cfd"
+  },
+  {
+   "file": "m360-01-portal.png",
+   "route": "/portal",
+   "version": "Versión 202611231118",
+   "resolution": "360x800",
+   "area": "Portal",
+   "screen": "01-portal",
+   "date": "2026-11-23T16:41:37.802Z",
+   "sha256": "a737fec1bea6f4ea2dacd6ec76abc56dc3946ea246ab286a4dd3ecbea9f71ac4"
+  },
+  {
+   "file": "m360-02-seleccion.png",
+   "route": "/cliente",
+   "version": "Versión 202611231118",
+   "resolution": "360x800",
+   "area": "Ingreso",
+   "screen": "02-seleccion",
+   "date": "2026-11-23T16:41:38.850Z",
+   "sha256": "1185a2e5a869ddd1173873b9a191849bf195f57c535207acf5b19ce1b230340a"
+  },
+  {
+   "file": "m360-03-quipu.png",
+   "route": "/cliente",
+   "version": "Versión 202611231118",
+   "resolution": "360x800",
+   "area": "Ingreso",
+   "screen": "03-quipu",
+   "date": "2026-11-23T16:41:39.371Z",
+   "sha256": "ba6ee7a3f5813e64cfc881f816176d9d505ce67416c955711a8eec20c382e40e"
+  },
+  {
+   "file": "m360-04-quipufac.png",
+   "route": "/cliente",
+   "version": "Versión 202611231118",
+   "resolution": "360x800",
+   "area": "Ingreso",
+   "screen": "04-quipufac",
+   "date": "2026-11-23T16:41:39.988Z",
+   "sha256": "ba60b8ed99d3ebec50954ef3ed0e20cc00658aad9eeb3830efe7cf91152de02a"
+  },
+  {
+   "file": "m360-05-seguimiento-publico.png",
+   "route": "/tracking",
+   "version": "Versión 202611231118",
+   "resolution": "360x800",
+   "area": "Cliente",
+   "screen": "05-seguimiento-publico",
+   "date": "2026-11-23T16:41:40.997Z",
+   "sha256": "e1093ab4c5b8bc037644f71a17a73fed68b7b320d9b3c684995bea41945f35e6"
+  },
+  {
+   "file": "m360-06-ingreso-personal-modal.png",
+   "route": "/portal",
+   "version": "Versión 202611231118",
+   "resolution": "360x800",
+   "area": "Panel interno",
+   "screen": "06-ingreso-personal-modal",
+   "date": "2026-11-23T16:41:42.453Z",
+   "sha256": "a389126c2872051c722237bc9e611230a634925382ce9b692ec15e0dffc6f08f"
+  }
+ ],
+ "nonGet": [],
+ "errors": [],
+ "password-toggle-desktop": {
+  "before": "password",
+  "after": "text",
+  "label1": "Mostrar contraseña",
+  "label2": "Ocultar contraseña",
+  "pressed": "true"
+ },
+ "tab-portal-laptop": [
+  {
+   "el": "a Saltar al contenido",
+   "outline": "solid 2px rgb(23, 61, 102)",
+   "shadow": false,
+   "visibleRing": true,
+   "inViewport": true,
+   "transition": "0s"
+  },
+  {
+   "el": "button Ingreso del personal",
+   "outline": "solid 2px rgb(23, 61, 102)",
+   "shadow": false,
+   "visibleRing": true,
+   "inViewport": true,
+   "transition": "0s"
+  },
+  {
+   "el": "button Nueva SolicitudIngresa c",
+   "outline": "solid 2px rgb(23, 61, 102)",
+   "shadow": false,
+   "visibleRing": true,
+   "inViewport": true,
+   "transition": "0s"
+  },
+  {
+   "el": "button Rastrear SolicitudConsul",
+   "outline": "solid 2px rgb(23, 61, 102)",
+   "shadow": false,
+   "visibleRing": true,
+   "inViewport": true,
+   "transition": "0s"
+  },
+  {
+   "el": "a Saltar al contenido",
+   "outline": "solid 2px rgb(23, 61, 102)",
+   "shadow": false,
+   "visibleRing": true,
+   "inViewport": true,
+   "transition": "0s"
+  }
+ ],
+ "tab-quipu-laptop": [
+  {
+   "el": "button QuipuFacIngreso empresar",
+   "outline": "solid 2px rgb(23, 61, 102)",
+   "shadow": false,
+   "visibleRing": true,
+   "inViewport": true,
+   "transition": "0s"
+  },
+  {
+   "el": "button ← Cambiar tipo",
+   "outline": "solid 2px rgb(23, 61, 102)",
+   "shadow": false,
+   "visibleRing": true,
+   "inViewport": true,
+   "transition": "0s"
+  },
+  {
+   "el": "input#client-ruc ",
+   "outline": "solid 2px rgb(23, 61, 102)",
+   "shadow": true,
+   "visibleRing": true,
+   "inViewport": true,
+   "transition": "0s"
+  },
+  {
+   "el": "input#client-username ",
+   "outline": "solid 2px rgb(23, 61, 102)",
+   "shadow": true,
+   "visibleRing": true,
+   "inViewport": true,
+   "transition": "0s"
+  },
+  {
+   "el": "input#client-password ",
+   "outline": "solid 2px rgb(23, 61, 102)",
+   "shadow": true,
+   "visibleRing": true,
+   "inViewport": true,
+   "transition": "0s"
+  },
+  {
+   "el": "button Mostrar contraseña",
+   "outline": "solid 2px rgb(23, 61, 102)",
+   "shadow": false,
+   "visibleRing": true,
+   "inViewport": true,
+   "transition": "0s"
+  },
+  {
+   "el": "button Ingresar",
+   "outline": "solid 2px rgb(23, 61, 102)",
+   "shadow": false,
+   "visibleRing": true,
+   "inViewport": true,
+   "transition": "0s"
+  },
+  {
+   "el": "input Número de ticket",
+   "outline": "solid 2px rgb(23, 61, 102)",
+   "shadow": false,
+   "visibleRing": true,
+   "inViewport": true,
+   "transition": "0s"
+  },
+  {
+   "el": "a Saltar al contenido",
+   "outline": "solid 2px rgb(23, 61, 102)",
+   "shadow": false,
+   "visibleRing": true,
+   "inViewport": true,
+   "transition": "0s"
+  }
+ ],
+ "password-toggle-laptop": {
+  "before": "password",
+  "after": "text",
+  "label1": "Mostrar contraseña",
+  "label2": "Ocultar contraseña",
+  "pressed": "true"
+ },
+ "staffModal": {
+  "focusTrapped": [
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true
+  ],
+  "closesWithEscape": true,
+  "role": 0
+ },
+ "password-toggle-tablet": {
+  "before": "password",
+  "after": "text",
+  "label1": "Mostrar contraseña",
+  "label2": "Ocultar contraseña",
+  "pressed": "true"
+ },
+ "tab-portal-movil": [
+  {
+   "el": "a Saltar al contenido",
+   "outline": "solid 2px rgb(23, 61, 102)",
+   "shadow": false,
+   "visibleRing": true,
+   "inViewport": true,
+   "transition": "0s"
+  },
+  {
+   "el": "button Ingreso del personal",
+   "outline": "solid 2px rgb(23, 61, 102)",
+   "shadow": false,
+   "visibleRing": true,
+   "inViewport": true,
+   "transition": "0s"
+  },
+  {
+   "el": "button Nueva SolicitudIngresa c",
+   "outline": "solid 2px rgb(23, 61, 102)",
+   "shadow": false,
+   "visibleRing": true,
+   "inViewport": true,
+   "transition": "0s"
+  },
+  {
+   "el": "button Rastrear SolicitudConsul",
+   "outline": "solid 2px rgb(23, 61, 102)",
+   "shadow": false,
+   "visibleRing": true,
+   "inViewport": true,
+   "transition": "0s"
+  },
+  {
+   "el": "a Saltar al contenido",
+   "outline": "solid 2px rgb(23, 61, 102)",
+   "shadow": false,
+   "visibleRing": true,
+   "inViewport": true,
+   "transition": "0s"
+  }
+ ],
+ "tab-quipu-movil": [
+  {
+   "el": "button QuipuFacIngreso empresar",
+   "outline": "solid 2px rgb(23, 61, 102)",
+   "shadow": false,
+   "visibleRing": true,
+   "inViewport": true,
+   "transition": "0s"
+  },
+  {
+   "el": "button ← Cambiar tipo",
+   "outline": "solid 2px rgb(23, 61, 102)",
+   "shadow": false,
+   "visibleRing": true,
+   "inViewport": true,
+   "transition": "0s"
+  },
+  {
+   "el": "input#client-ruc ",
+   "outline": "solid 2px rgb(23, 61, 102)",
+   "shadow": true,
+   "visibleRing": true,
+   "inViewport": true,
+   "transition": "0s"
+  },
+  {
+   "el": "input#client-username ",
+   "outline": "solid 2px rgb(23, 61, 102)",
+   "shadow": true,
+   "visibleRing": true,
+   "inViewport": true,
+   "transition": "0s"
+  },
+  {
+   "el": "input#client-password ",
+   "outline": "solid 2px rgb(23, 61, 102)",
+   "shadow": true,
+   "visibleRing": true,
+   "inViewport": true,
+   "transition": "0s"
+  },
+  {
+   "el": "button Mostrar contraseña",
+   "outline": "solid 2px rgb(23, 61, 102)",
+   "shadow": false,
+   "visibleRing": true,
+   "inViewport": true,
+   "transition": "0s"
+  },
+  {
+   "el": "button Ingresar",
+   "outline": "solid 2px rgb(23, 61, 102)",
+   "shadow": false,
+   "visibleRing": true,
+   "inViewport": true,
+   "transition": "0s"
+  },
+  {
+   "el": "input Número de ticket",
+   "outline": "solid 2px rgb(23, 61, 102)",
+   "shadow": false,
+   "visibleRing": true,
+   "inViewport": true,
+   "transition": "0s"
+  },
+  {
+   "el": "a Saltar al contenido",
+   "outline": "solid 2px rgb(23, 61, 102)",
+   "shadow": false,
+   "visibleRing": true,
+   "inViewport": true,
+   "transition": "0s"
+  }
+ ],
+ "password-toggle-movil": {
+  "before": "password",
+  "after": "text",
+  "label1": "Mostrar contraseña",
+  "label2": "Ocultar contraseña",
+  "pressed": "true"
+ },
+ "password-toggle-m360": {
+  "before": "password",
+  "after": "text",
+  "label1": "Mostrar contraseña",
+  "label2": "Ocultar contraseña",
+  "pressed": "true"
+ },
+ "overflow320/portal": 0,
+ "overflow320/cliente": 0,
+ "overflow320/tracking": 0,
+ "hover": {
+  "restBefore": {
+   "input": "keyboard",
+   "duration": "0s",
+   "property": "opacity, transform",
+   "transform": "none"
+  },
+  "hoverBeforeFirstPointer": {
+   "input": "keyboard",
+   "duration": "0s",
+   "property": "opacity, transform",
+   "transform": "matrix(1, 0, 0, 1, 0, -2)"
+  },
+  "hoverAfterPointer": {
+   "input": "pointer",
+   "duration": "0.15s",
+   "property": "opacity, transform",
+   "transform": "matrix(1, 0, 0, 1, 0, -2)"
+  },
+  "staffButton": {
+   "className": "ui-button ui-button-secondary shrink-0",
+   "duration": "0.12s",
+   "property": "opacity, transform",
+   "timing": "cubic-bezier(0.23, 1, 0.32, 1)"
+  }
+ },
+ "reducedMotion": {
+  "transform": "none",
+  "duration": "0s",
+  "property": "none"
+ },
+ "load-laptop": {
+  "requests": 6,
+  "transferKiB": 201.5,
+  "jsDecodedKiB": 442.4,
+  "cssDecodedKiB": 56.9,
+  "fonts": [
+   "host-grotesk.woff2 19.8KiB",
+   "jetbrains-mono.woff2 30.7KiB"
+  ],
+  "images": [
+   "procont-logo.png 2.7KiB"
+  ],
+  "fcpMs": 568,
+  "lcpMs": 568,
+  "cls": 0,
+  "domContentLoadedMs": 547
+ },
+ "load-movil": {
+  "requests": 6,
+  "transferKiB": 201.5,
+  "jsDecodedKiB": 442.4,
+  "cssDecodedKiB": 56.9,
+  "fonts": [
+   "host-grotesk.woff2 19.8KiB",
+   "jetbrains-mono.woff2 30.7KiB"
+  ],
+  "images": [
+   "procont-logo.png 2.7KiB"
+  ],
+  "fcpMs": 576,
+  "lcpMs": 576,
+  "cls": 0,
+  "domContentLoadedMs": 551
+ },
+ "version": "Versión 202611231118"
+}

@@ -1,0 +1,11 @@
+{
+ "taste": {"skill":"design-taste-frontend","version":"2.5.1","file":"skills/taste-skill/SKILL.md","sha256":"0c7a5852a5217be79cab422c6d58329b776f0c25bd6da8a7a01707ce75be6206","lines":381,
+   "local_copy":"/mnt/c/Users/Procont/Downloads/taste-skill-main.zip (sha256 d4c69995bbe5281677da0b435e33bc6a7940795bccef458b43ffc694fff01e1b)",
+   "upstream":"github.com/Leonxlnx/taste-skill@main, last commit to SKILL.md b900a80 (2026-11-07): byte-identical",
+   "requested_reference":"github.com/emilkowalski/taste-skill -> HTTP 404 (no existe)",
+   "references_read":["references/system.md","references/motion.md","references/gate.md","references/perf.md","CHANGELOG.md 2.5.1"]},
+ "emil": {"skill":"emil-design-eng","file":"skills/emil-design-eng/SKILL.md","sha256":"cdbfe467e6c9a4940c3a19e795cecf1ba659378d7412e06c245c6ae49da47da6","lines":684,
+   "local_copy":"/mnt/c/Users/Procont/Downloads/skills-main.zip (sha256 bc11e231472ebeddaf42911a6d167682b0407a0cbeb2a1c6ae16e525ab72e0d9)",
+   "upstream":"github.com/emilkowalski/skills@main, last commit to SKILL.md 0f2e23b (2026-11-13): byte-identical",
+   "references_read":["skills/choreograph/SKILL.md (referenced by emil-design-eng for group entrances)"]}
+}
