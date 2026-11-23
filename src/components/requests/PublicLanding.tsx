@@ -40,10 +40,10 @@ function LoginModal({ onClose }: { onClose: () => void }) {
       <div role="dialog" aria-modal="true" aria-labelledby="staff-login-heading" className="modal-panel p-6 sm:p-8 w-full max-w-md overflow-y-auto">
         <ModalFocus onDismiss={onClose} />
         <div className="flex items-center justify-between mb-6">
-          <h2 id="staff-login-heading" className="text-xl text-brand-700">Ingreso del personal</h2>
+          <h2 id="staff-login-heading" className="text-xl text-brand-700">Acceso del equipo de TI</h2>
           <button
             onClick={onClose}
-            aria-label="Cerrar ingreso del personal" className="ui-button ui-button-quiet !px-2 min-w-[44px]"
+            aria-label="Cerrar acceso del equipo de TI" className="ui-button ui-button-quiet !px-2 min-w-[44px]"
           >
             <Icon name="close" />
           </button>
@@ -91,7 +91,7 @@ function LoginModal({ onClose }: { onClose: () => void }) {
           </button>
         </form>
 
-        <p className="text-center text-sm text-gray-600 mt-4">Solo para el {BRAND.teamLabel}</p>
+        <p className="text-center text-base text-gray-600 mt-4">Solo para el equipo de TI de {BRAND.company}</p>
       </div>
     </div>
   )
@@ -119,7 +119,7 @@ export default function PublicLanding() {
           <div className="portal-nav-actions flex items-center gap-3">
             <ThemeToggle />
             <button onClick={() => setShowLogin(true)} className="ui-button ui-button-secondary shrink-0">
-              <Icon name="lock" size={18} /><span>Ingreso del personal</span>
+              <Icon name="lock" size={18} /><span>Acceso del equipo de TI</span>
             </button>
           </div>
         </div>

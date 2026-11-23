@@ -299,12 +299,10 @@ export default function PublicRequestForm({ client }: { client: ClientFormConfig
                     onChange={e => set({ requested_priority: e.target.value as ClientTicketInput['requested_priority'] })}>
                     {Object.entries(REQUESTED_PRIORITIES).map(([value, title]) => <option key={value} value={value}>{title}</option>)}
                   </select>
-                  <p id="ticket-priority-help" className="text-xs text-gray-600 mt-2">El equipo revisará tu solicitud y asignará la prioridad definitiva. La atención urgente se solicita por separado.</p>
+                  {/* D-044: la prioridad solicitada es la única selección de urgencia del cliente (urgent_requested se
+                      envía con su valor predeterminado actual, false; no se infiere de «Urgente»). */}
+                  <p id="ticket-priority-help" className="text-xs text-gray-600 mt-2">El equipo revisará la prioridad que solicitas y establecerá la prioridad definitiva.</p>
                 </div>
-                <label className="flex items-center gap-3 p-4 min-h-[44px] rounded-lg border border-gray-300 cursor-pointer hover:bg-gray-50">
-                  <input type="checkbox" checked={form.urgent_requested} onChange={e => set({ urgent_requested: e.target.checked })} className="h-5 w-5 accent-red-700" />
-                  <span className="text-sm font-medium text-gray-800">Solicito atención urgente (independiente de la prioridad)</span>
-                </label>
               </section>
 
             </fieldset>

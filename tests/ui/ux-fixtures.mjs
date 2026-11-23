@@ -11,7 +11,7 @@ export const visualProjects = PHASES.map((phase, i) => ({
   blocked_reason: i === 1 ? 'Pendiente de información del solicitante.' : null,
   blocked_since: i === 1 ? '2026-11-19T15:00:00Z' : null,
   start_date: '2026-11-10', due_date: '2026-12-15', created_at: '2026-11-10T15:00:00Z', updated_at: '2026-11-19T15:00:00Z',
-  requests: { requester_area: 'Contabilidad', requester_name: 'Persona ficticia', request_number: `REQ26-${7100 + i}`, request_type: 'Mejora', studio_id: id(177) },
+  requests: { requester_area: 'Contabilidad', requester_name: 'Persona ficticia', request_number: `REQ26-${7100 + i}`, request_type: 'Mejora', studio_id: id(177), area_id: i % 3 === 2 ? null : i % 2 ? '00000000-0000-4000-8000-0000000001a2' : '00000000-0000-4000-8000-0000000001a1' },
   project_flows: [{ id: id(7200 + i), project_id: id(7100 + i), flow_type: 'development', current_phase: phase,
     assigned_to: STAFF['developer@simulado.invalid'].id, checklist_items: [{ id: id(7400 + i), completed: i > 3 }] }],
 }))

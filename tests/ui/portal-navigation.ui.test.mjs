@@ -77,7 +77,7 @@ const productOptions = page => page.$$eval('#ticket-product option', o => o.map(
 for (const [label, viewport] of Object.entries(VIEWPORTS)) {
   test(`[${label}] 1. /portal muestra dos accesos públicos e ingreso del personal`, async () => {
     const page = await open(viteMock.url, '/portal', viewport)
-    for (const name of [/Nueva Solicitud/, /Ingreso del personal/]) {
+    for (const name of [/Nueva Solicitud/, /Acceso del equipo de TI/]) {
       assert.equal(await page.getByRole('button', { name }).count(), 1, String(name))
     }
     // «Rastrear Solicitud» ya no navega: contiene el formulario de seguimiento público.
@@ -204,7 +204,7 @@ const TABS = {
 const EQUIPO = { developer: ['Carga de trabajo'], admin: ['Carga de trabajo', 'Usuarios', 'Papelera'],
   superadmin: ['Carga de trabajo', 'Usuarios', 'Papelera', 'Catálogos'] }
 async function staffLogin(page, role) {
-  await page.getByRole('button', { name: /Ingreso del personal/ }).click()
+  await page.getByRole('button', { name: /Acceso del equipo de TI/ }).click()
   await page.fill('input[type=email]', Object.keys(STAFF).find(e => STAFF[e].role === role))
   await page.fill('input[type=password]', SIMULATED_PASSWORD)
   await page.getByRole('button', { name: /Ingresar al sistema/ }).click()
@@ -395,11 +395,12 @@ test('integración: Planner procesa Excel real y conserva payload/acuse de la RP
     mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     buffer: XLSX.write(book, { type: 'buffer', bookType: 'xlsx' }) })
   await page.getByText('Solicitud Planner integrada', { exact: true }).waitFor()
-  await page.getByPlaceholder('Área (obligatoria)').fill('Área de fixture')
+  // Con catálogo de áreas (fixture con el estudio PROCONT simulado), AreaInput es una lista; sin catálogo, texto libre.
+  await page.getByRole('combobox').filter({ has: page.getByRole('option', { name: 'CONTABILIDAD' }) }).selectOption('CONTABILIDAD')
   await page.getByRole('button', { name: 'Importar 1 solicitud', exact: true }).click()
   await page.getByRole('heading', { name: '1 solicitudes confirmadas' }).waitFor()
   assert.equal(submitted.p_payload.requester_name, 'Operador ficticio')
-  assert.equal(submitted.p_payload.requester_area, 'Área de fixture')
+  assert.equal(submitted.p_payload.requester_area, 'CONTABILIDAD')
   assert.equal(submitted.p_payload.requested_date, '2026-12-01')
   assert.equal(submitted.p_payload.origin, 'Interno')
   assert.match(submitted.p_idempotency_key, /^[0-9a-f-]{36}$/)

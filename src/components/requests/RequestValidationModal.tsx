@@ -13,6 +13,7 @@ import RequesterUrgencySummary from '../metrics/RequesterUrgencySummary'
 import Icon from '../ui/Icon'
 import ControlLabel from '../ui/ControlLabel'
 import { PRIORITY_LABEL } from '../../lib/constants'
+import { areasApply } from '../../lib/studio-rules'
 
 type Catalogs = ReturnType<typeof useCatalogs>
 type Mode = 'view' | 'approve' | 'reject'
@@ -68,7 +69,9 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
   const classified = !!r.studio_id
   const system = catalogs.systems.find(s => s.id === r.system_id)
   const subs = catalogs.subsystems.filter(s => s.system_id === r.system_id)
-  const studioAreas = catalogs.areas.filter(a => a.studio_id === r.studio_id && !a.parent_id && r.studio_id)
+  // Áreas solo para el estudio PROCONT (código canónico, studio-rules.ts); en otro estudio no se muestran ni se envían.
+  const areaApplies = areasApply(r.studio_id, catalogs.codes)
+  const studioAreas = areaApplies ? catalogs.areas.filter(a => a.studio_id === r.studio_id && !a.parent_id) : []
   const subareas = catalogs.areas.filter(a => a.parent_id === area && area)
   const codes = catalogs.codes.filter(c => c.studio_id === r.studio_id)
   const requiresSub = !!system?.requires_subproject && subs.length > 0
@@ -92,7 +95,7 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
     try {
       if (classified) {
         await operations.classifyRequest(r.id, { studio_code_id: code, subsystem_id: subsystem || null,
-          area_id: area || null, subarea_id: subarea || null })
+          area_id: areaApplies ? area || null : null, subarea_id: areaApplies ? subarea || null : null })
       }
       if (mode === 'approve') {
         await onApprove(r.id, { title: r.title || r.request_type, priority, assigned_dev: responsible }, attempt.current)

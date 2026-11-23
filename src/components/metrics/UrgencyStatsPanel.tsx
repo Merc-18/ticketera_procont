@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { metrics } from '../../lib/api'
+import { supabase } from '../../lib/supabase'
 import { limaMonth, type MetricResult, type UrgencyRow } from '../../lib/metrics-adapter'
 import MetricState from './MetricState'
 
@@ -12,90 +13,90 @@ const monthLabel = (m: string) => {
   const t = new Date(`${m}-15T12:00:00Z`).toLocaleDateString('es-PE', { month: 'long', year: 'numeric', timeZone: 'America/Lima' })
   return t.charAt(0).toUpperCase() + t.slice(1)
 }
+/** Límites del mes en Lima (UTC−5, sin horario de verano) en ISO UTC. */
+const monthRange = (m: string) => {
+  const [y, mo] = m.split('-').map(Number)
+  const next = mo === 12 ? `${y + 1}-01` : `${y}-${String(mo + 1).padStart(2, '0')}`
+  return { from: `${m}-01T05:00:00.000Z`, to: `${next}-01T05:00:00.000Z` }
+}
+
+type UrgentRow = { requester_name: string; studio_id: string | null; created_at: string; requested_priority: string | null }
 
 /**
- * Estadísticas mensuales de solicitudes urgentes por solicitante y estudio (solo usuarios internos
- * autorizados). Datos exclusivamente del servidor (contrato de Codex); sin cálculos locales.
+ * Urgencias solicitadas (compacto, D-045). Dos fuentes que NO se suman:
+ *  1. Prioridad «Urgente» elegida por el cliente (`requests.requested_priority`), fuente para las solicitudes nuevas.
+ *  2. Casilla anterior «atención urgente» (`urgent_requested`), solo histórico, vía metrics_monthly_urgency (M11).
+ * Solo usuarios internos autorizados. Respeta el filtro de estudio del Dashboard.
  */
-export default function UrgencyStatsPanel() {
+export default function UrgencyStatsPanel({ studios, studioId }: { studios: { id: string; name: string }[]; studioId: string | null }) {
   const months = useMemo(() => lastMonths(6), [])
   const [month, setMonth] = useState(months[0])
-  const [result, setResult] = useState<MetricResult<UrgencyRow[]> | null>(null)
-  useEffect(() => { setResult(null); void metrics.monthlyUrgency(month).then(setResult) }, [month])
+  const [urgent, setUrgent] = useState<UrgentRow[] | null>(null)
+  const [urgentError, setUrgentError] = useState(false)
+  const [history, setHistory] = useState<MetricResult<UrgencyRow[]> | null>(null)
 
-  const rows = result?.state === 'ready'
-    ? [...result.data].sort((a, b) => b.urgent_requests - a.urgent_requests || b.total_requests - a.total_requests) : []
+  useEffect(() => {
+    let current = true
+    const { from, to } = monthRange(month)
+    setUrgent(null); setUrgentError(false); setHistory(null)
+    void supabase.from('requests').select('requester_name, studio_id, created_at, requested_priority')
+      .eq('requested_priority', 'urgent').gte('created_at', from).lt('created_at', to)
+      .then(({ data, error }) => {
+        if (!current) return
+        if (error) { setUrgentError(true); return }
+        // Defensa: se vuelve a filtrar en el cliente por prioridad y mes.
+        setUrgent(((data ?? []) as UrgentRow[]).filter(r => r.requested_priority === 'urgent' && r.created_at >= from && r.created_at < to))
+      })
+    void metrics.monthlyUrgency(month).then(r => { if (current) setHistory(r) })
+    return () => { current = false }
+  }, [month])
+
+  const scoped = (urgent ?? []).filter(r => !studioId || r.studio_id === studioId)
+  const groups = new Map<string, { name: string; studio: string; count: number }>()
+  for (const r of scoped) {
+    const key = `${r.requester_name.trim().toLowerCase()}|${r.studio_id ?? ''}`
+    const studio = studios.find(s => s.id === r.studio_id)?.name ?? 'Sin estudio'
+    const g = groups.get(key) ?? { name: r.requester_name.trim(), studio, count: 0 }
+    g.count++; groups.set(key, g)
+  }
+  const top = [...groups.values()].sort((a, b) => b.count - a.count).slice(0, 5)
+  const historicRows = history?.state === 'ready' ? history.data.filter(r => !studioId || r.studio_id === studioId) : []
+  const historicTotal = historicRows.reduce((n, r) => n + r.urgent_requests, 0)
 
   return (
-    <section className="bg-surface rounded-xl border p-5 shadow-sm space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+    <section className="metric-chart urgency-panel" aria-labelledby="urgency-title">
+      <div className="urgency-head">
         <div>
-          <h2 className="font-semibold text-gray-800 text-base">Solicitudes urgentes por solicitante y estudio</h2>
-          <p className="text-sm text-gray-600">Urgencia solicitada por el cliente · uso interno</p>
+          <h2 id="urgency-title">Urgencias solicitadas</h2>
+          <p className="metric-note">Prioridad «Urgente» elegida por el cliente · uso interno</p>
         </div>
         <label className="toolbar-field">
           <span>Mes</span>
-          <select value={month} onChange={e => setMonth(e.target.value)}
-            className="px-3 py-2 border border-gray-200 rounded-lg text-sm bg-surface outline-none focus:ring-2 focus:ring-primary">
+          <select value={month} onChange={e => setMonth(e.target.value)} className="ui-input toolbar-select">
             {months.map(m => <option key={m} value={m}>{monthLabel(m)}</option>)}
           </select>
         </label>
       </div>
-      {result?.state !== 'ready' ? <MetricState result={result} /> : rows.length === 0 ? (
-        <p className="text-sm text-gray-600">Sin datos suficientes para {monthLabel(month)}.</p>
-      ) : (
-        <>
-        {/* Móvil: tarjetas compactas */}
-        <ul className="sm:hidden divide-y divide-gray-100">
-          {rows.map(r => (
-            <li key={`m-${r.requester_name}|${r.studio_id ?? ''}`} className="py-2.5">
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">{r.requester_name}</p>
-                  <p className="text-xs text-gray-500 truncate">{r.studio_name ?? 'Sin estudio'}</p>
-                </div>
-                <p className={`text-sm font-semibold tabular-nums ${r.urgent_pct !== null && r.urgent_pct >= 50 ? 'text-red-700' : 'text-gray-800'}`}>
-                  {r.urgent_pct === null ? '—' : `${Math.round(r.urgent_pct)}%`}</p>
-              </div>
-              <p className="text-xs text-gray-600 mt-0.5"><strong>{r.urgent_requests}</strong> urgentes de <strong>{r.total_requests}</strong> solicitudes</p>
-            </li>
-          ))}
-        </ul>
-        <div className="hidden sm:block overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left text-xs text-gray-500 border-b">
-                <th className="py-2 pr-3 font-semibold">Solicitante</th>
-                <th className="py-2 pr-3 font-semibold">Estudio</th>
-                <th className="py-2 pr-3 font-semibold text-right">Solicitudes</th>
-                <th className="py-2 pr-3 font-semibold text-right">Urgentes</th>
-                <th className="py-2 font-semibold text-right">% urgentes</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {rows.map(r => (
-                <tr key={`${r.requester_name}|${r.studio_id ?? ''}`}>
-                  <td className="py-2 pr-3 text-gray-900">{r.requester_name}</td>
-                  <td className="py-2 pr-3 text-gray-600">{r.studio_name ?? 'Sin estudio'}</td>
-                  <td className="py-2 pr-3 text-right tabular-nums">{r.total_requests}</td>
-                  <td className="py-2 pr-3 text-right tabular-nums font-semibold">{r.urgent_requests}</td>
-                  <td className="py-2 text-right">
-                    {r.urgent_pct === null ? <span className="text-gray-500">—</span> : (
-                      <div className="flex items-center justify-end gap-2">
-                        <div className="w-16 h-1.5 bg-gray-100 rounded-full overflow-hidden hidden sm:block">
-                          <div className={`h-full ${r.urgent_pct >= 50 ? 'bg-red-700' : 'bg-accent-400'}`} style={{ width: `${r.urgent_pct}%` }} />
-                        </div>
-                        <span className="tabular-nums">{Math.round(r.urgent_pct)}%</span>
-                      </div>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        </>
-      )}
+      {urgentError ? <p role="alert" className="metric-note">No se pudieron cargar las solicitudes urgentes.</p>
+        : urgent === null ? <p role="status" className="metric-note">Cargando…</p>
+        : top.length === 0 ? <p className="metric-note">Sin solicitudes con prioridad Urgente en {monthLabel(month)}.</p>
+        : (
+          <ol className="urgency-list">
+            {top.map(g => (
+              <li key={`${g.name}|${g.studio}`}>
+                <span className="min-w-0"><b>{g.name}</b><span className="metric-note">{g.studio}</span></span>
+                <span className="urgency-count">{g.count}</span>
+              </li>
+            ))}
+            {groups.size > top.length && <li className="metric-note">y {groups.size - top.length} solicitante(s) más · {scoped.length} en total</li>}
+          </ol>
+        )}
+      <div className="urgency-history">
+        <p className="metric-note"><b>Histórico · casilla anterior</b> (no se suma a lo anterior)</p>
+        {history?.state !== 'ready' ? <MetricState result={history} />
+          : historicRows.length === 0 ? <p className="metric-note">Sin datos suficientes para {monthLabel(month)}.</p>
+          : <p className="metric-note">{historicTotal} solicitud(es) marcadas como urgentes con la casilla anterior en {monthLabel(month)}.</p>}
+      </div>
     </section>
   )
 }

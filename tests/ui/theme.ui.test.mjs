@@ -175,7 +175,7 @@ test('sesión del cliente (fixtures): el tema se mantiene al entrar, navegar y s
 test('panel interno (fixtures): selector en la banda, se mantiene al entrar y al cerrar sesión', async () => {
   const page = await open()
   await toggle(page).getByRole('button', { name: 'Modo oscuro' }).click()
-  await page.getByRole('button', { name: /Ingreso del personal/ }).click()
+  await page.getByRole('button', { name: /Acceso del equipo de TI/ }).click()
   await page.fill('#staff-modal-email', 'superadmin@simulado.invalid')
   await page.fill('#staff-modal-password', SIMULATED_PASSWORD)
   await page.getByRole('button', { name: 'Ingresar al sistema' }).click()
@@ -191,7 +191,7 @@ test('panel interno (fixtures): selector en la banda, se mantiene al entrar y al
   await band.getByRole('button', { name: 'Modo oscuro' }).click()
   await page.waitForFunction(() => document.documentElement.dataset.theme === 'dark')
   await page.getByRole('button', { name: 'Cerrar Sesión' }).click()
-  await page.getByRole('button', { name: /Ingreso del personal/ }).waitFor()
+  await page.getByRole('button', { name: /Acceso del equipo de TI/ }).waitFor()
   assert.equal(await theme(page), 'dark', 'cerrar sesión no borra la preferencia')
   await page.context().close()
 })

@@ -18,9 +18,10 @@ interface Props {
   canManage?: boolean
   selectedIds?: string[]
   onSelect?: (projectId: string) => void
+  procontStudioId?: string | null
 }
 
-export default function BoardColumn({ phase, projects, onProjectClick, users = [], onAssign, canManage, selectedIds, onSelect }: Props) {
+export default function BoardColumn({ phase, projects, onProjectClick, users = [], onAssign, canManage, selectedIds, onSelect, procontStudioId }: Props) {
   return (
     <div className="board-column flex-shrink-0 w-72">
       {/* Column Header */}
@@ -67,6 +68,7 @@ export default function BoardColumn({ phase, projects, onProjectClick, users = [
                       onAssign={onAssign && (!item.project.is_blocked || canManage) ? (flowId, userId) => onAssign(item.project.id, flowId, userId) : undefined}
                       selected={selectedIds?.includes(item.project.id)}
                       onSelect={onSelect}
+                      procontStudioId={procontStudioId}
                     />
                   </div>
                 )}

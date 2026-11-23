@@ -46,8 +46,16 @@ const PERFORMANCE = [
     cycle_time_seconds: null, lead_time_seconds: null, metric_status: 'not_completed' },
 ]
 const TABLES = {
-  catalog_systems: SYSTEMS, catalog_subsystems: [], studios: [{ id: '00000000-0000-4000-8000-0000000000b1', name: 'ESTUDIO SIMULADO', is_active: true }],
-  areas: [], request_types: REQUEST_TYPES, studio_codes: [], projects: PROJECTS,
+  catalog_systems: SYSTEMS, catalog_subsystems: [], studios: [{ id: '00000000-0000-4000-8000-0000000000b1', name: 'ESTUDIO SIMULADO', is_active: true },
+    { id: '00000000-0000-4000-8000-000000000177', name: 'ESTUDIO PROCONT SIMULADO', is_active: true }],
+  // Regla D-041: el código canónico PROCONT identifica al estudio con áreas (datos ficticios).
+  areas: [{ id: '00000000-0000-4000-8000-0000000001a1', name: 'CONTABILIDAD', code: 'C000', is_active: true, parent_id: null, studio_id: '00000000-0000-4000-8000-000000000177' },
+    { id: '00000000-0000-4000-8000-0000000001a2', name: 'LEGAL', code: 'L000', is_active: true, parent_id: null, studio_id: '00000000-0000-4000-8000-000000000177' }],
+  request_types: REQUEST_TYPES,
+  studio_codes: [{ id: '00000000-0000-4000-8000-0000000001c1', studio_id: '00000000-0000-4000-8000-000000000177', code: 'PROCONT', is_active: true },
+    { id: '00000000-0000-4000-8000-0000000001c2', studio_id: '00000000-0000-4000-8000-000000000177', code: 'ARAPA', is_active: true },
+    { id: '00000000-0000-4000-8000-0000000001c3', studio_id: '00000000-0000-4000-8000-0000000000b1', code: 'SIMULADO', is_active: true }],
+  projects: PROJECTS,
 }
 
 const MAX_ROWS = 1000   // equivalente a [api] max_rows de supabase/config.toml

@@ -1,0 +1,20 @@
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✔ Identidad TI: «Acceso del equipo de TI» en el portal, el modal y /login; la autenticación no cambia (2586.190583ms)
+✔ Área solo PROCONT: el modal de validación muestra áreas para PROCONT y no para otro estudio (1069.259322ms)
+✔ [light] Boards: prioridades con relleno y acento propios; Bajo en contorno; el filtro marca su color (790.767103ms)
+✔ [light] Color personal: el responsable elige su color, persiste, aplica a Kanban y Tabla y no tapa prioridad (1159.792071ms)
+✔ [dark] Boards: prioridades con relleno y acento propios; Bajo en contorno; el filtro marca su color (774.074148ms)
+✔ [dark] Color personal: el responsable elige su color, persiste, aplica a Kanban y Tabla y no tapa prioridad (1157.393595ms)
+✔ Color personal: el espacio del cliente no ofrece el selector (351.184118ms)
+✔ Kanban: el filtro de área solo aplica a PROCONT y se limpia al cambiar a otro estudio (757.887961ms)
+✔ Dashboard: sin «Por Tipo»; secciones con datos reales; áreas solo PROCONT; urgencias compactas por prioridad solicitada (743.963149ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9781.013096

@@ -90,7 +90,8 @@ export default function ClientTicketDetail() {
           <div><dt className="text-gray-500">Producto</dt><dd className="font-medium text-gray-900">{productName(ticket.system_id)}</dd></div>
           <div><dt className="text-gray-500">Fecha</dt><dd className="font-medium text-gray-900">{shortDate(ticket.created_at)}</dd></div>
           <div><dt className="text-gray-500">{requesterLabel}</dt><dd className="font-medium text-gray-900">{ticket.requester_name}</dd></div>
-          <div><dt className="text-gray-500">Atención urgente solicitada</dt><dd className="font-medium text-gray-900">{ticket.urgent_requested ? 'Sí' : 'No'}</dd></div>
+          {/* D-044: la urgencia separada se retiró del formulario; el dato histórico se conserva y solo se muestra si existe. */}
+          {ticket.urgent_requested && <div><dt className="text-gray-500">Atención urgente (registro anterior)</dt><dd className="font-medium text-gray-900">Sí</dd></div>}
           <div><dt className="text-gray-500">Subproyecto solicitado</dt><dd>{nameOfSubproject(ticket.system_id, ticket.requested_subsystem_id)}</dd></div>
           <div><dt className="sr-only">Prioridad solicitada</dt><dd><RequestedPriority value={ticket.requested_priority} /></dd></div>
           <div className="sm:col-span-2">

@@ -1,84 +1,127 @@
-import { useState, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 
+/**
+ * Datos del Dashboard (reestructuración D-045). Solo lecturas que el panel interno ya tenía permitidas por RLS
+ * (projects con sus flujos, requests, request_events); sin RPC nuevas, sin cifras inventadas.
+ *
+ * - Solicitudes: estado actual de la bandeja (recibidas / en revisión) y resultado de las recibidas en el periodo.
+ *   «En revisión» = pendiente con evento `review_started` o `classified` (misma regla que el seguimiento público).
+ * - Trabajo: estado actual de los proyectos (en ejecución, bloqueados, vencidos) y totales completados/archivados.
+ * - Prioridad: solo trabajo en ejecución.
+ * - Carga: tickets en ejecución por responsable (flujos con assigned_to).
+ * - Áreas: solo proyectos del estudio PROCONT, por área de catálogo (`requests.area_id`); nunca otros estudios.
+ * La clasificación por tipo (development / administrative / dual) ya no forma parte del Dashboard.
+ */
 export interface DashboardStats {
-  total: number
-  byStatus: { active: number; completed: number; archived: number }
-  byPriority: { urgent: number; high: number; medium: number; low: number }
-  byArea: Record<string, number>
-  byType: { development: number; administrative: number; dual: number }
-  blocked: number
-  overdue: number
-  // Cycle Time y Lead Time se obtienen del servidor (metrics_time_averages); sin cálculos locales.
+  requests: { received: number; inReview: number; approved: number; rejected: number; inPeriod: number }
+  work: { active: number; completed: number; archived: number; blocked: number; overdue: number }
+  priorityActive: { urgent: number; high: number; medium: number; low: number }
+  workload: { userId: string; count: number }[]
+  unassignedActive: number
+  areas: { applies: boolean; byAreaId: Record<string, number>; withoutArea: number }
 }
 
-export function useDashboardData(periodDays: number | null = null, areaFilter: string | null = null, typeFilter: string | null = null, studioFilter: string | null = null) {
+interface Filters { periodDays: number | null; studioId: string | null; areaId: string | null; procontStudioId: string | null }
+
+type ReqRow = { id: string; status: 'pending' | 'approved' | 'rejected'; created_at: string; studio_id: string | null; area_id: string | null }
+type ProjRow = { id: string; status: string; priority: keyof DashboardStats['priorityActive']; is_blocked: boolean; due_date: string | null; requests: { studio_id: string | null; area_id: string | null } | null; project_flows: { assigned_to: string | null }[] | null }
+
+const chunk = <T,>(list: T[], size: number) => Array.from({ length: Math.ceil(list.length / size) }, (_, i) => list.slice(i * size, i * size + size))
+
+export function useDashboardData({ periodDays, studioId, areaId, procontStudioId }: Filters) {
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => { load() }, [periodDays, areaFilter, typeFilter, studioFilter])
+  const load = useCallback(async () => {
+    setLoading(true); setError(null)
+    const [projects, requests] = await Promise.all([
+      supabase.from('projects').select('id, status, priority, is_blocked, due_date, requests(studio_id, area_id), project_flows(assigned_to)').neq('status', 'deleted'),
+      supabase.from('requests').select('id, status, created_at, studio_id, area_id'),
+    ])
+    if (projects.error || requests.error) { setError('No se pudieron cargar las métricas. Usa «Actualizar» para reintentar.'); setLoading(false); return }
 
-  // Refresh when the browser tab becomes visible again
-  useEffect(() => {
-    const onVisible = () => { if (document.visibilityState === 'visible') load() }
-    document.addEventListener('visibilitychange', onVisible)
-    return () => document.removeEventListener('visibilitychange', onVisible)
-  }, [periodDays, areaFilter, typeFilter, studioFilter])
+    const areaApplies = !!studioId && studioId === procontStudioId
+    const inScope = (sid: string | null | undefined, aid: string | null | undefined) =>
+      (!studioId || sid === studioId) && (!areaApplies || !areaId || aid === areaId)
 
-  // Realtime: refresh when projects or SLA logs change
-  useEffect(() => {
-    const channel = supabase
-      .channel(`dashboard-realtime-${String(periodDays)}-${String(areaFilter)}-${String(typeFilter)}`)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'projects' }, () => load())
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'activity_logs' }, () => load())
-      .subscribe()
-    return () => { supabase.removeChannel(channel) }
-  }, [periodDays, areaFilter])
+    // ── Solicitudes ─────────────────────────────────────────────────────────────
+    const since = periodDays ? Date.now() - periodDays * 86_400_000 : null
+    const reqs = ((requests.data ?? []) as ReqRow[]).filter(r => inScope(r.studio_id, r.area_id))
+    const pending = reqs.filter(r => r.status === 'pending')
+    const reviewed = new Set<string>()
+    for (const ids of chunk(pending.map(r => r.id), 100)) {
+      if (!ids.length) continue
+      const { data, error: err } = await supabase.from('request_events').select('request_id')
+        .in('request_id', ids).in('action', ['review_started', 'classified'])
+      if (err) { setError('No se pudo determinar qué solicitudes están en revisión.'); setLoading(false); return }
+      for (const e of (data ?? []) as { request_id: string }[]) reviewed.add(e.request_id)
+    }
+    const period = since ? reqs.filter(r => new Date(r.created_at).getTime() >= since) : reqs
+    const requestsStats = {
+      received: pending.filter(r => !reviewed.has(r.id)).length,
+      inReview: pending.filter(r => reviewed.has(r.id)).length,
+      approved: period.filter(r => r.status === 'approved').length,
+      rejected: period.filter(r => r.status === 'rejected').length,
+      inPeriod: period.length,
+    }
 
-  async function load() {
-    setLoading(true)
+    // ── Trabajo ─────────────────────────────────────────────────────────────────
+    const projs = ((projects.data ?? []) as unknown as ProjRow[]).filter(p => inScope(p.requests?.studio_id, p.requests?.area_id))
+    const today = new Date().toISOString().slice(0, 10)
+    const active = projs.filter(p => p.status === 'active')
+    const priorityActive = { urgent: 0, high: 0, medium: 0, low: 0 }
+    for (const p of active) if (p.priority in priorityActive) priorityActive[p.priority]++
+    const work = {
+      active: active.length,
+      completed: projs.filter(p => p.status === 'completed').length,
+      archived: projs.filter(p => p.status === 'archived').length,
+      blocked: active.filter(p => p.is_blocked).length,
+      overdue: active.filter(p => p.due_date && p.due_date < today).length,
+    }
 
-    const { data: rawProjects } = await supabase
-      .from('projects')
-      .select('status, priority, project_type, is_blocked, due_date, requests(*)')
-      .neq('status', 'deleted')
-
-    let projects = areaFilter
-      ? (rawProjects ?? []).filter(p => (p as any).requests?.requester_area === areaFilter)
-      : (rawProjects ?? [])
-    if (studioFilter) projects = projects.filter(p => (p as any).requests?.studio_id === studioFilter)
-    if (typeFilter) {
-      if (typeFilter === 'development') {
-        projects = projects.filter(p => p.project_type === 'development' || p.project_type === 'dual')
-      } else if (typeFilter === 'administrative') {
-        projects = projects.filter(p => p.project_type === 'administrative' || p.project_type === 'dual')
+    // ── Áreas (solo PROCONT) ────────────────────────────────────────────────────
+    const byAreaId: Record<string, number> = {}
+    let withoutArea = 0
+    if (procontStudioId && (!studioId || areaApplies)) {
+      for (const p of active) {
+        if (p.requests?.studio_id !== procontStudioId) continue
+        const aid = p.requests?.area_id
+        if (aid) byAreaId[aid] = (byAreaId[aid] ?? 0) + 1; else withoutArea++
       }
     }
 
-    // ── Projects stats ──────────────────────────────────────────────
-    const byStatus   = { active: 0, completed: 0, archived: 0 }
-    const byPriority = { urgent: 0, high: 0, medium: 0, low: 0 }
-    const byArea: Record<string, number> = {}
-    const byType     = { development: 0, administrative: 0, dual: 0 }
-    let blocked = 0, overdue = 0
-    const today = new Date().toISOString().slice(0, 10)
-
-    for (const p of projects) {
-      byStatus[p.status as keyof typeof byStatus]++
-      byPriority[p.priority as keyof typeof byPriority]++
-      byType[p.project_type as keyof typeof byType]++
-      if (p.is_blocked) blocked++
-      if (p.due_date && p.due_date < today && p.status === 'active') overdue++
-      const area = (p as any).requests?.requester_area
-      if (area) byArea[area] = (byArea[area] ?? 0) + 1
+    // ── Carga del equipo (tickets en ejecución por responsable) ────────────────
+    const perUser = new Map<string, Set<string>>()
+    const withOwner = new Set<string>()
+    for (const p of active) for (const f of p.project_flows ?? []) {
+      if (!f.assigned_to) continue
+      withOwner.add(p.id)
+      perUser.set(f.assigned_to, (perUser.get(f.assigned_to) ?? new Set()).add(p.id))
     }
+    const workload = [...perUser].map(([userId, set]) => ({ userId, count: set.size })).sort((a, b) => b.count - a.count)
 
     setStats({
-      total: projects.length,
-      byStatus, byPriority, byArea, byType, blocked, overdue,
+      requests: requestsStats, work, priorityActive, workload,
+      unassignedActive: active.filter(p => !withOwner.has(p.id)).length,
+      areas: { applies: !!procontStudioId && (!studioId || areaApplies), byAreaId, withoutArea },
     })
     setLoading(false)
-  }
+  }, [periodDays, studioId, areaId, procontStudioId])
 
-  return { stats, loading, reload: load }
+  useEffect(() => { void load() }, [load])
+
+  // Al volver a la pestaña y ante cambios en proyectos, solicitudes o eventos: recargar.
+  useEffect(() => {
+    const onVisible = () => { if (document.visibilityState === 'visible') void load() }
+    document.addEventListener('visibilitychange', onVisible)
+    const channel = supabase.channel(`dashboard-${String(periodDays)}-${String(studioId)}-${String(areaId)}`)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'projects' }, () => { void load() })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'requests' }, () => { void load() })
+      .subscribe()
+    return () => { document.removeEventListener('visibilitychange', onVisible); void supabase.removeChannel(channel) }
+  }, [load, periodDays, studioId, areaId])
+
+  return { stats, loading, error, reload: load }
 }

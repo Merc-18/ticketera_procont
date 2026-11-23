@@ -5,15 +5,18 @@ import type { Project, ProjectFlow } from '../../types/database.types'
 import { PRIORITY_COLORS, PHASE_LABELS, PRIORITY_LABEL } from '../../lib/constants'
 import Icon from '../ui/Icon'
 import { checklistCount, phasePosition } from '../../lib/board'
+import { ownerClass, useOwnerColors } from '../../lib/card-colors'
 
 interface ProjectWithRelations extends Project {
   project_flows?: ProjectFlow[]
-  requests?: { requester_area: string; requester_name: string; request_type: string } | null
+  requests?: { requester_area: string; requester_name: string; request_type: string; studio_id?: string | null } | null
 }
 
 interface Props {
   projects: ProjectWithRelations[]
   boardType: 'development' | 'administrative'
+  /** Área solo en proyectos del estudio PROCONT o internos (studio-rules.ts). */
+  procontStudioId?: string | null
   onProjectClick: (item: { project: ProjectWithRelations; flow: ProjectFlow }) => void
   loading?: boolean
 }
@@ -49,7 +52,8 @@ function exportTableCSV(sorted: Array<{ project: ProjectWithRelations; flow: Pro
   URL.revokeObjectURL(url)
 }
 
-export default function TableView({ projects, boardType, onProjectClick, loading }: Props) {
+export default function TableView({ projects, boardType, onProjectClick, loading, procontStudioId }: Props) {
+  const ownerColors = useOwnerColors()
   const [sortKey, setSortKey] = useState<SortKey>('created_at')
   const [sortDir, setSortDir] = useState<SortDir>('desc')
 
@@ -146,7 +150,9 @@ export default function TableView({ projects, boardType, onProjectClick, loading
           </thead>
           <tbody className="divide-y divide-gray-100">
             {sorted.map(({ project, flow }) => {
-              const area = project.requests?.requester_area
+              const sid = project.requests?.studio_id
+              const area = !sid || sid === procontStudioId ? project.requests?.requester_area : null
+              const owner = ownerClass(ownerColors, flow?.assigned_to)
               const isOverdue = project.due_date && project.due_date < today && project.status === 'active'
               return (
                 <tr
@@ -154,8 +160,8 @@ export default function TableView({ projects, boardType, onProjectClick, loading
                   onClick={() => onProjectClick({ project, flow })}
                   className="hover:bg-brand-50 cursor-pointer transition-colors"
                 >
-                  {/* Título */}
-                  <td className="px-4 py-3 max-w-[220px]">
+                  {/* Título (franja del color personal del responsable, si lo eligió) */}
+                  <td className={`px-4 py-3 max-w-[220px] ${owner ? `has-owner ${owner}` : ''}`}>
                     <div className="flex items-start gap-2">
                       {project.is_blocked && <Icon name="block" size={14} className="text-red-700 shrink-0" aria-label="Bloqueado" />}
                       <span className="font-medium text-gray-900 line-clamp-2">{project.title}</span>

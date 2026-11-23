@@ -20,14 +20,15 @@ export const PRIORITY_LABEL: Record<string, string> = {
 export const PRIORITY_ORDER: Record<string, number> = { urgent: 0, high: 1, medium: 2, low: 3 }
 
 /**
- * Badge (incluye borde; usar con `border`). Texto ≥ 4,5:1 sobre su fondo. Escala de intensidad (corrección de color):
- * urgente y alto en relleno (rojo, dorado oficial), medio en tinte azul, bajo en contorno neutro.
+ * Badge de prioridad (incluye borde; usar con `border`). Texto ≥ 4,5:1 sobre su fondo (D-042).
+ * Regla de canales: la PRIORIDAD va en relleno (Urgente rojo, Alto dorado oficial, Medio azul corporativo) y Bajo
+ * en contorno neutro visible; los ESTADOS van siempre en tinte o contorno (request-status.ts), así nunca coinciden.
  */
 export const PRIORITY_COLORS: Record<string, string> = {
   urgent: 'bg-red-700 text-white border-red-700',
   high:   'bg-accent-400 text-on-accent border-accent-400',
-  medium: 'bg-brand-50 text-brand-700 border-brand-200',
-  low:    'bg-surface text-gray-600 border-gray-300',
+  medium: 'bg-brand-600 text-white border-brand-600',
+  low:    'bg-surface text-gray-700 border-gray-400',
 }
 
 /** Barra del Gantt y punto del Roadmap: paleta oficial (rojo, dorado, azul, neutro). */

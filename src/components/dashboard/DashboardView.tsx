@@ -1,9 +1,10 @@
 import ControlLabel from '../ui/ControlLabel'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useDashboardData } from '../../hooks/useDashboardData'
 import { toast } from '../../lib/toast'
-import { useAreas } from '../../hooks/useAreas'
+import { useUsers } from '../../hooks/useUsers'
+import { procontStudioId } from '../../lib/studio-rules'
 import { useCatalogs } from '../../hooks/useCatalogs'
 import { useAuth } from '../../hooks/useAuth'
 import { metrics } from '../../lib/api'
@@ -102,29 +103,33 @@ function StatCard({ label, value, tone, icon, alert = false }: {
   )
 }
 
-function HBarChart({ title, items }: {
+function HBarChart({ title, note, items, empty }: {
   title: string
+  note?: string
   items: { label: string; value: number; color: string }[]
+  /** Texto cuando no hay valores: no se dibuja una gráfica vacía como si fuera información. */
+  empty: string
 }) {
   const max = Math.max(...items.map(i => i.value), 1)
+  const hasData = items.some(i => i.value > 0)
   return (
-    <div className="metric-chart">
-      <h2 className="font-semibold text-gray-800 mb-4 text-base">{title}</h2>
-      <div className="space-y-3">
-        {items.map(item => (
-          <div key={item.label} className="flex items-center gap-3">
-            <span className="text-sm text-gray-600 w-28 shrink-0 break-words leading-tight">{item.label}</span>
-            <div className="flex-1 bg-gray-100 rounded-full h-5 overflow-hidden">
-              <div
-                className={`h-full rounded-full ${item.color}`}
-                style={{ width: `${(item.value / max) * 100}%` }}
-              />
+    <section className="metric-chart" aria-label={title}>
+      <h2>{title}</h2>
+      {note && <p className="metric-note">{note}</p>}
+      {!hasData ? <p className="metric-note metric-empty">{empty}</p> : (
+        <div className="space-y-3 mt-4">
+          {items.map(item => (
+            <div key={item.label} className="flex items-center gap-3">
+              <span className="text-sm text-gray-600 w-28 shrink-0 break-words leading-tight">{item.label}</span>
+              <div className="flex-1 bg-gray-100 rounded-full h-4 overflow-hidden">
+                <div className={`h-full rounded-full ${item.color}`} style={{ width: `${(item.value / max) * 100}%` }} />
+              </div>
+              <span className="text-sm font-medium text-gray-700 min-w-[1.5rem] text-right tabular-nums">{item.value}</span>
             </div>
-            <span className="text-sm font-medium text-gray-700 min-w-[1.5rem] text-right tabular-nums">{item.value}</span>
-          </div>
-        ))}
-      </div>
-    </div>
+          ))}
+        </div>
+      )}
+    </section>
   )
 }
 
@@ -134,240 +139,162 @@ const PERIOD_OPTIONS = [
   { value: null, label: 'Todo el tiempo' },
 ] as const
 
-const TYPE_VIEW_OPTIONS = [
-  { value: null,             label: 'Global',         icon: 'layers' },
-  { value: 'development',    label: 'Development',    icon: 'code' },
-  { value: 'administrative', label: 'Administrative', icon: 'tickets' },
-] as const satisfies readonly { value: string | null; label: string; icon: IconName }[]
-
 export default function DashboardView() {
   const [period, setPeriod] = useState<number | null>(null)
-  const [areaFilter, setAreaFilter] = useState<string | null>(null)
   const [studioFilter, setStudioFilter] = useState<string | null>(null)
-  const { studios } = useCatalogs('member')
-  const [typeFilter, setTypeFilter] = useState<string | null>(null)
+  const [areaFilter, setAreaFilter] = useState<string | null>(null)
+  const { studios, codes, areas } = useCatalogs('member')
+  const { users } = useUsers()
+  // Área solo para el estudio PROCONT (studio-rules.ts): con otro estudio se oculta y se limpia.
+  const procontId = procontStudioId(codes)
+  const areaApplies = !!studioFilter && studioFilter === procontId
+  useEffect(() => { if (!areaApplies && areaFilter) setAreaFilter(null) }, [areaApplies, areaFilter])
   const [exporting, setExporting] = useState<'completed' | 'active' | null>(null)
-  const { stats, loading, reload } = useDashboardData(period, areaFilter, typeFilter, studioFilter)
+  const { stats, loading, error, reload } = useDashboardData({ periodDays: period, studioId: studioFilter, areaId: areaApplies ? areaFilter : null, procontStudioId: procontId })
   const { user } = useAuth()
   const canSeeUrgency = user?.role === 'superadmin' || user?.role === 'admin'
   // Promedios del servidor (metrics_time_averages, contrato de Codex). Sin cálculos locales.
   const [averages, setAverages] = useState<MetricResult<TimeAverages> | null>(null)
   useEffect(() => { void metrics.timeAverages({ periodDays: period, studioId: studioFilter }).then(setAverages) }, [period, studioFilter])
-  // Opciones del filtro: áreas activas de Supabase + áreas presentes en los datos
-  const { activeNames } = useAreas()
-  const seenAreas = useRef(new Set<string>())
-  Object.keys(stats?.byArea ?? {}).forEach(a => seenAreas.current.add(a))
-  const areaOptions = Array.from(new Set([...activeNames, ...seenAreas.current, ...(areaFilter ? [areaFilter] : [])])).sort()
+  const procontAreas = areas.filter(a => a.studio_id === procontId && !a.parent_id)
 
   const handleExportCompleted = async () => {
     setExporting('completed')
     try { await exportCompletedCSV() }
     finally { setExporting(null) }
   }
-
   const handleExportActive = async () => {
     setExporting('active')
     try { await exportActiveCSV() }
     finally { setExporting(null) }
   }
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary mx-auto mb-3" />
-          <p className="text-gray-500 text-sm">Cargando métricas...</p>
-        </div>
-      </div>
-    )
-  }
-
-  if (!stats) return null
-
-  const priorityItems = [
-    { label: PRIORITY_LABEL.urgent, value: stats.byPriority.urgent, color: PRIORITY_BAR.urgent },
-    { label: PRIORITY_LABEL.high,   value: stats.byPriority.high,   color: PRIORITY_BAR.high },
-    { label: PRIORITY_LABEL.medium, value: stats.byPriority.medium, color: PRIORITY_BAR.medium },
-    { label: PRIORITY_LABEL.low,    value: stats.byPriority.low,    color: PRIORITY_BAR.low },
-  ]
-
-  const typeItems = [
-    { label: 'Development',    value: stats.byType.development,   color: 'bg-brand-600' },
-    { label: 'Administrative', value: stats.byType.administrative, color: 'bg-gray-500' },
-    { label: 'Dual',           value: stats.byType.dual,          color: 'bg-accent-400' },
-  ]
-
-  const areaItems = Object.entries(stats.byArea)
-    .sort((a, b) => b[1] - a[1])
-    .map(([label, value], i) => {
-      const colors = ['bg-brand-600', 'bg-brand-500', 'bg-accent-400', 'bg-gray-500', 'bg-brand-800']
-      return { label, value, color: colors[i % colors.length] }
-    })
-
+  const studioName = studioFilter ? studios.find(s => s.id === studioFilter)?.name ?? 'Estudio' : null
   const cycleLabel = averageLabel(averages, t => t.avg_cycle_time_days)
   const leadLabel  = averageLabel(averages, t => t.avg_lead_time_days)
+  const priorityItems = stats ? [
+    { label: PRIORITY_LABEL.urgent, value: stats.priorityActive.urgent, color: PRIORITY_BAR.urgent },
+    { label: PRIORITY_LABEL.high,   value: stats.priorityActive.high,   color: PRIORITY_BAR.high },
+    { label: PRIORITY_LABEL.medium, value: stats.priorityActive.medium, color: PRIORITY_BAR.medium },
+    { label: PRIORITY_LABEL.low,    value: stats.priorityActive.low,    color: PRIORITY_BAR.low },
+  ] : []
+  const workloadItems = (stats?.workload ?? []).slice(0, 6).map(w => ({
+    label: users.find(u => u.id === w.userId)?.full_name ?? 'Usuario no disponible', value: w.count, color: 'bg-brand-600',
+  }))
+  const areaItems = stats ? Object.entries(stats.areas.byAreaId).sort((a, b) => b[1] - a[1]).map(([id, value]) => ({
+    label: areas.find(a => a.id === id)?.name ?? 'Área no disponible', value, color: 'bg-brand-600',
+  })) : []
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-3">
+    <div className="dashboard space-y-6">
+      <div className="flex items-start justify-between flex-wrap gap-3">
         <div>
           <h1 className="view-title"><ControlLabel icon="chart">Dashboard</ControlLabel></h1>
-          <p className="text-sm text-gray-600 mt-1">
-            {typeFilter === 'development' ? 'Vista: solo proyectos de Development' : typeFilter === 'administrative' ? 'Vista: solo proyectos Administrativos' : 'Vista global — todos los proyectos'}
-          </p>
-        </div>
-        <div className="dashboard-toolbar flex items-center gap-2 flex-wrap">
-          {/* Filtro de período */}
-          <div className="dashboard-segment flex items-center bg-gray-100 rounded-lg p-1 gap-1">
-            {PERIOD_OPTIONS.map(opt => (
-              <button
-                key={String(opt.value)}
-                onClick={() => setPeriod(opt.value)}
-                aria-pressed={period === opt.value}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${
-                  period === opt.value
-                    ? 'bg-brand-100 text-brand-700'
-                    : 'text-gray-600 hover:text-brand-700'
-                }`}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Filtro por tipo (vista) */}
-          <div className="dashboard-segment flex items-center bg-gray-100 rounded-lg p-1 gap-1">
-            {TYPE_VIEW_OPTIONS.map(opt => (
-              <button
-                key={String(opt.value)}
-                onClick={() => setTypeFilter(opt.value)}
-                aria-pressed={typeFilter === opt.value}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${
-                  typeFilter === opt.value
-                    ? 'bg-brand-100 text-brand-700'
-                    : 'text-gray-600 hover:text-brand-700'
-                }`}
-              >
-                <ControlLabel icon={opt.icon}>{opt.label}</ControlLabel>
-              </button>
-            ))}
-          </div>
-
-          {/* Filtro de área */}
-          <label className="toolbar-field">
-          <span>Área</span>
-          <select
-            value={areaFilter ?? ''}
-            onChange={e => setAreaFilter(e.target.value || null)}
-            className={`px-3 py-2 border rounded-lg text-sm outline-none transition cursor-pointer ${
-              areaFilter ? 'border-brand-400 bg-brand-50 text-brand-700' : 'border-gray-200 bg-surface text-gray-600'
-            }`}
-          >
-            <option value="">Todas las áreas</option>
-            {areaOptions.map(area => (
-              <option key={area} value={area}>{area}</option>
-            ))}
-          </select>
-          </label>
-
-            {/* Filtro por Estudio (independiente del área) */}
-            {studios.length > 0 && (
-              <label className="toolbar-field">
-              <span>Estudio</span>
-              <select
-                value={studioFilter ?? ''}
-                onChange={e => setStudioFilter(e.target.value || null)}
-                className={`px-3 py-2 border rounded-lg text-sm outline-none transition cursor-pointer ${studioFilter ? 'border-brand-400 bg-brand-50 text-brand-700' : 'border-gray-200 bg-surface text-gray-600'}`}
-              >
-                <option value="">Todos los estudios</option>
-                {studios.map(st => <option key={st.id} value={st.id}>{st.name}</option>)}
-              </select>
-              </label>
-            )}
-
-          <button
-            onClick={handleExportActive}
-            disabled={exporting !== null}
-            className="ui-button ui-button-primary"
-          >
-            <ControlLabel icon={exporting === 'active' ? 'clock' : 'download'}>{exporting === 'active' ? 'Exportando…' : 'Activos CSV'}</ControlLabel>
-          </button>
-          <button
-            onClick={handleExportCompleted}
-            disabled={exporting !== null}
-            className="ui-button ui-button-secondary"
-          >
-            <ControlLabel icon={exporting === 'completed' ? 'clock' : 'download'}>{exporting === 'completed' ? 'Exportando…' : 'Completados CSV'}</ControlLabel>
-          </button>
-          <button
-            onClick={reload}
-            className="ui-button ui-button-secondary"
-          >
-            <ControlLabel icon="refresh">Actualizar</ControlLabel>
-          </button>
+          <p className="text-sm text-gray-600 mt-1">Situación operativa · {studioName ?? 'todos los estudios'}{areaApplies && areaFilter ? ` · ${procontAreas.find(a => a.id === areaFilter)?.name ?? ''}` : ''}</p>
         </div>
       </div>
 
-      {/* Stat Cards — proyectos (siempre todo el tiempo) */}
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
-        <StatCard label="Total"       value={stats.total}             icon="chart" tone="brand" />
-        <StatCard label="Activos"     value={stats.byStatus.active}   icon="circle" tone="brand" />
-        <StatCard label="Completados" value={stats.byStatus.completed} icon="check" tone="success" />
-        <StatCard label="Archivados"  value={stats.byStatus.archived}  icon="archive" tone="neutral" />
-        <StatCard label="Bloqueados"  value={stats.blocked}            icon="block" tone="danger" alert />
-        <StatCard label="Vencidos"    value={stats.overdue}            icon="alert" tone="danger" alert />
-      </div>
-
-      {/* Métricas de tiempo (sin «Cumplimiento SLA»: los plazos de Procont aún no están configurados) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <StatCard label="Cycle Time promedio" value={cycleLabel} icon="clock" tone="accent" />
-        <StatCard label="Lead Time promedio"  value={leadLabel}  icon="clock" tone="accent" />
-        {averages?.state === 'ready' && averages.data.completed_count > 0 && (
-          <p className="sm:col-span-2 text-sm text-gray-600 -mt-2">
-            Ambos promedios sobre los mismos {averages.data.cycle_sample_size ?? averages.data.completed_count} trabajos terminados
-            {averages.data.excluded_count ? ` · ${averages.data.excluded_count} terminado(s) excluido(s) por no tener inicio o cronología válida` : ''}.
-          </p>
-        )}
-      </div>
-
-      {/* Charts — distribución */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <HBarChart title="Por Prioridad" items={priorityItems} />
-        <HBarChart title="Por Tipo"      items={typeItems} />
-        {areaItems.length > 0
-          ? <HBarChart title="Por Área" items={areaItems} />
-          : (
-            <div className="bg-surface rounded-xl border p-5 shadow-sm flex items-center justify-center text-gray-400 text-sm">
-              Sin datos de área disponibles
-            </div>
-          )
-        }
-      </div>
-
-      {/* Urgencias por solicitante y estudio: solo usuarios internos autorizados */}
-      {canSeeUrgency && <UrgencyStatsPanel />}
-
-      {/* Status breakdown */}
-      <div className="metric-chart">
-        <h2 className="font-semibold text-gray-800 mb-4 text-base">Estado de proyectos</h2>
-        <div className="flex gap-4 flex-wrap">
-          {[
-            { label: 'Activos',     value: stats.byStatus.active,    pct: stats.total ? Math.round(stats.byStatus.active / stats.total * 100) : 0,    bg: 'bg-brand-50',   text: 'text-brand-700',   bar: 'bg-brand-600' },
-            { label: 'Completados', value: stats.byStatus.completed,  pct: stats.total ? Math.round(stats.byStatus.completed / stats.total * 100) : 0,  bg: 'bg-green-100', text: 'text-green-800', bar: 'bg-green-700' },
-            { label: 'Archivados',  value: stats.byStatus.archived,   pct: stats.total ? Math.round(stats.byStatus.archived / stats.total * 100) : 0,   bg: 'bg-gray-100',    text: 'text-gray-700',    bar: 'bg-gray-500' },
-          ].map(s => (
-            <div key={s.label} className={`flex-1 min-w-[140px] rounded-lg p-4 ${s.bg}`}>
-              <p className={`text-2xl font-bold ${s.text}`}>{s.value}</p>
-              <p className={`text-sm ${s.text} font-medium`}>{s.label}</p>
-              <div className="mt-2 bg-surface rounded-full h-2">
-                <div className={`h-2 rounded-full ${s.bar}`} style={{ width: `${s.pct}%` }} />
-              </div>
-              <p className={`text-sm mt-1 ${s.text}`}>{s.pct}% del total</p>
-            </div>
+      <div className="dashboard-toolbar flex items-end gap-2 flex-wrap">
+        <div className="dashboard-segment flex items-center bg-gray-100 rounded-lg p-1 gap-1" role="group" aria-label="Periodo">
+          {PERIOD_OPTIONS.map(opt => (
+            <button key={String(opt.value)} onClick={() => setPeriod(opt.value)} aria-pressed={period === opt.value}
+              className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${period === opt.value ? 'bg-brand-100 text-brand-700' : 'text-gray-600 hover:text-brand-700'}`}>
+              {opt.label}
+            </button>
           ))}
         </div>
+        {studios.length > 0 && (
+          <label className="toolbar-field">
+            <span>Estudio</span>
+            <select value={studioFilter ?? ''} onChange={e => setStudioFilter(e.target.value || null)} className="ui-input toolbar-select">
+              <option value="">Todos los estudios</option>
+              {studios.map(st => <option key={st.id} value={st.id}>{st.name}</option>)}
+            </select>
+          </label>
+        )}
+        {areaApplies && procontAreas.length > 0 && (
+          <label className="toolbar-field">
+            <span>Área</span>
+            <select value={areaFilter ?? ''} onChange={e => setAreaFilter(e.target.value || null)} className="ui-input toolbar-select">
+              <option value="">Todas las áreas</option>
+              {procontAreas.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
+            </select>
+          </label>
+        )}
+        <button onClick={handleExportActive} disabled={exporting !== null} className="ui-button ui-button-primary">
+          <ControlLabel icon={exporting === 'active' ? 'clock' : 'download'}>{exporting === 'active' ? 'Exportando…' : 'Activos CSV'}</ControlLabel>
+        </button>
+        <button onClick={handleExportCompleted} disabled={exporting !== null} className="ui-button ui-button-secondary">
+          <ControlLabel icon={exporting === 'completed' ? 'clock' : 'download'}>{exporting === 'completed' ? 'Exportando…' : 'Completados CSV'}</ControlLabel>
+        </button>
+        <button onClick={() => { void reload() }} className="ui-button ui-button-secondary">
+          <ControlLabel icon="refresh">Actualizar</ControlLabel>
+        </button>
       </div>
+
+      {error && <p role="alert" className="field-error">{error}</p>}
+      {loading && !stats ? <p role="status" className="text-gray-600">Cargando métricas…</p> : stats && (<>
+        <section className="dashboard-section" aria-labelledby="dash-requests">
+          <div className="dashboard-section-head">
+            <h2 id="dash-requests">Solicitudes</h2>
+            <p className="metric-note">Recibidas y en revisión: estado actual de la bandeja. Aprobadas y rechazadas: de las recibidas {period ? `en los últimos ${period} días` : 'en todo el periodo'}.</p>
+          </div>
+          <div className="kpi-grid kpi-grid-4">
+            <StatCard label="Recibidas" value={stats.requests.received} icon="inbox" tone="neutral" />
+            <StatCard label="En revisión" value={stats.requests.inReview} icon="search" tone="accent" />
+            <StatCard label="Aprobadas" value={stats.requests.approved} icon="tickets" tone="brand" />
+            <StatCard label="Rechazadas" value={stats.requests.rejected} icon="close" tone="neutral" />
+          </div>
+        </section>
+
+        <section className="dashboard-section" aria-labelledby="dash-work">
+          <div className="dashboard-section-head">
+            <h2 id="dash-work">Trabajo</h2>
+            <p className="metric-note">Estado actual de los tickets aprobados.</p>
+          </div>
+          <div className="kpi-grid kpi-grid-5">
+            <StatCard label="En ejecución" value={stats.work.active} icon="circle" tone="brand" />
+            <StatCard label="Completados" value={stats.work.completed} icon="check" tone="success" />
+            <StatCard label="Bloqueados" value={stats.work.blocked} icon="block" tone="danger" alert />
+            <StatCard label="Vencidos" value={stats.work.overdue} icon="alert" tone="danger" alert />
+            <StatCard label="Archivados" value={stats.work.archived} icon="archive" tone="neutral" />
+          </div>
+        </section>
+
+        <section className="dashboard-section" aria-labelledby="dash-times">
+          <div className="dashboard-section-head">
+            <h2 id="dash-times">Tiempos</h2>
+            <p className="metric-note">{averages?.state === 'ready' && averages.data.completed_count > 0
+              ? `Promedios del servidor sobre los mismos ${averages.data.cycle_sample_size ?? averages.data.completed_count} trabajos terminados${averages.data.excluded_count ? ` · ${averages.data.excluded_count} excluido(s) sin cronología válida` : ''}.`
+              : 'Promedios del servidor; se muestran cuando hay trabajos terminados con cronología válida.'}</p>
+          </div>
+          <div className="kpi-grid kpi-grid-2">
+            <StatCard label="Cycle Time promedio" value={cycleLabel} icon="clock" tone="accent" />
+            <StatCard label="Lead Time promedio"  value={leadLabel}  icon="clock" tone="accent" />
+          </div>
+        </section>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <HBarChart title="Prioridad del trabajo en ejecución" items={priorityItems} empty="No hay trabajo en ejecución con los filtros elegidos." />
+          <HBarChart title="Carga del equipo" note={stats.unassignedActive ? `${stats.unassignedActive} ticket(s) en ejecución sin responsable.` : 'Tickets en ejecución por responsable principal.'}
+            items={workloadItems} empty="Ningún ticket en ejecución tiene responsable asignado." />
+        </div>
+
+        <div className={`grid grid-cols-1 ${canSeeUrgency ? 'lg:grid-cols-2' : ''} gap-4`}>
+          {/* Urgencias por solicitante y estudio: solo usuarios internos autorizados */}
+          {canSeeUrgency && <UrgencyStatsPanel studios={studios} studioId={studioFilter} />}
+          {!stats.areas.applies ? (
+            <section className="metric-chart" aria-label="Áreas">
+              <h2>Áreas</h2>
+              <p className="metric-note metric-empty">{procontId ? 'No aplica: las áreas solo se usan en el estudio PROCONT.' : 'El catálogo de estudios aún no está disponible.'}</p>
+            </section>
+          ) : (
+            <HBarChart title={studioFilter ? 'Áreas' : 'Áreas · solo estudio PROCONT'}
+              note={`Trabajo en ejecución del estudio PROCONT por área${stats.areas.withoutArea ? ` · ${stats.areas.withoutArea} sin área registrada` : ''}.`}
+              items={areaItems} empty="Sin trabajo en ejecución con área registrada." />
+          )}
+        </div>
+      </>)}
     </div>
   )
 }

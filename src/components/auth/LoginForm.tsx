@@ -39,7 +39,7 @@ export default function LoginForm() {
           <div className="text-center mb-8">
             <img src={BRAND.logoSrc} alt={`Logotipo de ${BRAND.company}`} className="w-16 h-16 rounded-xl mx-auto mb-4" />
             <h1 className="text-3xl font-bold text-brand-700 mb-1">{BRAND.appName}</h1>
-            <p className="text-gray-600">{BRAND.tagline}</p>
+            <p className="text-gray-600">Acceso del equipo de TI</p>
           </div>
 
           {/* Formulario */}

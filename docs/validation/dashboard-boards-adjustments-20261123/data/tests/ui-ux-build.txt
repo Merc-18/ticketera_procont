@@ -1,0 +1,44 @@
+✔ [UX desktop] carga de ambos ingresos sin cambiar su comportamiento (6620.325234ms)
+✔ [UX desktop] portal, proveedores y accesibilidad de ingreso (1122.246032ms)
+✔ [UX desktop] nuevo ticket, adjuntos, lista privada, detalle y seguimiento (982.64934ms)
+✔ [UX desktop] panel Enterprise, bandeja, ocho fases y las cuatro vistas (2037.218574ms)
+✔ [UX laptop] carga de ambos ingresos sin cambiar su comportamiento (767.683084ms)
+✔ [UX laptop] portal, proveedores y accesibilidad de ingreso (1094.304969ms)
+✔ [UX laptop] nuevo ticket, adjuntos, lista privada, detalle y seguimiento (983.713339ms)
+✔ [UX laptop] panel Enterprise, bandeja, ocho fases y las cuatro vistas (2049.80222ms)
+✔ [UX tablet] carga de ambos ingresos sin cambiar su comportamiento (771.220123ms)
+✔ [UX tablet] portal, proveedores y accesibilidad de ingreso (1060.37993ms)
+✔ [UX tablet] nuevo ticket, adjuntos, lista privada, detalle y seguimiento (865.810314ms)
+✔ [UX tablet] panel Enterprise, bandeja, ocho fases y las cuatro vistas (2018.937053ms)
+✔ [UX movil] carga de ambos ingresos sin cambiar su comportamiento (772.399048ms)
+✔ [UX movil] portal, proveedores y accesibilidad de ingreso (1093.580844ms)
+✔ [UX movil] nuevo ticket, adjuntos, lista privada, detalle y seguimiento (927.771958ms)
+✔ [UX movil] panel Enterprise, bandeja, ocho fases y las cuatro vistas (1998.539806ms)
+✔ UX motion: hover, pulsación, teclado y reduced-motion no alteran el contenido (440.208915ms)
+✔ UX Kanban: arrastre real y cancelación no envían una operación de negocio (1066.706101ms)
+✔ UX métricas: ausencia de registros, contrato no disponible y error son estados distintos (875.239216ms)
+✔ UX seguimiento: cada respuesta pública muestra exclusivamente su número y estado actual (1099.374294ms)
+✔ [UX desktop] presupuesto real y carga diferida de vistas internas y Planner (3547.700469ms)
+✔ [UX movil] presupuesto real y carga diferida de vistas internas y Planner (3550.476633ms)
+✔ [M16 desktop] identidad, urgencia independiente, prioridad, subproyecto y detalle (1593.226688ms)
+✔ [M16 desktop] bandeja y modal distinguen prioridad solicitada y definitiva (946.33103ms)
+✔ [M16 laptop] identidad, urgencia independiente, prioridad, subproyecto y detalle (1652.076039ms)
+✔ [M16 laptop] bandeja y modal distinguen prioridad solicitada y definitiva (943.850707ms)
+✔ [M16 tablet] identidad, urgencia independiente, prioridad, subproyecto y detalle (1575.016739ms)
+✔ [M16 tablet] bandeja y modal distinguen prioridad solicitada y definitiva (943.788865ms)
+✔ [M16 movil] identidad, urgencia independiente, prioridad, subproyecto y detalle (1505.933527ms)
+✔ [M16 movil] bandeja y modal distinguen prioridad solicitada y definitiva (946.651759ms)
+✔ M16 paginación: 137 tickets empresariales, error recuperable, offset real y fin confirmado (1159.891672ms)
+✔ M16 subproyectos: cambio limpia, catálogo vacío, error y respuesta tardía (668.547745ms)
+✔ M16 identidad: username exacto readonly, otro usuario y ticket ajeno/inexistente (634.509853ms)
+✔ M16 envío incierto: conserva clave/payload, cancela solo antes de enviar y reinicia tras confirmar (696.218536ms)
+✔ M16 estados: etiqueta ausente, lista vacía/error y PT401 (859.296478ms)
+✔ M16 QuipuFac: otro RUC no comparte solicitudes de la empresa (294.580244ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 36
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 50581.286402

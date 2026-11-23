@@ -3,12 +3,15 @@ import { useState, useRef, useEffect } from 'react'
 import { canEdit } from '../../lib/access'
 import type { Project, ProjectFlow, User } from '../../types/database.types'
 import { getAvatarColor, getInitials, PRIORITY_COLORS, PRIORITY_LABEL, AREA_COLORS } from '../../lib/constants'
+import { ownerClass, useOwnerColors } from '../../lib/card-colors'
 
 interface ProjectWithArea extends Project {
-  requests?: { requester_area: string; requester_name?: string; request_number?: string } | null
+  requests?: { requester_area: string; requester_name?: string; request_number?: string; studio_id?: string | null } | null
 }
 
 interface Props {
+  /** Id del estudio PROCONT: el área solo se muestra en sus proyectos y en los internos (sin estudio). */
+  procontStudioId?: string | null
   project: ProjectWithArea
   flow: ProjectFlow
   onClick: () => void
@@ -28,8 +31,11 @@ function getDueDateBadge(dueDate?: string | null) {
   return { label: new Date(dueDate + 'T00:00:00').toLocaleDateString('es-PE', { day: '2-digit', month: 'short' }), icon: 'calendar' as const, cls: 'bg-gray-100 text-gray-600 border border-gray-300' }
 }
 
-export default function ProjectCard({ project, flow, onClick, users = [], onAssign, selected, onSelect }: Props) {
-  const area = project.requests?.requester_area
+export default function ProjectCard({ project, flow, onClick, users = [], onAssign, selected, onSelect, procontStudioId }: Props) {
+  const studioId = project.requests?.studio_id
+  const area = !studioId || (procontStudioId && studioId === procontStudioId) ? project.requests?.requester_area : null
+  const ownerColors = useOwnerColors()
+  const owner = ownerClass(ownerColors, flow.assigned_to)
   const requesterName = project.requests?.requester_name
   const showRequester = requesterName && requesterName !== '—'
   const requestNumber = project.requests?.request_number ?? project.project_number
@@ -66,9 +72,10 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
   return (
     <div
       onClick={onClick}
-      className={`project-card relative border mb-3 cursor-pointer group/card ${
-        project.is_blocked ? 'bg-red-50 border-l-4 border-l-red-500' : 'bg-elevated'
-      } ${selected ? 'border-brand-400 ring-1 ring-brand-200' : project.is_blocked ? 'border-red-200' : 'border-gray-200'}`}
+      data-priority={project.priority}
+      className={`project-card relative border mb-3 cursor-pointer group/card prio-${project.priority} ${owner ? `has-owner ${owner}` : ''} ${
+        project.is_blocked ? 'bg-red-50' : 'bg-elevated'
+      } ${selected ? 'border-brand-400 ring-1 ring-brand-200' : project.is_blocked ? 'border-red-300' : 'border-gray-200'}`}
     >
       {onSelect && (
         <div
@@ -137,7 +144,7 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
             <div className="flex items-center gap-1">
               {assignedUsers.map(({ user, flowType }) => (
                 <div key={user.id} className="flex items-center gap-1" title={`${user.full_name} (${flowType === 'development' ? 'Development' : 'Administrative'})`}>
-                  <div className={`w-7 h-7 rounded-full ${getAvatarColor(user.full_name)} flex items-center justify-center text-white text-[13px] font-medium`}>
+                  <div className={`w-7 h-7 rounded-full ${getAvatarColor(user.full_name)} ${ownerColors[user.id] ? `owner-ring owner-${ownerColors[user.id]}` : ''} flex items-center justify-center text-white text-[13px] font-medium`}>
                     {getInitials(user.full_name)}
                   </div>
                 </div>
