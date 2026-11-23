@@ -5,7 +5,7 @@ import { flushSync } from 'react-dom'
 
 export type Theme = 'light' | 'dark'
 export const THEME_STORAGE_KEY = 'ticketera-theme'
-const THEME_COLOR: Record<Theme, string> = { light: '#E2E8F0', dark: '#060B16' }
+const THEME_COLOR: Record<Theme, string> = { light: '#E2E8F0', dark: '#0B0F16' }
 const listeners = new Set<() => void>()
 
 export function getTheme(): Theme {

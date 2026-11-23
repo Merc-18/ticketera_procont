@@ -12,7 +12,7 @@ import { MOCK_RUC, MOCK_PASSWORD } from '../../src/dev/client-portal-mock.ts'
 
 const ROOT = fileURLToPath(new URL('../..', import.meta.url))
 const KEY = 'ticketera-theme'
-const LIGHT_BG = 'rgb(226, 232, 240)', DARK_BG = 'rgb(6, 11, 22)'
+const LIGHT_BG = 'rgb(226, 232, 240)', DARK_BG = 'rgb(11, 15, 22)'
 let fixture, vite, browser, base
 
 before(async () => {
@@ -99,7 +99,7 @@ test('puntero: un único fundido de página (View Transition); se guarda solo la
   assert.equal(await page.evaluate(() => window.__vt), 1, 'una sola transición para toda la página')
   assert.equal(await stored(page), 'dark')
   assert.equal(await bg(page), DARK_BG)
-  assert.equal(await page.evaluate(() => document.querySelector('meta[name="theme-color"]').content), '#060B16')
+  assert.equal(await page.evaluate(() => document.querySelector('meta[name="theme-color"]').content), '#0B0F16')
   assert.equal(await pressed(page, 'Modo oscuro'), 'true')
   // Lo único que se guarda del tema es la palabra; nada de sesión.
   assert.ok(['light', 'dark'].includes(await stored(page)))

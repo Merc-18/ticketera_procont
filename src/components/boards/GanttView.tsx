@@ -138,7 +138,7 @@ export default function GanttView({ projects, boardType, onProjectClick, loading
           </span>
         ))}
         <span className="ml-auto">
-          <span className="inline-block w-3 h-3 bg-red-700 opacity-40 mr-1 rounded-sm" />Hoy
+          <span className="inline-block w-3 h-3 bg-accent-400 mr-1 rounded-sm" />Hoy
         </span>
       </div>
 
@@ -207,7 +207,7 @@ export default function GanttView({ projects, boardType, onProjectClick, loading
 
                     {/* Today line */}
                     <div
-                      className="absolute top-0 bottom-0 w-0.5 bg-red-700 opacity-40 z-10"
+                      className="absolute top-0 bottom-0 w-0.5 bg-accent-400 z-10"
                       style={{ left: `${todayPct}%` }}
                     />
 

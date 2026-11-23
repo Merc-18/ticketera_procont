@@ -125,7 +125,7 @@ function Dashboard() {
                 >
                   <ControlLabel icon={icon}>{label}</ControlLabel>
                   {tab === 'requests' && pendingCount > 0 && (
-                    <span aria-label={`${pendingCount} pendientes`} className="min-w-[22px] h-[22px] bg-red-700 text-white text-[13px] font-medium rounded-full flex items-center justify-center px-1.5 leading-none">
+                    <span aria-label={`${pendingCount} pendientes`} className="min-w-[22px] h-[22px] bg-accent-400 text-on-accent text-[13px] font-medium rounded-full flex items-center justify-center px-1.5 leading-none">
                       {pendingCount > 9 ? '9+' : pendingCount}
                     </span>
                   )}

@@ -23,7 +23,9 @@ body {
   /* Rol «relleno» de la acción y del peligro, separado del rol «texto/foco» (en claro valen lo mismo). */
   --p-action-fill: #1e3a8a; --p-action-fill-hover: #01257b; --p-action-fill-active: #001e64; --p-focus: #1e3a8a;
   --danger-fill: #b91c1c; --danger-fill-hover: #991b1b; --danger-fill-active: #7f1d1d; --danger-fill-ink: #fff;
-  --p-band: #01257b; --surface: 248 250 252;
+  --p-band: #01257b; --surface: 248 250 252; --elevated: 255 255 255;
+  /* Corrección de color: alterno (lo hundido: columnas, filtros, vacíos) y tintes funcionales de KPI. */
+  --p-alt: #f1f5f9; --success-bg: #f0fdf4; --gold-ink: #a16207;
   --p-backdrop: rgb(1 37 123 / .45); --p-modal-shadow: 0 24px 80px rgb(1 37 123 / .15);
   color-scheme: light;
   --font-display: 'Host Grotesk', system-ui, sans-serif;
@@ -167,20 +169,31 @@ html:not([data-input=keyboard]) .tracking-outcome, html:not([data-input=keyboard
 .enterprise button, .enterprise select { min-height: 36px; }
 .enterprise .stat-card { border: 1px solid var(--line); border-radius: var(--r-md); padding: 24px; background: var(--p-surface); display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
 .stat-card .stat-value { font-family: var(--font-mono); letter-spacing: -.04em; font-size: 32px; line-height: 1.2; font-weight: 500; }
-.stat-card .stat-icon { color: var(--p-muted); font-size: 20px; }
+.stat-card .stat-value.is-alert { color: var(--danger); }
+/* Tonos funcionales (corrección de color): azul = trabajo y totales, verde = completado, rojo = requiere atención
+   solo si hay casos, dorado = tiempos (acento corporativo intencional), neutro = archivo. */
+.kpi-tile { width: 40px; height: 40px; border-radius: 10px; display: inline-grid; place-items: center; flex-shrink: 0; }
+.tone-brand { background: var(--p-tint); color: var(--p-action); }
+.tone-success { background: var(--success-bg); color: var(--success); }
+.tone-danger { background: var(--danger-bg); color: var(--danger); }
+.tone-accent { background: var(--p-accent-tint); color: var(--gold-ink); }
+.tone-neutral { background: var(--p-alt); color: var(--p-muted); }
+/* Estado vacío: hundido (alterno) con borde discontinuo y un icono en tinte; texto que dice qué falta. */
+.empty-state { display: grid; justify-items: center; gap: 12px; text-align: center; padding: 40px 24px; border: 1px dashed var(--line); border-radius: var(--r-md); background: var(--p-alt); }
+.empty-state p { color: var(--p-ink-2); }
 .enterprise .metric-chart { background: var(--p-surface); padding: 24px; border: 1px solid var(--line); border-radius: var(--r-md); }
 .metric-chart h2, .metric-chart h3 { font-size: 16px; letter-spacing: -.01em; text-transform: none; }
-.dashboard-toolbar { padding: 16px; background: var(--p-surface); border-radius: var(--r-md); border: 1px solid var(--line); }
-.inbox-toolbar { padding: 16px; background: var(--p-surface); border: 1px solid var(--line); border-radius: var(--r-md); }
+.dashboard-toolbar { padding: 16px; background: var(--p-alt); border-radius: var(--r-md); border: 1px solid var(--line); }
+.inbox-toolbar { padding: 16px; background: var(--p-alt); border: 1px solid var(--line); border-radius: var(--r-md); }
 .request-card { border-radius: var(--r-md); padding: 24px; background: var(--p-surface); }
 .request-card > div:first-child { gap: 16px; }
 .request-tabs { gap: 4px; background: var(--p-surface); border: 1px solid var(--line); padding: 4px; border-radius: var(--r-md); border-bottom: none; }
 .request-tabs button { border-radius: var(--r-sm); flex: 1; justify-content: center; }
 .request-tabs button[aria-pressed=true] { background: var(--p-tint); color: var(--p-action); }
-.board-toolbar { padding: 16px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--p-surface); }
+.board-toolbar { padding: 16px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--p-alt); }
 .kanban-scroll { max-width: 100%; padding: 0 0 24px; overscroll-behavior-x: contain; scrollbar-color: var(--p-meta) var(--line); scrollbar-width: thin; }
-.board-column { width: 300px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--p-surface); }
-.board-column-header { border-radius: 11px 11px 0 0; padding: 16px; background: var(--p-surface); color: var(--p-ink); border-bottom: 1px solid var(--line); }
+.board-column { width: 300px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--p-alt); }
+.board-column-header { border-radius: 11px 11px 0 0; padding: 16px; background: var(--p-alt); color: var(--p-ink); border-bottom: 1px solid var(--line); }
 .board-column-body { background: transparent; border-radius: 0 0 11px 11px; padding: 12px; min-height: 440px; }
 .project-card { border-radius: var(--r-sm); padding: 16px; box-shadow: none; }
 .project-card h3 { font-size: 16px; padding-right: 28px; line-height: 1.45; }
@@ -341,18 +354,20 @@ main p.text-sm, main p.text-xs, main li.text-sm, main dd.text-sm, main p.text-\[
 .form-actions { display: flex; flex-direction: column; gap: 12px; }
 @media (min-width: 768px) { .form-actions { flex-direction: row; align-items: center; } .form-actions > .ui-button { min-width: 180px; } }
 
-/* ─── Tema oscuro (extensión del sistema; valores y contrastes en docs/validation/dark-mode-20261123) ───────
-   Navy profundo de la identidad Procont (matiz ≈ 222°), sin negro ni blanco puros. Página → superficie → elevada
+/* ─── Tema oscuro (extensión del sistema; valores y contrastes en docs/validation/dark-mode-20261123 y
+   docs/validation/color-distribution-20261123). Grafito profundo con sesgo azul (croma ≈ 0,02): el navy queda para la
+   banda de marca y el azul y el dorado contrastan por matiz; sin negro ni blanco puros. Página → superficie → elevada
    en escalones claros (Taste cards.md); azul de marca como texto #93C5FD, como relleno #2563EB (texto 4,9:1; 3,3:1 sobre la superficie);
    dorado oficial intacto como relleno; foco #93C5FD (≥ 9:1). Las escalas Tailwind cambian por rol (themes.ts). */
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --p-bg: #060b16; --p-surface: #111b30; --p-elevated: #172338; --surface: 17 27 48;
+  --p-bg: #0b0f16; --p-surface: #131a26; --p-elevated: #1a2230; --surface: 19 26 38; --elevated: 26 34 48; --p-alt: #0f141c;
+  --success-bg: #0f2a1c; --gold-ink: #f2ce52;
   --p-ink: #e2e8f0; --p-ink-2: #ced7e5; --p-muted: #a3b0c7; --p-meta: #8e9db8;
   --p-action: #93c5fd; --p-action-hover: #bfdbfe; --p-action-active: #bfdbfe; --p-action-ink: #f8fafc;
   --p-action-fill: #2563eb; --p-action-fill-hover: #1d4ed8; --p-action-fill-active: #1e40af; --p-focus: #93c5fd;
-  --p-tint: #172b5c; --p-tint-weak: #12224a; --p-accent-tint: #2b230c;
-  --gold: #eebb31; --line: #2a3854; --field-line: #7083a3;
+  --p-tint: #172b5c; --p-tint-weak: #14213f; --p-accent-tint: #2b230c;
+  --gold: #eebb31; --line: #283143; --field-line: #7083a3;
   --success: #86efac; --danger: #fca5a5; --danger-indicator: #ef4444; --danger-bg: #2a1316; --warning-bg: #2b230c; --warning-ink: #f2ce52;
   --danger-fill: #dc2626; --danger-fill-hover: #b91c1c; --danger-fill-active: #991b1b; --danger-fill-ink: #f8fafc;
   --p-band: #0d1a3f;

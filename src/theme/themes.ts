@@ -21,15 +21,16 @@ const LIGHT: Record<string, Scale> = {
 }
 
 /**
- * Oscuro (identidad Procont sobre navy profundo, matiz ≈ 222°; nunca negro puro ni blanco puro).
- * Página #060B16 → superficie #111B30 → elevada #172338: un escalón claro por nivel (Taste cards.md).
+ * Oscuro: grafito profundo con sesgo azul (croma ≈ 0,02; corrección de color 23/11/2026, antes navy 0,044),
+ * para que la banda navy, el azul de acción y el dorado contrasten por matiz; nunca negro ni blanco puros.
+ * Página #0B0F16 → alterno #0F141C → superficie #131A26 → elevada #1A2230 (Taste cards.md: un escalón por nivel).
  * Texto principal #E2E8F0 (14:1), secundario #B8C3D6, atenuado #A3B0C7, meta #8E9DB8 (≥ 4,99:1 en todas las
  * superficies). Azul de marca como texto #93C5FD; relleno #1D4ED8–#2563EB (texto blanco ≥ 4,9:1); dorado
  * oficial #EEBB31 sin cambios como relleno, #F2CE52 solo como texto de aviso medido (≥ 10:1).
  */
 const DARK: Record<Role, Record<string, Scale>> = {
   bg: {
-    gray: { 50: '#141F35', 100: '#19253D', 200: '#1E2B46', 300: '#2A3854', 400: '#64748B', 500: '#7C8BA6', 600: '#44557A', 700: '#3A4A6E', 800: '#1F2C47', 900: '#19253D', 950: '#060B16' },
+    gray: { 50: '#161D29', 100: '#1B2331', 200: '#212A3A', 300: '#2C3647', 400: '#64748B', 500: '#7C8BA6', 600: '#46526A', 700: '#3B465C', 800: '#1F2838', 900: '#1B2331', 950: '#0B0F16' },
     brand: { 50: '#12224A', 100: '#172B5C', 200: '#1E3A75', 300: '#2B4F96', 400: '#3B82F6', 500: '#93C5FD', 600: '#2563EB', 700: '#1D4ED8', 800: '#60A5FA', 900: '#1E3A8A', 950: '#1E3A8A' },
     accent: { 50: '#211B0B', 100: '#2B230C', 200: '#5C4A14', 300: '#F2CE52', 400: '#EEBB31', 500: '#FFC930', 600: '#A16207', 700: '#713F12' },
     red: { 50: '#2A1316', 100: '#3A171C', 200: '#5A1D24', 300: '#7F1D1D', 400: '#EF4444', 500: '#EF4444', 600: '#DC2626', 700: '#DC2626', 800: '#B91C1C', 900: '#7F1D1D', 950: '#450A0A' },
@@ -47,7 +48,7 @@ const DARK: Record<Role, Record<string, Scale>> = {
     avatar: {},
   },
   bd: {
-    gray: { 50: '#19253D', 100: '#1E2B46', 200: '#2A3854', 300: '#33446A', 400: '#6B7C9C', 500: '#7C8BA6', 600: '#94A3B8', 700: '#A3B0C7', 800: '#B8C3D6', 900: '#CED7E5', 950: '#E2E8F0' },
+    gray: { 50: '#1B2331', 100: '#212A3A', 200: '#283143', 300: '#343F54', 400: '#6B7891', 500: '#7C8BA6', 600: '#94A3B8', 700: '#A3B0C7', 800: '#B8C3D6', 900: '#CED7E5', 950: '#E2E8F0' },
     brand: { 50: '#172B5C', 100: '#1E3A75', 200: '#2B4A8A', 300: '#36589E', 400: '#3B82F6', 500: '#60A5FA', 600: '#60A5FA', 700: '#93C5FD', 800: '#93C5FD', 900: '#BFDBFE', 950: '#BFDBFE' },
     accent: { 50: '#2B230C', 100: '#5C4A14', 200: '#5C4A14', 300: '#8A6A1C', 400: '#EEBB31', 500: '#FFC930', 600: '#F2CE52', 700: '#F2CE52' },
     red: { 50: '#3A171C', 100: '#5A1D24', 200: '#5A1D24', 300: '#7F1D1D', 400: '#EF4444', 500: '#EF4444', 600: '#F87171', 700: '#F87171', 800: '#FCA5A5', 900: '#FCA5A5', 950: '#FECACA' },

@@ -67,7 +67,7 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
     <div
       onClick={onClick}
       className={`project-card relative border mb-3 cursor-pointer group/card ${
-        project.is_blocked ? 'bg-red-50 border-l-4 border-l-red-500' : 'bg-surface'
+        project.is_blocked ? 'bg-red-50 border-l-4 border-l-red-500' : 'bg-elevated'
       } ${selected ? 'border-brand-400 ring-1 ring-brand-200' : project.is_blocked ? 'border-red-200' : 'border-gray-200'}`}
     >
       {onSelect && (

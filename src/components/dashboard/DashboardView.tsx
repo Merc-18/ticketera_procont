@@ -81,14 +81,21 @@ async function exportCompletedCSV() {
 
 // ── Reusable components ──────────────────────────────────────────────────────
 
-function StatCard({ label, value, color, icon }: {
-  label: string; value: number | string; color: string; icon: IconName
+type KpiTone = 'brand' | 'success' | 'danger' | 'accent' | 'neutral'
+/**
+ * KPI con color funcional (Taste: «estado en visuales»): el icono va en un tinte del tono de la métrica. Una alerta
+ * (`alert`) solo se colorea si hay casos: con 0 queda neutra, así el rojo significa «mira esto».
+ */
+function StatCard({ label, value, tone, icon, alert = false }: {
+  label: string; value: number | string; tone: KpiTone; icon: IconName; alert?: boolean
 }) {
+  const active = alert && typeof value === 'number' && value > 0
+  const resolved: KpiTone = alert ? (active ? 'danger' : 'neutral') : tone
   return (
-    <div className={`stat-card border-t-2 ${color}`}>
-      <span className="stat-icon" aria-hidden="true"><Icon name={icon} size={22} /></span>
+    <div className="stat-card">
+      <span className={`kpi-tile tone-${resolved}`} aria-hidden="true"><Icon name={icon} size={20} /></span>
       <div>
-        <p className={`font-bold ${typeof value === 'string' && value.length > 6 ? 'text-base text-gray-500' : 'stat-value text-gray-900'}`}>{value}</p>
+        <p className={`font-bold ${typeof value === 'string' && value.length > 6 ? 'text-base text-gray-500' : `stat-value ${active ? 'is-alert' : 'text-gray-900'}`}`}>{value}</p>
         <p className="text-sm text-gray-600 mt-0.5">{label}</p>
       </div>
     </div>
@@ -304,18 +311,18 @@ export default function DashboardView() {
 
       {/* Stat Cards — proyectos (siempre todo el tiempo) */}
       <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
-        <StatCard label="Total"       value={stats.total}             icon="chart" color="border-brand-600" />
-        <StatCard label="Activos"     value={stats.byStatus.active}   icon="circle" color="border-brand-600" />
-        <StatCard label="Completados" value={stats.byStatus.completed} icon="check" color="border-green-700" />
-        <StatCard label="Archivados"  value={stats.byStatus.archived}  icon="archive" color="border-gray-400" />
-        <StatCard label="Bloqueados"  value={stats.blocked}            icon="block" color="border-red-700" />
-        <StatCard label="Vencidos"    value={stats.overdue}            icon="alert" color="border-accent-400" />
+        <StatCard label="Total"       value={stats.total}             icon="chart" tone="brand" />
+        <StatCard label="Activos"     value={stats.byStatus.active}   icon="circle" tone="brand" />
+        <StatCard label="Completados" value={stats.byStatus.completed} icon="check" tone="success" />
+        <StatCard label="Archivados"  value={stats.byStatus.archived}  icon="archive" tone="neutral" />
+        <StatCard label="Bloqueados"  value={stats.blocked}            icon="block" tone="danger" alert />
+        <StatCard label="Vencidos"    value={stats.overdue}            icon="alert" tone="danger" alert />
       </div>
 
       {/* Métricas de tiempo (sin «Cumplimiento SLA»: los plazos de Procont aún no están configurados) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <StatCard label="Cycle Time promedio" value={cycleLabel} icon="clock" color="border-brand-600" />
-        <StatCard label="Lead Time promedio"  value={leadLabel}  icon="clock" color="border-brand-600" />
+        <StatCard label="Cycle Time promedio" value={cycleLabel} icon="clock" tone="accent" />
+        <StatCard label="Lead Time promedio"  value={leadLabel}  icon="clock" tone="accent" />
         {averages?.state === 'ready' && averages.data.completed_count > 0 && (
           <p className="sm:col-span-2 text-sm text-gray-600 -mt-2">
             Ambos promedios sobre los mismos {averages.data.cycle_sample_size ?? averages.data.completed_count} trabajos terminados

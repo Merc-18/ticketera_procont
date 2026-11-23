@@ -115,7 +115,7 @@ export default function ChecklistSection({ flow, onChanged }: Props) {
               }`}
             >
               <div className="flex items-center gap-2">
-                {isCurrentPhase && <span className="w-2 h-2 bg-brand-600 rounded-full" aria-hidden="true" />}{isCurrentPhase && <span className="sr-only">Fase actual</span>}
+                {isCurrentPhase && <span className="w-2 h-2 bg-accent-400 rounded-full" aria-hidden="true" />}{isCurrentPhase && <span className="sr-only">Fase actual</span>}
                 {allDone && !isCurrentPhase && <Icon name="check" size={14} className="text-green-700" aria-label="Completada" />}
                 <span>{PHASE_LABELS[phase]}</span>
                 {isCurrentPhase && (

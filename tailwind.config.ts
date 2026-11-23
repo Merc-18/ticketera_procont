@@ -31,7 +31,7 @@ export default {
         danger:  BRAND_STATE.danger,
         info:    BRAND_NAVY[600],
       },
-      backgroundColor: { ...bg, surface, primary: bg.brand[600] },
+      backgroundColor: { ...bg, surface, elevated: 'rgb(var(--elevated) / <alpha-value>)', primary: bg.brand[600] },
       gradientColorStops: { ...bg, surface },
       textColor: { ...tx, primary: tx.brand[600], 'on-accent': '#0F172A' },
       placeholderColor: tx,

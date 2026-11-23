@@ -149,9 +149,9 @@ export default function RequestInbox() {
         {/* ── Pendientes ── */}
         {activeTab === 'pending' && (
           pendingRequests.length === 0 ? (
-            <div className="text-center py-12 bg-gray-50 rounded-lg">
-              <Icon name="check" size={36} className="mx-auto mb-3 text-gray-500" />
-              <p className="text-gray-600 font-medium">No hay solicitudes pendientes</p>
+            <div className="empty-state">
+              <span className="kpi-tile tone-success" aria-hidden="true"><Icon name="check" size={22} /></span>
+              <p className="font-medium">No hay solicitudes pendientes</p>
             </div>
           ) : (
             pendingRequests.map(request => {
@@ -208,8 +208,9 @@ export default function RequestInbox() {
         {/* ── Aprobadas ── */}
         {activeTab === 'approved' && (
           approvedRequests.length === 0 ? (
-            <div className="text-center py-12 bg-gray-50 rounded-lg">
-              <p className="text-gray-500">No hay solicitudes aprobadas</p>
+            <div className="empty-state">
+              <span className="kpi-tile tone-neutral" aria-hidden="true"><Icon name="inbox" size={22} /></span>
+              <p>No hay solicitudes aprobadas</p>
             </div>
           ) : (
             approvedRequests.map(request => {
@@ -259,8 +260,9 @@ export default function RequestInbox() {
         {/* ── Rechazadas ── */}
         {activeTab === 'rejected' && (
           rejectedRequests.length === 0 ? (
-            <div className="text-center py-12 bg-gray-50 rounded-lg">
-              <p className="text-gray-600">No hay solicitudes rechazadas</p>
+            <div className="empty-state">
+              <span className="kpi-tile tone-neutral" aria-hidden="true"><Icon name="inbox" size={22} /></span>
+              <p>No hay solicitudes rechazadas</p>
             </div>
           ) : (
             rejectedRequests.map(request => (
