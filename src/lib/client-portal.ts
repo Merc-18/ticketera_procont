@@ -14,6 +14,7 @@ import { createClientAccess } from '../../contracts/client-access-client.mjs'
 import type {
   ClientAccessApi, ClientAccessTransport, ClientSession as BackendSession,
 } from '../../contracts/client-access-client.d.mts'
+import { REQUESTED_PRIORITIES, type RequestedPriorityValue } from './client-request-data.ts'
 import type { RpcAttempt } from './rpc-attempt.ts'
 import type { SubmissionReceipt } from './operations.ts'
 import { isGeneralStatus, type GeneralStatus } from './request-status.ts'
@@ -24,10 +25,13 @@ export const AUTH_TYPE_LABEL: Record<AuthType, string> = { quipu: 'Quipu', quipu
 export const isAuthType = (v: unknown): v is AuthType => v === 'quipu' || v === 'quipufac'
 
 /** Producto permitido por el servidor para la sesión (client_products). */
-export interface ClientProduct { id: string; name: string }
+export interface ClientProduct { id: string; name: string; requires_subproject: boolean }
+export interface ClientSubproject { id: string; system_id: string; name: string }
+export type RequestedPriority = RequestedPriorityValue
+const isRequestedPriority = (v: unknown): v is RequestedPriority => typeof v === 'string' && Object.prototype.hasOwnProperty.call(REQUESTED_PRIORITIES, v)
 
 export type ClientIdentity =
-  | { kind: 'individual'; username: string; display_name: string | null }
+  | { kind: 'individual'; username: string | null; display_name: string | null }
   | { kind: 'company_account' }
 
 export interface ClientSession {
@@ -50,8 +54,12 @@ export interface ClientTicketSummary {
   title: string
   created_at: string
   status: GeneralStatus
-  /** Nombre declarado en el formulario (no es una identidad verificada). */
+  /** Nombre del solicitante y su procedencia; no sustituyen la autorización del servidor. */
   requester_name: string
+  requested_priority: RequestedPriority | null
+  requested_subsystem_id: string | null
+  requester_name_source: 'verified_name' | 'username' | 'declared' | 'internal_correction' | null
+  requester_name_verified: boolean
 }
 export interface ClientTicketDetail extends ClientTicketSummary {
   description: string
@@ -67,6 +75,7 @@ export type ClientLoginInput = QuipuLogin | QuipuFacLogin
 export interface ClientTicketInput {
   requester_name: string; system_id: string; request_type_id: string
   title: string; description: string; urgent_requested: boolean
+  requested_priority: RequestedPriority; subsystem_id: string | null
 }
 export interface AttachmentGrant { bucket: string; path: string; size_bytes: number; mime_type: string; expires_at: string }
 export interface ClientDeliveryItem { file: File; uploadKey: string }
@@ -140,7 +149,7 @@ export function parseSession(raw: BackendSession | any, rawProducts: unknown): C
 
   let identity: ClientIdentity
   if (id.provider === 'quipu') {
-    if (id.kind !== 'user' || !text(id.username, 256)) fail()
+    if (id.kind !== 'user' || (id.username !== null && !text(id.username, 256))) fail()
     identity = { kind: 'individual', username: id.username,
       display_name: id.name_verified === true && text(id.verified_name, 300) ? id.verified_name : null }
   } else {
@@ -150,8 +159,8 @@ export function parseSession(raw: BackendSession | any, rawProducts: unknown): C
 
   if (!Array.isArray(rawProducts)) fail()
   const products: ClientProduct[] = (rawProducts as any[]).map(p => {
-    if (!p || !UUID.test(p.id ?? '') || !text(p.name, 200)) fail()
-    return { id: p.id, name: p.name }
+    if (!p || !UUID.test(p.id ?? '') || !text(p.name, 200) || typeof p.requires_subproject !== 'boolean') fail()
+    return { id: p.id, name: p.name, requires_subproject: p.requires_subproject }
   })
   if (new Set(products.map(p => p.id)).size !== products.length) fail()
   const origin: AuthType | null = raw.entry_context === 'platform' ? id.provider : null
@@ -165,7 +174,13 @@ function parseSummary(raw: any): ClientTicketSummary {
   if (!raw || !UUID.test(raw.id ?? '') || !REQ.test(raw.request_number ?? '') || !UUID.test(raw.system_id ?? '')
       || !text(raw.title, 300) || !validDate(raw.created_at) || !isGeneralStatus(raw.general_status)
       || !text(raw.requester_name, 200)) fail()
-  return { id: raw.id, request_number: raw.request_number, system_id: raw.system_id, title: raw.title,
+  if (raw.requested_priority != null && !isRequestedPriority(raw.requested_priority)) fail()
+  if (raw.requested_subsystem_id != null && !UUID.test(raw.requested_subsystem_id)) fail()
+  if (raw.requester_name_source != null && !['verified_name','username','declared','internal_correction'].includes(raw.requester_name_source)) fail()
+  if (raw.requester_name_verified != null && typeof raw.requester_name_verified !== 'boolean') fail()
+  return { requested_priority: raw.requested_priority ?? null, requested_subsystem_id: raw.requested_subsystem_id ?? null,
+    requester_name_source: raw.requester_name_source ?? null, requester_name_verified: raw.requester_name_source === 'verified_name' && raw.requester_name_verified === true,
+    id: raw.id, request_number: raw.request_number, system_id: raw.system_id, title: raw.title,
     created_at: raw.created_at, status: raw.general_status, requester_name: raw.requester_name }
 }
 function parseDetail(raw: any): ClientTicketDetail {
@@ -183,7 +198,7 @@ export function productSelection(session: ClientSession) {
 /** Texto de identidad para la cabecera. */
 export function identityLabel(session: ClientSession) {
   return session.identity.kind === 'individual'
-    ? `${session.identity.display_name ?? session.identity.username} · usuario Quipu`
+    ? `${session.identity.display_name ?? session.identity.username ?? 'Usuario Quipu'} · usuario Quipu`
     : 'Cuenta empresarial QuipuFac'
 }
 
@@ -281,10 +296,14 @@ export function createClientPortal(transport: ClientAccessTransport, options: Cl
       requireToken(token)
       if (session.studio_mapping === 'required') throw new ClientPortalError('studio_mapping_required')
       if (!session.products.some(p => p.id === input.system_id)) throw new ClientPortalError('product_unavailable')
-      if (!input.requester_name.trim()) throw new ClientPortalError('invalid_input', 'Ingresa el nombre del solicitante.')
+      const name = session.identity.kind === 'individual' ? session.identity.display_name ?? session.identity.username : input.requester_name.trim()
+      if (!name?.trim() || name.length > 200) throw new ClientPortalError('invalid_input', 'El nombre o usuario autenticado del solicitante no está disponible o supera el límite de 200 caracteres.')
+      if (!isRequestedPriority(input.requested_priority) || typeof input.urgent_requested !== 'boolean') throw new ClientPortalError('invalid_input')
+      if (input.subsystem_id !== null && !UUID.test(input.subsystem_id)) throw new ClientPortalError('invalid_input')
       if (!input.title.trim() || !input.description.trim()) throw new ClientPortalError('invalid_input', 'Completa el título y la descripción.')
       if (!UUID.test(input.request_type_id)) throw new ClientPortalError('invalid_input', 'Selecciona el tipo de solicitud.')
-      const payload = { requester_name: input.requester_name.trim(), system_id: input.system_id,
+      const payload = { ...(session.identity.kind === 'company_account' ? { requester_name: name } : {}),
+        requested_priority: input.requested_priority, subsystem_id: input.subsystem_id, system_id: input.system_id,
         request_type_id: input.request_type_id, title: input.title.trim(), description: input.description.trim(),
         urgent_requested: input.urgent_requested }
       return attempt.run('client_submit_request', { p_session_token: token, p_payload: payload }, async args => {
@@ -325,12 +344,28 @@ export function createClientPortal(transport: ClientAccessTransport, options: Cl
       return { uploaded, failed, error: failed.length ? 'Algunos adjuntos no se pudieron subir.' : null }
     },
 
-    async listMyTickets(token: string): Promise<ClientTicketSummary[]> {
+    async listMyTickets(token: string, { limit = 50, offset = 0 } = {}): Promise<ClientTicketSummary[]> {
       requireToken(token)
       let data
-      try { data = await api.tickets(token, { limit: 100, offset: 0 }) } catch (e) { throw rpcError(e) }
+      if (!Number.isInteger(limit) || limit < 1 || limit > 100 || !Number.isInteger(offset) || offset < 0 || offset > 100000) throw new ClientPortalError('invalid_input')
+      try { data = await api.tickets(token, { limit, offset }) } catch (e) { throw rpcError(e) }
       if (!Array.isArray(data)) fail()
       return data.map(parseSummary)
+    },
+
+    /** Opciones del producto autorizadas por la sesión; no hay fallback al catálogo global. */
+    async subprojects(token: string, systemId: string): Promise<ClientSubproject[]> {
+      requireToken(token)
+      if (!UUID.test(systemId)) throw new ClientPortalError('invalid_input')
+      let data
+      try { data = await api.subprojects(token, systemId) } catch (err) { throw rpcError(err) }
+      if (!Array.isArray(data)) fail()
+      const items = data.map((item: any) => {
+        if (!item || !UUID.test(item.id ?? '') || item.system_id !== systemId || !text(item.name, 200)) fail()
+        return { id: item.id, system_id: item.system_id, name: item.name }
+      })
+      if (new Set(items.map(x => x.id)).size !== items.length) fail()
+      return items
     },
 
     /** Detalle autorizado por UUID. Ajeno o inexistente → null (misma respuesta en ambos casos). */

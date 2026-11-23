@@ -1,0 +1,15 @@
+dist/assets/MetricState-CdUjqrdF.js            0.45 kB │ gzip:   0.30 kB
+dist/assets/AreaInput-BbfeCSqV.js              0.64 kB │ gzip:   0.38 kB
+dist/assets/useAreas-CxbDOouw.js               1.29 kB │ gzip:   0.71 kB
+dist/assets/PapeleraView-C_C-Nb33.js           4.48 kB │ gzip:   1.70 kB
+dist/assets/useUsers--CiUwWen.js               4.58 kB │ gzip:   2.18 kB
+dist/assets/WorkloadView-DaX_oV9U.js           6.30 kB │ gzip:   2.33 kB
+dist/assets/RequestTimeline-BsodKjxW.js        7.75 kB │ gzip:   3.11 kB
+dist/assets/CatalogsPanel-B-wskpBC.js         12.12 kB │ gzip:   3.68 kB
+dist/assets/UserManagementPanel-D3Xs3jQW.js   15.23 kB │ gzip:   4.45 kB
+dist/assets/DashboardView-CSJcXj_d.js         19.66 kB │ gzip:   6.43 kB
+dist/assets/RequestInbox-BvPH1tI-.js          24.64 kB │ gzip:   6.70 kB
+dist/assets/KanbanBoard-C38_SMjl.js          194.62 kB │ gzip:  54.95 kB
+dist/assets/PlannerImportModal-EwItpDEr.js   342.81 kB │ gzip: 117.30 kB
+dist/assets/index-CM6-LqgW.js                449.79 kB │ gzip: 132.74 kB
+✓ built in 1.97s

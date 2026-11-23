@@ -4,6 +4,38 @@ Revisión: **20/11/2026** · Código de referencia: **`c857a727c8e7640bbce8daada
 
 Fuente oficial de requisitos: [PRODUCT_REQUIREMENTS.md](PRODUCT_REQUIREMENTS.md).
 
+## M16 + M16b — integración y activación del 23/11/2026
+
+| Suite | Resultado | Clase / alcance |
+|---|---|---|
+| Integración Codex 1 + Codex 2 | Node 173/173, Python 52/52, build, UI 31/31 y 36/36, PG 21/21 y 25/25 | Local; UI con servicios simulados. [Informe](../validation/client-experience-integration-20261123/REPORT.md). |
+| Matriz frontend antiguo/nuevo × M15/M16/M16+M16b | Antiguo 7/7 creaciones con M16b | PostgreSQL 17 local real con adaptadores reales. [Preparación](../validation/m16b-preparation-20261123/REPORT.md). |
+| M1–M16b limpia / M15→M16b | 21/21 y 26/26 | PostgreSQL 17 local real; incluye rollback de M16b = estado M16. |
+| Producción: historial y postchecks | 17/17; valores esperados | Remoto, solo lectura. |
+| Producción: huella de funciones | 107/107 idénticas a local M1–M16b | Remoto, solo lectura. |
+| Producción: RPC HTTP sin sesión | 401 PT401 / 42501 | Remoto real, sin escrituras. |
+| Creación/listado con sesiones reales | NO VERIFICADO | Sin sesiones reutilizables ni tickets autorizados. |
+
+### Reconstrucción backend M16 — ejecución local del 23/11/2026
+
+Base `a61450c`; no confundir con las ejecuciones históricas que siguen. [Informe](../../REPORT-backend-codex1.md),
+[handoff](../validation/client-experience-contract-handoff.md).
+
+| Suite independiente | Resultado | Alcance |
+|---|---|---|
+| M1–M16 instalación limpia | 21/21 grupos | PostgreSQL17.12 real + adaptador leído del Agente2, Auth/Storage stubs. [JSON](../validation/client-data-security-clean-20261123.json). |
+| M15→M16 con históricos | 25/25 grupos | Reproduce colisión anterior, rollback transaccional, datos preservados, sin reasignación. [JSON](../validation/client-data-security-upgrade-20261123.json). |
+| Node existente | 171/171 | Unitarias/transportes simulados; no login real ni E2E. |
+| Preparación Supabase | 8/8 | Unitarias Python del manifiesto histórico y migraciones actuales. |
+
+Logs separados y fallos iniciales del arnés conservados en
+[directorio de evidencias](../validation/client-data-security-20261123/). No sumar suites.
+Pruebas propias de M16 no requieren servicios externos ni aceptan DSN remoto. Exigen --work-root
+persistente y detienen cada servidor en finally. Versiones/checksums de paquetes oficiales PGDG
+se conservan junto al runtime en `.agent-backups/postgresql17-runtime` del workspace anfitrión.
+No se ejecutaron UI/Chromium ni se certificó Supabase HTTP real en esta entrega backend.
+
+
 ## Clasificación obligatoria
 
 | Clase | Qué acredita | Qué no acredita |

@@ -1,0 +1,30 @@
+
+> ticketera-controlling@1.0.0 build
+> tsc && vite build --outDir /home/procont/projects/ticketera-procont/.agent-workspaces/agent2/.agent-artifacts/final-production --manifest
+
+vite v5.4.21 building for production...
+transforming...
+✓ 234 modules transformed.
+rendering chunks...
+computing gzip size...
+.agent-artifacts/final-production/index.html                                0.90 kB │ gzip:   0.46 kB
+.agent-artifacts/final-production/.vite/manifest.json                       4.02 kB │ gzip:   0.69 kB
+.agent-artifacts/final-production/assets/index-DBe2bVUl.css                58.27 kB │ gzip:  11.16 kB
+.agent-artifacts/final-production/assets/MetricState-GQ--SQXc.js            0.45 kB │ gzip:   0.31 kB
+.agent-artifacts/final-production/assets/AreaInput-DFmCjTiI.js              0.64 kB │ gzip:   0.39 kB
+.agent-artifacts/final-production/assets/useAreas-Ct3wlYjV.js               1.29 kB │ gzip:   0.71 kB
+.agent-artifacts/final-production/assets/PapeleraView-B6VltFrH.js           4.48 kB │ gzip:   1.70 kB
+.agent-artifacts/final-production/assets/useUsers-xr_5vnIN.js               4.58 kB │ gzip:   2.18 kB
+.agent-artifacts/final-production/assets/WorkloadView-CLCl-sjr.js           6.30 kB │ gzip:   2.33 kB
+.agent-artifacts/final-production/assets/RequestTimeline-CQ6amr54.js        7.75 kB │ gzip:   3.11 kB
+.agent-artifacts/final-production/assets/CatalogsPanel-BuXr04dz.js         12.12 kB │ gzip:   3.69 kB
+.agent-artifacts/final-production/assets/UserManagementPanel-I4-6KoMU.js   15.23 kB │ gzip:   4.45 kB
+.agent-artifacts/final-production/assets/DashboardView-DHVBIcwK.js         19.66 kB │ gzip:   6.44 kB
+.agent-artifacts/final-production/assets/RequestInbox-DumfhDaL.js          24.64 kB │ gzip:   6.70 kB
+.agent-artifacts/final-production/assets/KanbanBoard-DXpZpdtL.js          194.62 kB │ gzip:  54.95 kB
+.agent-artifacts/final-production/assets/PlannerImportModal-A5PPDBfA.js   342.81 kB │ gzip: 117.30 kB
+.agent-artifacts/final-production/assets/index-CqPFMFU6.js                452.50 kB │ gzip: 133.32 kB
+✓ built in 1.95s
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme

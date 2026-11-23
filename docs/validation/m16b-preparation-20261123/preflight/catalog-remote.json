@@ -1,0 +1,131 @@
+{
+ "platform_bindings": {
+  "quipu": "Quipu",
+  "quipufac": "Quipu_Fac"
+ },
+ "request_types_active": [
+  "Acceso / Permisos",
+  "Capacitación / Consulta",
+  "Error / Incidencia",
+  "Integración / Automatización",
+  "Mejora",
+  "Nueva funcionalidad",
+  "Otros",
+  "Reporte / Extracción",
+  "Soporte técnico"
+ ],
+ "requests_by_system_subsystem": [
+  {
+   "has_subsystem": false,
+   "n": 1,
+   "status": "pending",
+   "system": "Quipu"
+  },
+  {
+   "has_subsystem": false,
+   "n": 1,
+   "status": "pending",
+   "system": "Quipu_Fac"
+  },
+  {
+   "has_subsystem": false,
+   "n": 1,
+   "status": "pending",
+   "system": "Quipu_Fac"
+  },
+  {
+   "has_subsystem": true,
+   "n": 1,
+   "status": "approved",
+   "system": "Negmin"
+  }
+ ],
+ "systems": [
+  {
+   "active": true,
+   "name": "Quipu",
+   "requires_subproject": true,
+   "sort": 1,
+   "subsystems": [
+    {
+     "active": true,
+     "name": "Escritorio"
+    }
+   ]
+  },
+  {
+   "active": true,
+   "name": "Quipu_Fac",
+   "requires_subproject": true,
+   "sort": 2,
+   "subsystems": [
+    {
+     "active": true,
+     "name": "Android"
+    },
+    {
+     "active": true,
+     "name": "Escritorio"
+    },
+    {
+     "active": true,
+     "name": "Web"
+    }
+   ]
+  },
+  {
+   "active": true,
+   "name": "Quipu_Gestion",
+   "requires_subproject": true,
+   "sort": 3,
+   "subsystems": [
+    {
+     "active": true,
+     "name": "Web"
+    }
+   ]
+  },
+  {
+   "active": true,
+   "name": "Negmin",
+   "requires_subproject": true,
+   "sort": 4,
+   "subsystems": [
+    {
+     "active": true,
+     "name": "Android"
+    },
+    {
+     "active": true,
+     "name": "Web"
+    }
+   ]
+  },
+  {
+   "active": true,
+   "name": "Quipu_AI",
+   "requires_subproject": true,
+   "sort": 5,
+   "subsystems": [
+    {
+     "active": true,
+     "name": "Web"
+    }
+   ]
+  },
+  {
+   "active": true,
+   "name": "Otros",
+   "requires_subproject": false,
+   "sort": 6,
+   "subsystems": []
+  },
+  {
+   "active": true,
+   "name": "Soporte tecnico",
+   "requires_subproject": false,
+   "sort": 7,
+   "subsystems": []
+  }
+ ]
+}

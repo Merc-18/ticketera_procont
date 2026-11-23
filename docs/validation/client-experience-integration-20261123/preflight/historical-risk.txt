@@ -1,0 +1,29 @@
+Target: project ticketera-procont (xsxdpaiivklqeudgqoqf) · production
+{
+  "rows": [
+    {
+      "risk": {
+        "companies": 1,
+        "entry_codes_pending": 0,
+        "identities_by_provider_source": {
+          "quipu/username": 2,
+          "quipufac/company": 1
+        },
+        "identities_in_multi_username_groups": 0,
+        "links_by_provider": {
+          "quipu": 1,
+          "quipufac": 2
+        },
+        "links_total": 3,
+        "quipu_identities_provider_id": 0,
+        "quipu_identities_username_subject_mismatch": 0,
+        "quipu_links_hidden_after_m16": 0,
+        "quipu_links_kept_after_m16": 1,
+        "quipu_usernames_with_multiple_identities": 0,
+        "quipufac_links_kept_after_m16": 2,
+        "sessions_active": 0,
+        "sessions_active_revoked_by_m16": 0
+      }
+    }
+  ],
+}

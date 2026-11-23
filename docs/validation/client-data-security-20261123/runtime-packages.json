@@ -1,0 +1,20 @@
+[
+  {
+    "Package": "postgresql-17",
+    "Version": "17.12-1.pgdg26.04+1",
+    "Filename": "pool/main/p/postgresql-17/postgresql-17_17.12-1.pgdg26.04+1_amd64.deb",
+    "SHA256": "f1011884f39c561cceaf2aca5a3677295e5a55ef073dadf6d0ac7e6c98ba64a5"
+  },
+  {
+    "Package": "postgresql-client-17",
+    "Version": "17.12-1.pgdg26.04+1",
+    "Filename": "pool/main/p/postgresql-17/postgresql-client-17_17.12-1.pgdg26.04+1_amd64.deb",
+    "SHA256": "e43f02d5ed8d1b7c717ae59e35ecc9350795ec3c000d0ef39f93cc5da6f6dc4c"
+  },
+  {
+    "Package": "libpq5",
+    "Version": "19.0-2.pgdg26.04+1",
+    "Filename": "pool/main/p/postgresql-19/libpq5_19.0-2.pgdg26.04+1_amd64.deb",
+    "SHA256": "79cf1a8c3d8234504f0b3567b997812370d2b94fe8f94e821b68a6cfd6741489"
+  }
+]

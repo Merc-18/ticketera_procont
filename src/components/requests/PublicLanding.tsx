@@ -100,7 +100,7 @@ export default function PublicLanding() {
 
   return (
     <div className="app-surface">
-      <nav className="public-nav" aria-label="Portal">
+      <nav className="public-nav portal-nav" aria-label="Portal">
         <div className="wrap page-wrap">
           <BrandLogo size={40} />
           <button onClick={() => setShowLogin(true)} className="ui-button ui-button-secondary shrink-0">
@@ -112,7 +112,7 @@ export default function PublicLanding() {
         <div className="portal-heading">
           <span className="eyebrow">Ticketera Procont</span>
           <h1>Mesa de solicitudes</h1>
-          <p>Registra una solicitud, consulta tus tickets o rastrea su estado con tu número REQ.</p>
+          <p>Registra una solicitud o rastrea su estado con tu número REQ.</p>
         </div>
         <div className="portal-options">
           <button onClick={() => navigate('/cliente')} className="portal-option">
@@ -120,12 +120,6 @@ export default function PublicLanding() {
             <h2>Nueva Solicitud</h2>
             <p>Ingresa con Quipu o QuipuFac y registra tu solicitud al {BRAND.teamLabel}.</p>
             <span className="option-action">Ingresar<Icon name="arrow" /></span>
-          </button>
-          <button onClick={() => navigate('/cliente/tickets')} className="portal-option">
-            <span className="icon-tile"><Icon name="tickets" size={26} /></span>
-            <h2>Mis tickets</h2>
-            <p>Consulta las solicitudes registradas con tu usuario Quipu o tu cuenta QuipuFac.</p>
-            <span className="option-action">Ver mis tickets<Icon name="arrow" /></span>
           </button>
           <button onClick={() => navigate('/tracking')} className="portal-option">
             <span className="icon-tile"><Icon name="search" size={26} /></span>

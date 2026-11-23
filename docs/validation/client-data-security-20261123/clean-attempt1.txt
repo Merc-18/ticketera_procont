@@ -1,0 +1,6 @@
+PASS Clean installation M1-M16 changes no existing application rows
+Traceback (most recent call last):
+  File "/home/procont/projects/ticketera-procont/.agent-workspaces/agent1/supabase/tests/client_data_security_local.py", line 225, in <module>
+    assert old_functions['public.'+name]==new_functions['public.'+name]
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+KeyError: 'public.submit_request(jsonb,uuid)'

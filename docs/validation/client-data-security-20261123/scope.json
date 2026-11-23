@@ -1,0 +1,78 @@
+{
+  "base": "a61450c93f5180ecd623d945b100424a47a3a5d3",
+  "protected_files": 672,
+  "protected_changes": [],
+  "frontend_src_unchanged": true,
+  "contracts_unchanged": true,
+  "config_toml_unchanged": true,
+  "edge_unchanged": true,
+  "m1_m15_unchanged": true,
+  "migrations": [
+    {
+      "file": "supabase/migrations/20261117000100_schema.sql",
+      "sha256": "4cc433c7eb91278abf020b82d9e40ddc39052642630db267e0753bf2c4f5fbcd"
+    },
+    {
+      "file": "supabase/migrations/20261117000200_security.sql",
+      "sha256": "669171a4a000c4dbfeb78ca53e4c58df3b7ba9473c7735ef4d024047d5bf8cf5"
+    },
+    {
+      "file": "supabase/migrations/20261117000300_operations.sql",
+      "sha256": "06b2bf5b0d5275c1e3d95b1848983c4242610f45d28a611fca256e3e696d206a"
+    },
+    {
+      "file": "supabase/migrations/20261117000400_reference_checklists.sql",
+      "sha256": "2ae7b98b460a040319e0c2007809c1842374e97cb2ee4ac140a8fdfc48b0b145"
+    },
+    {
+      "file": "supabase/migrations/20261118000100_account_administration.sql",
+      "sha256": "66f0a0df721c29152bf2a7fe8e4e4a1c269a36f3dacb66e650d0f578a725f16e"
+    },
+    {
+      "file": "supabase/migrations/20261118000200_areas.sql",
+      "sha256": "e5c8d8f6f68ead3fb9088ccde36b1d3460dd54ff8de71d011e3586366923d16a"
+    },
+    {
+      "file": "supabase/migrations/20261118000300_ticket_catalogs.sql",
+      "sha256": "cfa7af9868184011cb2fa08d45dcba54d1559146b39f7e38bac6974af3b747b1"
+    },
+    {
+      "file": "supabase/migrations/20261118000400_request_intake.sql",
+      "sha256": "92bc5dd2dcee53ccfcdcb61ec63e1dd6f1db30e060e087dcbe2b84d8936bdc06"
+    },
+    {
+      "file": "supabase/migrations/20261118000500_ticket_security.sql",
+      "sha256": "af982fb3388d1dd1ae4f9ee02b2aa843ec107e087f2b30b318cc34a99805094b"
+    },
+    {
+      "file": "supabase/migrations/20261118000600_request_tracking.sql",
+      "sha256": "089c1764f3e54ac689063ab3b8ba3092e154bdb3ae51c11ec58c374746528635"
+    },
+    {
+      "file": "supabase/migrations/20261118000700_business_metrics.sql",
+      "sha256": "e1241afcdfd28649612a139efb5f2ab1fe6991b40f32c137e7d6695ec7d03a66"
+    },
+    {
+      "file": "supabase/migrations/20261118000800_board_operations.sql",
+      "sha256": "66995addf02ce4af8d53b6794fd030f4369ed88a02284d8815afe99e0dafc6be"
+    },
+    {
+      "file": "supabase/migrations/20261119000100_client_access.sql",
+      "sha256": "9a90e6d9b3c2185fb9a71c48e8e92972a77039b2a618a776c43b396853821718"
+    },
+    {
+      "file": "supabase/migrations/20261119000200_client_login_throttle.sql",
+      "sha256": "9021b2a7e5d2010d7f756c5c16b9d939c2418f6054c100f6c166a98fe222ccb9"
+    },
+    {
+      "file": "supabase/migrations/20261119000300_security_request_creation.sql",
+      "sha256": "ca8612aee78beb13be331571934a694647f8f0febcf61c0dc6ec77cafdd69d1f"
+    },
+    {
+      "file": "supabase/migrations/20261123000100_client_request_data_security.sql",
+      "sha256": "ecec0b9a9fe5b878f542725f3015d71a7aae48845ceb00e3982d9c3186f3c102"
+    }
+  ],
+  "remote_writes": false,
+  "provider_calls": false
+}

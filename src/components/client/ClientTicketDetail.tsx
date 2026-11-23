@@ -1,3 +1,7 @@
+import { useMemo } from 'react'
+import { useSubprojectNames } from './useSubprojectNames'
+import RequestedPriority from '../requests/RequestedPriority'
+import ClientTicketStatus from './ClientTicketStatus'
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useClientSession } from './ClientWorkspace'
@@ -15,6 +19,7 @@ export default function ClientTicketDetail() {
   const { id = '' } = useParams()
   const { session, token, handleError, productName } = useClientSession()
   const [ticket, setTicket] = useState<Detail | null | undefined>(undefined)
+  const nameOfSubproject = useSubprojectNames(useMemo(() => ticket ? [ticket] : [], [ticket]))
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -26,7 +31,7 @@ export default function ClientTicketDetail() {
     return () => { alive = false }
   }, [token, id, handleError])
 
-  const back = <Link to="/cliente/tickets" className="text-sm text-gray-500 hover:text-brand-700 transition">← Mis tickets</Link>
+  const back = <Link to="/cliente/tickets" className="ui-button ui-button-quiet !px-0">← Mis tickets</Link>
   if (error) return <div className="space-y-4">{back}<p role="alert" className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">{error}</p></div>
   if (ticket === undefined) return <p className="text-gray-400 py-10 text-center">Cargando ticket…</p>
   if (ticket === null) {
@@ -40,11 +45,10 @@ export default function ClientTicketDetail() {
     )
   }
 
-  const status = GENERAL_STATUS[ticket.status]
   const blocked = ticket.status === 'blocked'
   const rejected = ticket.status === 'rejected'
   const index = blocked ? MAIN_PATH.indexOf('approved_backlog') + 1 : MAIN_PATH.indexOf(ticket.status)
-  const requesterLabel = session.identity.kind === 'company_account' ? 'Solicitante (nombre declarado)' : 'Solicitante'
+  const requesterLabel = ticket.requester_name_source === 'username' ? 'Usuario autenticado' : session.identity.kind === 'company_account' ? 'Solicitante (nombre declarado)' : 'Solicitante'
 
   return (
     <div className="space-y-4">
@@ -55,7 +59,7 @@ export default function ClientTicketDetail() {
             <p className="font-mono text-sm text-brand-700 mb-2">{ticket.request_number}</p>
             <h1 className="text-xl font-bold text-gray-900 break-words">{ticket.title}</h1>
           </div>
-          <span className={`text-sm font-semibold px-3 py-1 rounded-full border ${status.tone}`}>{status.icon} {status.label}</span>
+          <ClientTicketStatus status={ticket.status} />
         </header>
 
         {!rejected && (
@@ -86,6 +90,8 @@ export default function ClientTicketDetail() {
           <div><dt className="text-gray-500">Fecha</dt><dd className="font-medium text-gray-900">{shortDate(ticket.created_at)}</dd></div>
           <div><dt className="text-gray-500">{requesterLabel}</dt><dd className="font-medium text-gray-900">{ticket.requester_name}</dd></div>
           <div><dt className="text-gray-500">Atención urgente solicitada</dt><dd className="font-medium text-gray-900">{ticket.urgent_requested ? 'Sí' : 'No'}</dd></div>
+          <div><dt className="text-gray-500">Subproyecto solicitado</dt><dd>{nameOfSubproject(ticket.system_id, ticket.requested_subsystem_id)}</dd></div>
+          <div><dt className="sr-only">Prioridad solicitada</dt><dd><RequestedPriority value={ticket.requested_priority} /></dd></div>
           <div className="sm:col-span-2">
             <dt className="text-gray-500 mb-1">Descripción</dt>
             <dd className="text-gray-900 whitespace-pre-wrap break-words bg-gray-50 rounded-lg p-3">{ticket.description}</dd>

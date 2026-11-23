@@ -102,7 +102,7 @@ test('QuipuFac cannot supply a username, platform context or subject through the
 
 test('QuipuFac handler connects to portal company session, New-ticket products and My tickets without submitting', async () => {
   let opened
-  const calls = [], products = [{ id: crypto.randomUUID(), name: 'Quipu_Fac' }, { id: crypto.randomUUID(), name: 'Negmin' }]
+  const calls = [], products = [{ id: crypto.randomUUID(), name: 'Quipu_Fac', requires_subproject: false }, { id: crypto.randomUUID(), name: 'Negmin', requires_subproject: true }]
   const rpc = async (name, args) => {
     calls.push(name)
     if (name === 'client_open_session') { opened = args; return { data: null, error: null } }

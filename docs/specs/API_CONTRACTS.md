@@ -4,6 +4,34 @@ Revisión: **20/11/2026** · Código de referencia: **`c857a727c8e7640bbce8daada
 
 Fuente oficial de requisitos: [PRODUCT_REQUIREMENTS.md](PRODUCT_REQUIREMENTS.md).
 
+## Ampliación M16 + M16b — 23/11/2026
+
+> **Producción 23/11/2026 15:55 UTC:** M16 (`20261123000100_client_request_data_security.sql`, sha256 `ecec0b9a…3f102`) y M16b (`20261123000200_client_legacy_payload_compat.sql`, sha256 `8adce4bb…d036`) **aplicadas** en `xsxdpaiivklqeudgqoqf`; historial 17/17 y funciones remotas idénticas a la instalación probada (107/107). [Activación](../validation/m16-activation-20261123/REPORT.md).
+
+Base comprobada: `a61450c93f5180ecd623d945b100424a47a3a5d3`; handoff
+`8fabd88e99cc0e53dbc43c3402730d785c148a7a`. Inicialmente preparada en local; **aplicada en producción el 23/11/2026**.
+M16b no cambia firmas: `client_submit_request` acepta además el payload del frontend anterior
+(`requester_name` Quipu ignorado y no almacenado; sin clave `subsystem_id` se acepta NULL hasta la aprobación).
+El [contrato de coordinación](../validation/client-experience-contract-handoff.md) es la definición
+exacta de la ampliación; [informe backend](../../REPORT-backend-codex1.md). Los contratos de login Edge no cambian.
+
+- Nueva RPC `client_subprojects(p_session_token text,p_system_id uuid) RETURNS jsonb`: array
+  `{id,system_id,name}`, solo hijos activos de producto permitido por sesión/contexto.
+- Firma y recibo de `client_submit_request` se conservan. Payload añade `subsystem_id?: uuid|null`
+  y `requested_priority?: low|medium|high|urgent` con default `medium`; null/arbitrarios rechazados.
+- `urgent_requested` sigue booleano independiente, omitido=false. No se infiere de prioridad
+  ni a la inversa: low+true y urgent+false son válidos. No sustituye `projects.priority`.
+- Quipu deriva requester_name desde verified_name confiable o username exacto; si el cliente
+  lo envía, debe coincidir. QuipuFac requiere nombre declarado por ticket, sin efecto en permisos.
+- Listado/detalle añaden `requested_priority`, `requested_subsystem_id`, `requester_name_source`;
+  históricos null. `requester_name_verified` true solo para source verified_name. Firma de listado,
+  limit1..100/offset0..100000 y orden created_at desc/id desc se mantienen; no hay total nuevo.
+- Lectura interna `public.requests` y relación calculada `requests(public.projects)` incluyen
+  las columnas nuevas bajo RLS existente. Proyecciones explícitas deben incluir requested_priority.
+- Sesiones/códigos históricos Quipu provider_id sin snapshot fallan cerrados; links ambiguos
+  no se reasignan. PT404 de ticket ajeno conserva sesión válida; sesión ambigua recibe PT401.
+
+
 ## Alcance y fuente
 
 API propia: Edge `client-login` y RPC de PostgreSQL. Las firmas se contrastaron con M1–M15 y contratos `.d.mts`/`.mjs`; inventario completo de 47 nombres públicos (incluye dos relaciones calculadas) en [DATABASE_SPEC.md](DATABASE_SPEC.md#catalogo-de-funciones-publicas). [OpenAPI 3.1](client-login.openapi.yaml) cubre solamente el endpoint propio `client-login`; no inventa un esquema completo de proveedores ni de todos los servicios Supabase.

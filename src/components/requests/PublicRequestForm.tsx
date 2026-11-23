@@ -1,23 +1,34 @@
-import { useRef, useState } from 'react'
+import { useEffect, useState, type MutableRefObject } from 'react'
 import { createRpcAttempt } from '../../lib/rpc-attempt'
 import { errorMessage } from '../../lib/supabase-errors'
 import type { SubmissionReceipt } from '../../lib/operations'
 import { useCatalogs } from '../../hooks/useCatalogs'
 import type { DeliveryItem, DeliveryResult } from '../../lib/attachments'
 import type { RpcAttempt } from '../../lib/rpc-attempt'
-import type { ClientProduct, ClientTicketInput } from '../../lib/client-portal'
+import { isClientPortalError, type ClientIdentity, type ClientProduct, type ClientTicketInput, type ClientSubproject } from '../../lib/client-portal'
 import type { PreparationResult } from '../../lib/attachment-prep'
+import { REQUESTED_PRIORITIES } from '../../lib/client-request-data'
 import AttachmentPicker from './AttachmentPicker'
 import Icon from '../ui/Icon'
 import { BRAND } from '../../theme/brand'
 
-const EMPTY = { requester_name: '', system_id: '', request_type_id: '', title: '', description: '' }
+const EMPTY: ClientTicketInput = {
+  requester_name: '', system_id: '', subsystem_id: null, request_type_id: '',
+  title: '', description: '', requested_priority: 'medium', urgent_requested: false,
+}
 const field = 'ui-input focus:ring-2 focus:ring-primary'
 
 /** Sesión de cliente autenticado (portal Quipu/QuipuFac): sin estudio; producto desde la sesión. */
 export interface ClientFormConfig {
   /** Productos permitidos devueltos por el backend para la sesión. */
   products: ClientProduct[]
+  identity: ClientIdentity
+  draft: ClientTicketInput | null
+  setDraft: (draft: ClientTicketInput | null) => void
+  attempt: MutableRefObject<RpcAttempt>
+  uncertain: boolean
+  setUncertain: (value: boolean) => void
+  loadSubprojects: (id: string) => Promise<ClientSubproject[]>
   /** true: abierto desde una plataforma; el producto queda fijo y no hay selector. */
   fixedProduct: boolean
   /** Creación con el contrato del cliente autenticado (client_submit_request). */
@@ -29,17 +40,34 @@ export interface ClientFormConfig {
 
 /**
  * Formulario de solicitud (aprobado 18/11/2026) dentro del espacio del cliente autenticado.
- * El cliente no ve correo, estudio, subproyecto, área, RUC, códigos, responsables, prioridad,
+ * El cliente no ve correo, estudio, área, RUC, códigos, responsables, prioridad definitiva,
  * SLA ni plazos: el estudio lo deriva el servidor y el producto se elige solo entre los
  * permitidos por la sesión (o queda fijo si se abrió desde una plataforma).
  * No existe un modo anónimo: toda creación usa el contrato del cliente autenticado.
  */
 export default function PublicRequestForm({ client }: { client: ClientFormConfig }) {
   const catalogs = useCatalogs('public')
-  const attempt = useRef(createRpcAttempt())
+  const attempt = client.attempt
   const initial = client.products.length === 1 ? { ...EMPTY, system_id: client.products[0].id } : EMPTY
-  const [form, setForm] = useState(initial)
-  const [urgent, setUrgent] = useState(false)
+  const form = client.draft ?? initial
+  const individual = client.identity.kind === 'individual' ? client.identity : null
+  const authenticatedName = individual ? individual.display_name ?? individual.username : null
+  const nameUnavailable = !!individual && (!authenticatedName || authenticatedName.length > 200)
+  const product = client.products.find(p => p.id === form.system_id)
+  const [options, setOptions] = useState<{ systemId: string; loading: boolean; items: ClientSubproject[]; failed: boolean }>({ systemId: '', loading: false, items: [], failed: false })
+  const [retry, setRetry] = useState(0)
+  useEffect(() => {
+    if (!form.system_id) return
+    let alive = true
+    const systemId = form.system_id
+    setOptions({ systemId, loading: true, items: [], failed: false })
+    client.loadSubprojects(systemId).then(items => {
+      if (alive) setOptions({ systemId, loading: false, items, failed: false })
+    }).catch(() => { if (alive) setOptions({ systemId, loading: false, items: [], failed: true }) })
+    return () => { alive = false }
+  }, [form.system_id, client.loadSubprojects, retry])
+  const ready = !!product && options.systemId === form.system_id && !options.loading && !options.failed
+  const requiresSubproject = ready && !!product?.requires_subproject && options.items.length > 0
   // Adjuntos ya preparados (comprimidos si hacía falta) ANTES de enviar; null = procesando.
   const [prepared, setPrepared] = useState<PreparationResult | null>({ items: [], totalBytes: 0, originalBytes: 0, ok: true, error: null })
   const [pickerKey, setPickerKey] = useState(0)
@@ -52,29 +80,37 @@ export default function PublicRequestForm({ client }: { client: ClientFormConfig
   const [deliveryError, setDeliveryError] = useState<string | null>(null)
   const [retrying, setRetrying] = useState(false)
 
-  const set = (patch: Partial<typeof EMPTY>) => setForm(f => ({ ...f, ...patch }))
+  const set = (patch: Partial<ClientTicketInput>) => client.setDraft({ ...form, ...patch })
   const [nameTouched, setNameTouched] = useState(false)
   const nameInvalid = nameTouched && !form.requester_name.trim()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     // Nombre, título y descripción no pueden quedar vacíos ni contener solo espacios.
-    if (!form.requester_name.trim()) { setNameTouched(true); setError('Ingresa el nombre del solicitante.'); return }
+    if (individual ? nameUnavailable : !form.requester_name.trim()) {
+      setNameTouched(true)
+      setError(individual ? 'No se dispone de un nombre o usuario autenticado válido.' : 'Ingresa el nombre del solicitante.')
+      return
+    }
     if (!form.title.trim() || !form.description.trim()) { setError('Completa el título y la descripción.'); return }
     if (!client.products.some(p => p.id === form.system_id)) { setError('Selecciona el producto.'); return }
+    if (!ready) { setError('Espera a que se carguen los subproyectos del producto.'); return }
+    if ((requiresSubproject && !form.subsystem_id) || (form.subsystem_id && !options.items.some(p => p.id === form.subsystem_id))) { setError('Selecciona un subproyecto válido del producto.'); return }
     if (!prepared) { setError('Espera a que terminen de prepararse los adjuntos.'); return }
     if (!prepared.ok) { setError(prepared.error); return }
     setLoading(true); setError(null)
     try {
-      const result = await client.submit({ requester_name: form.requester_name, system_id: form.system_id,
-        request_type_id: form.request_type_id, title: form.title, description: form.description, urgent_requested: urgent },
-        attempt.current)
+      const result = await client.submit(form, attempt.current)
       // Los archivos ya están comprimidos; cada uno recibe una clave de subida estable.
       const items: DeliveryItem[] = prepared.items.map(i => ({ file: i.file, uploadKey: crypto.randomUUID() }))
       setReceipt(result)
+      client.setUncertain(false)
+      client.setDraft(null)
+      attempt.current = createRpcAttempt()
       await deliver(result, items)
-      setForm(initial); setUrgent(false); setPickerKey(k => k + 1); setNameTouched(false)
+      setPickerKey(k => k + 1); setNameTouched(false)
     } catch (err) {
+      if (!isClientPortalError(err) || isClientPortalError(err, 'unavailable') || isClientPortalError(err, 'invalid_response')) { client.setDraft(form); client.setUncertain(true) }
       setError(errorMessage(err))
     } finally {
       setLoading(false)
@@ -154,75 +190,106 @@ export default function PublicRequestForm({ client }: { client: ClientFormConfig
           <p role="alert" className="text-center text-red-700 py-8">El formulario no está disponible en este momento. Intenta más tarde.</p>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-8">
-            <section className="space-y-4">
-              <h2 className={section}>Datos del solicitante</h2>
-              <div>
-                {label('ticket-requester', 'Nombre del solicitante')}
-                <input id="ticket-requester" required maxLength={200} value={form.requester_name} placeholder="Nombre y apellido"
-                  pattern=".*\S.*" title="Ingresa el nombre del solicitante" aria-invalid={nameInvalid}
-                  onBlur={() => setNameTouched(true)}
-                  onChange={e => set({ requester_name: e.target.value })}
-                  className={`${field} ${nameInvalid ? 'border-red-400 focus:ring-red-400' : ''}`} />
-                {nameInvalid && <p className="text-xs text-red-600 mt-1">El nombre es obligatorio.</p>}
-              </div>
-            </section>
-
-            <section className="space-y-4">
-              <h2 className={section}>¿Para qué producto es la solicitud?</h2>
-              {client.fixedProduct ? (
+            <fieldset className="ticket-form-fields space-y-8 min-w-0" disabled={loading || client.uncertain}>
+              <legend className="sr-only">Datos de la solicitud</legend>
+              <section className="space-y-4">
+                <h2 className={section}>Datos del solicitante</h2>
+                {individual ? <div>
+                  <p id="authenticated-requester-label" className="text-sm font-medium text-gray-700 mb-2">{individual.display_name ? 'Nombre del solicitante' : 'Usuario autenticado'}</p>
+                  <p aria-labelledby="authenticated-requester-label" className={`${field} flex items-center gap-2 break-all`}><Icon name="lock" size={18} className="shrink-0" />{authenticatedName ?? 'Información no disponible'}</p>
+                  <p className="text-xs text-gray-600 mt-2">{individual.display_name ? 'Nombre obtenido de tu sesión Quipu.' : 'Username exacto obtenido de tu sesión Quipu; no es un nombre personal verificado.'}</p>
+                  {nameUnavailable && <p role="alert" className="text-sm text-red-700 mt-2">No tenemos un nombre o usuario válido para registrar la solicitud. Comunícate con Procont.</p>}
+                </div> : <>
                 <div>
-                  {label('ticket-product', 'Producto')}
-                  <p id="ticket-product" className={`${field} bg-gray-50 text-gray-800 flex items-center gap-2`} aria-readonly="true">
-                    <Icon name="lock" size={18} />{client.products[0]?.name}
-                  </p>
-                  <p className="text-xs text-gray-500 mt-1">Ingresaste desde esta plataforma: el ticket se registra para este producto.</p>
+                  {label('ticket-requester', 'Nombre del solicitante')}
+                  <input id="ticket-requester" required maxLength={200} value={form.requester_name} placeholder="Nombre y apellido"
+                    pattern=".*\S.*" title="Ingresa el nombre del solicitante" aria-invalid={nameInvalid}
+                    onBlur={() => setNameTouched(true)}
+                    onChange={e => set({ requester_name: e.target.value })}
+                    className={`${field} ${nameInvalid ? 'border-red-400 focus:ring-red-400' : ''}`} />
+                  {nameInvalid && <p className="text-xs text-red-600 mt-1">El nombre es obligatorio.</p>}
                 </div>
-              ) : (
+                </>}
+              </section>
+
+              <section className="space-y-4">
+                <h2 className={section}>¿Para qué producto es la solicitud?</h2>
+                {client.fixedProduct ? (
+                  <div>
+                    {label('ticket-product', 'Producto')}
+                    <p id="ticket-product" className={`${field} bg-gray-50 text-gray-800 flex items-center gap-2`} aria-readonly="true">
+                      <Icon name="lock" size={18} />{client.products[0]?.name}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">Ingresaste desde esta plataforma: el ticket se registra para este producto.</p>
+                  </div>
+                ) : (
+                  <div>
+                    {label('ticket-product', 'Producto')}
+                    <select id="ticket-product" required value={form.system_id} onChange={e => set({ system_id: e.target.value, subsystem_id: null })} className={field}>
+                      <option value="">Selecciona un producto</option>
+                      {client.products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                    </select>
+                  </div>
+                )}
                 <div>
-                  {label('ticket-product', 'Producto')}
-                  <select id="ticket-product" required value={form.system_id} onChange={e => set({ system_id: e.target.value })} className={field}>
-                    <option value="">Selecciona un producto</option>
-                    {client.products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                  {label('ticket-subproject', 'Subproyecto', requiresSubproject)}
+                  <select id="ticket-subproject" className={field} value={form.subsystem_id ?? ''} required={requiresSubproject}
+                    disabled={!ready || options.items.length === 0} aria-describedby="ticket-subproject-help"
+                    onChange={e => set({ subsystem_id: e.target.value || null })}>
+                    <option value="">{!product ? 'Selecciona primero un producto' : options.failed && options.systemId === form.system_id ? 'Opciones no disponibles' : !ready ? 'Cargando subproyectos…' : !options.items.length ? 'Sin subproyectos' : requiresSubproject ? 'Selecciona un subproyecto' : 'Sin subproyecto'}</option>
+                    {options.systemId === form.system_id && options.items.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                  </select>
+                  <p id="ticket-subproject-help" role="status" className="text-xs text-gray-600 mt-2">{!product ? 'Elige un producto para consultar sus opciones.' : options.systemId !== form.system_id || options.loading ? 'Cargando subproyectos…' : options.failed ? 'No pudimos cargar los subproyectos. Reintenta para continuar.' : !options.items.length ? 'Este producto no tiene subproyectos disponibles. Puedes continuar.' : requiresSubproject ? 'Selecciona un subproyecto para continuar.' : 'Subproyecto opcional para este producto.'}</p>
+                </div>
+              </section>
+
+              <section className="space-y-4">
+                <h2 className={section}>¿Qué necesitas?</h2>
+                <div>
+                  {label('ticket-type', 'Tipo de solicitud')}
+                  <select id="ticket-type" required value={form.request_type_id} onChange={e => set({ request_type_id: e.target.value })} className={field}>
+                    <option value="">Selecciona el tipo principal</option>
+                    {catalogs.requestTypes.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
                   </select>
                 </div>
-              )}
-            </section>
+                <div>
+                  {label('ticket-title', 'Título del requerimiento')}
+                  <input id="ticket-title" required maxLength={300} value={form.title} placeholder="Resumen breve"
+                    onChange={e => set({ title: e.target.value })} className={field} />
+                </div>
+                <div>
+                  {label('ticket-description', 'Descripción detallada')}
+                  <textarea id="ticket-description" required rows={6} maxLength={20000} value={form.description}
+                    placeholder="Describe qué ocurre o qué necesitas, pasos para reproducirlo y el resultado esperado"
+                    onChange={e => set({ description: e.target.value })} className={`${field} resize-y`} />
+                </div>
+                <div>
+                  <p className="block text-sm font-medium text-gray-700 mb-2">Adjuntar capturas o documentos</p>
+                  <AttachmentPicker onChange={setPrepared} resetKey={pickerKey} />
+                </div>
+                <div>
+                  {label('ticket-priority', 'Prioridad solicitada')}
+                  <select id="ticket-priority" className={field} value={form.requested_priority} required aria-describedby="ticket-priority-help"
+                    onChange={e => set({ requested_priority: e.target.value as ClientTicketInput['requested_priority'] })}>
+                    {Object.entries(REQUESTED_PRIORITIES).map(([value, title]) => <option key={value} value={value}>{title}</option>)}
+                  </select>
+                  <p id="ticket-priority-help" className="text-xs text-gray-600 mt-2">El equipo revisará tu solicitud y asignará la prioridad definitiva. La atención urgente se solicita por separado.</p>
+                </div>
+                <label className="flex items-center gap-3 p-4 rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-50">
+                  <input type="checkbox" checked={form.urgent_requested} onChange={e => set({ urgent_requested: e.target.checked })} className="h-4 w-4 accent-red-600" />
+                  <span className="text-sm font-medium text-gray-800">Solicito atención urgente (independiente de la prioridad)</span>
+                </label>
+              </section>
 
-            <section className="space-y-4">
-              <h2 className={section}>¿Qué necesitas?</h2>
-              <div>
-                {label('ticket-type', 'Tipo de solicitud')}
-                <select id="ticket-type" required value={form.request_type_id} onChange={e => set({ request_type_id: e.target.value })} className={field}>
-                  <option value="">Selecciona el tipo principal</option>
-                  {catalogs.requestTypes.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
-                </select>
-              </div>
-              <div>
-                {label('ticket-title', 'Título del requerimiento')}
-                <input id="ticket-title" required maxLength={300} value={form.title} placeholder="Resumen breve"
-                  onChange={e => set({ title: e.target.value })} className={field} />
-              </div>
-              <div>
-                {label('ticket-description', 'Descripción detallada')}
-                <textarea id="ticket-description" required rows={6} maxLength={20000} value={form.description}
-                  placeholder="Describe qué ocurre o qué necesitas, pasos para reproducirlo y el resultado esperado"
-                  onChange={e => set({ description: e.target.value })} className={`${field} resize-y`} />
-              </div>
-              <div>
-                <p className="block text-sm font-medium text-gray-700 mb-2">Adjuntar capturas o documentos</p>
-                <AttachmentPicker onChange={setPrepared} resetKey={pickerKey} />
-              </div>
-              <label className="flex items-center gap-3 p-4 rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-50">
-                <input type="checkbox" checked={urgent} onChange={e => setUrgent(e.target.checked)} className="h-4 w-4 accent-red-600" />
-                <span className="text-sm font-medium text-gray-800">Solicito atención urgente</span>
-              </label>
-            </section>
-
+            </fieldset>
+            {options.systemId === form.system_id && options.failed && <button type="button" className="ui-button ui-button-secondary" onClick={() => setRetry(n => n + 1)}>Reintentar subproyectos</button>}
+            {client.uncertain && <p role="status" className="text-sm text-gray-700">No pudimos confirmar el envío. Reintenta con los mismos datos para recuperar la constancia sin duplicar tu solicitud.</p>}
             {error && <p role="alert" className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">{error}</p>}
 
-            <button type="submit" disabled={loading || !prepared || !prepared.ok}
+            <button type="button" className="ui-button ui-button-secondary w-full" disabled={loading || client.uncertain} onClick={() => { client.setDraft(null); attempt.current = createRpcAttempt(); client.onViewMine() }}>Cancelar</button>
+            <button type="submit" disabled={loading || !prepared || !prepared.ok || !ready || nameUnavailable}
               className="ui-button ui-button-primary w-full">
-              {loading ? 'Enviando...' : 'Enviar solicitud'}
+              {loading ? 'Enviando...' : client.uncertain ? 'Reintentar envío' : 'Enviar solicitud'}
             </button>
           </form>
         )}

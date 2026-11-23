@@ -1,0 +1,3 @@
+        "quipu_case_variant_groups": 0,
+        "requests_urgent": 1,
+        "requests_without_client_link": 1

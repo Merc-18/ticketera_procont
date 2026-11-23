@@ -1,0 +1,42 @@
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✔ [escritorio] 1. /portal muestra dos accesos públicos e ingreso del personal (2357.710582ms)
+✔ [escritorio] 2. Nueva Solicitud navega a /cliente (selección Quipu/QuipuFac) (204.79419ms)
+✔ [escritorio] 3. /request no abre el formulario público y redirige al ingreso (163.223877ms)
+✔ [escritorio] 4-5. Quipu pide RUC, usuario y contraseña; QuipuFac solo RUC y contraseña (274.107365ms)
+✔ [escritorio] 6. Login desactivado: estado inequívocamente no operativo (343.648929ms)
+✔ [escritorio] 7. Login válido conduce a /cliente/nuevo con productos de la sesión; Salir cierra (499.577631ms)
+✔ [escritorio] 8-9. Sin sesión no se entra a /cliente/nuevo ni a /cliente/tickets; tras ingresar vuelve al destino (505.659718ms)
+✔ [escritorio] 10. Mis tickets y detalle: solo la identidad autenticada; ajeno no visible (346.275827ms)
+✔ [escritorio] 11. Rastrear Solicitud es público y muestra solo número y estado (263.416536ms)
+✔ [movil] 1. /portal muestra dos accesos públicos e ingreso del personal (144.7309ms)
+✔ [movil] 2. Nueva Solicitud navega a /cliente (selección Quipu/QuipuFac) (188.161997ms)
+✔ [movil] 3. /request no abre el formulario público y redirige al ingreso (148.394345ms)
+✔ [movil] 4-5. Quipu pide RUC, usuario y contraseña; QuipuFac solo RUC y contraseña (259.299958ms)
+✔ [movil] 6. Login desactivado: estado inequívocamente no operativo (251.288797ms)
+✔ [movil] 7. Login válido conduce a /cliente/nuevo con productos de la sesión; Salir cierra (474.904702ms)
+✔ [movil] 8-9. Sin sesión no se entra a /cliente/nuevo ni a /cliente/tickets; tras ingresar vuelve al destino (497.051105ms)
+✔ [movil] 10. Mis tickets y detalle: solo la identidad autenticada; ajeno no visible (370.937207ms)
+✔ [movil] 11. Rastrear Solicitud es público y muestra solo número y estado (249.796303ms)
+✔ [escritorio] 12. Acceso interno independiente: cuatro roles con sus pestañas aprobadas (2476.282287ms)
+✔ [movil] 12. Acceso interno independiente: cuatro roles con sus pestañas aprobadas (2452.757755ms)
+✔ 13. Exportaciones sin métricas SLA ficticias; datos por ticket del servidor y ausencias explícitas (641.339681ms)
+✔ 14. No se disparan alertas SLA heredadas (sin inserciones de notificaciones al cargar el tablero) (1970.489799ms)
+✔ 13A. Cero terminados (1.500 registros sin terminar): mensaje correcto y sin descarga (1410.925768ms)
+✔ 13C/D. Más de 1.000 registros con terminados fuera de la primera página: no se omiten (1415.634749ms)
+✔ 13E/G/H. 1.200 sin terminar + 2.500 terminados: tres páginas ordenadas, sin duplicados ni pérdidas; null intactos (1728.85927ms)
+✔ 13F. Error en la segunda página: no se descarga un CSV parcial y se informa el error (1420.325108ms)
+✔ [escritorio] integración: formulario crea Quipu y QuipuFac con adjunto simulado y separa Mis tickets (836.939552ms)
+✔ [movil] integración: formulario crea Quipu y QuipuFac con adjunto simulado y separa Mis tickets (833.350459ms)
+✔ integración: Planner procesa Excel real y conserva payload/acuse de la RPC interna (990.590087ms)
+✔ [escritorio] Versión de la compilación visible y estable en todas las pantallas (1492.715555ms)
+✔ [movil] Versión de la compilación visible y estable en todas las pantallas (1447.859884ms)
+ℹ tests 31
+ℹ suites 0
+ℹ pass 31
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 27087.751879
