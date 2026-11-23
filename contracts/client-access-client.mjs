@@ -8,7 +8,7 @@ export function createClientAccess(client) {
         : error.code === 'PT404' ? 'client_ticket_unavailable'
         : error.code === '42501' ? 'client_request_forbidden'
         : error.code === '23514' ? name === 'client_submit_request' ? 'studio_mapping_required' : 'client_request_rejected'
-        : error.code === '22023' ? 'invalid_request' : 'client_backend_unavailable'
+        : (error.code === '22023' || error.code === '22P02') ? 'invalid_request' : 'client_backend_unavailable'
       throw Object.assign(new Error(code), { code })
     }
     return data
@@ -35,6 +35,7 @@ export function createClientAccess(client) {
     exchange: (provider, code) => edge({ action: 'exchange', provider, code }),
     session: token => rpc('client_session_info', { p_session_token: token }),
     products: token => rpc('client_products', { p_session_token: token }),
+    subprojects: (token, systemId) => rpc('client_subprojects', { p_session_token: token, p_system_id: systemId }),
     submit: (token, payload, key) => rpc('client_submit_request', {
       p_session_token: token, p_payload: payload, p_idempotency_key: key,
     }),

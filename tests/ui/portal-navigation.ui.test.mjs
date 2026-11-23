@@ -344,8 +344,12 @@ for (const [label, viewport] of Object.entries(VIEWPORTS)) {
       await page.waitForURL('**/cliente/nuevo')
       await page.locator('#ticket-product').waitFor()
       if (provider === 'quipufac') assert.equal((await productOptions(page)).includes('Quipu'), false)
-      await page.fill('#ticket-requester', 'Persona ficticia integrada')
+      if (provider === 'quipufac') await page.fill('#ticket-requester', 'Persona ficticia integrada')
       await page.selectOption('#ticket-product', { label: provider === 'quipu' ? 'Quipu' : 'Quipu_Fac' })
+      if (provider === 'quipufac') {
+        await page.locator('#ticket-subproject option[value="00000000-0000-4000-8000-000000008002"]').waitFor({ state: 'attached' })
+        await page.selectOption('#ticket-subproject', '00000000-0000-4000-8000-000000008002')
+      }
       await page.selectOption('#ticket-type', { label: 'Mejora' })
       await page.fill('#ticket-title', `Prueba de formulario ${provider}`)
       await page.fill('#ticket-description', 'Datos ficticios del simulador local; sin tickets remotos.')

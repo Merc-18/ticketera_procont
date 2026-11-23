@@ -1,0 +1,64 @@
+{
+  "backend_commit": "b795fb9368b2e9a9104f516b9933e04af254f610",
+  "executed_by": "Agente 1; Agente 2 verificó los hashes de los seis consumidores y leyó sus evidencias",
+  "results": [
+    {
+      "scenario": "clean",
+      "backend_report": "/home/procont/projects/ticketera-procont/.agent-workspaces/agent1/docs/validation/client-data-security-clean-20261123.json",
+      "backend_report_sha256": "94f02c5932fd7ee7a2d8bd13808169aec89b74b024c3c36646667f40c9b67998",
+      "groups": 21,
+      "frontend_bridge": {
+        "passed": true,
+        "source_sha256": {
+          "src/lib/client-portal.ts": "cdd57ac358d93947b366ba654687d82f6d819d4a2feddc26d71ea657793dc13b",
+          "src/lib/client-request-data.ts": "3d3ccdee8cba0901986bd6c9c94a42cef355095827c8f44b7618db8cff6a3d19",
+          "src/lib/rpc-attempt.ts": "a31c36d7ece8560c98db66eb590e5f235b3b9d7ea9a2c4eca514ade1d3c53f79",
+          "src/lib/request-status.ts": "e1ded648c5cff43a6dc6979802b7d8a04f8cf00c2b5b753b6b74213d1597eb32",
+          "contracts/client-access-client.mjs": "82d963aad7a6253f1aec49e49aa3213e2846eedc199bb4d09c98874398602e37",
+          "contracts/client-access-client.d.mts": "55feb44167ba587e2a2f42ca23187821ca769b846b4c075141a94460ede38b0e"
+        },
+        "capabilities_logged": false,
+        "http_requests": false,
+        "real_sql": true,
+        "simulated_rpc_responses": false
+      },
+      "current_sources_match": {
+        "src/lib/client-portal.ts": true,
+        "src/lib/client-request-data.ts": true,
+        "src/lib/rpc-attempt.ts": true,
+        "src/lib/request-status.ts": true,
+        "contracts/client-access-client.mjs": true,
+        "contracts/client-access-client.d.mts": true
+      }
+    },
+    {
+      "scenario": "upgrade",
+      "backend_report": "/home/procont/projects/ticketera-procont/.agent-workspaces/agent1/docs/validation/client-data-security-upgrade-20261123.json",
+      "backend_report_sha256": "48d8c687b19ca839667d5139e2d07d3bb1725482c8c6b295c27627611bf7a13c",
+      "groups": 25,
+      "frontend_bridge": {
+        "passed": true,
+        "source_sha256": {
+          "src/lib/client-portal.ts": "cdd57ac358d93947b366ba654687d82f6d819d4a2feddc26d71ea657793dc13b",
+          "src/lib/client-request-data.ts": "3d3ccdee8cba0901986bd6c9c94a42cef355095827c8f44b7618db8cff6a3d19",
+          "src/lib/rpc-attempt.ts": "a31c36d7ece8560c98db66eb590e5f235b3b9d7ea9a2c4eca514ade1d3c53f79",
+          "src/lib/request-status.ts": "e1ded648c5cff43a6dc6979802b7d8a04f8cf00c2b5b753b6b74213d1597eb32",
+          "contracts/client-access-client.mjs": "82d963aad7a6253f1aec49e49aa3213e2846eedc199bb4d09c98874398602e37",
+          "contracts/client-access-client.d.mts": "55feb44167ba587e2a2f42ca23187821ca769b846b4c075141a94460ede38b0e"
+        },
+        "capabilities_logged": false,
+        "http_requests": false,
+        "real_sql": true,
+        "simulated_rpc_responses": false
+      },
+      "current_sources_match": {
+        "src/lib/client-portal.ts": true,
+        "src/lib/client-request-data.ts": true,
+        "src/lib/rpc-attempt.ts": true,
+        "src/lib/request-status.ts": true,
+        "contracts/client-access-client.mjs": true,
+        "contracts/client-access-client.d.mts": true
+      }
+    }
+  ]
+}

@@ -100,7 +100,7 @@ body {
 .ticket-form { padding: 32px 48px; border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--p-surface); }
 .ticket-form header { padding-bottom: 24px; border-bottom: 1px solid var(--line); margin-bottom: 32px; }
 .ticket-form header h1 { font-size: 32px; line-height: 1.2; }
-.ticket-form form > section { padding-bottom: 24px; border-bottom: 1px solid var(--line); }
+.ticket-form-fields > section { padding-bottom: 24px; border-bottom: 1px solid var(--line); }
 .ticket-form h2 { color: var(--p-action); font-size: 18px; margin-bottom: 16px; }
 .ticket-form label { font-size: 14px; }
 .ticket-form form .ui-input { background: #fff; }
@@ -198,12 +198,12 @@ html[data-input=pointer] .modal-panel { transition: opacity 200ms var(--ease-out
   .enterprise-header { position: relative; }
 }
 @media (min-width: 768px) {
-  .ticket-form form { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 32px 24px; }
-  .ticket-form form > :not([hidden]) ~ :not([hidden]) { margin-top: 0; }
-  .ticket-form form > section:nth-child(3), .ticket-form form > button, .ticket-form form > [role=alert] { grid-column: 1 / -1; }
-  .ticket-form form > section:nth-child(3) { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px 24px; }
-  .ticket-form form > section:nth-child(3) > :not([hidden]) ~ :not([hidden]) { margin-top: 0; }
-  .ticket-form form > section:nth-child(3) > h2, .ticket-form form > section:nth-child(3) > :nth-child(n+4) { grid-column: 1 / -1; }
+  .ticket-form-fields { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 32px 24px; }
+  .ticket-form-fields > :not([hidden]) ~ :not([hidden]) { margin-top: 0; }
+  .ticket-form-fields > section:last-child, .ticket-form form > button, .ticket-form form > [role=alert] { grid-column: 1 / -1; }
+  .ticket-form-fields > section:last-child { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px 24px; }
+  .ticket-form-fields > section:last-child > :not([hidden]) ~ :not([hidden]) { margin-top: 0; }
+  .ticket-form-fields > section:last-child > h2, .ticket-form-fields > section:last-child > :nth-child(n+4) { grid-column: 1 / -1; }
 }
 @media (max-width: 767px) {
   .page-wrap { width: calc(100% - 40px); }
@@ -253,3 +253,7 @@ html[data-input=pointer] .modal-panel { transition: opacity 200ms var(--ease-out
   .portal-nav > .page-wrap { flex-wrap: wrap; padding-block: 16px; }
   .portal-nav > .page-wrap > .ui-button { width: 100%; }
 }
+
+.ticket-form-fields { border: 0; padding: 0; margin: 0; }
+.ticket-form .ticket-form-fields > section:first-of-type { margin-top: 0; }
+.ticket-form-fields:disabled { opacity: .7; }

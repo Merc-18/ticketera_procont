@@ -16,9 +16,11 @@ async function contractUsage() {
   const direct = await api.login({ provider: 'quipu', ruc, username, password })
   const corporate = await api.login({ provider: 'quipufac', ruc, password })
   const products = await api.products(direct.session_token)
+  const subprojects = await api.subprojects(direct.session_token, products[0].id)
+  void subprojects
   const receipt = await api.submit(direct.session_token, { ...payload, system_id: products[0].id }, crypto.randomUUID())
   const detail = await api.detail(direct.session_token, receipt.id)
-  const declared: false = detail.requester_name_verified
+  const declared: boolean = detail.requester_name_verified
   const grants = await api.reserveAttachments(direct.session_token, receipt.id, [])
   const privatePath: string | undefined = grants[0]?.path
   await api.logout(corporate.session_token)

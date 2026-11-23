@@ -112,7 +112,7 @@ export default function PublicLanding() {
         <div className="portal-heading">
           <span className="eyebrow">Ticketera Procont</span>
           <h1>Mesa de solicitudes</h1>
-          <p>Registra una solicitud, rastrea su estado con tu número REQ.</p>
+          <p>Registra una solicitud o rastrea su estado con tu número REQ.</p>
         </div>
         <div className="portal-options">
           <button onClick={() => navigate('/cliente')} className="portal-option">

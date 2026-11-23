@@ -1,0 +1,525 @@
+{
+  "metric": "Taste: sum Script Network.dataReceived.dataLength || encodedDataLength; cache disabled; after scroll/idle",
+  "limitsKiB": {
+    "warn": 450,
+    "fail": 900
+  },
+  "measures": [
+    {
+      "label": "desktop:portal-inicial-tras-scroll",
+      "bytes": 452982,
+      "kib": 442.4,
+      "verdict": "PASS",
+      "scripts": [
+        {
+          "url": "http://127.0.0.1:42539/assets/index-CqPFMFU6.js",
+          "type": "Script",
+          "decoded": 452982,
+          "encoded": 133793,
+          "status": 200
+        }
+      ]
+    },
+    {
+      "label": "desktop:cliente-autenticado",
+      "bytes": 452982,
+      "kib": 442.4,
+      "verdict": "PASS",
+      "scripts": [
+        {
+          "url": "http://127.0.0.1:42539/assets/index-CqPFMFU6.js",
+          "type": "Script",
+          "decoded": 452982,
+          "encoded": 133793,
+          "status": 200
+        }
+      ]
+    },
+    {
+      "label": "desktop:dashboard",
+      "bytes": 474499,
+      "kib": 463.4,
+      "verdict": "WARN",
+      "scripts": [
+        {
+          "url": "http://127.0.0.1:42539/assets/index-CqPFMFU6.js",
+          "type": "Script",
+          "decoded": 452982,
+          "encoded": 133793,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/DashboardView-DHVBIcwK.js",
+          "type": "Script",
+          "decoded": 19773,
+          "encoded": 6808,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/useAreas-Ct3wlYjV.js",
+          "type": "Script",
+          "decoded": 1290,
+          "encoded": 1081,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/MetricState-GQ--SQXc.js",
+          "type": "Script",
+          "decoded": 454,
+          "encoded": 776,
+          "status": 200
+        }
+      ]
+    },
+    {
+      "label": "desktop:bandeja-antes-de-importar",
+      "bytes": 511664,
+      "kib": 499.7,
+      "verdict": "WARN",
+      "scripts": [
+        {
+          "url": "http://127.0.0.1:42539/assets/index-CqPFMFU6.js",
+          "type": "Script",
+          "decoded": 452982,
+          "encoded": 133793,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/DashboardView-DHVBIcwK.js",
+          "type": "Script",
+          "decoded": 19773,
+          "encoded": 6808,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/useAreas-Ct3wlYjV.js",
+          "type": "Script",
+          "decoded": 1290,
+          "encoded": 1081,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/MetricState-GQ--SQXc.js",
+          "type": "Script",
+          "decoded": 454,
+          "encoded": 776,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/RequestInbox-DumfhDaL.js",
+          "type": "Script",
+          "decoded": 24729,
+          "encoded": 7075,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/useUsers-xr_5vnIN.js",
+          "type": "Script",
+          "decoded": 4602,
+          "encoded": 2555,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/RequestTimeline-CQ6amr54.js",
+          "type": "Script",
+          "decoded": 7834,
+          "encoded": 3483,
+          "status": 200
+        }
+      ]
+    },
+    {
+      "label": "desktop:importador-abierto",
+      "bytes": 855589,
+      "kib": 835.5,
+      "verdict": "WARN",
+      "scripts": [
+        {
+          "url": "http://127.0.0.1:42539/assets/index-CqPFMFU6.js",
+          "type": "Script",
+          "decoded": 452982,
+          "encoded": 133793,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/DashboardView-DHVBIcwK.js",
+          "type": "Script",
+          "decoded": 19773,
+          "encoded": 6808,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/useAreas-Ct3wlYjV.js",
+          "type": "Script",
+          "decoded": 1290,
+          "encoded": 1081,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/MetricState-GQ--SQXc.js",
+          "type": "Script",
+          "decoded": 454,
+          "encoded": 776,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/RequestInbox-DumfhDaL.js",
+          "type": "Script",
+          "decoded": 24729,
+          "encoded": 7075,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/useUsers-xr_5vnIN.js",
+          "type": "Script",
+          "decoded": 4602,
+          "encoded": 2555,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/RequestTimeline-CQ6amr54.js",
+          "type": "Script",
+          "decoded": 7834,
+          "encoded": 3483,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/PlannerImportModal-A5PPDBfA.js",
+          "type": "Script",
+          "decoded": 343286,
+          "encoded": 117767,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/AreaInput-DFmCjTiI.js",
+          "type": "Script",
+          "decoded": 639,
+          "encoded": 961,
+          "status": 200
+        }
+      ]
+    },
+    {
+      "label": "desktop:kanban",
+      "bytes": 682543,
+      "kib": 666.5,
+      "verdict": "WARN",
+      "scripts": [
+        {
+          "url": "http://127.0.0.1:42539/assets/index-CqPFMFU6.js",
+          "type": "Script",
+          "decoded": 452982,
+          "encoded": 133793,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/DashboardView-DHVBIcwK.js",
+          "type": "Script",
+          "decoded": 19773,
+          "encoded": 6808,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/useAreas-Ct3wlYjV.js",
+          "type": "Script",
+          "decoded": 1290,
+          "encoded": 1081,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/MetricState-GQ--SQXc.js",
+          "type": "Script",
+          "decoded": 454,
+          "encoded": 776,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/KanbanBoard-DXpZpdtL.js",
+          "type": "Script",
+          "decoded": 194969,
+          "encoded": 55365,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/useUsers-xr_5vnIN.js",
+          "type": "Script",
+          "decoded": 4602,
+          "encoded": 2555,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/RequestTimeline-CQ6amr54.js",
+          "type": "Script",
+          "decoded": 7834,
+          "encoded": 3483,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/AreaInput-DFmCjTiI.js",
+          "type": "Script",
+          "decoded": 639,
+          "encoded": 961,
+          "status": 200
+        }
+      ]
+    },
+    {
+      "label": "movil:portal-inicial-tras-scroll",
+      "bytes": 452982,
+      "kib": 442.4,
+      "verdict": "PASS",
+      "scripts": [
+        {
+          "url": "http://127.0.0.1:42539/assets/index-CqPFMFU6.js",
+          "type": "Script",
+          "decoded": 452982,
+          "encoded": 133793,
+          "status": 200
+        }
+      ]
+    },
+    {
+      "label": "movil:cliente-autenticado",
+      "bytes": 452982,
+      "kib": 442.4,
+      "verdict": "PASS",
+      "scripts": [
+        {
+          "url": "http://127.0.0.1:42539/assets/index-CqPFMFU6.js",
+          "type": "Script",
+          "decoded": 452982,
+          "encoded": 133793,
+          "status": 200
+        }
+      ]
+    },
+    {
+      "label": "movil:dashboard",
+      "bytes": 474499,
+      "kib": 463.4,
+      "verdict": "WARN",
+      "scripts": [
+        {
+          "url": "http://127.0.0.1:42539/assets/index-CqPFMFU6.js",
+          "type": "Script",
+          "decoded": 452982,
+          "encoded": 133793,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/DashboardView-DHVBIcwK.js",
+          "type": "Script",
+          "decoded": 19773,
+          "encoded": 6808,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/useAreas-Ct3wlYjV.js",
+          "type": "Script",
+          "decoded": 1290,
+          "encoded": 1081,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/MetricState-GQ--SQXc.js",
+          "type": "Script",
+          "decoded": 454,
+          "encoded": 776,
+          "status": 200
+        }
+      ]
+    },
+    {
+      "label": "movil:bandeja-antes-de-importar",
+      "bytes": 511664,
+      "kib": 499.7,
+      "verdict": "WARN",
+      "scripts": [
+        {
+          "url": "http://127.0.0.1:42539/assets/index-CqPFMFU6.js",
+          "type": "Script",
+          "decoded": 452982,
+          "encoded": 133793,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/DashboardView-DHVBIcwK.js",
+          "type": "Script",
+          "decoded": 19773,
+          "encoded": 6808,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/useAreas-Ct3wlYjV.js",
+          "type": "Script",
+          "decoded": 1290,
+          "encoded": 1081,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/MetricState-GQ--SQXc.js",
+          "type": "Script",
+          "decoded": 454,
+          "encoded": 776,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/RequestInbox-DumfhDaL.js",
+          "type": "Script",
+          "decoded": 24729,
+          "encoded": 7075,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/useUsers-xr_5vnIN.js",
+          "type": "Script",
+          "decoded": 4602,
+          "encoded": 2555,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/RequestTimeline-CQ6amr54.js",
+          "type": "Script",
+          "decoded": 7834,
+          "encoded": 3483,
+          "status": 200
+        }
+      ]
+    },
+    {
+      "label": "movil:importador-abierto",
+      "bytes": 855589,
+      "kib": 835.5,
+      "verdict": "WARN",
+      "scripts": [
+        {
+          "url": "http://127.0.0.1:42539/assets/index-CqPFMFU6.js",
+          "type": "Script",
+          "decoded": 452982,
+          "encoded": 133793,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/DashboardView-DHVBIcwK.js",
+          "type": "Script",
+          "decoded": 19773,
+          "encoded": 6808,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/useAreas-Ct3wlYjV.js",
+          "type": "Script",
+          "decoded": 1290,
+          "encoded": 1081,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/MetricState-GQ--SQXc.js",
+          "type": "Script",
+          "decoded": 454,
+          "encoded": 776,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/RequestInbox-DumfhDaL.js",
+          "type": "Script",
+          "decoded": 24729,
+          "encoded": 7075,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/useUsers-xr_5vnIN.js",
+          "type": "Script",
+          "decoded": 4602,
+          "encoded": 2555,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/RequestTimeline-CQ6amr54.js",
+          "type": "Script",
+          "decoded": 7834,
+          "encoded": 3483,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/PlannerImportModal-A5PPDBfA.js",
+          "type": "Script",
+          "decoded": 343286,
+          "encoded": 117767,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/AreaInput-DFmCjTiI.js",
+          "type": "Script",
+          "decoded": 639,
+          "encoded": 961,
+          "status": 200
+        }
+      ]
+    },
+    {
+      "label": "movil:kanban",
+      "bytes": 682543,
+      "kib": 666.5,
+      "verdict": "WARN",
+      "scripts": [
+        {
+          "url": "http://127.0.0.1:42539/assets/index-CqPFMFU6.js",
+          "type": "Script",
+          "decoded": 452982,
+          "encoded": 133793,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/DashboardView-DHVBIcwK.js",
+          "type": "Script",
+          "decoded": 19773,
+          "encoded": 6808,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/useAreas-Ct3wlYjV.js",
+          "type": "Script",
+          "decoded": 1290,
+          "encoded": 1081,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/MetricState-GQ--SQXc.js",
+          "type": "Script",
+          "decoded": 454,
+          "encoded": 776,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/KanbanBoard-DXpZpdtL.js",
+          "type": "Script",
+          "decoded": 194969,
+          "encoded": 55365,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/useUsers-xr_5vnIN.js",
+          "type": "Script",
+          "decoded": 4602,
+          "encoded": 2555,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/RequestTimeline-CQ6amr54.js",
+          "type": "Script",
+          "decoded": 7834,
+          "encoded": 3483,
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:42539/assets/AreaInput-DFmCjTiI.js",
+          "type": "Script",
+          "decoded": 639,
+          "encoded": 961,
+          "status": 200
+        }
+      ]
+    }
+  ]
+}

@@ -9,7 +9,7 @@ import { createServer as createViteServer, preview } from 'vite'
 import { chromium } from 'playwright-core'
 import { startFixtureServer, STAFF, SIMULATED_PASSWORD } from './fixture-server.mjs'
 import { installVisualFixtures, PHASES } from './ux-fixtures.mjs'
-import { MOCK_RUC, MOCK_PASSWORD } from '../../src/dev/client-portal-mock.ts'
+import { MOCK_RUC, MOCK_PASSWORD, MOCK_PRODUCTS, MOCK_SUBPROJECTS, MOCK_TICKET_IDS, MOCK_RUC_UNMAPPED } from '../../src/dev/client-portal-mock.ts'
 import { observeScripts } from './bundle-probe.mjs'
 import * as XLSX from 'xlsx' // solo Node: genera el archivo ficticio para probar el parser del navegador.
 
@@ -30,7 +30,7 @@ const sourceDigest = dir => readdirSync(dir, { withFileTypes: true }).flatMap(en
 let builtSources
 before(async () => {
   fixture = await startFixtureServer()
-  const settings = { VITE_SUPABASE_URL: fixture.url, VITE_SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_simulada_solo_pruebas', VITE_CLIENT_PORTAL_MOCK: BUILD_DIR ? '0' : '1', VITE_CLIENT_LOGIN_ENABLED: '1' }
+  const settings = { VITE_SUPABASE_URL: fixture.url, VITE_SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_simulada_solo_pruebas', VITE_CLIENT_PORTAL_MOCK: '0', VITE_CLIENT_LOGIN_ENABLED: '1' }
   if (BUILD_DIR) {
     builtSources = sourceDigest(`${ROOT}/src`)
     const built = spawnSync('npm', ['run', 'build', '--', '--outDir', BUILD_DIR, '--manifest'], { cwd: ROOT, env: { ...process.env, ...settings }, encoding: 'utf8' })
@@ -79,7 +79,9 @@ async function open(viewport, observe) {
   })
   page.on('pageerror', error => page.errors.push(error.message))
   if (observe) await observe(page)
-  await installVisualFixtures(page, fixture.url)
+  page.mock = await installVisualFixtures(page, fixture.url)
+  page.calls = []
+  page.on('request', request => { if (request.url().startsWith(fixture.url)) page.calls.push({ path: new URL(request.url()).pathname, body: request.postDataJSON() }) })
   await page.goto(base + '/portal')
   return page
 }
@@ -397,3 +399,290 @@ for (const size of ['desktop', 'movil']) {
     await board.context().close()
   })
 }
+
+// Correcciones del cliente M16: misma compilación y servicios HTTP locales del resto de la galería.
+const clientRpc = (page, name) => page.calls.filter(c => c.path.endsWith(`/rpc/${name}`))
+async function product(page, index) {
+  await page.selectOption('#ticket-product', MOCK_PRODUCTS[index].id)
+  await page.waitForFunction(() => !document.querySelector('#ticket-subproject-help').textContent.includes('Cargando'))
+}
+async function fillClient(page, provider) {
+  if (provider === 'quipufac') await page.fill('#ticket-requester', 'Persona declarada de la prueba')
+  await product(page, 1)
+  await page.selectOption('#ticket-subproject', MOCK_SUBPROJECTS[1].id)
+  await page.selectOption('#ticket-type', { label: 'Mejora' })
+  await page.fill('#ticket-title', 'Solicitud ficticia M16')
+  await page.fill('#ticket-description', 'Datos locales simulados para validar la experiencia del cliente.')
+}
+for (const [size, viewport] of Object.entries(SIZES)) {
+  test(`[M16 ${size}] identidad, urgencia independiente, prioridad, subproyecto y detalle`, async () => {
+    const page = await open(viewport)
+    assert.equal(await page.locator('.portal-option').count(), 2)
+    assert.equal(await page.getByRole('button', { name: /Mis tickets/ }).count(), 0)
+    await page.goto(base + '/cliente/tickets'); await page.waitForURL('**/cliente?ir=tickets')
+    assert.equal(clientRpc(page, 'client_list_tickets').length, 0)
+    await page.goto(base + '/cliente'); await login(page, 'quipu')
+    assert.equal(await page.locator('#ticket-requester').count(), 0)
+    assert.equal(await page.locator('[aria-labelledby=authenticated-requester-label]').innerText(), 'Ana Ficticia')
+    assert.equal(await page.inputValue('#ticket-priority'), 'medium')
+    assert.equal(await page.getByRole('checkbox', { name: /Solicito atención urgente/ }).isChecked(), false)
+    for (const priority of ['low','medium','high','urgent']) {
+      await page.selectOption('#ticket-priority', priority)
+      assert.equal(await page.inputValue('#ticket-priority'), priority)
+      assert.equal(await page.getByRole('checkbox', { name: /Solicito atención urgente/ }).isChecked(), false)
+    }
+    await fillClient(page, 'quipu'); await page.selectOption('#ticket-priority', 'high')
+    await capture(page, `${size}-30-quipu-prioridad-alto`)
+    await page.getByRole('link', { name: 'Mis tickets', exact: true }).click()
+    await page.locator('main a:visible', { hasText: 'REQ26-9001' }).first().waitFor()
+    await page.getByRole('link', { name: 'Nuevo ticket', exact: true }).first().click()
+    assert.equal(await page.inputValue('#ticket-priority'), 'high')
+    await page.locator('#ticket-subproject option[value="00000000-0000-4000-8000-000000008002"]').waitFor({ state: 'attached' })
+    assert.equal(await page.inputValue('#ticket-subproject'), MOCK_SUBPROJECTS[1].id)
+    await page.getByRole('button', { name: 'Enviar solicitud', exact: true }).click()
+    await page.getByRole('heading', { name: '¡Solicitud enviada!' }).waitFor()
+    const sent = clientRpc(page, 'client_submit_request').at(-1).body.p_payload
+    assert.equal(sent.requested_priority, 'high'); assert.equal(sent.urgent_requested, false)
+    assert.equal(sent.system_id, MOCK_PRODUCTS[1].id); assert.equal(sent.subsystem_id, MOCK_SUBPROJECTS[1].id)
+    assert.equal(Object.hasOwn(sent, 'requester_name'), false)
+    assert.equal(Object.hasOwn(sent, 'identity_id'), false)
+    await page.getByRole('button', { name: 'Ver Mis tickets', exact: true }).click()
+    await page.locator('main a:visible', { hasText: 'REQ26-9101' }).first().waitFor()
+    await capture(page, `${size}-31-lista-cliente`)
+    await page.locator('main a:visible', { hasText: 'REQ26-9101' }).first().click()
+    await page.getByText('Subproyecto ficticio A', { exact: true }).waitFor()
+    assert.equal(await page.getByText('Alto', { exact: true }).count(), 1)
+    await capture(page, `${size}-32-detalle-prioridad-subproyecto`)
+    await page.getByRole('button', { name: 'Salir', exact: true }).click()
+    await login(page, 'quipufac'); await fillClient(page, 'quipufac')
+    const name = page.locator('#ticket-requester')
+    assert.equal(await name.getAttribute('required'), '')
+    assert.equal(await name.isEditable(), true)
+    await name.fill('')
+    await page.getByRole('button', { name: 'Enviar solicitud', exact: true }).click()
+    assert.equal(await name.evaluate(el => el.validity.valueMissing), true)
+    assert.equal(clientRpc(page, 'client_submit_request').length, 1)
+    await name.fill('Persona declarada de la prueba')
+    await page.selectOption('#ticket-priority', 'low')
+    await page.getByRole('checkbox', { name: /Solicito atención urgente/ }).check()
+    assert.equal(await page.inputValue('#ticket-priority'), 'low')
+    await capture(page, `${size}-33-quipufac-bajo-con-urgencia`)
+    await page.getByRole('button', { name: 'Enviar solicitud', exact: true }).click()
+    await page.getByRole('heading', { name: '¡Solicitud enviada!' }).waitFor()
+    const fac = clientRpc(page, 'client_submit_request').at(-1).body.p_payload
+    assert.equal(fac.requester_name, 'Persona declarada de la prueba')
+    assert.equal(fac.requested_priority, 'low'); assert.equal(fac.urgent_requested, true)
+    await page.getByRole('button', { name: 'Ver Mis tickets', exact: true }).click()
+    await page.locator('main a:visible', { hasText: 'REQ26-9102' }).first().waitFor()
+    assert.equal(await page.getByText('REQ26-9101', { exact: true }).count(), 0)
+    await capture(page, `${size}-34-cuenta-empresarial`)
+    assert.equal(page.calls.filter(c => /^\/rest\/v1\/(requests|projects)$/.test(c.path)).length, 0, 'cliente no descarga tablas privadas')
+    await page.context().close()
+  })
+  test(`[M16 ${size}] bandeja y modal distinguen prioridad solicitada y definitiva`, async () => {
+    const page = await open(viewport)
+    await staff(page)
+    await page.getByRole('button', { name: /^Requests/ }).click()
+    const card = page.locator('.request-card').filter({ hasText: 'REQ26-7500' })
+    await card.getByText('Prioridad solicitada por el cliente', { exact: true }).waitFor()
+    assert.equal(await card.getByText('Alto', { exact: true }).count(), 1)
+    await capture(page, `${size}-35-bandeja-prioridad-solicitada`)
+    await card.getByRole('button', { name: /Aprobar/ }).click()
+    const dialog = page.getByRole('dialog', { name: 'Validación de solicitud' })
+    await dialog.getByText('Prioridad solicitada por el cliente', { exact: true }).waitFor()
+    assert.equal(await dialog.getByText('Alto', { exact: true }).count(), 1)
+    assert.equal(await dialog.locator('#validation-priority').inputValue(), 'urgent', 'default de aprobación heredado de urgent_requested, no de requested_priority')
+    await dialog.locator('#validation-priority').selectOption('medium')
+    assert.equal(await dialog.getByText('Alto', { exact: true }).count(), 1)
+    await capture(page, `${size}-36-modal-prioridades-distintas`)
+    await dialog.evaluate(el => { el.scrollTop = el.scrollHeight })
+    await capture(page, `${size}-36b-modal-prioridad-definitiva`)
+    await page.keyboard.press('Escape')
+    assert.equal(page.calls.filter(c => c.path.includes('/approve_request')).length, 0, 'revisar selector no aprueba')
+    await page.context().close()
+  })
+}
+
+const fixtureReply = (route, body, status = 200) => route.fulfill({ status, contentType: 'application/json', headers: { 'Access-Control-Allow-Origin': '*' }, body: JSON.stringify(body) })
+
+test('M16 paginación: 137 tickets empresariales, error recuperable, offset real y fin confirmado', async () => {
+  const page = await open(SIZES.desktop)
+  const template = page.mock.tickets.find(t => t.identity === 'quipufac:company')
+  for (let i = 0; i < 135; i++) page.mock.tickets.push({ ...template,
+    id: `00000000-0000-4000-8000-${String(40000 + i).padStart(12, '0')}`, request_number: `REQ26-${60000 + i}`,
+    requester_name: `Persona declarada ${i + 1}`, title: `Solicitud empresarial ficticia ${i + 1}`,
+    created_at: new Date(Date.UTC(2026, 10, 23, 10, 0, i)).toISOString(),
+  })
+  let failOnce = true
+  await page.route(`${fixture.url}/rest/v1/rpc/client_list_tickets`, async route => {
+    if (route.request().postDataJSON().p_offset === 50 && failOnce) { failOnce = false; return fixtureReply(route, { code: 'XX000' }, 500) }
+    return route.fallback()
+  })
+  await page.goto(base + '/cliente'); await login(page, 'quipufac')
+  await page.getByRole('link', { name: 'Mis tickets', exact: true }).click()
+  await page.getByRole('status').filter({ hasText: 'Página 1 · 50 solicitudes' }).waitFor()
+  const readNumbers = () => page.locator('main a:visible').evaluateAll(links => links.map(a => a.textContent.match(/REQ\d{2}-\d+/)?.[0]).filter(Boolean))
+  const seen = [...await readNumbers()]
+  await capture(page, 'desktop-37-paginacion-primera')
+  await page.getByRole('button', { name: 'Siguiente', exact: true }).click()
+  await page.getByRole('button', { name: 'Reintentar página', exact: true }).waitFor()
+  assert.equal(await page.getByText('No hay más solicitudes.', { exact: true }).count(), 0)
+  assert.match(await page.getByRole('status').filter({ hasText: 'Página 1' }).innerText(), /50 solicitudes/)
+  await page.getByRole('button', { name: 'Reintentar página', exact: true }).click()
+  await page.getByRole('status').filter({ hasText: 'Página 2 · 50 solicitudes' }).waitFor()
+  seen.push(...await readNumbers())
+  await page.getByRole('button', { name: 'Siguiente', exact: true }).click()
+  await page.getByRole('status').filter({ hasText: 'Página 3 · 37 solicitudes' }).waitFor()
+  seen.push(...await readNumbers())
+  assert.equal(new Set(seen).size, 137)
+  assert.equal(seen.length, 137)
+  await page.getByRole('button', { name: 'Siguiente', exact: true }).click()
+  await page.getByText('No hay más solicitudes.', { exact: true }).waitFor()
+  assert.equal(await page.getByRole('button', { name: 'Siguiente', exact: true }).isDisabled(), true)
+  assert.ok(clientRpc(page, 'client_list_tickets').some(c => c.body.p_offset === 0))
+  assert.deepEqual(clientRpc(page, 'client_list_tickets').map(c => c.body.p_offset).filter(offset => offset !== 0), [50, 50, 100, 137])
+  assert.ok(clientRpc(page, 'client_list_tickets').every(c => c.body.p_limit === 50 && Object.keys(c.body).sort().join(',') === 'p_limit,p_offset,p_session_token'))
+  await capture(page, 'desktop-38-paginacion-fin')
+  await page.getByRole('button', { name: 'Anterior', exact: true }).click()
+  await page.getByRole('status').filter({ hasText: 'Página 2 · 50 solicitudes' }).waitFor()
+  await page.getByRole('button', { name: 'Salir', exact: true }).click()
+  await login(page, 'quipufac')
+  await page.getByRole('link', { name: 'Mis tickets', exact: true }).click()
+  await page.getByRole('status').filter({ hasText: 'Página 1 · 50 solicitudes' }).waitFor()
+  assert.deepEqual(await readNumbers(), seen.slice(0, 50), 'otra sesión del mismo RUC comparte la cuenta')
+  await page.context().close()
+})
+
+test('M16 subproyectos: cambio limpia, catálogo vacío, error y respuesta tardía', async () => {
+  const page = await open(SIZES.movil)
+  await page.goto(base + '/cliente'); await login(page, 'quipu')
+  await product(page, 0)
+  assert.equal(await page.locator('#ticket-subproject').getAttribute('required'), null)
+  await page.selectOption('#ticket-subproject', MOCK_SUBPROJECTS[0].id)
+  await product(page, 1)
+  assert.equal(await page.inputValue('#ticket-subproject'), '')
+  assert.equal(await page.locator('#ticket-subproject').getAttribute('required'), '')
+  await page.selectOption('#ticket-subproject', MOCK_SUBPROJECTS[1].id)
+  await product(page, 2)
+  assert.equal(await page.inputValue('#ticket-subproject'), '')
+  assert.equal(await page.locator('#ticket-subproject').isDisabled(), true)
+  assert.match(await page.locator('#ticket-subproject-help').innerText(), /no tiene subproyectos/)
+  await capture(page, 'movil-39-sin-subproyectos')
+  let release, failed = false
+  const pending = new Promise(resolve => { release = resolve })
+  await page.route(`${fixture.url}/rest/v1/rpc/client_subprojects`, async route => {
+    const args = route.request().postDataJSON()
+    if (args.p_system_id === MOCK_PRODUCTS[0].id) { await pending; return fixtureReply(route, [MOCK_SUBPROJECTS[0]]) }
+    if (!failed) { failed = true; return fixtureReply(route, { code: 'PT403' }, 403) }
+    return route.fallback()
+  })
+  await page.selectOption('#ticket-product', MOCK_PRODUCTS[0].id)
+  await page.locator('#ticket-subproject-help').filter({ hasText: 'Cargando' }).waitFor()
+  assert.equal(await page.getByRole('button', { name: 'Enviar solicitud', exact: true }).isDisabled(), true)
+  await product(page, 1)
+  await page.getByRole('button', { name: 'Reintentar subproyectos', exact: true }).waitFor()
+  release()
+  await capture(page, 'movil-40-error-subproyectos')
+  await page.getByRole('button', { name: 'Reintentar subproyectos', exact: true }).click()
+  await page.locator('#ticket-subproject option[value="00000000-0000-4000-8000-000000008002"]').waitFor({ state: 'attached' })
+  assert.deepEqual(await page.locator('#ticket-subproject option').evaluateAll(options => options.map(o => o.value).filter(Boolean)), MOCK_SUBPROJECTS.slice(1).map(p => p.id))
+  await page.context().close()
+})
+
+test('M16 identidad: username exacto readonly, otro usuario y ticket ajeno/inexistente', async () => {
+  const page = await open(SIZES.movil)
+  await page.goto(base + '/cliente')
+  await page.getByRole('button', { name: /Ingreso con usuario/ }).click()
+  await page.fill('#client-ruc', MOCK_RUC); await page.fill('#client-username', 'luis'); await page.fill('#client-password', MOCK_PASSWORD)
+  await page.getByRole('button', { name: 'Ingresar', exact: true }).click()
+  await page.waitForURL('**/cliente/nuevo')
+  await page.locator('#authenticated-requester-label').waitFor()
+  assert.equal(await page.locator('[aria-labelledby=authenticated-requester-label]').innerText(), 'luis')
+  assert.equal(await page.locator('#ticket-requester').count(), 0)
+  await capture(page, 'movil-41-username-autenticado')
+  await page.getByRole('link', { name: 'Mis tickets', exact: true }).click()
+  await page.locator('main a:visible', { hasText: 'REQ26-9003' }).first().waitFor()
+  assert.equal(await page.getByText('REQ26-9001', { exact: true }).count(), 0)
+  await page.goto(`${base}/cliente/tickets/${MOCK_TICKET_IDS.ana}`)
+  await page.getByText('No encontramos ese ticket entre los tuyos.', { exact: true }).waitFor()
+  await page.goto(`${base}/cliente/tickets/${MOCK_TICKET_IDS.luis}`)
+  await page.getByText('Descripción', { exact: true }).waitFor()
+  assert.equal(page.calls.filter(c => c.path.endsWith('/functions/v1/client-login')).length, 1)
+  await page.context().close()
+})
+
+test('M16 envío incierto: conserva clave/payload, cancela solo antes de enviar y reinicia tras confirmar', async () => {
+  const page = await open(SIZES.movil)
+  await page.goto(base + '/cliente'); await login(page, 'quipu'); await fillClient(page, 'quipu')
+  await page.locator('#ticket-priority').focus(); await page.keyboard.press('ArrowDown')
+  assert.equal(await page.inputValue('#ticket-priority'), 'high')
+  await page.getByRole('button', { name: 'Cancelar', exact: true }).click()
+  await page.waitForURL('**/cliente/tickets')
+  await page.getByRole('link', { name: 'Nuevo ticket', exact: true }).first().click()
+  assert.equal(await page.inputValue('#ticket-priority'), 'medium')
+  assert.equal(await page.inputValue('#ticket-title'), '')
+  await fillClient(page, 'quipu')
+  let fail = true
+  await page.route(`${fixture.url}/rest/v1/rpc/client_submit_request`, async route => {
+    const result = await page.mock.rpc('client_submit_request', route.request().postDataJSON())
+    if (fail) { fail = false; return route.abort('failed') }
+    return fixtureReply(route, result.data)
+  })
+  await page.getByRole('button', { name: 'Enviar solicitud', exact: true }).click()
+  await page.getByRole('button', { name: 'Reintentar envío', exact: true }).waitFor()
+  assert.equal(await page.locator('#ticket-priority').isDisabled(), true)
+  assert.equal(await page.getByRole('button', { name: 'Cancelar', exact: true }).isDisabled(), true)
+  await capture(page, 'movil-42-envio-incierto')
+  await page.getByRole('button', { name: 'Reintentar envío', exact: true }).click()
+  await page.getByRole('heading', { name: '¡Solicitud enviada!' }).waitFor()
+  const calls = clientRpc(page, 'client_submit_request')
+  assert.equal(calls.length, 2)
+  assert.deepEqual(calls[0].body, calls[1].body)
+  assert.equal(page.mock.tickets.filter(t => t.title === 'Solicitud ficticia M16').length, 1)
+  await page.context().close()
+})
+
+test('M16 estados: etiqueta ausente, lista vacía/error y PT401', async () => {
+  const page = await open(SIZES.movil)
+  await page.route(`${fixture.url}/rest/v1/rpc/client_session_info`, async route => {
+    const { data } = await page.mock.rpc('client_session_info', route.request().postDataJSON())
+    data.identity.username = null; data.identity.verified_name = null; data.identity.name_verified = false
+    return fixtureReply(route, data)
+  })
+  await page.goto(base + '/cliente'); await login(page, 'quipu')
+  await page.getByRole('alert').filter({ hasText: 'No tenemos un nombre o usuario válido' }).waitFor()
+  await fillClient(page, 'quipu')
+  assert.equal(await page.locator('#ticket-requester').count(), 0)
+  assert.equal(await page.getByRole('button', { name: 'Enviar solicitud', exact: true }).isDisabled(), true)
+  assert.equal(clientRpc(page, 'client_submit_request').length, 0)
+  await capture(page, 'movil-43-sin-etiqueta-confiable')
+  let mode = 'empty'
+  await page.route(`${fixture.url}/rest/v1/rpc/client_list_tickets`, route => mode === 'empty' ? fixtureReply(route, []) : fixtureReply(route, { code: mode === 'expired' ? 'PT401' : 'XX000' }, 400))
+  await page.getByRole('link', { name: 'Mis tickets', exact: true }).click()
+  await page.getByText('Aún no tienes tickets registrados.', { exact: true }).waitFor()
+  await capture(page, 'movil-44-lista-vacia')
+  mode = 'error'
+  await page.getByRole('link', { name: 'Nuevo ticket', exact: true }).first().click()
+  await page.getByRole('link', { name: 'Mis tickets', exact: true }).click()
+  await page.getByRole('button', { name: 'Reintentar página', exact: true }).waitFor()
+  await capture(page, 'movil-45-error-listado')
+  mode = 'expired'
+  await page.getByRole('button', { name: 'Reintentar página', exact: true }).click()
+  await page.waitForURL('**/cliente?ir=tickets')
+  assert.equal(await page.evaluate(() => sessionStorage.getItem('ticketera.client.session')), null)
+  await page.context().close()
+})
+
+test('M16 QuipuFac: otro RUC no comparte solicitudes de la empresa', async () => {
+  const page = await open(SIZES.movil)
+  await page.goto(base + '/cliente')
+  await page.getByRole('button', { name: /Ingreso empresarial/ }).click()
+  await page.fill('#client-ruc', MOCK_RUC_UNMAPPED)
+  await page.fill('#client-password', MOCK_PASSWORD)
+  await page.getByRole('button', { name: 'Ingresar', exact: true }).click()
+  await page.waitForURL('**/cliente/nuevo')
+  await page.getByRole('link', { name: 'Mis tickets', exact: true }).click()
+  await page.getByText('Aún no tienes tickets registrados.', { exact: true }).waitFor()
+  for (const number of ['REQ26-9001','REQ26-9004','REQ26-9005']) assert.equal(await page.getByText(number, { exact: true }).count(), 0)
+  await page.context().close()
+})

@@ -1,0 +1,9 @@
+{
+  "file": "src/components/requests/RequestValidationModal.tsx",
+  "unchanged_definitions": [
+    "urgent",
+    "missing",
+    "decide"
+  ],
+  "result": "PASS"
+}
