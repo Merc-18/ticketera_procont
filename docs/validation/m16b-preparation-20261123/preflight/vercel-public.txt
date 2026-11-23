@@ -1,0 +1,7 @@
+Vercel (lectura pública HTTP; sin CLI ni panel, sin cambios) — 23/11/2026 15:44 UTC
+URL: https://ticketera-procont.vercel.app
+Bundle principal: /assets/index-DpaJF02R.js  sha256 12c5d3672aa58b453df12a4a0d13f813b058aca930d2fb52d392a4172df6f520
+Versión visible incrustada: 202611201618
+Contiene client_submit_request / client_products / urgent_requested; NO contiene client_subprojects ni requested_priority
+=> frontend publicado = generación anterior (sin cambios M16), coherente con main a61450c.
+Deployment ID / Instant Rollback: no verificables sin acceso al panel o CLI de Vercel (no instalado).

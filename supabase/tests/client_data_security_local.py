@@ -21,6 +21,7 @@ import uuid
 
 ROOT = Path(__file__).resolve().parents[2]
 M16 = '20261123000100_client_request_data_security.sql'
+M16B = '20261123000200_client_legacy_payload_compat.sql'
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--pg-bin', type=Path, required=True)
 parser.add_argument('--runtime-lib', type=Path, required=True)
@@ -163,11 +164,11 @@ try:
       ALTER TABLE storage.buckets OWNER TO {owner}; ALTER TABLE storage.objects OWNER TO {owner}; ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
       GRANT USAGE ON SCHEMA storage TO anon,authenticated; GRANT SELECT,INSERT ON storage.objects TO anon,authenticated;''',None)
     paths=sorted((ROOT/'supabase/migrations').glob('*.sql'))
-    assert len(paths)==16 and paths[-1].name==M16
+    assert len(paths)==17 and paths[-2].name==M16 and paths[-1].name==M16B
     for path in paths[:15]:q(path.read_text())
     if args.scenario=='clean':
-        before,old_functions=rows(),functions();q(paths[-1].read_text());assert rows()==before
-        passed('Clean installation M1-M16 changes no existing application rows')
+        before,old_functions=rows(),functions();q(paths[-2].read_text());q(paths[-1].read_text());assert rows()==before
+        passed('Clean installation M1-M16+M16b changes no existing application rows')
     for actor,label in [(S,'superadmin'),(A,'admin'),(D,'developer'),(V,'viewer'),(I,'inactive'),(N,'external')]:
         q(f"INSERT INTO auth.users(id,email,raw_user_meta_data,email_confirmed_at) VALUES({lit(actor)},{lit(label+'@fixture.invalid')},'{{}}',now())",None)
         if actor!=N:q(f"SELECT app_private.{'bootstrap_superadmin' if actor==S else 'provision_auth_profile'}({lit(actor)})")
@@ -200,12 +201,18 @@ try:
         duplicate_provider=session('DuplicatedLegacy',source='provider_id',subject='duplicate-source')
         duplicate_provider_ticket=submit(duplicate_provider,payload(requester_name='Legacy other source'))
         before,old_functions=rows(),functions()
-        body=paths[-1].read_text().replace('BEGIN;','',1).rsplit('COMMIT;',1)[0]
+        body=paths[-2].read_text().replace('BEGIN;','',1).rsplit('COMMIT;',1)[0]
         q('BEGIN;\n'+body+'\nROLLBACK;')
         assert rows()==before and functions()==old_functions
         assert q("SELECT count(*) FROM pg_attribute WHERE attrelid='public.requests'::regclass AND attname='requested_priority'")=='0'
         passed('Transactional rollback restores schema/functions/ACLs and all historical rows before commit')
+        q(paths[-2].read_text());assert rows()==before
+        m16_only=functions();body16b=paths[-1].read_text().replace('BEGIN;','',1).rsplit('COMMIT;',1)[0]
+        q('BEGIN;\n'+body16b+'\nROLLBACK;');assert rows()==before and functions()==m16_only
         q(paths[-1].read_text());assert rows()==before
+        changed={k for k in functions() if functions()[k]!=m16_only.get(k)}
+        assert changed=={'public.submit_client_request(jsonb,uuid)','public.client_submit_request(text,jsonb,uuid)'},changed
+        passed('M16b applies as a separate transaction: its rollback leaves exactly the M16 state; commit changes only the two creation functions')
         for rid in [legacy['id'],legacy_business['id'],old_ticket['id']]:
             assert q(f"SELECT requested_priority IS NULL AND requested_subsystem_id IS NULL AND requester_name_source IS NULL FROM public.requests WHERE id={lit(rid)}")=='t'
         assert detail(legacy_token,legacy['id'])['urgent_requested']
@@ -267,7 +274,9 @@ try:
     verified=session('NamedUser',name='Trusted synthetic name');trusted=submit(verified)
     assert detail(verified,trusted['id'])['requester_name']=='Trusted synthetic name'
     assert detail(verified,trusted['id'])['requester_name_verified']
-    denied(command(a,payload(requester_name='Impersonation')),'22023')
+    imp=submit(a,payload(requester_name='Impersonation'));assert detail(a,imp['id'])['requester_name']=='Alpha' and detail(a,imp['id'])['requester_name_source']=='username'
+    assert 'Impersonation' not in q("SELECT original_payload::text FROM app_private.client_request_links WHERE request_id="+lit(imp['id']))
+    for bad in [123,'','x'*201]:denied(command(a,payload(requester_name=bad)),'22023')
     for bad in [None,'',' ','\u200b',123,'x'*201]:denied(command(ca,payload(requester_name=bad)),'22023')
     denied(command(ca),'22023')
     for forged in ['studio_id','company_id','identity_id','requester_name_source']:
@@ -330,7 +339,8 @@ try:
     assert detail(a,chosen['id'])['requested_subsystem_id']==web
     denied(f"UPDATE public.requests SET requested_subsystem_id={lit(android)} WHERE id={lit(chosen['id'])}",'23514',owner)
     for bad in [desk,str(uuid.uuid4()),'',12]:denied(command(a,payload(system_id=fac,subsystem_id=bad)),'22023')
-    denied(command(a,payload(system_id=fac)),'22023')
+    denied(command(a,payload(system_id=fac,subsystem_id=None)),'22023')
+    assert detail(a,submit(a,payload(system_id=fac))['id'])['requested_subsystem_id'] is None
     q(f"UPDATE public.catalog_subsystems SET is_active=false WHERE id={lit(android)}")
     denied(command(a,payload(system_id=fac,subsystem_id=android)),'22023')
     assert android not in {r['id'] for r in j(f'SELECT public.client_subprojects({lit(a)},{lit(fac)})')}

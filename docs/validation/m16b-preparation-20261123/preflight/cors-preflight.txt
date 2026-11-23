@@ -1,0 +1,4 @@
+client-login https://ticketera-procont.vercel.app -> HTTP/2 204  access-control-allow-origin: https://ticketera-procont.vercel.app 
+client-login https://origin-check.invalid -> HTTP/2 403  
+admin-users https://ticketera-procont.vercel.app -> HTTP/2 204  access-control-allow-origin: https://ticketera-procont.vercel.app 
+admin-users https://origin-check.invalid -> HTTP/2 403  
