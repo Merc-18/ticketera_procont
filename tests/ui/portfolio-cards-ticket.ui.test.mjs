@@ -90,7 +90,7 @@ async function open({ theme = 'light', viewport = { width: 1440, height: 900 }, 
   await page.locator('nav[aria-label="Secciones"]').waitFor()
   await page.getByRole('button', { name: /^Boards/ }).click()
   await page.locator('.project-card').first().waitFor()
-  await page.waitForFunction(() => document.querySelector('.card-portfolio'))
+  await page.waitForFunction(() => document.querySelector('.card-hierarchy'))
   return page
 }
 const css = (loc, prop) => loc.evaluate((el, p) => getComputedStyle(el).getPropertyValue(p).trim(), prop)
@@ -112,7 +112,8 @@ for (const theme of ['light', 'dark']) {
       if (!await card.count()) continue
       const bg = await css(card, 'background-color'); tints.push(bg)
       assert.notEqual(bg, neutral, `${color}: tinte distinto del neutro`)
-      for (const sel of ['.card-title', '.card-number', '.card-requester']) {
+      for (const sel of ['.card-title', '.card-number', '.card-tag-portfolio', '.card-tag-project']) {
+        if (!await card.locator(sel).count()) continue
         const r = await contrast(page, await css(card.locator(sel).first(), 'color'), bg)
         assert.ok(r >= 4.5, `${theme} ${color} ${sel}: ${r.toFixed(2)}:1`)
       }
@@ -141,8 +142,9 @@ for (const theme of ['light', 'dark']) {
 // ─────────────────────────────── PORTAFOLIO ───────────────────────────────
 test('Portafolio: chip en la tarjeta, filtro por portafolio/iniciativa, columna en Tabla y búsqueda', async () => {
   const page = await open()
-  const chips = await page.locator('.card-portfolio').allInnerTexts()
-  assert.deepEqual(chips.map(t => t.replace(/\s+/g, ' ').replace(/^Portafolio: /, '').trim()).sort(), ['Gestión · Beneficiarios finales', 'Gestión · Beneficiarios finales', 'Operaciones'])
+  const cards = await page.locator('.project-card').evaluateAll(els => els.map(el => ({ portfolio: el.querySelector('.card-tag-portfolio')?.textContent?.trim() ?? null, project: el.querySelector('.card-tag-project')?.textContent?.trim() ?? null })))
+  assert.ok(cards.some(x => x.portfolio === 'Gestión' && x.project === 'Beneficiarios finales'))
+  assert.ok(cards.some(x => x.portfolio === 'Operaciones' && x.project === null))
   const filter = page.locator('.board-toolbar label').filter({ hasText: /^Portafolio/ }).locator('select')
   await filter.selectOption(`i:${BENEF}`)
   assert.equal(await page.locator('.project-card').count(), 2)
@@ -158,7 +160,9 @@ test('Portafolio: chip en la tarjeta, filtro por portafolio/iniciativa, columna 
   await page.locator('.data-view table').waitFor()   // la vista Tabla se carga en diferido
   const headers = (await page.locator('.data-view thead th').allInnerTexts()).map(t => t.replace(/[↑↓↕]/g, '').trim())
   assert.ok(headers.includes('Portafolio'))
-  await page.locator('.data-view tbody tr').filter({ hasText: kanbanProjects[5].title }).getByText('Gestión · Beneficiarios finales').waitFor()
+  const row = page.locator('.data-view tbody tr').filter({ hasText: kanbanProjects[5].title })
+  await row.getByText('Gestión', { exact: true }).waitFor()
+  await row.getByText('Beneficiarios finales', { exact: true }).waitFor()
   assert.deepEqual(page.errors, [])
   await page.context().close()
 })
@@ -167,27 +171,33 @@ test('Portafolio: el detalle asocia un ticket a una iniciativa con la RPC audita
   const page = await open()
   await page.locator('.project-card').filter({ hasText: kanbanProjects[0].title }).click()
   const dialog = page.getByRole('dialog')
-  await dialog.getByLabel('Portafolio e iniciativa').selectOption(`i:${BENEF}`)
+  await dialog.locator('#project-portfolio').selectOption(GESTION)
+  await dialog.locator('#project-project').selectOption(BENEF)
   await shot(page, `${STAGE}-detalle-portafolio.png`, { theme: 'light', view: 'project-portfolio' }, dialog)
   await dialog.getByRole('button', { name: 'Guardar portafolio' }).click()
   await page.getByText('Portafolio actualizado').waitFor()
   assert.deepEqual(page.rpc.find(r => r.name === 'set_project_portfolio').args, { p_project_id: kanbanProjects[0].id, p_portfolio_id: GESTION, p_initiative_id: BENEF })
   await dialog.getByRole('button', { name: 'Cerrar' }).first().click()
-  await page.getByRole('button', { name: 'Portafolios' }).click()
-  const manager = page.getByRole('dialog', { name: 'Portafolios' })
+  await page.getByRole('button', { name: /^Equipo/ }).click()
+  await page.getByRole('tab', { name: 'Portafolios y proyectos' }).click()
+  const manager = page.locator('.portfolio-panel')
   await manager.getByText('Beneficiarios finales').waitFor()
   await shot(page, `${STAGE}-portafolios-gestion.png`, { theme: 'light', view: 'portfolio-manager' }, manager)
-  await manager.getByLabel('Nuevo portafolio').fill('Finanzas')
-  await manager.getByRole('button', { name: 'Crear' }).click()
+  await manager.getByRole('button', { name: 'Nuevo portafolio' }).click()
+  await manager.locator('#pf-name').fill('Finanzas')
+  await manager.getByRole('button', { name: 'Guardar' }).click()
   await page.getByText('Portafolio creado').waitFor()
-  assert.deepEqual(page.rpc.find(r => r.name === 'save_portfolio').args, { p_payload: { name: 'Finanzas' } })
+  assert.deepEqual(page.rpc.find(r => r.name === 'save_portfolio').args, { p_payload: { name: 'Finanzas', description: null } })
   await page.context().close()
 })
 
 test('Portafolio: un developer ve el filtro pero no el botón de gestión del catálogo', async () => {
   const page = await open({ email: 'developer@simulado.invalid' })
   assert.equal(await page.locator('.board-toolbar label').filter({ hasText: /^Portafolio/ }).count(), 1)
-  assert.equal(await page.getByRole('button', { name: 'Portafolios' }).count(), 0)
+  await page.getByRole('button', { name: /^Equipo/ }).click()
+  assert.equal(await page.getByRole('tab', { name: 'Portafolios y proyectos' }).count(), 1, 'el catálogo se consulta desde Equipo')
+  await page.getByRole('tab', { name: 'Portafolios y proyectos' }).click()
+  assert.equal(await page.getByRole('button', { name: 'Nuevo portafolio' }).count(), 0, 'developer consulta, admin gestiona')
   await page.context().close()
 })
 
@@ -212,15 +222,18 @@ for (const theme of ['light', 'dark']) {
     await dialog.locator('#nt-description').fill('Detalle ficticio registrado por TI.')
     await dialog.locator('#nt-requester').fill('Cliente ficticio')
     await dialog.locator('#nt-type').selectOption({ label: 'Mejora' })
-    await dialog.locator('#nt-requested-priority').selectOption('urgent')
+    await dialog.locator('#nt-requested-priority').click()
+    await page.getByRole('option', { name: 'Urgente' }).click()
     await dialog.locator('#nt-studio').selectOption(PROCONT_STUDIO)
     await dialog.locator('#nt-code').selectOption(PROCONT_CODE)
     await dialog.locator('#nt-area').waitFor()
     await dialog.locator('#nt-system').selectOption({ index: 1 })
     await dialog.locator('#nt-assignee').selectOption(STAFF['developer@simulado.invalid'].id)
-    await dialog.locator('#nt-priority').selectOption('high')
+    await dialog.locator('#nt-priority').click()
+    await page.getByRole('option', { name: 'Alto' }).click()
     await dialog.locator('#nt-phase').selectOption('analysis')
-    await dialog.locator('#nt-portfolio').selectOption(`i:${BENEF}`)
+    await dialog.locator('#nt-portfolio').selectOption(GESTION)
+    await dialog.locator('#nt-project').selectOption(BENEF)
     await dialog.getByRole('button', { name: 'Crear ticket' }).click()
     await dialog.getByRole('alert').getByText('Completa: Área.').waitFor()
     // Otro código del mismo estudio: el área desaparece y no se envía.
@@ -253,6 +266,7 @@ test('Nuevo ticket (interno u operativo): sin datos de cliente; solicitante opci
   await dialog.locator('#nt-title').fill('Actualizar certificados del servidor')
   await dialog.locator('#nt-description').fill('Tarea operativa ficticia.')
   await dialog.locator('#nt-assignee').selectOption(STAFF['admin@simulado.invalid'].id)
+  await dialog.locator('#nt-portfolio').selectOption('independent')
   await dialog.getByRole('button', { name: 'Crear ticket' }).click()
   await page.getByText('Ticket INT26-9990 creado.').waitFor()
   const sent = page.rpc.find(r => r.name === 'create_internal_ticket').args.p_payload

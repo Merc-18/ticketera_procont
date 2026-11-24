@@ -51,3 +51,8 @@ La rama `dashboard-boards-20261123` conserva el commit de Claude `5c6640ec390685
 
 - M18 **aplicada** en producción (19/19) y `main` `2382b36` publicado (versión 202611241452). Las menciones anteriores de «M18 no aplicada» quedan superadas.
 - Lote M19 (checklist sugerido de 3 tareas por fase, tarjetas con tinte personal, avatar y semáforo, Portafolio fase 1 y alta interna con paridad): ver `docs/validation/m19-portfolio-checklists-cards-20261124/REPORT.md` para el estado de publicación.
+# Enmienda local 24/11/2026 — Dashboard/Equipo/Portafolio
+
+Worktree aislado desde `16064c5c096f3b69943a81a0d1c64fef5ae8e5f0`. Cambios locales: Dashboard con todos los registros paginados/verificados; Equipo con Usuarios, carga y Portafolios; M20 para confirmación con asociación atómica; tarjetas y checklist con progreso semántico. Node 209/209, UI 129/135 (seis skip, cero fallos), TypeScript/build PASS; capturas ficticias locales disponibles en `validation/dashboard-team-portfolio-progress-20261124/`.
+
+**Estado de publicación al escribir esta enmienda:** M20 aplicada en Supabase (21/21) y ACL comprobadas; código aún no integrado/push y Vercel aún pendiente. No se crearon tickets de producción. El informe completo es [REPORT.md](validation/dashboard-team-portfolio-progress-20261124/REPORT.md). No confundir evidencias de fixtures con verificaciones de Supabase/Vercel.

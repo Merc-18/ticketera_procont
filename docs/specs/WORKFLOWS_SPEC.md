@@ -67,3 +67,8 @@ Revisión local 23/11/2026; fuente de código M17, aún NO verificada como aplic
 - En validación/clasificación, el servidor resuelve el código canónico de estudio. Solo igualdad exacta con `PROCONT` permite seleccionar área/subárea. El área activa debe pertenecer al estudio; subárea activa debe ser hija del área. Otros códigos descartan las áreas enviadas por formularios legacy. Al cambiar de PROCONT a otro código se limpian asociaciones nuevas; históricos no se migran.
 - Las tarjetas de Kanban y filas de Tabla toman el color de la preferencia persistida del responsable interno. Selector: miembro elige color disponible; asignación automática al activar perfil; se libera al desactivar. Unicidad impuesta por PostgreSQL; el color no cambia prioridad ni estado.
 - APIs internas: `internal_card_colors()` lee catálogo y mapa de asignaciones; `set_my_internal_card_color(p_color_id)` cambia solo al actor autenticado. RLS/RPC requieren perfil interno activo.
+# Enmienda de flujo — jerarquía y confirmación (24/11/2026)
+
+Jerarquía visible y de datos: Portafolio → Proyecto/Iniciativa → ticket/proyecto operativo → checklist. Al validar solicitud cliente, personal autorizado elige una iniciativa perteneciente al portafolio o «Ticket independiente». La RPC M20 realiza aprobación y asociación atómicas; no se requiere abrir detalle después. Un fallo revierte todo.
+
+El flujo del tablero mantiene sus fases canónicas y regla Done. La fase aparece como etapa/posición, no como fracción de trabajo. Checklist vacío ofrece tres sugerencias explícitas; solo al agregarlas se vuelven tareas y entran al progreso. Cambiar fase no materializa tareas. No inferir ni borrar el origen de checklist histórico ambiguo.

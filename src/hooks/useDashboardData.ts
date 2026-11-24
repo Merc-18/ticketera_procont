@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { countTicketsByStudio, type TicketsByStudio, type TicketsClient } from '../lib/tickets-by-studio'
+import { readVerifiedPages } from '../lib/verified-pagination'
 
 /**
  * Datos del Dashboard (reestructuración D-045). Solo lecturas que el panel interno ya tenía permitidas por RLS
@@ -29,7 +30,7 @@ export interface DashboardStats {
 interface Filters { periodDays: number | null; studioId: string | null; areaId: string | null; procontStudioId: string | null; procontCodeId: string | null }
 
 type ReqRow = { id: string; status: 'pending' | 'approved' | 'rejected'; created_at: string; studio_id: string | null; studio_code_id: string | null; area_id: string | null }
-type ProjRow = { id: string; status: string; priority: keyof DashboardStats['priorityActive']; is_blocked: boolean; due_date: string | null; requests: { studio_id: string | null; studio_code_id: string | null; area_id: string | null } | null; project_flows: { assigned_to: string | null }[] | null }
+type ProjRow = { id: string; status: string; priority: keyof DashboardStats['priorityActive']; is_blocked: boolean; due_date: string | null; requests: { studio_id: string | null; studio_code_id: string | null; area_id: string | null }[] | null; project_flows: { assigned_to: string | null }[] | null }
 
 const chunk = <T,>(list: T[], size: number) => Array.from({ length: Math.ceil(list.length / size) }, (_, i) => list.slice(i * size, i * size + size))
 
@@ -39,12 +40,21 @@ export function useDashboardData({ periodDays, studioId, areaId, procontStudioId
   const [error, setError] = useState<string | null>(null)
 
   const load = useCallback(async () => {
-    setLoading(true); setError(null)
-    const [projects, requests] = await Promise.all([
-      supabase.from('projects').select('id, status, priority, is_blocked, due_date, requests(studio_id, studio_code_id, area_id), project_flows(assigned_to)').neq('status', 'deleted'),
-      supabase.from('requests').select('id, status, created_at, studio_id, studio_code_id, area_id'),
-    ])
-    if (projects.error || requests.error) { setError('No se pudieron cargar las métricas. Usa «Actualizar» para reintentar.'); setLoading(false); return }
+    setLoading(true); setError(null); setStats(null)
+    let projectsData: ProjRow[], requestsData: ReqRow[]
+    try {
+      ;[projectsData, requestsData] = await Promise.all([
+        readVerifiedPages((from, to) => supabase.from('projects').select(
+          'id, status, priority, is_blocked, due_date, requests(studio_id, studio_code_id, area_id), project_flows(assigned_to)', { count: 'exact' })
+          .neq('status', 'deleted').order('id', { ascending: true }).range(from, to)),
+        readVerifiedPages((from, to) => supabase.from('requests').select(
+          'id, status, created_at, studio_id, studio_code_id, area_id', { count: 'exact' })
+          .order('id', { ascending: true }).range(from, to)),
+      ]) as unknown as [ProjRow[], ReqRow[]]
+    } catch {
+      setError('No se pudieron cargar todas las métricas. No se muestran totales parciales. Usa «Actualizar» para reintentar.')
+      setLoading(false); return
+    }
 
     const areaApplies = !!procontCodeId && (!studioId || studioId === procontStudioId)
     const inScope = (sid: string | null | undefined, codeId: string | null | undefined, aid: string | null | undefined) =>
@@ -52,7 +62,7 @@ export function useDashboardData({ periodDays, studioId, areaId, procontStudioId
 
     // ── Solicitudes ─────────────────────────────────────────────────────────────
     const since = periodDays ? Date.now() - periodDays * 86_400_000 : null
-    const reqs = ((requests.data ?? []) as ReqRow[]).filter(r => inScope(r.studio_id, r.studio_code_id, r.area_id))
+    const reqs = requestsData.filter(r => inScope(r.studio_id, r.studio_code_id, r.area_id))
     const pending = reqs.filter(r => r.status === 'pending')
     const reviewed = new Set<string>()
     for (const ids of chunk(pending.map(r => r.id), 100)) {
@@ -72,7 +82,10 @@ export function useDashboardData({ periodDays, studioId, areaId, procontStudioId
     }
 
     // ── Trabajo ─────────────────────────────────────────────────────────────────
-    const projs = ((projects.data ?? []) as unknown as ProjRow[]).filter(p => inScope(p.requests?.studio_id, p.requests?.studio_code_id, p.requests?.area_id))
+    const projs = projectsData.filter(p => {
+      const request = p.requests?.[0]
+      return inScope(request?.studio_id, request?.studio_code_id, request?.area_id)
+    })
     const today = new Date().toISOString().slice(0, 10)
     const active = projs.filter(p => p.status === 'active')
     const priorityActive = { urgent: 0, high: 0, medium: 0, low: 0 }

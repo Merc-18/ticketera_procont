@@ -225,3 +225,19 @@ M18 está preparada y probada localmente; **no está aplicada en remoto**. Las f
   - Comunes: `mode` (`client`|`internal`), `title`*, `description`*, `priority`, `assigned_dev`*, `start_date`, `due_date`, `requester_name`, `portfolio_id`, `initiative_id`, `initial_phase` (cualquier fase de Development salvo `done`).
   - Solo `client`: `requester_name`*, `requester_email`, `studio_id`*, `studio_code_id`*, `system_id`*, `subsystem_id` (obligatorio si el producto lo exige), `request_type_id`*, `requested_priority`, `area_id`/`subarea_id` (solo con el código exacto PROCONT; ahí el área es obligatoria). En modo `internal`, cualquier clave de cliente da `22023`.
 - Checklist: `create_internal_project`/`approve_request` ya no insertan tareas; las sugerencias viven en `checklist_templates` (3 por fase) y en el frontend.
+# Enmienda M20 — aprobación con elección de portafolio (24/11/2026, local)
+
+RPC añadida en `20261124000300_approve_request_with_portfolio.sql`:
+
+```text
+public.approve_request_with_portfolio(
+  p_request_id uuid,
+  p_payload jsonb,
+  p_portfolio jsonb,
+  p_idempotency_key uuid
+) returns jsonb
+```
+
+`p_portfolio` acepta exactamente `{"mode":"independent"}` o `{"mode":"portfolio","portfolio_id":"<uuid>","initiative_id":"<uuid|null>"}`. El modo portfolio exige UUID de portafolio; la función existente `set_project_portfolio` valida catálogo activo y relación iniciativa/portafolio. La ejecución reutiliza `approve_request`; aprobación y asociación ocurren en una misma transacción. Admin/superadmin; idempotencia obligatoria. No altera firmas M19.
+
+La selección de creación interna usa el contrato vigente de M19 `create_internal_ticket(jsonb,uuid)`. No se añadieron endpoints ni se cambiaron RPC externas. M20 fue aplicada en `xsxdpaiivklqeudgqoqf`; historial 21/21 y ACL comprobadas por consulta remota de solo lectura. Evidencia: [reporte](../validation/dashboard-team-portfolio-progress-20261124/PORTFOLIO_ASSIGNMENT.md).

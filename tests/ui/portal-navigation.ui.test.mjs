@@ -201,8 +201,8 @@ const TABS = {
   admin: ['Dashboard', 'Boards', 'Requests', 'Equipo'],
   superadmin: ['Dashboard', 'Boards', 'Requests', 'Equipo'],
 }
-const EQUIPO = { developer: ['Carga de trabajo'], admin: ['Carga de trabajo', 'Usuarios', 'Papelera'],
-  superadmin: ['Carga de trabajo', 'Usuarios', 'Papelera', 'Catálogos'] }
+const EQUIPO = { developer: ['Carga de trabajo', 'Portafolios y proyectos'], admin: ['Usuarios', 'Carga de trabajo', 'Portafolios y proyectos', 'Papelera'],
+  superadmin: ['Usuarios', 'Carga de trabajo', 'Portafolios y proyectos', 'Papelera', 'Catálogos'] }
 async function staffLogin(page, role) {
   await page.getByRole('button', { name: /Acceso del equipo de TI/ }).click()
   await page.fill('input[type=email]', Object.keys(STAFF).find(e => STAFF[e].role === role))
@@ -221,9 +221,8 @@ for (const [label, viewport] of Object.entries(VIEWPORTS)) {
       assert.deepEqual(tabs, TABS[role], role)
       if (EQUIPO[role]) {
         await page.getByRole('button', { name: 'Equipo' }).click()
-        for (const sub of ['Carga de trabajo', 'Usuarios', 'Papelera', 'Catálogos']) {
-          assert.equal(await page.getByRole('button', { name: sub }).count(), EQUIPO[role].includes(sub) ? 1 : 0, `${role} ${sub}`)
-        }
+        const subtabs = await page.locator('[aria-label="Secciones de Equipo"] [role="tab"]').allTextContents()
+        assert.deepEqual(subtabs.map(s => s.replace(/^[^\p{L}]+/u, '').trim()), EQUIPO[role], `${role} secciones de Equipo`)
       }
       if (role === 'superadmin') await shot(page, `${label}-12-personal-superadmin`)
       // El personal no comparte sesión con el portal de clientes.
@@ -242,7 +241,8 @@ test('13. Exportaciones sin métricas SLA ficticias; datos por ticket del servid
   const page = await open(viteMock.url, '/portal', VIEWPORTS.escritorio)
   await staffLogin(page, 'admin')
   const csvOf = async name => {
-    const [download] = await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name }).click()])
+    await page.getByRole('button', { name: 'Exportar' }).click()
+    const [download] = await Promise.all([page.waitForEvent('download'), page.getByRole('menuitem', { name }).click()])
     return readFileSync(await download.path(), 'utf8').replace(/^﻿/, '').split('\n').map(l => JSON.parse(`[${l}]`))
   }
   const completed = await csvOf(/Completados CSV/)
@@ -275,8 +275,9 @@ test('14. No se disparan alertas SLA heredadas (sin inserciones de notificacione
 async function exportCompleted(page) {
   let download = null
   page.on('download', d => { download = d })
-  await page.getByRole('button', { name: /Completados CSV/ }).click()
-  await page.getByRole('button', { name: /Completados CSV/ }).waitFor({ timeout: 30000 })   // termina «Exportando...»
+  await page.getByRole('button', { name: 'Exportar' }).click()
+  await page.getByRole('menuitem', { name: /Completados CSV/ }).click()
+  await page.getByRole('button', { name: 'Exportar' }).waitFor({ timeout: 30000 })   // termina «Exportando...»
   await page.waitForTimeout(800)
   if (!download) return { csv: null, text: await page.locator('body').textContent() }
   const csv = readFileSync(await download.path(), 'utf8').replace(/^\uFEFF/, '').split('\n').map(l => JSON.parse(`[${l}]`))

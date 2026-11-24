@@ -18,11 +18,13 @@ import { errorMessage } from '../../lib/supabase-errors'
 import { toast } from '../../lib/toast'
 import { getInitials, AREA_COLORS, PHASE_LABELS, PRIORITY_COLORS, PRIORITY_LABEL } from '../../lib/constants'
 import { GENERAL_STATUS, isGeneralStatus } from '../../lib/request-status'
-import { actionKey, needsPendingConfirmation, pct, phasesFor, type BoardFlow, type BoardTicket, type Phase, type Priority } from '../../lib/board'
+import { actionKey, needsPendingConfirmation, phasesFor, type BoardFlow, type BoardTicket, type Phase, type Priority } from '../../lib/board'
 import { areasApply } from '../../lib/studio-rules'
 import { avatarClass, useOwnerColors } from '../../lib/card-colors'
-import PortfolioSelect from '../boards/PortfolioSelect'
-import { decodePortfolio, encodePortfolio, portfolioLabel, setProjectPortfolio, usePortfolios } from '../../lib/portfolios'
+import PortfolioProjectFields from '../boards/PortfolioProjectFields'
+import { checklistProgress, progressLabel, type ChecklistItemLite, type ChecklistProgress } from '../../lib/checklist-progress'
+import PrioritySelect from '../ui/PrioritySelect'
+import { choiceFromProject, choiceIds, setProjectPortfolio, usePortfolios, validateChoice, type PortfolioChoice } from '../../lib/portfolios'
 
 interface Props {
   project: Project & { requests?: { requester_area: string; requester_name: string; request_type: string; studio_code_id?: string | null; area_id?: string | null } | null }
@@ -33,16 +35,39 @@ interface Props {
   updateProject: (id: string, updates: Pick<Partial<Project>, 'title' | 'description' | 'start_date' | 'due_date'>) => Promise<void>
 }
 
-const PRIORITY_OPTIONS: { value: Priority; label: string }[] = [
-  { value: 'low', label: PRIORITY_LABEL.low }, { value: 'medium', label: PRIORITY_LABEL.medium }, { value: 'high', label: PRIORITY_LABEL.high }, { value: 'urgent', label: PRIORITY_LABEL.urgent },
-]
 type Tab = 'details' | 'checklist' | 'comments' | 'evidence' | 'history'
 type Dialog = null | { kind: 'block' } | { kind: 'reopen' } | { kind: 'done'; flowId: string; target: Phase; key: string }
 
-function Bar({ value, tone }: { value: number | null; tone: string }) {
+/**
+ * Posición en el flujo (24/11/2026): fase actual y «Fase n de m» con un indicador de pasos. No es un porcentaje de
+ * trabajo: la fase indica DÓNDE está el ticket, no cuánto falta.
+ */
+function PhasePosition({ flowType, phase, blocked }: { flowType: string; phase: string; blocked: boolean }) {
+  const phases = phasesFor(flowType)
+  const index = phases.indexOf(phase)
   return (
-    <div className="w-full bg-gray-200 rounded-full h-2" aria-hidden>
-      <div className={`h-2 rounded-full ${tone}`} style={{ width: `${Math.min(100, Math.max(0, value ?? 0))}%` }} />
+    <div className="phase-position">
+      <p className="phase-position-head"><span className="phase-position-label">Fase actual</span>
+        <strong>{PHASE_LABELS[phase] ?? phase}</strong><span className="phase-position-count">Fase {index + 1} de {phases.length}</span></p>
+      <ol className={`phase-steps ${blocked ? 'is-blocked' : ''}`} aria-label={`Fase ${index + 1} de ${phases.length}: ${PHASE_LABELS[phase] ?? phase}`}>
+        {phases.map((p, i) => (
+          <li key={p} className={i < index ? 'is-past' : i === index ? 'is-current' : ''} title={PHASE_LABELS[p] ?? p} aria-current={i === index ? 'step' : undefined}>
+            <span className="sr-only">{PHASE_LABELS[p] ?? p}{i === index ? ' (actual)' : ''}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  )
+}
+
+/** Progreso sobre filas persistidas; las sugerencias que no se agregaron no cuentan. */
+function ChecklistSummary({ progress }: { progress: ChecklistProgress }) {
+  return (
+    <div className="checklist-summary">
+      <p className="phase-position-head"><span className="phase-position-label">Checklist</span><strong>{progressLabel(progress)}</strong></p>
+      {progress.total > 0
+        ? <div className="checklist-meter" aria-hidden="true"><span style={{ transform: `scaleX(${progress.done / progress.total})` }} /></div>
+        : <p className="checklist-summary-note">Las tareas sugeridas de cada fase no cuentan hasta que las agregas.</p>}
     </div>
   )
 }
@@ -52,20 +77,29 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
   const { user } = useAuth()
   const ownerColors = useOwnerColors()
   const portfolioCatalog = usePortfolios()
-  const currentPortfolio = encodePortfolio(project.portfolio_id, project.initiative_id)
-  const [portfolioDraft, setPortfolioDraft] = useState(currentPortfolio)
-  useEffect(() => { setPortfolioDraft(currentPortfolio) }, [currentPortfolio])
+  const currentChoice = choiceFromProject(project)
+  const currentKey = `${currentChoice.portfolio_id ?? ''}|${currentChoice.initiative_id ?? ''}`
+  const [portfolioDraft, setPortfolioDraft] = useState<PortfolioChoice>(currentChoice)
+  useEffect(() => { setPortfolioDraft(choiceFromProject(project)) }, [currentKey]) // eslint-disable-line react-hooks/exhaustive-deps
+  const draftKey = `${portfolioDraft.mode === 'portfolio' ? portfolioDraft.portfolio_id ?? '' : ''}|${portfolioDraft.mode === 'portfolio' ? portfolioDraft.initiative_id ?? '' : ''}`
+  const portfolioError = validateChoice(portfolioDraft, portfolioCatalog.initiatives)
+  const portfolioName = portfolioCatalog.portfolios.find(p => p.id === project.portfolio_id)?.name ?? null
+  const initiativeName = portfolioCatalog.initiatives.find(i => i.id === project.initiative_id)?.name ?? null
   const [savingPortfolio, setSavingPortfolio] = useState(false)
   const savePortfolioLink = async () => {
+    if (portfolioError) { toast.error(portfolioError); return }
     setSavingPortfolio(true)
     try {
-      const target = decodePortfolio(portfolioDraft, portfolioCatalog.initiatives)
+      const target = choiceIds(portfolioDraft)
       await setProjectPortfolio(project.id, target.portfolio_id, target.initiative_id)
       toast.success('Portafolio actualizado'); onUpdate?.()
     } catch (err) { toast.error(errorMessage(err)) }
     finally { setSavingPortfolio(false) }
   }
   const catalogs = useCatalogs('member')
+  // Progreso por flujo: únicamente filas persistidas en checklist_items.
+  const projectFlows = ((project as any).project_flows ?? []) as Array<{ id: string; created_at?: string | null; checklist_items?: ChecklistItemLite[] }>
+  const progressFor = (id: string) => { const f = projectFlows.find(x => x.id === id); return checklistProgress(f?.checklist_items ?? []) }
   const hasProcontArea = areasApply(project.requests?.studio_code_id, catalogs.codes)
   const editable = canEdit(user)
   const canManage = user?.role === 'superadmin' || user?.role === 'admin'
@@ -143,7 +177,13 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
               <input type="text" value={editData.title} onChange={e => setEditData(p => ({ ...p, title: e.target.value }))} aria-label="Título"
                 className="text-xl sm:text-2xl font-bold text-gray-900 w-full border-b-2 border-primary outline-none bg-transparent mb-2" />
             ) : (
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 break-words">{project.title}</h2>
+              <>
+                <p className="detail-hierarchy">{portfolioName
+                  ? <><span className="card-tag card-tag-portfolio"><Icon name="layers" size={12} aria-hidden="true" />{portfolioName}</span>
+                      {initiativeName && <><Icon name="arrow" size={12} className="card-tag-sep" aria-hidden="true" /><span className="card-tag card-tag-project">{initiativeName}</span></>}</>
+                  : <span className="card-tag card-tag-none">Sin portafolio</span>}</p>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 break-words">{project.title}</h2>
+              </>
             )}
             <div className="flex items-center gap-2 flex-wrap">
               {ticket?.request_number && <span className="font-mono text-xs text-gray-500">{ticket.request_number}</span>}
@@ -151,12 +191,8 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
                 <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-semibold ${statusInfo.tone}`}><Icon name={statusInfo.icon} size={12} />{statusInfo.label}</span>
               )}
               {editable && ticket && ticket.project_status !== 'deleted' ? (<>
-                <label htmlFor="project-priority" className="sr-only">Prioridad definitiva</label>
-                <select id="project-priority" value={ticket.priority} disabled={busy}
-                  onChange={e => { const v = e.target.value as Priority; void run(() => board.setPriority(project.id, v, actionKey()), 'Prioridad actualizada') }}
-                  className={`px-2 py-1 rounded-full text-xs font-medium border cursor-pointer ${PRIORITY_COLORS[ticket.priority]}`}>
-                  {PRIORITY_OPTIONS.map(o => <option key={o.value} value={o.value}>Prioridad: {o.label}</option>)}
-                </select></>
+                <PrioritySelect id="project-priority" label="Prioridad definitiva" hideLabel value={ticket.priority} disabled={busy} className="prio-select-compact"
+                  onChange={v => { if (v !== ticket.priority) void run(() => board.setPriority(project.id, v as Priority, actionKey()), 'Prioridad actualizada') }} /></>
               ) : (
                 <span className={`px-3 py-1 rounded-full text-xs font-medium border ${PRIORITY_COLORS[project.priority]}`}><Icon name="flag" size={12} className="inline-block mr-1 -mt-0.5" />Prioridad definitiva: {PRIORITY_LABEL[project.priority] ?? project.priority}</span>
               )}
@@ -234,18 +270,16 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
                 </div>
               ) : null}
 
-              {/* Portafolio → iniciativa (M19): organización del trabajo de largo alcance; auditado en el servidor. */}
+              {/* Portafolio → Proyecto/Iniciativa: selección dependiente; set_project_portfolio la valida y la audita. */}
               <div>
-                <h3 className="font-semibold text-gray-900 mb-2">Portafolio</h3>
+                <h3 className="font-semibold text-gray-900 mb-2">Portafolio y proyecto</h3>
                 {editable && ticket?.project_status !== 'deleted' ? (
-                  <div className="flex flex-wrap items-end gap-2">
-                    <label className="toolbar-field grow" htmlFor="project-portfolio"><span>Portafolio e iniciativa</span>
-                      <PortfolioSelect id="project-portfolio" value={portfolioDraft} onChange={setPortfolioDraft} />
-                    </label>
-                    <button type="button" className="ui-button ui-button-secondary" disabled={savingPortfolio || portfolioDraft === currentPortfolio}
+                  <div className="detail-portfolio">
+                    <PortfolioProjectFields idPrefix="project" value={portfolioDraft} onChange={setPortfolioDraft} />
+                    <button type="button" className="ui-button ui-button-secondary" disabled={savingPortfolio || !!portfolioError || draftKey === currentKey}
                       onClick={() => { void savePortfolioLink() }}>{savingPortfolio ? 'Guardando…' : 'Guardar portafolio'}</button>
                   </div>
-                ) : <p className="text-gray-700">{portfolioLabel(portfolioCatalog, project.portfolio_id, project.initiative_id) ?? 'Sin portafolio'}</p>}
+                ) : <p className="text-gray-700">{portfolioName ? `${portfolioName}${initiativeName ? ` › ${initiativeName}` : ''}` : 'Sin portafolio'}</p>}
               </div>
 
               {/* Flujo(s): fase, progreso de fase, progreso de checklist y responsable */}
@@ -274,23 +308,9 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
                           </div>
                           {editable && blocked && <p className="text-xs text-red-700">Bloqueado: no se puede cambiar de fase ni terminar hasta desbloquear.</p>}
                           {editable && isDone && <p className="text-xs text-green-800">Terminado. Para volver a trabajar en él usa «Reabrir ticket».</p>}
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                              <div className="flex justify-between text-xs text-gray-600 mb-1">
-                                <span>Progreso de fase</span>
-                                <span className="font-semibold">Fase {flow.phase_index + 1} de {flow.phase_count} · {pct(flow.phase_progress_percent)}</span>
-                              </div>
-                              <Bar value={flow.phase_progress_percent} tone={blocked ? 'bg-red-700' : 'bg-brand-600'} />
-                            </div>
-                            <div>
-                              <div className="flex justify-between text-xs text-gray-600 mb-1">
-                                <span>Progreso del checklist</span>
-                                <span className="font-semibold">
-                                  {flow.checklist_total === 0 ? 'Sin tareas' : `${flow.checklist_completed}/${flow.checklist_total} · ${pct(flow.checklist_progress_percent)}`}
-                                </span>
-                              </div>
-                              <Bar value={flow.checklist_progress_percent} tone="bg-accent-500" />
-                            </div>
+                          <div className="progress-block">
+                            <PhasePosition flowType={flow.flow_type} phase={flow.phase} blocked={blocked} />
+                            <ChecklistSummary progress={progressFor(flow.id)} />
                           </div>
                           <div>
                             {canAssign ? <label htmlFor={`assignee-${flow.id}`} className="block text-sm font-medium text-gray-600 mb-1">Responsable principal</label> : <p className="text-sm font-medium text-gray-600 mb-1">Responsable principal</p>}
@@ -340,9 +360,8 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
               {(ticket?.flows ?? []).map(flow => (
                 <div key={flow.id}>
                   <h3 className="font-medium text-gray-900 mb-1"><ControlLabel icon={flow.flow_type === 'development' ? 'code' : 'tickets'}>{flow.flow_type === 'development' ? 'Development' : 'Administrative (histórico)'}</ControlLabel></h3>
-                  <p className="text-xs text-gray-500 mb-1">
-                    Progreso del checklist (servidor): {flow.checklist_total === 0 ? 'sin tareas' : pct(flow.checklist_progress_percent)}.
-                    {blocked && ' El checklist se puede actualizar aunque el ticket esté bloqueado.'}
+                  <p className="text-sm text-gray-600 mb-1">
+                    {progressLabel(progressFor(flow.id))}.{blocked && ' El checklist se puede actualizar aunque el ticket esté bloqueado.'}
                   </p>
                   <ChecklistSection key={`${flow.id}-${flow.phase}`} flow={{ id: flow.id, flow_type: flow.flow_type, current_phase: flow.phase } as ProjectFlow}
                     onChanged={() => { void reloadTicket(); setHistory(h => h + 1); onUpdate?.() }} />

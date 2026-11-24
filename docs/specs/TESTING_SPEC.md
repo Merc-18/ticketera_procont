@@ -177,3 +177,15 @@ Los arneses fijados a un número de migraciones (`client_access` 13, `client_log
 | `board_operations_local.py` y `board_frontend_local.py` con M1–M19 | Ejecutadas sobre una copia desechable (no sobrescriben sus JSON históricos) |
 | `tests/portfolio-internal-ticket.test.mjs`, `tests/boards-dashboard-checklists.test.mjs` | Modelo de portafolio, payload de alta interna, semáforo y paridad de plantillas |
 | `tests/ui/portfolio-cards-ticket.ui.test.mjs` | Tinte y avatar por color personal, contraste del semáforo, Portafolio en tarjeta/filtro/Tabla/detalle/gestión, «Nuevo ticket» en ambos modos, responsive |
+# Evidencia — trabajo de 24/11/2026
+
+| Prueba | Ejecución | Clase | Estado |
+|---|---:|---|---|
+| `node --test tests/*.test.mjs` | 209/209 | Unitarias/contrato local | PASS |
+| `npm run test:ui` | 129 PASS, 0 FAIL, 6 SKIP (135) | React/Chromium + backend simulado | PASS con skips explícitos |
+| `npm run build` | TypeScript + Vite | Build | PASS |
+| `capture-qa.mjs` | 144 PNG | Chromium local, QA-FICTICIO | PASS |
+| PostgreSQL 17 harness M20 | 14 checks en evidencia existente `data/m20-qa.json` | PostgreSQL desechable real, Auth/Storage stubs | Evidencia previa; no reejecutada aquí |
+| Supabase remoto M20 | No aplicada aún en esta etapa | Remoto | PENDIENTE |
+
+La suite UI no prueba proveedores ni Supabase real. Seis omisiones (login/medición de bundle en condiciones que requieren build-preview) no se cuentan como PASS. El resultado anterior de PostgreSQL contiene un generador de checklist histórico luego corregido para no inferir origen desde timestamps; las filas permanecen, se contabilizan como persistidas, y su procedencia queda NO VERIFICADA. Detalles: [reporte](../validation/dashboard-team-portfolio-progress-20261124/REPORT.md).

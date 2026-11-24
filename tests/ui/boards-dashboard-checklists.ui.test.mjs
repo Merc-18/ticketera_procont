@@ -124,7 +124,7 @@ for (const theme of ['light', 'dark']) {
     const bar = page.locator('.board-toolbar')
     assert.equal(await bar.locator('label').filter({ hasText: /^Área/ }).count(), 0)
     await bar.locator('label').filter({ hasText: /^Estudio/ }).waitFor()   // el catálogo de estudios llega aparte
-    assert.deepEqual((await bar.locator('.toolbar-field > span').allInnerTexts()).map(t => t.trim()), ['Prioridad', 'Estudio', 'Responsable'])
+    assert.deepEqual((await bar.locator('.prio-select-label, .toolbar-field > span').allInnerTexts()).map(t => t.trim()), ['Prioridad', 'Estudio', 'Responsable'])
     for (const name of ['Activos', 'Completados', 'Archivados', 'Nuevo ticket', 'Kanban', 'Tabla', 'Gantt', 'Roadmap', 'Mi color de tarjeta']) {
       assert.equal(await bar.getByRole('button', { name, exact: false }).first().isVisible(), true, name)
     }
@@ -136,7 +136,8 @@ for (const theme of ['light', 'dark']) {
     assert.ok(Math.abs((np.y + np.height / 2) - (vm.y + vm.height / 2)) < 4, 'alineados')
     await shot(page, `${STAGE}-boards-barra-${theme}-1440.png`, { theme, view: 'boards-toolbar' }, bar)
     // Prioridad, Estudio y Responsable siguen filtrando
-    await bar.locator('label').filter({ hasText: /^Prioridad/ }).locator('select').selectOption('urgent')
+    await bar.getByRole('button', { name: /Prioridad/ }).click()
+    await page.getByRole('option', { name: 'Urgente' }).click()
     assert.equal(await page.locator('.project-card').count(), kanbanProjects.filter(p => p.priority === 'urgent').length)
     await bar.getByRole('button', { name: /Limpiar filtros/ }).click()
     await bar.locator('label').filter({ hasText: /^Estudio/ }).locator('select').selectOption(OTHER)

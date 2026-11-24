@@ -3,7 +3,7 @@ import { supabase } from '../lib/supabase'
 import { operations } from '../lib/api'
 import { errorMessage, requireData } from '../lib/supabase-errors'
 import type { Request } from '../types/database.types'
-import type { ApprovalInput, RequestClassification } from '../lib/operations'
+import type { ApprovalInput, PortfolioDecision, RequestClassification } from '../lib/operations'
 import type { RpcAttempt } from '../lib/rpc-attempt'
 
 export function useRequests({ loadInbox = false } = {}) {
@@ -30,10 +30,10 @@ export function useRequests({ loadInbox = false } = {}) {
 
   const createRequest = (data: Partial<Request>, attempt: RpcAttempt, classification?: RequestClassification) =>
     operations.submitRequest(data, attempt, classification)
-  const approveRequest = async (id: string, data: ApprovalInput, attempt: RpcAttempt) => {
+  const approveRequest = async (id: string, data: ApprovalInput, attempt: RpcAttempt, portfolio: PortfolioDecision) => {
     const request = requests.find(item => item.id === id) ?? requireData(
       await supabase.from('requests').select('*').eq('id', id).single(), 'Solicitud') as Request
-    await operations.approveRequest(request, data, attempt)
+    await operations.approveRequestWithPortfolio(request, data, portfolio, attempt)
     await loadRequests()
   }
   const rejectRequest = async (id: string, publicReason: string, internalNotes?: string) => {

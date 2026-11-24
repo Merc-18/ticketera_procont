@@ -1,5 +1,4 @@
 import ControlLabel from '../ui/ControlLabel'
-import { PRIORITY_LABEL } from '../../lib/constants'
 import Icon, { type IconName } from '../ui/Icon'
 import ScrollHint from '../ui/ScrollHint'
 import { DragDropContext, DropResult } from '@hello-pangea/dnd'
@@ -18,7 +17,7 @@ import { actionKey, needsPendingConfirmation, type BoardTicket, type Phase } fro
 import { DoneConfirmDialog } from '../projects/BoardDialogs'
 import { procontCodeId } from '../../lib/studio-rules'
 import PortfolioSelect from './PortfolioSelect'
-import PortfolioManagerModal from './PortfolioManagerModal'
+import PrioritySelect from '../ui/PrioritySelect'
 import { portfolioLabel, usePortfolios } from '../../lib/portfolios'
 import OwnerColorPicker from './OwnerColorPicker'
 
@@ -82,13 +81,6 @@ const STATUS_OPTIONS: { value: 'active' | 'completed' | 'archived'; label: strin
   { value: 'archived',  label: 'Archivados',  icon: 'archive' },
 ]
 
-const PRIORITY_OPTS = [
-  { value: 'all',    label: 'Todas' },
-  { value: 'urgent', label: PRIORITY_LABEL.urgent },
-  { value: 'high',   label: PRIORITY_LABEL.high },
-  { value: 'medium', label: PRIORITY_LABEL.medium },
-  { value: 'low',    label: PRIORITY_LABEL.low },
-]
 
 const VIEW_MODES: { value: ViewMode; label: string; icon: IconName }[] = [
   { value: 'kanban',  label: 'Kanban',  icon: 'board' },
@@ -115,7 +107,6 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
   // Portafolio: 'all' | '' (sin portafolio) | 'p:<id>' | 'i:<id>' (M19).
   const [portfolioFilter, setPortfolioFilter] = useState(() => localStorage.getItem('kanban_portfolioFilter') ?? 'all')
   const portfolioCatalog = usePortfolios()
-  const [showPortfolios, setShowPortfolios] = useState(false)
   const { studios, codes } = useCatalogs('member')
   // El área solo se muestra (tarjeta, tabla, búsqueda) en solicitudes del código interno exacto PROCONT.
   const canonicalProcontCodeId = procontCodeId(codes)
@@ -375,18 +366,10 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
         <div className="board-toolbar-row board-toolbar-filters">
           {statusFilter === 'active' && (
             <div role="group" aria-label="Filtros del tablero" className="board-filter-group">
-              <label className="toolbar-field">
-                <span>Prioridad</span>
-                <select
-                  value={priorityFilter}
-                  onChange={e => setPriorityFilter(e.target.value)}
-                  className={`ui-input toolbar-select ${priorityFilter !== 'all' ? `prio-filter-${priorityFilter}` : ''}`}
-                >
-                  {PRIORITY_OPTS.map(opt => (
-                    <option key={opt.value} value={opt.value}>{opt.label}</option>
-                  ))}
-                </select>
-              </label>
+              <div className="toolbar-field board-filter-priority">
+                <PrioritySelect id="board-priority-filter" label="Prioridad" value={priorityFilter} onChange={setPriorityFilter}
+                  extraOptions={[{ value: 'all', label: 'Todas' }]} />
+              </div>
 
               {studios.length > 0 && (
                 <label className="toolbar-field board-filter-studio">
@@ -454,14 +437,9 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
           )}
           {/* Color personal de tarjeta (usuarios internos; el panel no es accesible para clientes) */}
           {currentUser && <div className="board-toolbar-color">
-            {canManage && (
-              <button type="button" className="ui-button ui-button-secondary" onClick={() => setShowPortfolios(true)}>
-                <ControlLabel icon="layers">Portafolios</ControlLabel>
-              </button>
-            )}
             <OwnerColorPicker userId={currentUser.id} userName={currentUser.full_name} />
           </div>}
-          {showPortfolios && <PortfolioManagerModal onClose={() => setShowPortfolios(false)} />}
+
         </div>
       </div>
 
@@ -572,28 +550,16 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
           </span>
           {selectedIds.length > 100 && <span className="text-xs text-red-700">Máximo 100 por operación</span>}
           <div className="h-5 w-px bg-gray-300" aria-hidden="true" />
-          <label htmlFor="bulk-priority" className="text-sm font-medium text-gray-700">Prioridad definitiva</label>
-          <select
-            id="bulk-priority"
-            disabled={selectedIds.length > 100}
-            defaultValue=""
-            onChange={async e => {
-              const val = e.target.value
+          <PrioritySelect id="bulk-priority" label="Prioridad definitiva" value={'' as string} disabled={selectedIds.length > 100}
+            className="prio-select-inline" extraOptions={[{ value: '', label: 'Elegir…' }]}
+            onChange={async val => {
               if (!val) return
               try {
                 await bulkUpdate(selectedIds, 'set_priority', { priority: val as any })
                 setSelectedIds([])
                 toast.success(`Prioridad actualizada en ${selectedIds.length} proyecto${selectedIds.length !== 1 ? 's' : ''}`)
               } catch (err) { toast.error(errorMessage(err)) }
-            }}
-            className="ui-input toolbar-select"
-          >
-            <option value="" disabled>Elegir…</option>
-            <option value="urgent">{PRIORITY_LABEL.urgent}</option>
-            <option value="high">{PRIORITY_LABEL.high}</option>
-            <option value="medium">{PRIORITY_LABEL.medium}</option>
-            <option value="low">{PRIORITY_LABEL.low}</option>
-          </select>
+            }} />
           <button
             disabled={selectedIds.length > 100}
             onClick={async () => {

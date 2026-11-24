@@ -1,0 +1,3932 @@
+{
+ "_aviso": "QA-FICTICIO: datos 100 % ficticios generados por supabase/tests/m20_qa_fixtures_local.py en PostgreSQL desechable. No son datos reales.",
+ "projects": [
+  {
+   "id": "6565de8e-9c7d-46fe-bf5c-a63a0066423b",
+   "title": "QA-FICTICIO M20 aprobada",
+   "status": "active",
+   "due_date": null,
+   "priority": "high",
+   "requests": {
+    "area_id": null,
+    "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d",
+    "request_type": "Error / Incidencia",
+    "request_number": "REQ26-001",
+    "requester_area": null,
+    "requester_name": "QA-FICTICIO Cliente quipu",
+    "studio_code_id": "77d25cb6-dcb5-4f8a-8dbb-85c42ec524b3"
+   },
+   "created_at": "2026-11-24T16:38:11.15024-05:00",
+   "is_blocked": false,
+   "request_id": "71329928-0b90-4509-a35c-314caaa5e9ed",
+   "start_date": null,
+   "updated_at": "2026-11-24T16:38:11.159831-05:00",
+   "description": "Solicitud ficticia de QA.",
+   "portfolio_id": "9bc5cbdd-b9dc-47cd-85fc-07f648e8bdea",
+   "project_type": "development",
+   "blocked_since": null,
+   "initiative_id": "2909c4ad-8d55-4175-af8f-ba8416db63ad",
+   "project_flows": [
+    {
+     "id": "56edba1b-8f7a-48c3-a9b9-744b89bbee6e",
+     "progress": 0,
+     "flow_type": "development",
+     "created_at": "2026-11-24T16:38:11.15024-05:00",
+     "project_id": "6565de8e-9c7d-46fe-bf5c-a63a0066423b",
+     "updated_at": "2026-11-24T16:38:11.15024-05:00",
+     "assigned_to": "00000000-0000-4000-8000-0000000000c3",
+     "current_phase": "backlog",
+     "checklist_items": []
+    }
+   ],
+   "blocked_reason": null,
+   "project_number": "REQ26-001",
+   "sla_target_date": null,
+   "workflow_version": 2
+  },
+  {
+   "id": "cda21f7c-c621-493b-9ef7-562c76b58bd2",
+   "title": "QA-FICTICIO M20 aprobada",
+   "status": "active",
+   "due_date": null,
+   "priority": "high",
+   "requests": {
+    "area_id": null,
+    "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d",
+    "request_type": "Error / Incidencia",
+    "request_number": "REQ26-002",
+    "requester_area": null,
+    "requester_name": "QA-FICTICIO Solicitante QuipuFac",
+    "studio_code_id": "34232ed7-97f0-449b-bc2d-babb0de90ed2"
+   },
+   "created_at": "2026-11-24T16:38:11.201829-05:00",
+   "is_blocked": false,
+   "request_id": "73a7bd4d-c3c7-41b4-a434-7ba77856a15a",
+   "start_date": null,
+   "updated_at": "2026-11-24T16:38:11.201829-05:00",
+   "description": "Solicitud ficticia de QA.",
+   "portfolio_id": null,
+   "project_type": "development",
+   "blocked_since": null,
+   "initiative_id": null,
+   "project_flows": [
+    {
+     "id": "c9dbb4a3-a458-4ed9-b340-56591d71354a",
+     "progress": 0,
+     "flow_type": "development",
+     "created_at": "2026-11-24T16:38:11.201829-05:00",
+     "project_id": "cda21f7c-c621-493b-9ef7-562c76b58bd2",
+     "updated_at": "2026-11-24T16:38:11.201829-05:00",
+     "assigned_to": "00000000-0000-4000-8000-0000000000c3",
+     "current_phase": "backlog",
+     "checklist_items": []
+    }
+   ],
+   "blocked_reason": null,
+   "project_number": "REQ26-002",
+   "sla_target_date": null,
+   "workflow_version": 2
+  },
+  {
+   "id": "c5a13a65-13e6-4b4b-ae4c-0d6425a28482",
+   "title": "QA-FICTICIO Quipu consulta de beneficiarios",
+   "status": "active",
+   "due_date": null,
+   "priority": "high",
+   "requests": {
+    "area_id": "c3b328a7-fb47-4510-89a0-d99f876b9c50",
+    "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d",
+    "request_type": "Acceso / Permisos",
+    "request_number": "REQ26-005",
+    "requester_area": "QA-FICTICIO Contabilidad",
+    "requester_name": "QA-FICTICIO Cliente quipu",
+    "studio_code_id": "553d7037-35c7-4b52-88c3-42796f255efd"
+   },
+   "created_at": "2026-11-24T16:38:11.320925-05:00",
+   "is_blocked": false,
+   "request_id": "d479c737-ce5d-4dd7-a65f-81a0fcebfc70",
+   "start_date": null,
+   "updated_at": "2026-11-24T16:38:11.329749-05:00",
+   "description": "QA-FICTICIO: datos ficticios para validar el flujo.",
+   "portfolio_id": "9bc5cbdd-b9dc-47cd-85fc-07f648e8bdea",
+   "project_type": "development",
+   "blocked_since": null,
+   "initiative_id": "2909c4ad-8d55-4175-af8f-ba8416db63ad",
+   "project_flows": [
+    {
+     "id": "7fee4d62-622f-4a43-b6fe-4b019b36b4b7",
+     "progress": 0,
+     "flow_type": "development",
+     "created_at": "2026-11-24T16:38:11.320925-05:00",
+     "project_id": "c5a13a65-13e6-4b4b-ae4c-0d6425a28482",
+     "updated_at": "2026-11-24T16:38:11.320925-05:00",
+     "assigned_to": "00000000-0000-4000-8000-0000000000c3",
+     "current_phase": "backlog",
+     "checklist_items": []
+    }
+   ],
+   "blocked_reason": null,
+   "project_number": "REQ26-005",
+   "sla_target_date": null,
+   "workflow_version": 2
+  },
+  {
+   "id": "258c8cae-b2a8-4f70-a311-1f38a77c716e",
+   "title": "QA-FICTICIO Quipu validación de RUC con guion",
+   "status": "active",
+   "due_date": null,
+   "priority": "urgent",
+   "requests": {
+    "area_id": null,
+    "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d",
+    "request_type": "Integración / Automatización",
+    "request_number": "REQ26-006",
+    "requester_area": null,
+    "requester_name": "QA-FICTICIO Cliente quipu",
+    "studio_code_id": "77d25cb6-dcb5-4f8a-8dbb-85c42ec524b3"
+   },
+   "created_at": "2026-11-24T16:38:11.362852-05:00",
+   "is_blocked": false,
+   "request_id": "b0293eb9-a6c9-48de-a64f-b985d1add749",
+   "start_date": null,
+   "updated_at": "2026-11-24T16:38:11.371909-05:00",
+   "description": "QA-FICTICIO: datos ficticios para validar el flujo.",
+   "portfolio_id": "9bc5cbdd-b9dc-47cd-85fc-07f648e8bdea",
+   "project_type": "development",
+   "blocked_since": null,
+   "initiative_id": "2909c4ad-8d55-4175-af8f-ba8416db63ad",
+   "project_flows": [
+    {
+     "id": "eca60058-562f-446e-9b83-8493a0c0ed42",
+     "progress": 0,
+     "flow_type": "development",
+     "created_at": "2026-11-24T16:38:11.362852-05:00",
+     "project_id": "258c8cae-b2a8-4f70-a311-1f38a77c716e",
+     "updated_at": "2026-11-24T16:38:11.392158-05:00",
+     "assigned_to": "00000000-0000-4000-8000-0000000000c2",
+     "current_phase": "analysis",
+     "checklist_items": [
+      {
+       "id": "02faa76c-84e0-42bc-ad7d-50c693d3b053",
+       "completed": false,
+       "created_at": "2026-11-24T16:38:11.406477-05:00"
+      },
+      {
+       "id": "08d623ae-2f6d-4986-8165-ffb4a5a08a15",
+       "completed": false,
+       "created_at": "2026-11-24T16:38:11.414049-05:00"
+      },
+      {
+       "id": "e346cb16-5e8b-4a0f-a9a7-18eb18e60cb3",
+       "completed": false,
+       "created_at": "2026-11-24T16:38:11.420978-05:00"
+      }
+     ]
+    }
+   ],
+   "blocked_reason": null,
+   "project_number": "REQ26-006",
+   "sla_target_date": null,
+   "workflow_version": 2
+  },
+  {
+   "id": "3946ac17-2384-4562-8b0c-e2aa63160295",
+   "title": "QA-FICTICIO Quipu reporte de compras bloqueado",
+   "status": "active",
+   "due_date": null,
+   "priority": "medium",
+   "requests": {
+    "area_id": null,
+    "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d",
+    "request_type": "Capacitación / Consulta",
+    "request_number": "REQ26-007",
+    "requester_area": null,
+    "requester_name": "QA-FICTICIO Cliente quipu",
+    "studio_code_id": "34232ed7-97f0-449b-bc2d-babb0de90ed2"
+   },
+   "created_at": "2026-11-24T16:38:11.455935-05:00",
+   "is_blocked": true,
+   "request_id": "a966f9bf-264f-4e35-8507-c40bfa859935",
+   "start_date": null,
+   "updated_at": "2026-11-24T16:38:11.495709-05:00",
+   "description": "QA-FICTICIO: datos ficticios para validar el flujo.",
+   "portfolio_id": null,
+   "project_type": "development",
+   "blocked_since": "2026-11-24T16:38:11.495317-05:00",
+   "initiative_id": null,
+   "project_flows": [
+    {
+     "id": "014cc986-fc23-4196-b9ef-7d6e65d69503",
+     "progress": 0,
+     "flow_type": "development",
+     "created_at": "2026-11-24T16:38:11.455935-05:00",
+     "project_id": "3946ac17-2384-4562-8b0c-e2aa63160295",
+     "updated_at": "2026-11-24T16:38:11.484582-05:00",
+     "assigned_to": "00000000-0000-4000-8000-0000000000c1",
+     "current_phase": "design",
+     "checklist_items": []
+    }
+   ],
+   "blocked_reason": "QA-FICTICIO: esperando información del cliente.",
+   "project_number": "REQ26-007",
+   "sla_target_date": null,
+   "workflow_version": 2
+  },
+  {
+   "id": "19e57ab5-1815-4119-8760-5abc4d098762",
+   "title": "QA-FICTICIO Quipu retenciones de cuarta",
+   "status": "active",
+   "due_date": null,
+   "priority": "low",
+   "requests": {
+    "area_id": null,
+    "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d",
+    "request_type": "Error / Incidencia",
+    "request_number": "REQ26-008",
+    "requester_area": null,
+    "requester_name": "QA-FICTICIO Cliente quipu",
+    "studio_code_id": "d5020f27-558e-4d9e-b837-7ea1550c8224"
+   },
+   "created_at": "2026-11-24T16:38:11.531904-05:00",
+   "is_blocked": false,
+   "request_id": "777759c3-52a4-45a1-a80d-6dc9473b0313",
+   "start_date": null,
+   "updated_at": "2026-11-24T16:38:11.541672-05:00",
+   "description": "QA-FICTICIO: datos ficticios para validar el flujo.",
+   "portfolio_id": "7da3d9f3-22ee-4aa8-b7bf-36301ad46ff6",
+   "project_type": "development",
+   "blocked_since": null,
+   "initiative_id": "04e586c4-5e35-408c-b2ee-25ff00dd1469",
+   "project_flows": [
+    {
+     "id": "3e23496b-9fe9-4280-b392-55aab7531cb9",
+     "progress": 0,
+     "flow_type": "development",
+     "created_at": "2026-11-24T16:38:11.531904-05:00",
+     "project_id": "19e57ab5-1815-4119-8760-5abc4d098762",
+     "updated_at": "2026-11-24T16:38:11.562904-05:00",
+     "assigned_to": "00000000-0000-4000-8000-0000000000d1",
+     "current_phase": "dev",
+     "checklist_items": []
+    }
+   ],
+   "blocked_reason": null,
+   "project_number": "REQ26-008",
+   "sla_target_date": null,
+   "workflow_version": 2
+  },
+  {
+   "id": "ccd9aaed-9d54-4fd2-99a8-4ece04a2ddab",
+   "title": "QA-FICTICIO Quipu redondeo de planilla",
+   "status": "completed",
+   "due_date": null,
+   "priority": "medium",
+   "requests": {
+    "area_id": null,
+    "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d",
+    "request_type": "Otros",
+    "request_number": "REQ26-010",
+    "requester_area": null,
+    "requester_name": "QA-FICTICIO Cliente quipu",
+    "studio_code_id": "61c3cb1e-908c-4335-baa4-8e3f44186d63"
+   },
+   "created_at": "2026-11-24T16:38:11.632475-05:00",
+   "is_blocked": false,
+   "request_id": "4c1989d6-932c-477f-951c-e29178150689",
+   "start_date": null,
+   "updated_at": "2026-11-24T16:38:11.662916-05:00",
+   "description": "QA-FICTICIO: datos ficticios para validar el flujo.",
+   "portfolio_id": null,
+   "project_type": "development",
+   "blocked_since": null,
+   "initiative_id": null,
+   "project_flows": [
+    {
+     "id": "fcf99423-3784-4ac5-a4a8-2af731671951",
+     "progress": 0,
+     "flow_type": "development",
+     "created_at": "2026-11-24T16:38:11.632475-05:00",
+     "project_id": "ccd9aaed-9d54-4fd2-99a8-4ece04a2ddab",
+     "updated_at": "2026-11-24T16:38:11.661441-05:00",
+     "assigned_to": "00000000-0000-4000-8000-0000000000d2",
+     "current_phase": "done",
+     "checklist_items": []
+    }
+   ],
+   "blocked_reason": null,
+   "project_number": "REQ26-010",
+   "sla_target_date": null,
+   "workflow_version": 2
+  },
+  {
+   "id": "c088a4a1-cebe-4250-aa98-deee12dd7ed9",
+   "title": "QA-FICTICIO QuipuFac notas de crédito",
+   "status": "active",
+   "due_date": null,
+   "priority": "high",
+   "requests": {
+    "area_id": "c3b328a7-fb47-4510-89a0-d99f876b9c50",
+    "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d",
+    "request_type": "Capacitación / Consulta",
+    "request_number": "REQ26-012",
+    "requester_area": "QA-FICTICIO Contabilidad",
+    "requester_name": "QA-FICTICIO Solicitante QuipuFac",
+    "studio_code_id": "553d7037-35c7-4b52-88c3-42796f255efd"
+   },
+   "created_at": "2026-11-24T16:38:11.708494-05:00",
+   "is_blocked": false,
+   "request_id": "e3dc22ec-bba4-4cc1-a7e1-f35724ce4692",
+   "start_date": null,
+   "updated_at": "2026-11-24T16:38:11.717662-05:00",
+   "description": "QA-FICTICIO: datos ficticios para validar el flujo.",
+   "portfolio_id": "7da3d9f3-22ee-4aa8-b7bf-36301ad46ff6",
+   "project_type": "development",
+   "blocked_since": null,
+   "initiative_id": null,
+   "project_flows": [
+    {
+     "id": "c1eefdd8-e7f6-49d2-aa36-18f85cbf5f95",
+     "progress": 0,
+     "flow_type": "development",
+     "created_at": "2026-11-24T16:38:11.708494-05:00",
+     "project_id": "c088a4a1-cebe-4250-aa98-deee12dd7ed9",
+     "updated_at": "2026-11-24T16:38:11.738394-05:00",
+     "assigned_to": "00000000-0000-4000-8000-0000000000c3",
+     "current_phase": "code_review",
+     "checklist_items": [
+      {
+       "id": "ea5e4d3a-130c-41f1-9307-0aaf19e3979e",
+       "completed": true,
+       "created_at": "2026-11-24T16:38:11.752539-05:00"
+      },
+      {
+       "id": "1f58934c-334e-4d77-8d59-74c2e018a6b0",
+       "completed": false,
+       "created_at": "2026-11-24T16:38:11.759831-05:00"
+      },
+      {
+       "id": "f2ade44f-4d25-4b04-8663-a175cafdd384",
+       "completed": false,
+       "created_at": "2026-11-24T16:38:11.766612-05:00"
+      }
+     ]
+    }
+   ],
+   "blocked_reason": null,
+   "project_number": "REQ26-012",
+   "sla_target_date": null,
+   "workflow_version": 2
+  },
+  {
+   "id": "19752b2c-abfb-4934-9877-14c5a00886cf",
+   "title": "QA-FICTICIO QuipuFac exportación a PDF",
+   "status": "active",
+   "due_date": null,
+   "priority": "urgent",
+   "requests": {
+    "area_id": null,
+    "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d",
+    "request_type": "Otros",
+    "request_number": "REQ26-013",
+    "requester_area": null,
+    "requester_name": "QA-FICTICIO Solicitante QuipuFac",
+    "studio_code_id": "77d25cb6-dcb5-4f8a-8dbb-85c42ec524b3"
+   },
+   "created_at": "2026-11-24T16:38:11.809272-05:00",
+   "is_blocked": false,
+   "request_id": "89f98284-a2bd-49c8-af7c-4cf795ad7ab1",
+   "start_date": null,
+   "updated_at": "2026-11-24T16:38:11.818727-05:00",
+   "description": "QA-FICTICIO: datos ficticios para validar el flujo.",
+   "portfolio_id": "9bc5cbdd-b9dc-47cd-85fc-07f648e8bdea",
+   "project_type": "development",
+   "blocked_since": null,
+   "initiative_id": "2909c4ad-8d55-4175-af8f-ba8416db63ad",
+   "project_flows": [
+    {
+     "id": "a6d0bc95-06f6-4378-be5b-ad18049e90f5",
+     "progress": 0,
+     "flow_type": "development",
+     "created_at": "2026-11-24T16:38:11.809272-05:00",
+     "project_id": "19752b2c-abfb-4934-9877-14c5a00886cf",
+     "updated_at": "2026-11-24T16:38:11.838734-05:00",
+     "assigned_to": "00000000-0000-4000-8000-0000000000c2",
+     "current_phase": "testing",
+     "checklist_items": []
+    }
+   ],
+   "blocked_reason": null,
+   "project_number": "REQ26-013",
+   "sla_target_date": null,
+   "workflow_version": 2
+  },
+  {
+   "id": "8f0bd437-0e09-4bff-95ab-a17b56c675e6",
+   "title": "QA-FICTICIO QuipuFac despliegue de activos",
+   "status": "active",
+   "due_date": null,
+   "priority": "medium",
+   "requests": {
+    "area_id": null,
+    "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d",
+    "request_type": "Soporte técnico",
+    "request_number": "REQ26-015",
+    "requester_area": null,
+    "requester_name": "QA-FICTICIO Solicitante QuipuFac",
+    "studio_code_id": "34232ed7-97f0-449b-bc2d-babb0de90ed2"
+   },
+   "created_at": "2026-11-24T16:38:11.904221-05:00",
+   "is_blocked": false,
+   "request_id": "03fa7647-3e6b-48d2-9e9e-7ae5e2a25c51",
+   "start_date": null,
+   "updated_at": "2026-11-24T16:38:11.904221-05:00",
+   "description": "QA-FICTICIO: datos ficticios para validar el flujo.",
+   "portfolio_id": null,
+   "project_type": "development",
+   "blocked_since": null,
+   "initiative_id": null,
+   "project_flows": [
+    {
+     "id": "0236df4d-3f89-4605-a634-8fd6e44fbe38",
+     "progress": 0,
+     "flow_type": "development",
+     "created_at": "2026-11-24T16:38:11.904221-05:00",
+     "project_id": "8f0bd437-0e09-4bff-95ab-a17b56c675e6",
+     "updated_at": "2026-11-24T16:38:11.932836-05:00",
+     "assigned_to": "00000000-0000-4000-8000-0000000000c1",
+     "current_phase": "deploy",
+     "checklist_items": []
+    }
+   ],
+   "blocked_reason": null,
+   "project_number": "REQ26-015",
+   "sla_target_date": null,
+   "workflow_version": 2
+  },
+  {
+   "id": "378ab879-2df4-4166-9553-a2f799e639dc",
+   "title": "QA-FICTICIO TI tablero de beneficiarios",
+   "status": "active",
+   "due_date": null,
+   "priority": "medium",
+   "requests": {
+    "area_id": null,
+    "studio_id": null,
+    "request_type": "INT",
+    "request_number": "INT26-001",
+    "requester_area": null,
+    "requester_name": "Admin Simulado",
+    "studio_code_id": null
+   },
+   "created_at": "2026-11-24T16:38:11.960253-05:00",
+   "is_blocked": false,
+   "request_id": "d9bce895-434a-487a-848b-d8f57c1a3251",
+   "start_date": null,
+   "updated_at": "2026-11-24T16:38:11.969012-05:00",
+   "description": "QA-FICTICIO: trabajo ficticio.",
+   "portfolio_id": "9bc5cbdd-b9dc-47cd-85fc-07f648e8bdea",
+   "project_type": "development",
+   "blocked_since": null,
+   "initiative_id": "2909c4ad-8d55-4175-af8f-ba8416db63ad",
+   "project_flows": [
+    {
+     "id": "169235fa-036d-438f-add3-664e1495e6ee",
+     "progress": 0,
+     "flow_type": "development",
+     "created_at": "2026-11-24T16:38:11.960253-05:00",
+     "project_id": "378ab879-2df4-4166-9553-a2f799e639dc",
+     "updated_at": "2026-11-24T16:38:11.970592-05:00",
+     "assigned_to": "00000000-0000-4000-8000-0000000000d1",
+     "current_phase": "analysis",
+     "checklist_items": [
+      {
+       "id": "00bf124e-7641-4e45-a3e8-bc25578bf0dc",
+       "completed": true,
+       "created_at": "2026-11-24T16:38:11.984748-05:00"
+      },
+      {
+       "id": "61e708b9-6da9-4344-b578-fa1906aca0d4",
+       "completed": true,
+       "created_at": "2026-11-24T16:38:11.991703-05:00"
+      },
+      {
+       "id": "ecd60ebc-0ce4-4373-8b81-b0bc09c0f28f",
+       "completed": false,
+       "created_at": "2026-11-24T16:38:11.99836-05:00"
+      },
+      {
+       "id": "bf890fc3-8324-4cf2-9da9-cf6e2d66e8a1",
+       "completed": false,
+       "created_at": "2026-11-24T16:38:12.004989-05:00"
+      }
+     ]
+    }
+   ],
+   "blocked_reason": null,
+   "project_number": "INT26-001",
+   "sla_target_date": null,
+   "workflow_version": 2
+  },
+  {
+   "id": "5fad2761-3530-4d71-be20-f143d910894e",
+   "title": "QA-FICTICIO TI certificados del servidor",
+   "status": "active",
+   "due_date": null,
+   "priority": "low",
+   "requests": {
+    "area_id": null,
+    "studio_id": null,
+    "request_type": "INT",
+    "request_number": "INT26-002",
+    "requester_area": null,
+    "requester_name": "Admin Simulado",
+    "studio_code_id": null
+   },
+   "created_at": "2026-11-24T16:38:12.020645-05:00",
+   "is_blocked": false,
+   "request_id": "3cc2fd85-8e61-416f-9733-e14620bec388",
+   "start_date": null,
+   "updated_at": "2026-11-24T16:38:12.020645-05:00",
+   "description": "QA-FICTICIO: trabajo ficticio.",
+   "portfolio_id": null,
+   "project_type": "development",
+   "blocked_since": null,
+   "initiative_id": null,
+   "project_flows": [
+    {
+     "id": "df652148-03da-4a93-945e-3ed35a49ef72",
+     "progress": 0,
+     "flow_type": "development",
+     "created_at": "2026-11-24T16:38:12.020645-05:00",
+     "project_id": "5fad2761-3530-4d71-be20-f143d910894e",
+     "updated_at": "2026-11-24T16:38:12.020645-05:00",
+     "assigned_to": "00000000-0000-4000-8000-0000000000d2",
+     "current_phase": "backlog",
+     "checklist_items": []
+    }
+   ],
+   "blocked_reason": null,
+   "project_number": "INT26-002",
+   "sla_target_date": null,
+   "workflow_version": 2
+  },
+  {
+   "id": "6e6308d1-582d-4f8e-97e0-43c98831a5c2",
+   "title": "QA-FICTICIO TI conciliación bancaria bloqueada",
+   "status": "active",
+   "due_date": null,
+   "priority": "high",
+   "requests": {
+    "area_id": null,
+    "studio_id": null,
+    "request_type": "INT",
+    "request_number": "INT26-003",
+    "requester_area": null,
+    "requester_name": "Admin Simulado",
+    "studio_code_id": null
+   },
+   "created_at": "2026-11-24T16:38:12.033687-05:00",
+   "is_blocked": true,
+   "request_id": "bf62aae6-cc82-4dc7-be96-4e32a01ef497",
+   "start_date": null,
+   "updated_at": "2026-11-24T16:38:12.055487-05:00",
+   "description": "QA-FICTICIO: trabajo ficticio.",
+   "portfolio_id": "7da3d9f3-22ee-4aa8-b7bf-36301ad46ff6",
+   "project_type": "development",
+   "blocked_since": "2026-11-24T16:38:12.055108-05:00",
+   "initiative_id": "04e586c4-5e35-408c-b2ee-25ff00dd1469",
+   "project_flows": [
+    {
+     "id": "cccac7fc-97e7-413b-a5da-2010abc28f0e",
+     "progress": 0,
+     "flow_type": "development",
+     "created_at": "2026-11-24T16:38:12.033687-05:00",
+     "project_id": "6e6308d1-582d-4f8e-97e0-43c98831a5c2",
+     "updated_at": "2026-11-24T16:38:12.044639-05:00",
+     "assigned_to": "00000000-0000-4000-8000-0000000000c3",
+     "current_phase": "dev",
+     "checklist_items": []
+    }
+   ],
+   "blocked_reason": "QA-FICTICIO: esperando información del cliente.",
+   "project_number": "INT26-003",
+   "sla_target_date": null,
+   "workflow_version": 2
+  },
+  {
+   "id": "e23387d1-69bf-4570-85ab-c829a1f7fabc",
+   "title": "QA-FICTICIO TI pruebas de permisos",
+   "status": "active",
+   "due_date": null,
+   "priority": "urgent",
+   "requests": {
+    "area_id": "c3b328a7-fb47-4510-89a0-d99f876b9c50",
+    "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d",
+    "request_type": "Error / Incidencia",
+    "request_number": "REQ26-017",
+    "requester_area": "QA-FICTICIO Contabilidad",
+    "requester_name": "QA-FICTICIO Cliente registrado por TI",
+    "studio_code_id": "553d7037-35c7-4b52-88c3-42796f255efd"
+   },
+   "created_at": "2026-11-24T16:38:12.062573-05:00",
+   "is_blocked": false,
+   "request_id": "483eb495-1211-4948-b70a-0724e89c8456",
+   "start_date": null,
+   "updated_at": "2026-11-24T16:38:12.074844-05:00",
+   "description": "QA-FICTICIO: trabajo ficticio.",
+   "portfolio_id": "9bc5cbdd-b9dc-47cd-85fc-07f648e8bdea",
+   "project_type": "development",
+   "blocked_since": null,
+   "initiative_id": "2909c4ad-8d55-4175-af8f-ba8416db63ad",
+   "project_flows": [
+    {
+     "id": "ac7c2053-7ece-4336-82a3-aeecb99a8fa8",
+     "progress": 0,
+     "flow_type": "development",
+     "created_at": "2026-11-24T16:38:12.062573-05:00",
+     "project_id": "e23387d1-69bf-4570-85ab-c829a1f7fabc",
+     "updated_at": "2026-11-24T16:38:12.07632-05:00",
+     "assigned_to": "00000000-0000-4000-8000-0000000000c2",
+     "current_phase": "testing",
+     "checklist_items": [
+      {
+       "id": "fe4d8322-6da9-4a6a-b1a5-a535bb8c9ba3",
+       "completed": true,
+       "created_at": "2026-11-24T16:38:12.091319-05:00"
+      },
+      {
+       "id": "25b55d5c-8aa6-444b-bfe0-192f6dee0202",
+       "completed": true,
+       "created_at": "2026-11-24T16:38:12.09845-05:00"
+      },
+      {
+       "id": "b2627183-0587-4455-bff1-259bf6a57a01",
+       "completed": true,
+       "created_at": "2026-11-24T16:38:12.105927-05:00"
+      }
+     ]
+    }
+   ],
+   "blocked_reason": null,
+   "project_number": "REQ26-017",
+   "sla_target_date": null,
+   "workflow_version": 2
+  },
+  {
+   "id": "93fbab14-af0f-4987-a1ea-da8e09dc9ec5",
+   "title": "QA-FICTICIO TI despliegue de módulo de activos",
+   "status": "active",
+   "due_date": null,
+   "priority": "low",
+   "requests": {
+    "area_id": null,
+    "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d",
+    "request_type": "Error / Incidencia",
+    "request_number": "REQ26-018",
+    "requester_area": null,
+    "requester_name": "QA-FICTICIO Cliente registrado por TI",
+    "studio_code_id": "61c3cb1e-908c-4335-baa4-8e3f44186d63"
+   },
+   "created_at": "2026-11-24T16:38:12.123907-05:00",
+   "is_blocked": false,
+   "request_id": "5b811d06-493b-4490-aec0-46f4729e7353",
+   "start_date": null,
+   "updated_at": "2026-11-24T16:38:12.135497-05:00",
+   "description": "QA-FICTICIO: trabajo ficticio.",
+   "portfolio_id": null,
+   "project_type": "development",
+   "blocked_since": null,
+   "initiative_id": null,
+   "project_flows": [
+    {
+     "id": "ee6bcac8-4db2-494f-bb12-a41817aba867",
+     "progress": 0,
+     "flow_type": "development",
+     "created_at": "2026-11-24T16:38:12.123907-05:00",
+     "project_id": "93fbab14-af0f-4987-a1ea-da8e09dc9ec5",
+     "updated_at": "2026-11-24T16:38:12.137329-05:00",
+     "assigned_to": "00000000-0000-4000-8000-0000000000c1",
+     "current_phase": "deploy",
+     "checklist_items": []
+    }
+   ],
+   "blocked_reason": null,
+   "project_number": "REQ26-018",
+   "sla_target_date": null,
+   "workflow_version": 2
+  },
+  {
+   "id": "23684fc8-63b1-4d81-8d0e-bfa669360235",
+   "title": "QA-FICTICIO TI manual de usuario terminado",
+   "status": "completed",
+   "due_date": null,
+   "priority": "medium",
+   "requests": {
+    "area_id": null,
+    "studio_id": null,
+    "request_type": "INT",
+    "request_number": "INT26-004",
+    "requester_area": null,
+    "requester_name": "Admin Simulado",
+    "studio_code_id": null
+   },
+   "created_at": "2026-11-24T16:38:12.144636-05:00",
+   "is_blocked": false,
+   "request_id": "d7258bff-4254-4de5-863c-d712a556964c",
+   "start_date": null,
+   "updated_at": "2026-11-24T16:38:12.1789-05:00",
+   "description": "QA-FICTICIO: trabajo ficticio.",
+   "portfolio_id": "9bc5cbdd-b9dc-47cd-85fc-07f648e8bdea",
+   "project_type": "development",
+   "blocked_since": null,
+   "initiative_id": null,
+   "project_flows": [
+    {
+     "id": "10129352-508e-4273-afce-f0117a29a5ef",
+     "progress": 0,
+     "flow_type": "development",
+     "created_at": "2026-11-24T16:38:12.144636-05:00",
+     "project_id": "23684fc8-63b1-4d81-8d0e-bfa669360235",
+     "updated_at": "2026-11-24T16:38:12.177458-05:00",
+     "assigned_to": "00000000-0000-4000-8000-0000000000d1",
+     "current_phase": "done",
+     "checklist_items": []
+    }
+   ],
+   "blocked_reason": null,
+   "project_number": "INT26-004",
+   "sla_target_date": null,
+   "workflow_version": 2
+  },
+  {
+   "id": "123a39de-cfc5-414b-9d5f-294464f00f01",
+   "title": "QA-FICTICIO TI nueva pantalla de empresas",
+   "status": "active",
+   "due_date": null,
+   "priority": "high",
+   "requests": {
+    "area_id": null,
+    "studio_id": null,
+    "request_type": "INT",
+    "request_number": "INT26-005",
+    "requester_area": null,
+    "requester_name": "Admin Simulado",
+    "studio_code_id": null
+   },
+   "created_at": "2026-11-24T16:38:12.18468-05:00",
+   "is_blocked": false,
+   "request_id": "8fce3a7b-e43a-4717-a23b-b80d561bbcbc",
+   "start_date": null,
+   "updated_at": "2026-11-24T16:38:12.193322-05:00",
+   "description": "QA-FICTICIO: trabajo ficticio.",
+   "portfolio_id": "7da3d9f3-22ee-4aa8-b7bf-36301ad46ff6",
+   "project_type": "development",
+   "blocked_since": null,
+   "initiative_id": null,
+   "project_flows": [
+    {
+     "id": "5ca86b6e-7cc8-41bd-842f-1a7685b7d865",
+     "progress": 0,
+     "flow_type": "development",
+     "created_at": "2026-11-24T16:38:12.18468-05:00",
+     "project_id": "123a39de-cfc5-414b-9d5f-294464f00f01",
+     "updated_at": "2026-11-24T16:38:12.194832-05:00",
+     "assigned_to": "00000000-0000-4000-8000-0000000000d2",
+     "current_phase": "design",
+     "checklist_items": []
+    }
+   ],
+   "blocked_reason": null,
+   "project_number": "INT26-005",
+   "sla_target_date": null,
+   "workflow_version": 2
+  },
+  {
+   "id": "5bca5eac-6f4c-434c-a37f-db1beb2b2992",
+   "title": "QA-FICTICIO TI revisión de validaciones",
+   "status": "active",
+   "due_date": null,
+   "priority": "medium",
+   "requests": {
+    "area_id": null,
+    "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d",
+    "request_type": "Error / Incidencia",
+    "request_number": "REQ26-019",
+    "requester_area": null,
+    "requester_name": "QA-FICTICIO Cliente registrado por TI",
+    "studio_code_id": "77d25cb6-dcb5-4f8a-8dbb-85c42ec524b3"
+   },
+   "created_at": "2026-11-24T16:38:12.201455-05:00",
+   "is_blocked": false,
+   "request_id": "333740da-7f66-4c34-b237-4c7f6a52cea0",
+   "start_date": null,
+   "updated_at": "2026-11-24T16:38:12.201455-05:00",
+   "description": "QA-FICTICIO: trabajo ficticio.",
+   "portfolio_id": null,
+   "project_type": "development",
+   "blocked_since": null,
+   "initiative_id": null,
+   "project_flows": [
+    {
+     "id": "73065927-ae46-4c6e-b76e-4189028f92c8",
+     "progress": 0,
+     "flow_type": "development",
+     "created_at": "2026-11-24T16:38:12.201455-05:00",
+     "project_id": "5bca5eac-6f4c-434c-a37f-db1beb2b2992",
+     "updated_at": "2026-11-24T16:38:12.215058-05:00",
+     "assigned_to": "00000000-0000-4000-8000-0000000000c3",
+     "current_phase": "code_review",
+     "checklist_items": []
+    }
+   ],
+   "blocked_reason": null,
+   "project_number": "REQ26-019",
+   "sla_target_date": null,
+   "workflow_version": 2
+  },
+  {
+   "id": "6fcc73a1-8bbb-4e08-b18b-6865295cd5dd",
+   "title": "QA-FICTICIO Histórico con checklist previo",
+   "status": "active",
+   "due_date": null,
+   "priority": "medium",
+   "requests": {
+    "area_id": null,
+    "studio_id": null,
+    "request_type": "INT",
+    "request_number": "INT26-006",
+    "requester_area": null,
+    "requester_name": "Admin Simulado",
+    "studio_code_id": null
+   },
+   "created_at": "2026-11-24T16:38:12.22227-05:00",
+   "is_blocked": false,
+   "request_id": "c28e7ec6-ce34-4654-8252-8c6a89477b82",
+   "start_date": null,
+   "updated_at": "2026-11-24T16:38:12.23076-05:00",
+   "description": "QA-FICTICIO: trabajo ficticio.",
+   "portfolio_id": "9bc5cbdd-b9dc-47cd-85fc-07f648e8bdea",
+   "project_type": "development",
+   "blocked_since": null,
+   "initiative_id": "2909c4ad-8d55-4175-af8f-ba8416db63ad",
+   "project_flows": [
+    {
+     "id": "85249abb-9a57-4700-93ff-c1fab724dcf5",
+     "progress": 0,
+     "flow_type": "development",
+     "created_at": "2026-11-24T16:38:12.22227-05:00",
+     "project_id": "6fcc73a1-8bbb-4e08-b18b-6865295cd5dd",
+     "updated_at": "2026-11-24T16:38:12.232339-05:00",
+     "assigned_to": "00000000-0000-4000-8000-0000000000c2",
+     "current_phase": "analysis",
+     "checklist_items": [
+      {
+       "id": "f0ea1aaa-f355-4ef1-8b2b-3c45c4ab2787",
+       "completed": true,
+       "created_at": "2026-11-24T16:38:12.22227-05:00"
+      },
+      {
+       "id": "606295f4-3577-4db5-a748-e434ea8d60d2",
+       "completed": false,
+       "created_at": "2026-11-24T16:38:12.22227-05:00"
+      },
+      {
+       "id": "2437086e-0738-42b8-aabc-f9485f02ef25",
+       "completed": false,
+       "created_at": "2026-11-24T16:38:12.22227-05:00"
+      },
+      {
+       "id": "19ed6cb5-f7a4-4716-8112-4450d174aefa",
+       "completed": false,
+       "created_at": "2026-11-24T16:38:12.22227-05:00"
+      },
+      {
+       "id": "9fbb751d-1f74-4a25-937b-0adc769331be",
+       "completed": false,
+       "created_at": "2026-11-24T16:38:12.22227-05:00"
+      },
+      {
+       "id": "380fd2a7-9376-4b6e-a4a1-54867d129393",
+       "completed": false,
+       "created_at": "2026-11-24T16:38:12.22227-05:00"
+      },
+      {
+       "id": "ea6d4be3-0c6f-4787-bfdf-23a883021911",
+       "completed": false,
+       "created_at": "2026-11-24T16:38:12.22227-05:00"
+      },
+      {
+       "id": "b917178e-ee16-4705-87bf-d1ab9dde2969",
+       "completed": true,
+       "created_at": "2026-11-24T16:38:12.22227-05:00"
+      },
+      {
+       "id": "aa83f7c8-fd79-406f-afbf-632e1d390f2e",
+       "completed": false,
+       "created_at": "2026-11-24T16:38:12.22227-05:00"
+      },
+      {
+       "id": "5ba50fc7-12eb-4f85-bc37-78a7907c0287",
+       "completed": false,
+       "created_at": "2026-11-24T16:38:12.22227-05:00"
+      },
+      {
+       "id": "58e071ab-50bc-449b-9509-ec8e19d066f8",
+       "completed": false,
+       "created_at": "2026-11-24T16:38:12.22227-05:00"
+      },
+      {
+       "id": "9b7e0c13-e621-427b-b83d-64e49cb9faf6",
+       "completed": false,
+       "created_at": "2026-11-24T16:38:12.22227-05:00"
+      },
+      {
+       "id": "13515c3b-323b-403e-a436-22452fad7649",
+       "completed": false,
+       "created_at": "2026-11-24T16:38:12.22227-05:00"
+      },
+      {
+       "id": "20f76cb6-de31-4f4f-ab06-b6695c99b1ac",
+       "completed": false,
+       "created_at": "2026-11-24T16:38:12.22227-05:00"
+      },
+      {
+       "id": "d41ab6b6-5d5d-41d6-938b-d8523bb11be9",
+       "completed": false,
+       "created_at": "2026-11-24T16:38:12.22227-05:00"
+      },
+      {
+       "id": "a58bbc5a-9f32-4792-9825-92617b57a12d",
+       "completed": false,
+       "created_at": "2026-11-24T16:38:12.22227-05:00"
+      },
+      {
+       "id": "4bf16cb6-6811-4856-8f0d-81287a3ab691",
+       "completed": true,
+       "created_at": "2026-11-24T16:38:12.22227-05:00"
+      },
+      {
+       "id": "c11f4938-2ede-4144-bb46-a14f83cca589",
+       "completed": false,
+       "created_at": "2026-11-24T16:38:12.22227-05:00"
+      }
+     ]
+    }
+   ],
+   "blocked_reason": null,
+   "project_number": "INT26-006",
+   "sla_target_date": null,
+   "workflow_version": 2
+  }
+ ],
+ "checklist_items": [
+  {
+   "id": "19ed6cb5-f7a4-4716-8112-4450d174aefa",
+   "phase": "dev",
+   "completed": false,
+   "created_at": "2026-11-24T16:38:12.22227-05:00",
+   "description": "Implementar la funcionalidad",
+   "order_index": 0,
+   "completed_at": null,
+   "project_flow_id": "85249abb-9a57-4700-93ff-c1fab724dcf5"
+  },
+  {
+   "id": "02faa76c-84e0-42bc-ad7d-50c693d3b053",
+   "phase": "analysis",
+   "completed": false,
+   "created_at": "2026-11-24T16:38:11.406477-05:00",
+   "description": "Revisar el requerimiento y aclarar dudas con el solicitante",
+   "order_index": 0,
+   "completed_at": null,
+   "project_flow_id": "eca60058-562f-446e-9b83-8493a0c0ed42"
+  },
+  {
+   "id": "9fbb751d-1f74-4a25-937b-0adc769331be",
+   "phase": "done",
+   "completed": false,
+   "created_at": "2026-11-24T16:38:12.22227-05:00",
+   "description": "Notificar al solicitante",
+   "order_index": 0,
+   "completed_at": null,
+   "project_flow_id": "85249abb-9a57-4700-93ff-c1fab724dcf5"
+  },
+  {
+   "id": "00bf124e-7641-4e45-a3e8-bc25578bf0dc",
+   "phase": "analysis",
+   "completed": true,
+   "created_at": "2026-11-24T16:38:11.984748-05:00",
+   "description": "Revisar el requerimiento y aclarar dudas con el solicitante",
+   "order_index": 0,
+   "completed_at": "2026-11-24T16:38:12.01514-05:00",
+   "project_flow_id": "169235fa-036d-438f-add3-664e1495e6ee"
+  },
+  {
+   "id": "380fd2a7-9376-4b6e-a4a1-54867d129393",
+   "phase": "testing",
+   "completed": false,
+   "created_at": "2026-11-24T16:38:12.22227-05:00",
+   "description": "Pruebas funcionales completas",
+   "order_index": 0,
+   "completed_at": null,
+   "project_flow_id": "85249abb-9a57-4700-93ff-c1fab724dcf5"
+  },
+  {
+   "id": "f0ea1aaa-f355-4ef1-8b2b-3c45c4ab2787",
+   "phase": "backlog",
+   "completed": true,
+   "created_at": "2026-11-24T16:38:12.22227-05:00",
+   "description": "Definir requerimientos con el solicitante",
+   "order_index": 0,
+   "completed_at": "2026-11-24T16:38:12.253513-05:00",
+   "project_flow_id": "85249abb-9a57-4700-93ff-c1fab724dcf5"
+  },
+  {
+   "id": "fe4d8322-6da9-4a6a-b1a5-a535bb8c9ba3",
+   "phase": "testing",
+   "completed": true,
+   "created_at": "2026-11-24T16:38:12.091319-05:00",
+   "description": "Pruebas funcionales completas",
+   "order_index": 0,
+   "completed_at": "2026-11-24T16:38:12.116794-05:00",
+   "project_flow_id": "ac7c2053-7ece-4336-82a3-aeecb99a8fa8"
+  },
+  {
+   "id": "606295f4-3577-4db5-a748-e434ea8d60d2",
+   "phase": "deploy",
+   "completed": false,
+   "created_at": "2026-11-24T16:38:12.22227-05:00",
+   "description": "Preparar release notes",
+   "order_index": 0,
+   "completed_at": null,
+   "project_flow_id": "85249abb-9a57-4700-93ff-c1fab724dcf5"
+  },
+  {
+   "id": "ea5e4d3a-130c-41f1-9307-0aaf19e3979e",
+   "phase": "code_review",
+   "completed": true,
+   "created_at": "2026-11-24T16:38:11.752539-05:00",
+   "description": "Revisar el diff y la lógica implementada",
+   "order_index": 0,
+   "completed_at": "2026-11-24T16:38:11.776222-05:00",
+   "project_flow_id": "c1eefdd8-e7f6-49d2-aa36-18f85cbf5f95"
+  },
+  {
+   "id": "2437086e-0738-42b8-aabc-f9485f02ef25",
+   "phase": "design",
+   "completed": false,
+   "created_at": "2026-11-24T16:38:12.22227-05:00",
+   "description": "Crear wireframes o mockups",
+   "order_index": 0,
+   "completed_at": null,
+   "project_flow_id": "85249abb-9a57-4700-93ff-c1fab724dcf5"
+  },
+  {
+   "id": "aa83f7c8-fd79-406f-afbf-632e1d390f2e",
+   "phase": "dev",
+   "completed": false,
+   "created_at": "2026-11-24T16:38:12.22227-05:00",
+   "description": "Pruebas unitarias",
+   "order_index": 1,
+   "completed_at": null,
+   "project_flow_id": "85249abb-9a57-4700-93ff-c1fab724dcf5"
+  },
+  {
+   "id": "25b55d5c-8aa6-444b-bfe0-192f6dee0202",
+   "phase": "testing",
+   "completed": true,
+   "created_at": "2026-11-24T16:38:12.09845-05:00",
+   "description": "Pruebas de regresión",
+   "order_index": 1,
+   "completed_at": "2026-11-24T16:38:12.117285-05:00",
+   "project_flow_id": "ac7c2053-7ece-4336-82a3-aeecb99a8fa8"
+  },
+  {
+   "id": "08d623ae-2f6d-4986-8165-ffb4a5a08a15",
+   "phase": "analysis",
+   "completed": false,
+   "created_at": "2026-11-24T16:38:11.414049-05:00",
+   "description": "Identificar dependencias y sistemas afectados",
+   "order_index": 1,
+   "completed_at": null,
+   "project_flow_id": "eca60058-562f-446e-9b83-8493a0c0ed42"
+  },
+  {
+   "id": "5ba50fc7-12eb-4f85-bc37-78a7907c0287",
+   "phase": "done",
+   "completed": false,
+   "created_at": "2026-11-24T16:38:12.22227-05:00",
+   "description": "Confirmar la conformidad del solicitante",
+   "order_index": 1,
+   "completed_at": null,
+   "project_flow_id": "85249abb-9a57-4700-93ff-c1fab724dcf5"
+  },
+  {
+   "id": "9b7e0c13-e621-427b-b83d-64e49cb9faf6",
+   "phase": "design",
+   "completed": false,
+   "created_at": "2026-11-24T16:38:12.22227-05:00",
+   "description": "Revisar diseño con el equipo",
+   "order_index": 1,
+   "completed_at": null,
+   "project_flow_id": "85249abb-9a57-4700-93ff-c1fab724dcf5"
+  },
+  {
+   "id": "58e071ab-50bc-449b-9509-ec8e19d066f8",
+   "phase": "deploy",
+   "completed": false,
+   "created_at": "2026-11-24T16:38:12.22227-05:00",
+   "description": "Deploy a producción",
+   "order_index": 1,
+   "completed_at": null,
+   "project_flow_id": "85249abb-9a57-4700-93ff-c1fab724dcf5"
+  },
+  {
+   "id": "ea6d4be3-0c6f-4787-bfdf-23a883021911",
+   "phase": "testing",
+   "completed": false,
+   "created_at": "2026-11-24T16:38:12.22227-05:00",
+   "description": "Pruebas de regresión",
+   "order_index": 1,
+   "completed_at": null,
+   "project_flow_id": "85249abb-9a57-4700-93ff-c1fab724dcf5"
+  },
+  {
+   "id": "61e708b9-6da9-4344-b578-fa1906aca0d4",
+   "phase": "analysis",
+   "completed": true,
+   "created_at": "2026-11-24T16:38:11.991703-05:00",
+   "description": "Identificar dependencias y sistemas afectados",
+   "order_index": 1,
+   "completed_at": "2026-11-24T16:38:12.015786-05:00",
+   "project_flow_id": "169235fa-036d-438f-add3-664e1495e6ee"
+  },
+  {
+   "id": "1f58934c-334e-4d77-8d59-74c2e018a6b0",
+   "phase": "code_review",
+   "completed": false,
+   "created_at": "2026-11-24T16:38:11.759831-05:00",
+   "description": "Validar estándares, seguridad y manejo de errores",
+   "order_index": 1,
+   "completed_at": null,
+   "project_flow_id": "c1eefdd8-e7f6-49d2-aa36-18f85cbf5f95"
+  },
+  {
+   "id": "b917178e-ee16-4705-87bf-d1ab9dde2969",
+   "phase": "backlog",
+   "completed": true,
+   "created_at": "2026-11-24T16:38:12.22227-05:00",
+   "description": "Estimar horas de desarrollo",
+   "order_index": 1,
+   "completed_at": "2026-11-24T16:38:12.253654-05:00",
+   "project_flow_id": "85249abb-9a57-4700-93ff-c1fab724dcf5"
+  },
+  {
+   "id": "4bf16cb6-6811-4856-8f0d-81287a3ab691",
+   "phase": "backlog",
+   "completed": true,
+   "created_at": "2026-11-24T16:38:12.22227-05:00",
+   "description": "Priorizar en el sprint",
+   "order_index": 2,
+   "completed_at": "2026-11-24T16:38:12.253695-05:00",
+   "project_flow_id": "85249abb-9a57-4700-93ff-c1fab724dcf5"
+  },
+  {
+   "id": "e346cb16-5e8b-4a0f-a9a7-18eb18e60cb3",
+   "phase": "analysis",
+   "completed": false,
+   "created_at": "2026-11-24T16:38:11.420978-05:00",
+   "description": "Definir criterios de aceptación",
+   "order_index": 2,
+   "completed_at": null,
+   "project_flow_id": "eca60058-562f-446e-9b83-8493a0c0ed42"
+  },
+  {
+   "id": "f2ade44f-4d25-4b04-8663-a175cafdd384",
+   "phase": "code_review",
+   "completed": false,
+   "created_at": "2026-11-24T16:38:11.766612-05:00",
+   "description": "Resolver las observaciones de la revisión",
+   "order_index": 2,
+   "completed_at": null,
+   "project_flow_id": "c1eefdd8-e7f6-49d2-aa36-18f85cbf5f95"
+  },
+  {
+   "id": "ecd60ebc-0ce4-4373-8b81-b0bc09c0f28f",
+   "phase": "analysis",
+   "completed": false,
+   "created_at": "2026-11-24T16:38:11.99836-05:00",
+   "description": "Definir criterios de aceptación",
+   "order_index": 2,
+   "completed_at": null,
+   "project_flow_id": "169235fa-036d-438f-add3-664e1495e6ee"
+  },
+  {
+   "id": "b2627183-0587-4455-bff1-259bf6a57a01",
+   "phase": "testing",
+   "completed": true,
+   "created_at": "2026-11-24T16:38:12.105927-05:00",
+   "description": "Documentar resultados",
+   "order_index": 2,
+   "completed_at": "2026-11-24T16:38:12.117448-05:00",
+   "project_flow_id": "ac7c2053-7ece-4336-82a3-aeecb99a8fa8"
+  },
+  {
+   "id": "13515c3b-323b-403e-a436-22452fad7649",
+   "phase": "deploy",
+   "completed": false,
+   "created_at": "2026-11-24T16:38:12.22227-05:00",
+   "description": "Smoke test en producción",
+   "order_index": 2,
+   "completed_at": null,
+   "project_flow_id": "85249abb-9a57-4700-93ff-c1fab724dcf5"
+  },
+  {
+   "id": "20f76cb6-de31-4f4f-ab06-b6695c99b1ac",
+   "phase": "design",
+   "completed": false,
+   "created_at": "2026-11-24T16:38:12.22227-05:00",
+   "description": "Aprobar diseño final",
+   "order_index": 2,
+   "completed_at": null,
+   "project_flow_id": "85249abb-9a57-4700-93ff-c1fab724dcf5"
+  },
+  {
+   "id": "a58bbc5a-9f32-4792-9825-92617b57a12d",
+   "phase": "dev",
+   "completed": false,
+   "created_at": "2026-11-24T16:38:12.22227-05:00",
+   "description": "Actualizar la documentación técnica",
+   "order_index": 2,
+   "completed_at": null,
+   "project_flow_id": "85249abb-9a57-4700-93ff-c1fab724dcf5"
+  },
+  {
+   "id": "c11f4938-2ede-4144-bb46-a14f83cca589",
+   "phase": "done",
+   "completed": false,
+   "created_at": "2026-11-24T16:38:12.22227-05:00",
+   "description": "Cerrar el ticket",
+   "order_index": 2,
+   "completed_at": null,
+   "project_flow_id": "85249abb-9a57-4700-93ff-c1fab724dcf5"
+  },
+  {
+   "id": "d41ab6b6-5d5d-41d6-938b-d8523bb11be9",
+   "phase": "testing",
+   "completed": false,
+   "created_at": "2026-11-24T16:38:12.22227-05:00",
+   "description": "Documentar resultados",
+   "order_index": 2,
+   "completed_at": null,
+   "project_flow_id": "85249abb-9a57-4700-93ff-c1fab724dcf5"
+  },
+  {
+   "id": "bf890fc3-8324-4cf2-9da9-cf6e2d66e8a1",
+   "phase": "analysis",
+   "completed": false,
+   "created_at": "2026-11-24T16:38:12.004989-05:00",
+   "description": "QA-FICTICIO Tarea manual adicional",
+   "order_index": 3,
+   "completed_at": null,
+   "project_flow_id": "169235fa-036d-438f-add3-664e1495e6ee"
+  }
+ ],
+ "requests": [
+  {
+   "id": "71329928-0b90-4509-a35c-314caaa5e9ed",
+   "title": "QA-FICTICIO M20 atómica",
+   "origin": "Interno",
+   "status": "approved",
+   "area_id": null,
+   "projects": {
+    "status": "active"
+   },
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d",
+   "system_id": "8c7f668e-86dc-492d-9531-1be6e94a1dbf",
+   "created_at": "2026-11-24T16:38:11.083373-05:00",
+   "needs_code": false,
+   "project_id": "6565de8e-9c7d-46fe-bf5c-a63a0066423b",
+   "subarea_id": null,
+   "updated_at": "2026-11-24T16:38:11.157432-05:00",
+   "description": "Solicitud ficticia de QA.",
+   "observations": null,
+   "request_date": "2026-11-24",
+   "request_type": "Error / Incidencia",
+   "subsystem_id": "a48f1935-6c20-4a2b-bb00-b4b04e2489d1",
+   "classified_at": "2026-11-24T16:38:11.099396-05:00",
+   "classified_by": "00000000-0000-4000-8000-0000000000c2",
+   "number_series": "REQ",
+   "request_number": "REQ26-001",
+   "requested_date": null,
+   "requester_area": null,
+   "requester_name": "QA-FICTICIO Cliente quipu",
+   "studio_code_id": "77d25cb6-dcb5-4f8a-8dbb-85c42ec524b3",
+   "request_type_id": "d5ff941d-9b6b-4333-afdb-d3f4fdf725e0",
+   "requester_email": null,
+   "rejection_reason": null,
+   "urgent_requested": false,
+   "requested_priority": "medium",
+   "data_system_involved": null,
+   "requester_name_source": "verified_name",
+   "requested_subsystem_id": "a48f1935-6c20-4a2b-bb00-b4b04e2489d1",
+   "public_rejection_reason": null
+  },
+  {
+   "id": "73a7bd4d-c3c7-41b4-a434-7ba77856a15a",
+   "title": "QA-FICTICIO M20 independiente",
+   "origin": "Interno",
+   "status": "approved",
+   "area_id": null,
+   "projects": {
+    "status": "active"
+   },
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d",
+   "system_id": "0f3a932d-2a05-455b-853e-67858bcc9e95",
+   "created_at": "2026-11-24T16:38:11.17826-05:00",
+   "needs_code": false,
+   "project_id": "cda21f7c-c621-493b-9ef7-562c76b58bd2",
+   "subarea_id": null,
+   "updated_at": "2026-11-24T16:38:11.208301-05:00",
+   "description": "Solicitud ficticia de QA.",
+   "observations": null,
+   "request_date": "2026-11-24",
+   "request_type": "Error / Incidencia",
+   "subsystem_id": "b98df625-2a03-41b0-b160-e9ce15f1871b",
+   "classified_at": "2026-11-24T16:38:11.193822-05:00",
+   "classified_by": "00000000-0000-4000-8000-0000000000c2",
+   "number_series": "REQ",
+   "request_number": "REQ26-002",
+   "requested_date": null,
+   "requester_area": null,
+   "requester_name": "QA-FICTICIO Solicitante QuipuFac",
+   "studio_code_id": "34232ed7-97f0-449b-bc2d-babb0de90ed2",
+   "request_type_id": "d5ff941d-9b6b-4333-afdb-d3f4fdf725e0",
+   "requester_email": null,
+   "rejection_reason": null,
+   "urgent_requested": false,
+   "requested_priority": "medium",
+   "data_system_involved": null,
+   "requester_name_source": "declared",
+   "requested_subsystem_id": "b98df625-2a03-41b0-b160-e9ce15f1871b",
+   "public_rejection_reason": null
+  },
+  {
+   "id": "6a673d45-0449-4d77-9494-2a5c5fa400fa",
+   "title": "QA-FICTICIO Quipu recibida sin revisar",
+   "origin": "Interno",
+   "status": "pending",
+   "area_id": null,
+   "projects": null,
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d",
+   "system_id": "8c7f668e-86dc-492d-9531-1be6e94a1dbf",
+   "created_at": "2026-11-24T16:38:11.261866-05:00",
+   "needs_code": false,
+   "project_id": null,
+   "subarea_id": null,
+   "updated_at": "2026-11-24T16:38:11.261866-05:00",
+   "description": "QA-FICTICIO: datos ficticios para validar el flujo.",
+   "observations": null,
+   "request_date": "2026-11-24",
+   "request_type": "Otros",
+   "subsystem_id": "a48f1935-6c20-4a2b-bb00-b4b04e2489d1",
+   "classified_at": null,
+   "classified_by": null,
+   "number_series": "REQ",
+   "request_number": "REQ26-003",
+   "requested_date": null,
+   "requester_area": null,
+   "requester_name": "QA-FICTICIO Cliente quipu",
+   "studio_code_id": null,
+   "request_type_id": "22a4da4c-d313-4161-8d09-e46a05372268",
+   "requester_email": null,
+   "rejection_reason": null,
+   "urgent_requested": false,
+   "requested_priority": "low",
+   "data_system_involved": null,
+   "requester_name_source": "verified_name",
+   "requested_subsystem_id": "a48f1935-6c20-4a2b-bb00-b4b04e2489d1",
+   "public_rejection_reason": null
+  },
+  {
+   "id": "c2ec621c-026e-4b0e-9212-7e5f96677ac8",
+   "title": "QA-FICTICIO Quipu en revisión",
+   "origin": "Interno",
+   "status": "pending",
+   "area_id": null,
+   "projects": null,
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d",
+   "system_id": "8c7f668e-86dc-492d-9531-1be6e94a1dbf",
+   "created_at": "2026-11-24T16:38:11.273645-05:00",
+   "needs_code": false,
+   "project_id": null,
+   "subarea_id": null,
+   "updated_at": "2026-11-24T16:38:11.273645-05:00",
+   "description": "QA-FICTICIO: datos ficticios para validar el flujo.",
+   "observations": null,
+   "request_date": "2026-11-24",
+   "request_type": "Otros",
+   "subsystem_id": "a48f1935-6c20-4a2b-bb00-b4b04e2489d1",
+   "classified_at": null,
+   "classified_by": null,
+   "number_series": "REQ",
+   "request_number": "REQ26-004",
+   "requested_date": null,
+   "requester_area": null,
+   "requester_name": "QA-FICTICIO Cliente quipu",
+   "studio_code_id": null,
+   "request_type_id": "22a4da4c-d313-4161-8d09-e46a05372268",
+   "requester_email": null,
+   "rejection_reason": null,
+   "urgent_requested": false,
+   "requested_priority": "medium",
+   "data_system_involved": null,
+   "requester_name_source": "verified_name",
+   "requested_subsystem_id": "a48f1935-6c20-4a2b-bb00-b4b04e2489d1",
+   "public_rejection_reason": null
+  },
+  {
+   "id": "d479c737-ce5d-4dd7-a65f-81a0fcebfc70",
+   "title": "QA-FICTICIO Quipu consulta de beneficiarios",
+   "origin": "Interno",
+   "status": "approved",
+   "area_id": "c3b328a7-fb47-4510-89a0-d99f876b9c50",
+   "projects": {
+    "status": "active"
+   },
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d",
+   "system_id": "8c7f668e-86dc-492d-9531-1be6e94a1dbf",
+   "created_at": "2026-11-24T16:38:11.292823-05:00",
+   "needs_code": false,
+   "project_id": "c5a13a65-13e6-4b4b-ae4c-0d6425a28482",
+   "subarea_id": null,
+   "updated_at": "2026-11-24T16:38:11.327372-05:00",
+   "description": "QA-FICTICIO: datos ficticios para validar el flujo.",
+   "observations": null,
+   "request_date": "2026-11-24",
+   "request_type": "Acceso / Permisos",
+   "subsystem_id": "a48f1935-6c20-4a2b-bb00-b4b04e2489d1",
+   "classified_at": "2026-11-24T16:38:11.308662-05:00",
+   "classified_by": "00000000-0000-4000-8000-0000000000c2",
+   "number_series": "REQ",
+   "request_number": "REQ26-005",
+   "requested_date": null,
+   "requester_area": "QA-FICTICIO Contabilidad",
+   "requester_name": "QA-FICTICIO Cliente quipu",
+   "studio_code_id": "553d7037-35c7-4b52-88c3-42796f255efd",
+   "request_type_id": "edb6ceaa-cce7-44a6-9a30-3d763262c239",
+   "requester_email": null,
+   "rejection_reason": null,
+   "urgent_requested": false,
+   "requested_priority": "high",
+   "data_system_involved": null,
+   "requester_name_source": "verified_name",
+   "requested_subsystem_id": "a48f1935-6c20-4a2b-bb00-b4b04e2489d1",
+   "public_rejection_reason": null
+  },
+  {
+   "id": "b0293eb9-a6c9-48de-a64f-b985d1add749",
+   "title": "QA-FICTICIO Quipu validación de RUC con guion",
+   "origin": "Interno",
+   "status": "approved",
+   "area_id": null,
+   "projects": {
+    "status": "active"
+   },
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d",
+   "system_id": "8c7f668e-86dc-492d-9531-1be6e94a1dbf",
+   "created_at": "2026-11-24T16:38:11.33447-05:00",
+   "needs_code": false,
+   "project_id": "258c8cae-b2a8-4f70-a311-1f38a77c716e",
+   "subarea_id": null,
+   "updated_at": "2026-11-24T16:38:11.369525-05:00",
+   "description": "QA-FICTICIO: datos ficticios para validar el flujo.",
+   "observations": null,
+   "request_date": "2026-11-24",
+   "request_type": "Integración / Automatización",
+   "subsystem_id": "a48f1935-6c20-4a2b-bb00-b4b04e2489d1",
+   "classified_at": "2026-11-24T16:38:11.350614-05:00",
+   "classified_by": "00000000-0000-4000-8000-0000000000c2",
+   "number_series": "REQ",
+   "request_number": "REQ26-006",
+   "requested_date": null,
+   "requester_area": null,
+   "requester_name": "QA-FICTICIO Cliente quipu",
+   "studio_code_id": "77d25cb6-dcb5-4f8a-8dbb-85c42ec524b3",
+   "request_type_id": "4663a69b-e76b-481b-aedb-a474dcff396c",
+   "requester_email": null,
+   "rejection_reason": null,
+   "urgent_requested": false,
+   "requested_priority": "urgent",
+   "data_system_involved": null,
+   "requester_name_source": "verified_name",
+   "requested_subsystem_id": "a48f1935-6c20-4a2b-bb00-b4b04e2489d1",
+   "public_rejection_reason": null
+  },
+  {
+   "id": "a966f9bf-264f-4e35-8507-c40bfa859935",
+   "title": "QA-FICTICIO Quipu reporte de compras bloqueado",
+   "origin": "Interno",
+   "status": "approved",
+   "area_id": null,
+   "projects": {
+    "status": "active"
+   },
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d",
+   "system_id": "8c7f668e-86dc-492d-9531-1be6e94a1dbf",
+   "created_at": "2026-11-24T16:38:11.428175-05:00",
+   "needs_code": false,
+   "project_id": "3946ac17-2384-4562-8b0c-e2aa63160295",
+   "subarea_id": null,
+   "updated_at": "2026-11-24T16:38:11.462656-05:00",
+   "description": "QA-FICTICIO: datos ficticios para validar el flujo.",
+   "observations": null,
+   "request_date": "2026-11-24",
+   "request_type": "Capacitación / Consulta",
+   "subsystem_id": "a48f1935-6c20-4a2b-bb00-b4b04e2489d1",
+   "classified_at": "2026-11-24T16:38:11.443911-05:00",
+   "classified_by": "00000000-0000-4000-8000-0000000000c2",
+   "number_series": "REQ",
+   "request_number": "REQ26-007",
+   "requested_date": null,
+   "requester_area": null,
+   "requester_name": "QA-FICTICIO Cliente quipu",
+   "studio_code_id": "34232ed7-97f0-449b-bc2d-babb0de90ed2",
+   "request_type_id": "feb9ecc6-474e-4ec4-a47d-b935cdf6cfee",
+   "requester_email": null,
+   "rejection_reason": null,
+   "urgent_requested": false,
+   "requested_priority": "medium",
+   "data_system_involved": null,
+   "requester_name_source": "verified_name",
+   "requested_subsystem_id": "a48f1935-6c20-4a2b-bb00-b4b04e2489d1",
+   "public_rejection_reason": null
+  },
+  {
+   "id": "777759c3-52a4-45a1-a80d-6dc9473b0313",
+   "title": "QA-FICTICIO Quipu retenciones de cuarta",
+   "origin": "Interno",
+   "status": "approved",
+   "area_id": null,
+   "projects": {
+    "status": "active"
+   },
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d",
+   "system_id": "8c7f668e-86dc-492d-9531-1be6e94a1dbf",
+   "created_at": "2026-11-24T16:38:11.502819-05:00",
+   "needs_code": false,
+   "project_id": "19e57ab5-1815-4119-8760-5abc4d098762",
+   "subarea_id": null,
+   "updated_at": "2026-11-24T16:38:11.538515-05:00",
+   "description": "QA-FICTICIO: datos ficticios para validar el flujo.",
+   "observations": null,
+   "request_date": "2026-11-24",
+   "request_type": "Error / Incidencia",
+   "subsystem_id": "a48f1935-6c20-4a2b-bb00-b4b04e2489d1",
+   "classified_at": "2026-11-24T16:38:11.519501-05:00",
+   "classified_by": "00000000-0000-4000-8000-0000000000c2",
+   "number_series": "REQ",
+   "request_number": "REQ26-008",
+   "requested_date": null,
+   "requester_area": null,
+   "requester_name": "QA-FICTICIO Cliente quipu",
+   "studio_code_id": "d5020f27-558e-4d9e-b837-7ea1550c8224",
+   "request_type_id": "d5ff941d-9b6b-4333-afdb-d3f4fdf725e0",
+   "requester_email": null,
+   "rejection_reason": null,
+   "urgent_requested": false,
+   "requested_priority": "low",
+   "data_system_involved": null,
+   "requester_name_source": "verified_name",
+   "requested_subsystem_id": "a48f1935-6c20-4a2b-bb00-b4b04e2489d1",
+   "public_rejection_reason": null
+  },
+  {
+   "id": "ddcf4d9e-65b5-4497-a56e-0d25ddd854b3",
+   "title": "QA-FICTICIO Quipu duplicada rechazada",
+   "origin": "Interno",
+   "status": "rejected",
+   "area_id": null,
+   "projects": null,
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d",
+   "system_id": "8c7f668e-86dc-492d-9531-1be6e94a1dbf",
+   "created_at": "2026-11-24T16:38:11.569304-05:00",
+   "needs_code": false,
+   "project_id": null,
+   "subarea_id": null,
+   "updated_at": "2026-11-24T16:38:11.597806-05:00",
+   "description": "QA-FICTICIO: datos ficticios para validar el flujo.",
+   "observations": null,
+   "request_date": "2026-11-24",
+   "request_type": "Capacitación / Consulta",
+   "subsystem_id": "a48f1935-6c20-4a2b-bb00-b4b04e2489d1",
+   "classified_at": "2026-11-24T16:38:11.58551-05:00",
+   "classified_by": "00000000-0000-4000-8000-0000000000c2",
+   "number_series": "REQ",
+   "request_number": "REQ26-009",
+   "requested_date": null,
+   "requester_area": null,
+   "requester_name": "QA-FICTICIO Cliente quipu",
+   "studio_code_id": "77d25cb6-dcb5-4f8a-8dbb-85c42ec524b3",
+   "request_type_id": "feb9ecc6-474e-4ec4-a47d-b935cdf6cfee",
+   "requester_email": null,
+   "rejection_reason": "QA-FICTICIO: solicitud duplicada.",
+   "urgent_requested": false,
+   "requested_priority": "medium",
+   "data_system_involved": null,
+   "requester_name_source": "verified_name",
+   "requested_subsystem_id": "a48f1935-6c20-4a2b-bb00-b4b04e2489d1",
+   "public_rejection_reason": "QA-FICTICIO: solicitud duplicada."
+  },
+  {
+   "id": "4c1989d6-932c-477f-951c-e29178150689",
+   "title": "QA-FICTICIO Quipu redondeo de planilla",
+   "origin": "Interno",
+   "status": "approved",
+   "area_id": null,
+   "projects": {
+    "status": "completed"
+   },
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d",
+   "system_id": "8c7f668e-86dc-492d-9531-1be6e94a1dbf",
+   "created_at": "2026-11-24T16:38:11.603634-05:00",
+   "needs_code": false,
+   "project_id": "ccd9aaed-9d54-4fd2-99a8-4ece04a2ddab",
+   "subarea_id": null,
+   "updated_at": "2026-11-24T16:38:11.639224-05:00",
+   "description": "QA-FICTICIO: datos ficticios para validar el flujo.",
+   "observations": null,
+   "request_date": "2026-11-24",
+   "request_type": "Otros",
+   "subsystem_id": "a48f1935-6c20-4a2b-bb00-b4b04e2489d1",
+   "classified_at": "2026-11-24T16:38:11.619999-05:00",
+   "classified_by": "00000000-0000-4000-8000-0000000000c2",
+   "number_series": "REQ",
+   "request_number": "REQ26-010",
+   "requested_date": null,
+   "requester_area": null,
+   "requester_name": "QA-FICTICIO Cliente quipu",
+   "studio_code_id": "61c3cb1e-908c-4335-baa4-8e3f44186d63",
+   "request_type_id": "22a4da4c-d313-4161-8d09-e46a05372268",
+   "requester_email": null,
+   "rejection_reason": null,
+   "urgent_requested": false,
+   "requested_priority": "medium",
+   "data_system_involved": null,
+   "requester_name_source": "verified_name",
+   "requested_subsystem_id": "a48f1935-6c20-4a2b-bb00-b4b04e2489d1",
+   "public_rejection_reason": null
+  },
+  {
+   "id": "5dd63243-49f8-444b-b158-b77aa22b75c7",
+   "title": "QA-FICTICIO QuipuFac recibida sin revisar",
+   "origin": "Interno",
+   "status": "pending",
+   "area_id": null,
+   "projects": null,
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d",
+   "system_id": "0f3a932d-2a05-455b-853e-67858bcc9e95",
+   "created_at": "2026-11-24T16:38:11.668322-05:00",
+   "needs_code": false,
+   "project_id": null,
+   "subarea_id": null,
+   "updated_at": "2026-11-24T16:38:11.668322-05:00",
+   "description": "QA-FICTICIO: datos ficticios para validar el flujo.",
+   "observations": null,
+   "request_date": "2026-11-24",
+   "request_type": "Mejora",
+   "subsystem_id": "b98df625-2a03-41b0-b160-e9ce15f1871b",
+   "classified_at": null,
+   "classified_by": null,
+   "number_series": "REQ",
+   "request_number": "REQ26-011",
+   "requested_date": null,
+   "requester_area": null,
+   "requester_name": "QA-FICTICIO Solicitante QuipuFac",
+   "studio_code_id": null,
+   "request_type_id": "807b447a-b2eb-4c35-9b1e-5de66b985bf0",
+   "requester_email": null,
+   "rejection_reason": null,
+   "urgent_requested": false,
+   "requested_priority": "high",
+   "data_system_involved": null,
+   "requester_name_source": "declared",
+   "requested_subsystem_id": "b98df625-2a03-41b0-b160-e9ce15f1871b",
+   "public_rejection_reason": null
+  },
+  {
+   "id": "e3dc22ec-bba4-4cc1-a7e1-f35724ce4692",
+   "title": "QA-FICTICIO QuipuFac notas de crédito",
+   "origin": "Interno",
+   "status": "approved",
+   "area_id": "c3b328a7-fb47-4510-89a0-d99f876b9c50",
+   "projects": {
+    "status": "active"
+   },
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d",
+   "system_id": "0f3a932d-2a05-455b-853e-67858bcc9e95",
+   "created_at": "2026-11-24T16:38:11.680172-05:00",
+   "needs_code": false,
+   "project_id": "c088a4a1-cebe-4250-aa98-deee12dd7ed9",
+   "subarea_id": null,
+   "updated_at": "2026-11-24T16:38:11.71524-05:00",
+   "description": "QA-FICTICIO: datos ficticios para validar el flujo.",
+   "observations": null,
+   "request_date": "2026-11-24",
+   "request_type": "Capacitación / Consulta",
+   "subsystem_id": "b98df625-2a03-41b0-b160-e9ce15f1871b",
+   "classified_at": "2026-11-24T16:38:11.695358-05:00",
+   "classified_by": "00000000-0000-4000-8000-0000000000c2",
+   "number_series": "REQ",
+   "request_number": "REQ26-012",
+   "requested_date": null,
+   "requester_area": "QA-FICTICIO Contabilidad",
+   "requester_name": "QA-FICTICIO Solicitante QuipuFac",
+   "studio_code_id": "553d7037-35c7-4b52-88c3-42796f255efd",
+   "request_type_id": "feb9ecc6-474e-4ec4-a47d-b935cdf6cfee",
+   "requester_email": null,
+   "rejection_reason": null,
+   "urgent_requested": false,
+   "requested_priority": "high",
+   "data_system_involved": null,
+   "requester_name_source": "declared",
+   "requested_subsystem_id": "b98df625-2a03-41b0-b160-e9ce15f1871b",
+   "public_rejection_reason": null
+  },
+  {
+   "id": "89f98284-a2bd-49c8-af7c-4cf795ad7ab1",
+   "title": "QA-FICTICIO QuipuFac exportación a PDF",
+   "origin": "Interno",
+   "status": "approved",
+   "area_id": null,
+   "projects": {
+    "status": "active"
+   },
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d",
+   "system_id": "0f3a932d-2a05-455b-853e-67858bcc9e95",
+   "created_at": "2026-11-24T16:38:11.780987-05:00",
+   "needs_code": false,
+   "project_id": "19752b2c-abfb-4934-9877-14c5a00886cf",
+   "subarea_id": null,
+   "updated_at": "2026-11-24T16:38:11.816415-05:00",
+   "description": "QA-FICTICIO: datos ficticios para validar el flujo.",
+   "observations": null,
+   "request_date": "2026-11-24",
+   "request_type": "Otros",
+   "subsystem_id": "b98df625-2a03-41b0-b160-e9ce15f1871b",
+   "classified_at": "2026-11-24T16:38:11.79657-05:00",
+   "classified_by": "00000000-0000-4000-8000-0000000000c2",
+   "number_series": "REQ",
+   "request_number": "REQ26-013",
+   "requested_date": null,
+   "requester_area": null,
+   "requester_name": "QA-FICTICIO Solicitante QuipuFac",
+   "studio_code_id": "77d25cb6-dcb5-4f8a-8dbb-85c42ec524b3",
+   "request_type_id": "22a4da4c-d313-4161-8d09-e46a05372268",
+   "requester_email": null,
+   "rejection_reason": null,
+   "urgent_requested": false,
+   "requested_priority": "urgent",
+   "data_system_involved": null,
+   "requester_name_source": "declared",
+   "requested_subsystem_id": "b98df625-2a03-41b0-b160-e9ce15f1871b",
+   "public_rejection_reason": null
+  },
+  {
+   "id": "43c57bab-f08e-4b9c-8c9c-7f6183731d1d",
+   "title": "QA-FICTICIO QuipuFac fuera de alcance",
+   "origin": "Interno",
+   "status": "rejected",
+   "area_id": null,
+   "projects": null,
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d",
+   "system_id": "0f3a932d-2a05-455b-853e-67858bcc9e95",
+   "created_at": "2026-11-24T16:38:11.845371-05:00",
+   "needs_code": false,
+   "project_id": null,
+   "subarea_id": null,
+   "updated_at": "2026-11-24T16:38:11.871173-05:00",
+   "description": "QA-FICTICIO: datos ficticios para validar el flujo.",
+   "observations": null,
+   "request_date": "2026-11-24",
+   "request_type": "Capacitación / Consulta",
+   "subsystem_id": "b98df625-2a03-41b0-b160-e9ce15f1871b",
+   "classified_at": "2026-11-24T16:38:11.860656-05:00",
+   "classified_by": "00000000-0000-4000-8000-0000000000c2",
+   "number_series": "REQ",
+   "request_number": "REQ26-014",
+   "requested_date": null,
+   "requester_area": null,
+   "requester_name": "QA-FICTICIO Solicitante QuipuFac",
+   "studio_code_id": "34232ed7-97f0-449b-bc2d-babb0de90ed2",
+   "request_type_id": "feb9ecc6-474e-4ec4-a47d-b935cdf6cfee",
+   "requester_email": null,
+   "rejection_reason": "QA-FICTICIO: fuera del alcance del producto.",
+   "urgent_requested": false,
+   "requested_priority": "low",
+   "data_system_involved": null,
+   "requester_name_source": "declared",
+   "requested_subsystem_id": "b98df625-2a03-41b0-b160-e9ce15f1871b",
+   "public_rejection_reason": "QA-FICTICIO: fuera del alcance del producto."
+  },
+  {
+   "id": "03fa7647-3e6b-48d2-9e9e-7ae5e2a25c51",
+   "title": "QA-FICTICIO QuipuFac despliegue de activos",
+   "origin": "Interno",
+   "status": "approved",
+   "area_id": null,
+   "projects": {
+    "status": "active"
+   },
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d",
+   "system_id": "0f3a932d-2a05-455b-853e-67858bcc9e95",
+   "created_at": "2026-11-24T16:38:11.876812-05:00",
+   "needs_code": false,
+   "project_id": "8f0bd437-0e09-4bff-95ab-a17b56c675e6",
+   "subarea_id": null,
+   "updated_at": "2026-11-24T16:38:11.911027-05:00",
+   "description": "QA-FICTICIO: datos ficticios para validar el flujo.",
+   "observations": null,
+   "request_date": "2026-11-24",
+   "request_type": "Soporte técnico",
+   "subsystem_id": "b98df625-2a03-41b0-b160-e9ce15f1871b",
+   "classified_at": "2026-11-24T16:38:11.892409-05:00",
+   "classified_by": "00000000-0000-4000-8000-0000000000c2",
+   "number_series": "REQ",
+   "request_number": "REQ26-015",
+   "requested_date": null,
+   "requester_area": null,
+   "requester_name": "QA-FICTICIO Solicitante QuipuFac",
+   "studio_code_id": "34232ed7-97f0-449b-bc2d-babb0de90ed2",
+   "request_type_id": "dac41d76-c72b-4cf0-8e13-796dd4ccc72c",
+   "requester_email": null,
+   "rejection_reason": null,
+   "urgent_requested": false,
+   "requested_priority": "medium",
+   "data_system_involved": null,
+   "requester_name_source": "declared",
+   "requested_subsystem_id": "b98df625-2a03-41b0-b160-e9ce15f1871b",
+   "public_rejection_reason": null
+  },
+  {
+   "id": "caee1fcd-1059-4890-9ed9-0d72e1af8f3b",
+   "title": "QA-FICTICIO QuipuFac en revisión",
+   "origin": "Interno",
+   "status": "pending",
+   "area_id": null,
+   "projects": null,
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d",
+   "system_id": "0f3a932d-2a05-455b-853e-67858bcc9e95",
+   "created_at": "2026-11-24T16:38:11.939378-05:00",
+   "needs_code": false,
+   "project_id": null,
+   "subarea_id": null,
+   "updated_at": "2026-11-24T16:38:11.939378-05:00",
+   "description": "QA-FICTICIO: datos ficticios para validar el flujo.",
+   "observations": null,
+   "request_date": "2026-11-24",
+   "request_type": "Mejora",
+   "subsystem_id": "b98df625-2a03-41b0-b160-e9ce15f1871b",
+   "classified_at": null,
+   "classified_by": null,
+   "number_series": "REQ",
+   "request_number": "REQ26-016",
+   "requested_date": null,
+   "requester_area": null,
+   "requester_name": "QA-FICTICIO Solicitante QuipuFac",
+   "studio_code_id": null,
+   "request_type_id": "807b447a-b2eb-4c35-9b1e-5de66b985bf0",
+   "requester_email": null,
+   "rejection_reason": null,
+   "urgent_requested": false,
+   "requested_priority": "urgent",
+   "data_system_involved": null,
+   "requester_name_source": "declared",
+   "requested_subsystem_id": "b98df625-2a03-41b0-b160-e9ce15f1871b",
+   "public_rejection_reason": null
+  },
+  {
+   "id": "d9bce895-434a-487a-848b-d8f57c1a3251",
+   "title": null,
+   "origin": "Interno",
+   "status": "approved",
+   "area_id": null,
+   "projects": {
+    "status": "active"
+   },
+   "studio_id": null,
+   "system_id": null,
+   "created_at": "2026-11-24T16:38:11.960253-05:00",
+   "needs_code": false,
+   "project_id": "378ab879-2df4-4166-9553-a2f799e639dc",
+   "subarea_id": null,
+   "updated_at": "2026-11-24T16:38:11.960253-05:00",
+   "description": "QA-FICTICIO: trabajo ficticio.",
+   "observations": null,
+   "request_date": null,
+   "request_type": "INT",
+   "subsystem_id": null,
+   "classified_at": null,
+   "classified_by": null,
+   "number_series": "INT",
+   "request_number": "INT26-001",
+   "requested_date": null,
+   "requester_area": null,
+   "requester_name": "Admin Simulado",
+   "studio_code_id": null,
+   "request_type_id": null,
+   "requester_email": null,
+   "rejection_reason": null,
+   "urgent_requested": false,
+   "requested_priority": "medium",
+   "data_system_involved": null,
+   "requester_name_source": null,
+   "requested_subsystem_id": null,
+   "public_rejection_reason": null
+  },
+  {
+   "id": "3cc2fd85-8e61-416f-9733-e14620bec388",
+   "title": null,
+   "origin": "Interno",
+   "status": "approved",
+   "area_id": null,
+   "projects": {
+    "status": "active"
+   },
+   "studio_id": null,
+   "system_id": null,
+   "created_at": "2026-11-24T16:38:12.020645-05:00",
+   "needs_code": false,
+   "project_id": "5fad2761-3530-4d71-be20-f143d910894e",
+   "subarea_id": null,
+   "updated_at": "2026-11-24T16:38:12.020645-05:00",
+   "description": "QA-FICTICIO: trabajo ficticio.",
+   "observations": null,
+   "request_date": null,
+   "request_type": "INT",
+   "subsystem_id": null,
+   "classified_at": null,
+   "classified_by": null,
+   "number_series": "INT",
+   "request_number": "INT26-002",
+   "requested_date": null,
+   "requester_area": null,
+   "requester_name": "Admin Simulado",
+   "studio_code_id": null,
+   "request_type_id": null,
+   "requester_email": null,
+   "rejection_reason": null,
+   "urgent_requested": false,
+   "requested_priority": "medium",
+   "data_system_involved": null,
+   "requester_name_source": null,
+   "requested_subsystem_id": null,
+   "public_rejection_reason": null
+  },
+  {
+   "id": "bf62aae6-cc82-4dc7-be96-4e32a01ef497",
+   "title": null,
+   "origin": "Interno",
+   "status": "approved",
+   "area_id": null,
+   "projects": {
+    "status": "active"
+   },
+   "studio_id": null,
+   "system_id": null,
+   "created_at": "2026-11-24T16:38:12.033687-05:00",
+   "needs_code": false,
+   "project_id": "6e6308d1-582d-4f8e-97e0-43c98831a5c2",
+   "subarea_id": null,
+   "updated_at": "2026-11-24T16:38:12.033687-05:00",
+   "description": "QA-FICTICIO: trabajo ficticio.",
+   "observations": null,
+   "request_date": null,
+   "request_type": "INT",
+   "subsystem_id": null,
+   "classified_at": null,
+   "classified_by": null,
+   "number_series": "INT",
+   "request_number": "INT26-003",
+   "requested_date": null,
+   "requester_area": null,
+   "requester_name": "Admin Simulado",
+   "studio_code_id": null,
+   "request_type_id": null,
+   "requester_email": null,
+   "rejection_reason": null,
+   "urgent_requested": false,
+   "requested_priority": "medium",
+   "data_system_involved": null,
+   "requester_name_source": null,
+   "requested_subsystem_id": null,
+   "public_rejection_reason": null
+  },
+  {
+   "id": "483eb495-1211-4948-b70a-0724e89c8456",
+   "title": "QA-FICTICIO TI pruebas de permisos",
+   "origin": "Cliente",
+   "status": "approved",
+   "area_id": "c3b328a7-fb47-4510-89a0-d99f876b9c50",
+   "projects": {
+    "status": "active"
+   },
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d",
+   "system_id": "8c7f668e-86dc-492d-9531-1be6e94a1dbf",
+   "created_at": "2026-11-24T16:38:12.062573-05:00",
+   "needs_code": false,
+   "project_id": "e23387d1-69bf-4570-85ab-c829a1f7fabc",
+   "subarea_id": null,
+   "updated_at": "2026-11-24T16:38:12.072702-05:00",
+   "description": "QA-FICTICIO: trabajo ficticio.",
+   "observations": null,
+   "request_date": "2026-11-24",
+   "request_type": "Error / Incidencia",
+   "subsystem_id": "a48f1935-6c20-4a2b-bb00-b4b04e2489d1",
+   "classified_at": "2026-11-24T16:38:12.062573-05:00",
+   "classified_by": "00000000-0000-4000-8000-0000000000c2",
+   "number_series": "REQ",
+   "request_number": "REQ26-017",
+   "requested_date": null,
+   "requester_area": "QA-FICTICIO Contabilidad",
+   "requester_name": "QA-FICTICIO Cliente registrado por TI",
+   "studio_code_id": "553d7037-35c7-4b52-88c3-42796f255efd",
+   "request_type_id": "d5ff941d-9b6b-4333-afdb-d3f4fdf725e0",
+   "requester_email": null,
+   "rejection_reason": null,
+   "urgent_requested": false,
+   "requested_priority": "urgent",
+   "data_system_involved": null,
+   "requester_name_source": null,
+   "requested_subsystem_id": "a48f1935-6c20-4a2b-bb00-b4b04e2489d1",
+   "public_rejection_reason": null
+  },
+  {
+   "id": "5b811d06-493b-4490-aec0-46f4729e7353",
+   "title": "QA-FICTICIO TI despliegue de módulo de activos",
+   "origin": "Cliente",
+   "status": "approved",
+   "area_id": null,
+   "projects": {
+    "status": "active"
+   },
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d",
+   "system_id": "8c7f668e-86dc-492d-9531-1be6e94a1dbf",
+   "created_at": "2026-11-24T16:38:12.123907-05:00",
+   "needs_code": false,
+   "project_id": "93fbab14-af0f-4987-a1ea-da8e09dc9ec5",
+   "subarea_id": null,
+   "updated_at": "2026-11-24T16:38:12.134231-05:00",
+   "description": "QA-FICTICIO: trabajo ficticio.",
+   "observations": null,
+   "request_date": "2026-11-24",
+   "request_type": "Error / Incidencia",
+   "subsystem_id": "a48f1935-6c20-4a2b-bb00-b4b04e2489d1",
+   "classified_at": "2026-11-24T16:38:12.123907-05:00",
+   "classified_by": "00000000-0000-4000-8000-0000000000c2",
+   "number_series": "REQ",
+   "request_number": "REQ26-018",
+   "requested_date": null,
+   "requester_area": null,
+   "requester_name": "QA-FICTICIO Cliente registrado por TI",
+   "studio_code_id": "61c3cb1e-908c-4335-baa4-8e3f44186d63",
+   "request_type_id": "d5ff941d-9b6b-4333-afdb-d3f4fdf725e0",
+   "requester_email": null,
+   "rejection_reason": null,
+   "urgent_requested": false,
+   "requested_priority": "low",
+   "data_system_involved": null,
+   "requester_name_source": null,
+   "requested_subsystem_id": "a48f1935-6c20-4a2b-bb00-b4b04e2489d1",
+   "public_rejection_reason": null
+  },
+  {
+   "id": "d7258bff-4254-4de5-863c-d712a556964c",
+   "title": null,
+   "origin": "Interno",
+   "status": "approved",
+   "area_id": null,
+   "projects": {
+    "status": "completed"
+   },
+   "studio_id": null,
+   "system_id": null,
+   "created_at": "2026-11-24T16:38:12.144636-05:00",
+   "needs_code": false,
+   "project_id": "23684fc8-63b1-4d81-8d0e-bfa669360235",
+   "subarea_id": null,
+   "updated_at": "2026-11-24T16:38:12.144636-05:00",
+   "description": "QA-FICTICIO: trabajo ficticio.",
+   "observations": null,
+   "request_date": null,
+   "request_type": "INT",
+   "subsystem_id": null,
+   "classified_at": null,
+   "classified_by": null,
+   "number_series": "INT",
+   "request_number": "INT26-004",
+   "requested_date": null,
+   "requester_area": null,
+   "requester_name": "Admin Simulado",
+   "studio_code_id": null,
+   "request_type_id": null,
+   "requester_email": null,
+   "rejection_reason": null,
+   "urgent_requested": false,
+   "requested_priority": "medium",
+   "data_system_involved": null,
+   "requester_name_source": null,
+   "requested_subsystem_id": null,
+   "public_rejection_reason": null
+  },
+  {
+   "id": "8fce3a7b-e43a-4717-a23b-b80d561bbcbc",
+   "title": null,
+   "origin": "Interno",
+   "status": "approved",
+   "area_id": null,
+   "projects": {
+    "status": "active"
+   },
+   "studio_id": null,
+   "system_id": null,
+   "created_at": "2026-11-24T16:38:12.18468-05:00",
+   "needs_code": false,
+   "project_id": "123a39de-cfc5-414b-9d5f-294464f00f01",
+   "subarea_id": null,
+   "updated_at": "2026-11-24T16:38:12.18468-05:00",
+   "description": "QA-FICTICIO: trabajo ficticio.",
+   "observations": null,
+   "request_date": null,
+   "request_type": "INT",
+   "subsystem_id": null,
+   "classified_at": null,
+   "classified_by": null,
+   "number_series": "INT",
+   "request_number": "INT26-005",
+   "requested_date": null,
+   "requester_area": null,
+   "requester_name": "Admin Simulado",
+   "studio_code_id": null,
+   "request_type_id": null,
+   "requester_email": null,
+   "rejection_reason": null,
+   "urgent_requested": false,
+   "requested_priority": "medium",
+   "data_system_involved": null,
+   "requester_name_source": null,
+   "requested_subsystem_id": null,
+   "public_rejection_reason": null
+  },
+  {
+   "id": "333740da-7f66-4c34-b237-4c7f6a52cea0",
+   "title": "QA-FICTICIO TI revisión de validaciones",
+   "origin": "Cliente",
+   "status": "approved",
+   "area_id": null,
+   "projects": {
+    "status": "active"
+   },
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d",
+   "system_id": "8c7f668e-86dc-492d-9531-1be6e94a1dbf",
+   "created_at": "2026-11-24T16:38:12.201455-05:00",
+   "needs_code": false,
+   "project_id": "5bca5eac-6f4c-434c-a37f-db1beb2b2992",
+   "subarea_id": null,
+   "updated_at": "2026-11-24T16:38:12.212266-05:00",
+   "description": "QA-FICTICIO: trabajo ficticio.",
+   "observations": null,
+   "request_date": "2026-11-24",
+   "request_type": "Error / Incidencia",
+   "subsystem_id": "a48f1935-6c20-4a2b-bb00-b4b04e2489d1",
+   "classified_at": "2026-11-24T16:38:12.201455-05:00",
+   "classified_by": "00000000-0000-4000-8000-0000000000c2",
+   "number_series": "REQ",
+   "request_number": "REQ26-019",
+   "requested_date": null,
+   "requester_area": null,
+   "requester_name": "QA-FICTICIO Cliente registrado por TI",
+   "studio_code_id": "77d25cb6-dcb5-4f8a-8dbb-85c42ec524b3",
+   "request_type_id": "d5ff941d-9b6b-4333-afdb-d3f4fdf725e0",
+   "requester_email": null,
+   "rejection_reason": null,
+   "urgent_requested": false,
+   "requested_priority": "medium",
+   "data_system_involved": null,
+   "requester_name_source": null,
+   "requested_subsystem_id": "a48f1935-6c20-4a2b-bb00-b4b04e2489d1",
+   "public_rejection_reason": null
+  },
+  {
+   "id": "c28e7ec6-ce34-4654-8252-8c6a89477b82",
+   "title": null,
+   "origin": "Interno",
+   "status": "approved",
+   "area_id": null,
+   "projects": {
+    "status": "active"
+   },
+   "studio_id": null,
+   "system_id": null,
+   "created_at": "2026-11-24T16:38:12.22227-05:00",
+   "needs_code": false,
+   "project_id": "6fcc73a1-8bbb-4e08-b18b-6865295cd5dd",
+   "subarea_id": null,
+   "updated_at": "2026-11-24T16:38:12.22227-05:00",
+   "description": "QA-FICTICIO: trabajo ficticio.",
+   "observations": null,
+   "request_date": null,
+   "request_type": "INT",
+   "subsystem_id": null,
+   "classified_at": null,
+   "classified_by": null,
+   "number_series": "INT",
+   "request_number": "INT26-006",
+   "requested_date": null,
+   "requester_area": null,
+   "requester_name": "Admin Simulado",
+   "studio_code_id": null,
+   "request_type_id": null,
+   "requester_email": null,
+   "rejection_reason": null,
+   "urgent_requested": false,
+   "requested_priority": "medium",
+   "data_system_involved": null,
+   "requester_name_source": null,
+   "requested_subsystem_id": null,
+   "public_rejection_reason": null
+  }
+ ],
+ "request_events": [
+  {
+   "action": "submitted",
+   "created_at": "2026-11-24T16:38:11.083373-05:00",
+   "request_id": "71329928-0b90-4509-a35c-314caaa5e9ed"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.091186-05:00",
+   "request_id": "71329928-0b90-4509-a35c-314caaa5e9ed"
+  },
+  {
+   "action": "classified",
+   "created_at": "2026-11-24T16:38:11.099396-05:00",
+   "request_id": "71329928-0b90-4509-a35c-314caaa5e9ed"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.104133-05:00",
+   "request_id": "71329928-0b90-4509-a35c-314caaa5e9ed"
+  },
+  {
+   "action": "priority_changed",
+   "created_at": "2026-11-24T16:38:11.154432-05:00",
+   "request_id": "71329928-0b90-4509-a35c-314caaa5e9ed"
+  },
+  {
+   "action": "assigned",
+   "created_at": "2026-11-24T16:38:11.15594-05:00",
+   "request_id": "71329928-0b90-4509-a35c-314caaa5e9ed"
+  },
+  {
+   "action": "approved",
+   "created_at": "2026-11-24T16:38:11.15024-05:00",
+   "request_id": "71329928-0b90-4509-a35c-314caaa5e9ed"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.158237-05:00",
+   "request_id": "71329928-0b90-4509-a35c-314caaa5e9ed"
+  },
+  {
+   "action": "submitted",
+   "created_at": "2026-11-24T16:38:11.17826-05:00",
+   "request_id": "73a7bd4d-c3c7-41b4-a434-7ba77856a15a"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.185716-05:00",
+   "request_id": "73a7bd4d-c3c7-41b4-a434-7ba77856a15a"
+  },
+  {
+   "action": "classified",
+   "created_at": "2026-11-24T16:38:11.193822-05:00",
+   "request_id": "73a7bd4d-c3c7-41b4-a434-7ba77856a15a"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.19837-05:00",
+   "request_id": "73a7bd4d-c3c7-41b4-a434-7ba77856a15a"
+  },
+  {
+   "action": "priority_changed",
+   "created_at": "2026-11-24T16:38:11.205963-05:00",
+   "request_id": "73a7bd4d-c3c7-41b4-a434-7ba77856a15a"
+  },
+  {
+   "action": "assigned",
+   "created_at": "2026-11-24T16:38:11.206924-05:00",
+   "request_id": "73a7bd4d-c3c7-41b4-a434-7ba77856a15a"
+  },
+  {
+   "action": "approved",
+   "created_at": "2026-11-24T16:38:11.201829-05:00",
+   "request_id": "73a7bd4d-c3c7-41b4-a434-7ba77856a15a"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.209111-05:00",
+   "request_id": "73a7bd4d-c3c7-41b4-a434-7ba77856a15a"
+  },
+  {
+   "action": "submitted",
+   "created_at": "2026-11-24T16:38:11.261866-05:00",
+   "request_id": "6a673d45-0449-4d77-9494-2a5c5fa400fa"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.269341-05:00",
+   "request_id": "6a673d45-0449-4d77-9494-2a5c5fa400fa"
+  },
+  {
+   "action": "submitted",
+   "created_at": "2026-11-24T16:38:11.273645-05:00",
+   "request_id": "c2ec621c-026e-4b0e-9212-7e5f96677ac8"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.281371-05:00",
+   "request_id": "c2ec621c-026e-4b0e-9212-7e5f96677ac8"
+  },
+  {
+   "action": "review_started",
+   "created_at": "2026-11-24T16:38:11.285614-05:00",
+   "request_id": "c2ec621c-026e-4b0e-9212-7e5f96677ac8"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.289116-05:00",
+   "request_id": "c2ec621c-026e-4b0e-9212-7e5f96677ac8"
+  },
+  {
+   "action": "submitted",
+   "created_at": "2026-11-24T16:38:11.292823-05:00",
+   "request_id": "d479c737-ce5d-4dd7-a65f-81a0fcebfc70"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.300094-05:00",
+   "request_id": "d479c737-ce5d-4dd7-a65f-81a0fcebfc70"
+  },
+  {
+   "action": "classified",
+   "created_at": "2026-11-24T16:38:11.308662-05:00",
+   "request_id": "d479c737-ce5d-4dd7-a65f-81a0fcebfc70"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.313696-05:00",
+   "request_id": "d479c737-ce5d-4dd7-a65f-81a0fcebfc70"
+  },
+  {
+   "action": "priority_changed",
+   "created_at": "2026-11-24T16:38:11.325025-05:00",
+   "request_id": "d479c737-ce5d-4dd7-a65f-81a0fcebfc70"
+  },
+  {
+   "action": "assigned",
+   "created_at": "2026-11-24T16:38:11.326023-05:00",
+   "request_id": "d479c737-ce5d-4dd7-a65f-81a0fcebfc70"
+  },
+  {
+   "action": "approved",
+   "created_at": "2026-11-24T16:38:11.320925-05:00",
+   "request_id": "d479c737-ce5d-4dd7-a65f-81a0fcebfc70"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.328258-05:00",
+   "request_id": "d479c737-ce5d-4dd7-a65f-81a0fcebfc70"
+  },
+  {
+   "action": "submitted",
+   "created_at": "2026-11-24T16:38:11.33447-05:00",
+   "request_id": "b0293eb9-a6c9-48de-a64f-b985d1add749"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.342296-05:00",
+   "request_id": "b0293eb9-a6c9-48de-a64f-b985d1add749"
+  },
+  {
+   "action": "classified",
+   "created_at": "2026-11-24T16:38:11.350614-05:00",
+   "request_id": "b0293eb9-a6c9-48de-a64f-b985d1add749"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.355193-05:00",
+   "request_id": "b0293eb9-a6c9-48de-a64f-b985d1add749"
+  },
+  {
+   "action": "priority_changed",
+   "created_at": "2026-11-24T16:38:11.367057-05:00",
+   "request_id": "b0293eb9-a6c9-48de-a64f-b985d1add749"
+  },
+  {
+   "action": "assigned",
+   "created_at": "2026-11-24T16:38:11.368098-05:00",
+   "request_id": "b0293eb9-a6c9-48de-a64f-b985d1add749"
+  },
+  {
+   "action": "approved",
+   "created_at": "2026-11-24T16:38:11.362852-05:00",
+   "request_id": "b0293eb9-a6c9-48de-a64f-b985d1add749"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.370329-05:00",
+   "request_id": "b0293eb9-a6c9-48de-a64f-b985d1add749"
+  },
+  {
+   "action": "phase_changed",
+   "created_at": "2026-11-24T16:38:11.39275-05:00",
+   "request_id": "b0293eb9-a6c9-48de-a64f-b985d1add749"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.393384-05:00",
+   "request_id": "b0293eb9-a6c9-48de-a64f-b985d1add749"
+  },
+  {
+   "action": "checklist_added",
+   "created_at": "2026-11-24T16:38:11.410168-05:00",
+   "request_id": "b0293eb9-a6c9-48de-a64f-b985d1add749"
+  },
+  {
+   "action": "checklist_added",
+   "created_at": "2026-11-24T16:38:11.417392-05:00",
+   "request_id": "b0293eb9-a6c9-48de-a64f-b985d1add749"
+  },
+  {
+   "action": "checklist_added",
+   "created_at": "2026-11-24T16:38:11.424199-05:00",
+   "request_id": "b0293eb9-a6c9-48de-a64f-b985d1add749"
+  },
+  {
+   "action": "submitted",
+   "created_at": "2026-11-24T16:38:11.428175-05:00",
+   "request_id": "a966f9bf-264f-4e35-8507-c40bfa859935"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.435692-05:00",
+   "request_id": "a966f9bf-264f-4e35-8507-c40bfa859935"
+  },
+  {
+   "action": "classified",
+   "created_at": "2026-11-24T16:38:11.443911-05:00",
+   "request_id": "a966f9bf-264f-4e35-8507-c40bfa859935"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.448616-05:00",
+   "request_id": "a966f9bf-264f-4e35-8507-c40bfa859935"
+  },
+  {
+   "action": "priority_changed",
+   "created_at": "2026-11-24T16:38:11.460255-05:00",
+   "request_id": "a966f9bf-264f-4e35-8507-c40bfa859935"
+  },
+  {
+   "action": "assigned",
+   "created_at": "2026-11-24T16:38:11.461263-05:00",
+   "request_id": "a966f9bf-264f-4e35-8507-c40bfa859935"
+  },
+  {
+   "action": "approved",
+   "created_at": "2026-11-24T16:38:11.455935-05:00",
+   "request_id": "a966f9bf-264f-4e35-8507-c40bfa859935"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.463545-05:00",
+   "request_id": "a966f9bf-264f-4e35-8507-c40bfa859935"
+  },
+  {
+   "action": "phase_changed",
+   "created_at": "2026-11-24T16:38:11.485143-05:00",
+   "request_id": "a966f9bf-264f-4e35-8507-c40bfa859935"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.485797-05:00",
+   "request_id": "a966f9bf-264f-4e35-8507-c40bfa859935"
+  },
+  {
+   "action": "blocked",
+   "created_at": "2026-11-24T16:38:11.496269-05:00",
+   "request_id": "a966f9bf-264f-4e35-8507-c40bfa859935"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.496897-05:00",
+   "request_id": "a966f9bf-264f-4e35-8507-c40bfa859935"
+  },
+  {
+   "action": "submitted",
+   "created_at": "2026-11-24T16:38:11.502819-05:00",
+   "request_id": "777759c3-52a4-45a1-a80d-6dc9473b0313"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.511075-05:00",
+   "request_id": "777759c3-52a4-45a1-a80d-6dc9473b0313"
+  },
+  {
+   "action": "classified",
+   "created_at": "2026-11-24T16:38:11.519501-05:00",
+   "request_id": "777759c3-52a4-45a1-a80d-6dc9473b0313"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.524569-05:00",
+   "request_id": "777759c3-52a4-45a1-a80d-6dc9473b0313"
+  },
+  {
+   "action": "priority_changed",
+   "created_at": "2026-11-24T16:38:11.536169-05:00",
+   "request_id": "777759c3-52a4-45a1-a80d-6dc9473b0313"
+  },
+  {
+   "action": "assigned",
+   "created_at": "2026-11-24T16:38:11.537175-05:00",
+   "request_id": "777759c3-52a4-45a1-a80d-6dc9473b0313"
+  },
+  {
+   "action": "approved",
+   "created_at": "2026-11-24T16:38:11.531904-05:00",
+   "request_id": "777759c3-52a4-45a1-a80d-6dc9473b0313"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.540021-05:00",
+   "request_id": "777759c3-52a4-45a1-a80d-6dc9473b0313"
+  },
+  {
+   "action": "phase_changed",
+   "created_at": "2026-11-24T16:38:11.563482-05:00",
+   "request_id": "777759c3-52a4-45a1-a80d-6dc9473b0313"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.564127-05:00",
+   "request_id": "777759c3-52a4-45a1-a80d-6dc9473b0313"
+  },
+  {
+   "action": "submitted",
+   "created_at": "2026-11-24T16:38:11.569304-05:00",
+   "request_id": "ddcf4d9e-65b5-4497-a56e-0d25ddd854b3"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.57708-05:00",
+   "request_id": "ddcf4d9e-65b5-4497-a56e-0d25ddd854b3"
+  },
+  {
+   "action": "classified",
+   "created_at": "2026-11-24T16:38:11.58551-05:00",
+   "request_id": "ddcf4d9e-65b5-4497-a56e-0d25ddd854b3"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.59041-05:00",
+   "request_id": "ddcf4d9e-65b5-4497-a56e-0d25ddd854b3"
+  },
+  {
+   "action": "rejected",
+   "created_at": "2026-11-24T16:38:11.59503-05:00",
+   "request_id": "ddcf4d9e-65b5-4497-a56e-0d25ddd854b3"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.599629-05:00",
+   "request_id": "ddcf4d9e-65b5-4497-a56e-0d25ddd854b3"
+  },
+  {
+   "action": "submitted",
+   "created_at": "2026-11-24T16:38:11.603634-05:00",
+   "request_id": "4c1989d6-932c-477f-951c-e29178150689"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.61135-05:00",
+   "request_id": "4c1989d6-932c-477f-951c-e29178150689"
+  },
+  {
+   "action": "classified",
+   "created_at": "2026-11-24T16:38:11.619999-05:00",
+   "request_id": "4c1989d6-932c-477f-951c-e29178150689"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.625098-05:00",
+   "request_id": "4c1989d6-932c-477f-951c-e29178150689"
+  },
+  {
+   "action": "priority_changed",
+   "created_at": "2026-11-24T16:38:11.63664-05:00",
+   "request_id": "4c1989d6-932c-477f-951c-e29178150689"
+  },
+  {
+   "action": "assigned",
+   "created_at": "2026-11-24T16:38:11.637662-05:00",
+   "request_id": "4c1989d6-932c-477f-951c-e29178150689"
+  },
+  {
+   "action": "approved",
+   "created_at": "2026-11-24T16:38:11.632475-05:00",
+   "request_id": "4c1989d6-932c-477f-951c-e29178150689"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.640119-05:00",
+   "request_id": "4c1989d6-932c-477f-951c-e29178150689"
+  },
+  {
+   "action": "phase_changed",
+   "created_at": "2026-11-24T16:38:11.661987-05:00",
+   "request_id": "4c1989d6-932c-477f-951c-e29178150689"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.662602-05:00",
+   "request_id": "4c1989d6-932c-477f-951c-e29178150689"
+  },
+  {
+   "action": "completed",
+   "created_at": "2026-11-24T16:38:11.663507-05:00",
+   "request_id": "4c1989d6-932c-477f-951c-e29178150689"
+  },
+  {
+   "action": "submitted",
+   "created_at": "2026-11-24T16:38:11.668322-05:00",
+   "request_id": "5dd63243-49f8-444b-b158-b77aa22b75c7"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.675875-05:00",
+   "request_id": "5dd63243-49f8-444b-b158-b77aa22b75c7"
+  },
+  {
+   "action": "submitted",
+   "created_at": "2026-11-24T16:38:11.680172-05:00",
+   "request_id": "e3dc22ec-bba4-4cc1-a7e1-f35724ce4692"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.687472-05:00",
+   "request_id": "e3dc22ec-bba4-4cc1-a7e1-f35724ce4692"
+  },
+  {
+   "action": "classified",
+   "created_at": "2026-11-24T16:38:11.695358-05:00",
+   "request_id": "e3dc22ec-bba4-4cc1-a7e1-f35724ce4692"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.700392-05:00",
+   "request_id": "e3dc22ec-bba4-4cc1-a7e1-f35724ce4692"
+  },
+  {
+   "action": "priority_changed",
+   "created_at": "2026-11-24T16:38:11.712797-05:00",
+   "request_id": "e3dc22ec-bba4-4cc1-a7e1-f35724ce4692"
+  },
+  {
+   "action": "assigned",
+   "created_at": "2026-11-24T16:38:11.71381-05:00",
+   "request_id": "e3dc22ec-bba4-4cc1-a7e1-f35724ce4692"
+  },
+  {
+   "action": "approved",
+   "created_at": "2026-11-24T16:38:11.708494-05:00",
+   "request_id": "e3dc22ec-bba4-4cc1-a7e1-f35724ce4692"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.716171-05:00",
+   "request_id": "e3dc22ec-bba4-4cc1-a7e1-f35724ce4692"
+  },
+  {
+   "action": "phase_changed",
+   "created_at": "2026-11-24T16:38:11.738958-05:00",
+   "request_id": "e3dc22ec-bba4-4cc1-a7e1-f35724ce4692"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.739655-05:00",
+   "request_id": "e3dc22ec-bba4-4cc1-a7e1-f35724ce4692"
+  },
+  {
+   "action": "checklist_added",
+   "created_at": "2026-11-24T16:38:11.755972-05:00",
+   "request_id": "e3dc22ec-bba4-4cc1-a7e1-f35724ce4692"
+  },
+  {
+   "action": "checklist_added",
+   "created_at": "2026-11-24T16:38:11.763074-05:00",
+   "request_id": "e3dc22ec-bba4-4cc1-a7e1-f35724ce4692"
+  },
+  {
+   "action": "checklist_added",
+   "created_at": "2026-11-24T16:38:11.769834-05:00",
+   "request_id": "e3dc22ec-bba4-4cc1-a7e1-f35724ce4692"
+  },
+  {
+   "action": "checklist_updated",
+   "created_at": "2026-11-24T16:38:11.777382-05:00",
+   "request_id": "e3dc22ec-bba4-4cc1-a7e1-f35724ce4692"
+  },
+  {
+   "action": "submitted",
+   "created_at": "2026-11-24T16:38:11.780987-05:00",
+   "request_id": "89f98284-a2bd-49c8-af7c-4cf795ad7ab1"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.788267-05:00",
+   "request_id": "89f98284-a2bd-49c8-af7c-4cf795ad7ab1"
+  },
+  {
+   "action": "classified",
+   "created_at": "2026-11-24T16:38:11.79657-05:00",
+   "request_id": "89f98284-a2bd-49c8-af7c-4cf795ad7ab1"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.801226-05:00",
+   "request_id": "89f98284-a2bd-49c8-af7c-4cf795ad7ab1"
+  },
+  {
+   "action": "priority_changed",
+   "created_at": "2026-11-24T16:38:11.813873-05:00",
+   "request_id": "89f98284-a2bd-49c8-af7c-4cf795ad7ab1"
+  },
+  {
+   "action": "assigned",
+   "created_at": "2026-11-24T16:38:11.814891-05:00",
+   "request_id": "89f98284-a2bd-49c8-af7c-4cf795ad7ab1"
+  },
+  {
+   "action": "approved",
+   "created_at": "2026-11-24T16:38:11.809272-05:00",
+   "request_id": "89f98284-a2bd-49c8-af7c-4cf795ad7ab1"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.81726-05:00",
+   "request_id": "89f98284-a2bd-49c8-af7c-4cf795ad7ab1"
+  },
+  {
+   "action": "phase_changed",
+   "created_at": "2026-11-24T16:38:11.839337-05:00",
+   "request_id": "89f98284-a2bd-49c8-af7c-4cf795ad7ab1"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.839996-05:00",
+   "request_id": "89f98284-a2bd-49c8-af7c-4cf795ad7ab1"
+  },
+  {
+   "action": "submitted",
+   "created_at": "2026-11-24T16:38:11.845371-05:00",
+   "request_id": "43c57bab-f08e-4b9c-8c9c-7f6183731d1d"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.852663-05:00",
+   "request_id": "43c57bab-f08e-4b9c-8c9c-7f6183731d1d"
+  },
+  {
+   "action": "classified",
+   "created_at": "2026-11-24T16:38:11.860656-05:00",
+   "request_id": "43c57bab-f08e-4b9c-8c9c-7f6183731d1d"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.865345-05:00",
+   "request_id": "43c57bab-f08e-4b9c-8c9c-7f6183731d1d"
+  },
+  {
+   "action": "rejected",
+   "created_at": "2026-11-24T16:38:11.868885-05:00",
+   "request_id": "43c57bab-f08e-4b9c-8c9c-7f6183731d1d"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.87309-05:00",
+   "request_id": "43c57bab-f08e-4b9c-8c9c-7f6183731d1d"
+  },
+  {
+   "action": "submitted",
+   "created_at": "2026-11-24T16:38:11.876812-05:00",
+   "request_id": "03fa7647-3e6b-48d2-9e9e-7ae5e2a25c51"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.88411-05:00",
+   "request_id": "03fa7647-3e6b-48d2-9e9e-7ae5e2a25c51"
+  },
+  {
+   "action": "classified",
+   "created_at": "2026-11-24T16:38:11.892409-05:00",
+   "request_id": "03fa7647-3e6b-48d2-9e9e-7ae5e2a25c51"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.896975-05:00",
+   "request_id": "03fa7647-3e6b-48d2-9e9e-7ae5e2a25c51"
+  },
+  {
+   "action": "priority_changed",
+   "created_at": "2026-11-24T16:38:11.908542-05:00",
+   "request_id": "03fa7647-3e6b-48d2-9e9e-7ae5e2a25c51"
+  },
+  {
+   "action": "assigned",
+   "created_at": "2026-11-24T16:38:11.909668-05:00",
+   "request_id": "03fa7647-3e6b-48d2-9e9e-7ae5e2a25c51"
+  },
+  {
+   "action": "approved",
+   "created_at": "2026-11-24T16:38:11.904221-05:00",
+   "request_id": "03fa7647-3e6b-48d2-9e9e-7ae5e2a25c51"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.911851-05:00",
+   "request_id": "03fa7647-3e6b-48d2-9e9e-7ae5e2a25c51"
+  },
+  {
+   "action": "phase_changed",
+   "created_at": "2026-11-24T16:38:11.933389-05:00",
+   "request_id": "03fa7647-3e6b-48d2-9e9e-7ae5e2a25c51"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.934008-05:00",
+   "request_id": "03fa7647-3e6b-48d2-9e9e-7ae5e2a25c51"
+  },
+  {
+   "action": "submitted",
+   "created_at": "2026-11-24T16:38:11.939378-05:00",
+   "request_id": "caee1fcd-1059-4890-9ed9-0d72e1af8f3b"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.947457-05:00",
+   "request_id": "caee1fcd-1059-4890-9ed9-0d72e1af8f3b"
+  },
+  {
+   "action": "review_started",
+   "created_at": "2026-11-24T16:38:11.952433-05:00",
+   "request_id": "caee1fcd-1059-4890-9ed9-0d72e1af8f3b"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.956082-05:00",
+   "request_id": "caee1fcd-1059-4890-9ed9-0d72e1af8f3b"
+  },
+  {
+   "action": "submitted",
+   "created_at": "2026-11-24T16:38:11.960253-05:00",
+   "request_id": "d9bce895-434a-487a-848b-d8f57c1a3251"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.965959-05:00",
+   "request_id": "d9bce895-434a-487a-848b-d8f57c1a3251"
+  },
+  {
+   "action": "priority_changed",
+   "created_at": "2026-11-24T16:38:11.966537-05:00",
+   "request_id": "d9bce895-434a-487a-848b-d8f57c1a3251"
+  },
+  {
+   "action": "assigned",
+   "created_at": "2026-11-24T16:38:11.967389-05:00",
+   "request_id": "d9bce895-434a-487a-848b-d8f57c1a3251"
+  },
+  {
+   "action": "phase_changed",
+   "created_at": "2026-11-24T16:38:11.970842-05:00",
+   "request_id": "d9bce895-434a-487a-848b-d8f57c1a3251"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:11.971174-05:00",
+   "request_id": "d9bce895-434a-487a-848b-d8f57c1a3251"
+  },
+  {
+   "action": "checklist_added",
+   "created_at": "2026-11-24T16:38:11.988108-05:00",
+   "request_id": "d9bce895-434a-487a-848b-d8f57c1a3251"
+  },
+  {
+   "action": "checklist_added",
+   "created_at": "2026-11-24T16:38:11.994881-05:00",
+   "request_id": "d9bce895-434a-487a-848b-d8f57c1a3251"
+  },
+  {
+   "action": "checklist_added",
+   "created_at": "2026-11-24T16:38:12.001574-05:00",
+   "request_id": "d9bce895-434a-487a-848b-d8f57c1a3251"
+  },
+  {
+   "action": "checklist_added",
+   "created_at": "2026-11-24T16:38:12.009-05:00",
+   "request_id": "d9bce895-434a-487a-848b-d8f57c1a3251"
+  },
+  {
+   "action": "checklist_updated",
+   "created_at": "2026-11-24T16:38:12.016675-05:00",
+   "request_id": "d9bce895-434a-487a-848b-d8f57c1a3251"
+  },
+  {
+   "action": "checklist_updated",
+   "created_at": "2026-11-24T16:38:12.017211-05:00",
+   "request_id": "d9bce895-434a-487a-848b-d8f57c1a3251"
+  },
+  {
+   "action": "submitted",
+   "created_at": "2026-11-24T16:38:12.020645-05:00",
+   "request_id": "3cc2fd85-8e61-416f-9733-e14620bec388"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:12.026344-05:00",
+   "request_id": "3cc2fd85-8e61-416f-9733-e14620bec388"
+  },
+  {
+   "action": "priority_changed",
+   "created_at": "2026-11-24T16:38:12.02694-05:00",
+   "request_id": "3cc2fd85-8e61-416f-9733-e14620bec388"
+  },
+  {
+   "action": "assigned",
+   "created_at": "2026-11-24T16:38:12.027859-05:00",
+   "request_id": "3cc2fd85-8e61-416f-9733-e14620bec388"
+  },
+  {
+   "action": "submitted",
+   "created_at": "2026-11-24T16:38:12.033687-05:00",
+   "request_id": "bf62aae6-cc82-4dc7-be96-4e32a01ef497"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:12.039753-05:00",
+   "request_id": "bf62aae6-cc82-4dc7-be96-4e32a01ef497"
+  },
+  {
+   "action": "priority_changed",
+   "created_at": "2026-11-24T16:38:12.040328-05:00",
+   "request_id": "bf62aae6-cc82-4dc7-be96-4e32a01ef497"
+  },
+  {
+   "action": "assigned",
+   "created_at": "2026-11-24T16:38:12.041344-05:00",
+   "request_id": "bf62aae6-cc82-4dc7-be96-4e32a01ef497"
+  },
+  {
+   "action": "phase_changed",
+   "created_at": "2026-11-24T16:38:12.044899-05:00",
+   "request_id": "bf62aae6-cc82-4dc7-be96-4e32a01ef497"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:12.045249-05:00",
+   "request_id": "bf62aae6-cc82-4dc7-be96-4e32a01ef497"
+  },
+  {
+   "action": "blocked",
+   "created_at": "2026-11-24T16:38:12.056043-05:00",
+   "request_id": "bf62aae6-cc82-4dc7-be96-4e32a01ef497"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:12.056725-05:00",
+   "request_id": "bf62aae6-cc82-4dc7-be96-4e32a01ef497"
+  },
+  {
+   "action": "submitted",
+   "created_at": "2026-11-24T16:38:12.062573-05:00",
+   "request_id": "483eb495-1211-4948-b70a-0724e89c8456"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:12.068188-05:00",
+   "request_id": "483eb495-1211-4948-b70a-0724e89c8456"
+  },
+  {
+   "action": "classified",
+   "created_at": "2026-11-24T16:38:12.062573-05:00",
+   "request_id": "483eb495-1211-4948-b70a-0724e89c8456"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:12.070138-05:00",
+   "request_id": "483eb495-1211-4948-b70a-0724e89c8456"
+  },
+  {
+   "action": "priority_changed",
+   "created_at": "2026-11-24T16:38:12.071323-05:00",
+   "request_id": "483eb495-1211-4948-b70a-0724e89c8456"
+  },
+  {
+   "action": "assigned",
+   "created_at": "2026-11-24T16:38:12.072233-05:00",
+   "request_id": "483eb495-1211-4948-b70a-0724e89c8456"
+  },
+  {
+   "action": "approved",
+   "created_at": "2026-11-24T16:38:12.062573-05:00",
+   "request_id": "483eb495-1211-4948-b70a-0724e89c8456"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:12.073367-05:00",
+   "request_id": "483eb495-1211-4948-b70a-0724e89c8456"
+  },
+  {
+   "action": "phase_changed",
+   "created_at": "2026-11-24T16:38:12.076624-05:00",
+   "request_id": "483eb495-1211-4948-b70a-0724e89c8456"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:12.076879-05:00",
+   "request_id": "483eb495-1211-4948-b70a-0724e89c8456"
+  },
+  {
+   "action": "checklist_added",
+   "created_at": "2026-11-24T16:38:12.094782-05:00",
+   "request_id": "483eb495-1211-4948-b70a-0724e89c8456"
+  },
+  {
+   "action": "checklist_added",
+   "created_at": "2026-11-24T16:38:12.10173-05:00",
+   "request_id": "483eb495-1211-4948-b70a-0724e89c8456"
+  },
+  {
+   "action": "checklist_added",
+   "created_at": "2026-11-24T16:38:12.109572-05:00",
+   "request_id": "483eb495-1211-4948-b70a-0724e89c8456"
+  },
+  {
+   "action": "checklist_updated",
+   "created_at": "2026-11-24T16:38:12.11844-05:00",
+   "request_id": "483eb495-1211-4948-b70a-0724e89c8456"
+  },
+  {
+   "action": "checklist_updated",
+   "created_at": "2026-11-24T16:38:12.119062-05:00",
+   "request_id": "483eb495-1211-4948-b70a-0724e89c8456"
+  },
+  {
+   "action": "priority_changed",
+   "created_at": "2026-11-24T16:38:12.21066-05:00",
+   "request_id": "333740da-7f66-4c34-b237-4c7f6a52cea0"
+  },
+  {
+   "action": "checklist_updated",
+   "created_at": "2026-11-24T16:38:12.119278-05:00",
+   "request_id": "483eb495-1211-4948-b70a-0724e89c8456"
+  },
+  {
+   "action": "submitted",
+   "created_at": "2026-11-24T16:38:12.123907-05:00",
+   "request_id": "5b811d06-493b-4490-aec0-46f4729e7353"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:12.129968-05:00",
+   "request_id": "5b811d06-493b-4490-aec0-46f4729e7353"
+  },
+  {
+   "action": "classified",
+   "created_at": "2026-11-24T16:38:12.123907-05:00",
+   "request_id": "5b811d06-493b-4490-aec0-46f4729e7353"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:12.131733-05:00",
+   "request_id": "5b811d06-493b-4490-aec0-46f4729e7353"
+  },
+  {
+   "action": "priority_changed",
+   "created_at": "2026-11-24T16:38:12.132878-05:00",
+   "request_id": "5b811d06-493b-4490-aec0-46f4729e7353"
+  },
+  {
+   "action": "assigned",
+   "created_at": "2026-11-24T16:38:12.133793-05:00",
+   "request_id": "5b811d06-493b-4490-aec0-46f4729e7353"
+  },
+  {
+   "action": "approved",
+   "created_at": "2026-11-24T16:38:12.123907-05:00",
+   "request_id": "5b811d06-493b-4490-aec0-46f4729e7353"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:12.135019-05:00",
+   "request_id": "5b811d06-493b-4490-aec0-46f4729e7353"
+  },
+  {
+   "action": "phase_changed",
+   "created_at": "2026-11-24T16:38:12.137678-05:00",
+   "request_id": "5b811d06-493b-4490-aec0-46f4729e7353"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:12.137935-05:00",
+   "request_id": "5b811d06-493b-4490-aec0-46f4729e7353"
+  },
+  {
+   "action": "submitted",
+   "created_at": "2026-11-24T16:38:12.144636-05:00",
+   "request_id": "d7258bff-4254-4de5-863c-d712a556964c"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:12.15035-05:00",
+   "request_id": "d7258bff-4254-4de5-863c-d712a556964c"
+  },
+  {
+   "action": "priority_changed",
+   "created_at": "2026-11-24T16:38:12.15094-05:00",
+   "request_id": "d7258bff-4254-4de5-863c-d712a556964c"
+  },
+  {
+   "action": "assigned",
+   "created_at": "2026-11-24T16:38:12.151874-05:00",
+   "request_id": "d7258bff-4254-4de5-863c-d712a556964c"
+  },
+  {
+   "action": "phase_changed",
+   "created_at": "2026-11-24T16:38:12.177999-05:00",
+   "request_id": "d7258bff-4254-4de5-863c-d712a556964c"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:12.178583-05:00",
+   "request_id": "d7258bff-4254-4de5-863c-d712a556964c"
+  },
+  {
+   "action": "completed",
+   "created_at": "2026-11-24T16:38:12.179514-05:00",
+   "request_id": "d7258bff-4254-4de5-863c-d712a556964c"
+  },
+  {
+   "action": "submitted",
+   "created_at": "2026-11-24T16:38:12.18468-05:00",
+   "request_id": "8fce3a7b-e43a-4717-a23b-b80d561bbcbc"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:12.190596-05:00",
+   "request_id": "8fce3a7b-e43a-4717-a23b-b80d561bbcbc"
+  },
+  {
+   "action": "priority_changed",
+   "created_at": "2026-11-24T16:38:12.191143-05:00",
+   "request_id": "8fce3a7b-e43a-4717-a23b-b80d561bbcbc"
+  },
+  {
+   "action": "assigned",
+   "created_at": "2026-11-24T16:38:12.191994-05:00",
+   "request_id": "8fce3a7b-e43a-4717-a23b-b80d561bbcbc"
+  },
+  {
+   "action": "phase_changed",
+   "created_at": "2026-11-24T16:38:12.195097-05:00",
+   "request_id": "8fce3a7b-e43a-4717-a23b-b80d561bbcbc"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:12.1954-05:00",
+   "request_id": "8fce3a7b-e43a-4717-a23b-b80d561bbcbc"
+  },
+  {
+   "action": "submitted",
+   "created_at": "2026-11-24T16:38:12.201455-05:00",
+   "request_id": "333740da-7f66-4c34-b237-4c7f6a52cea0"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:12.207459-05:00",
+   "request_id": "333740da-7f66-4c34-b237-4c7f6a52cea0"
+  },
+  {
+   "action": "classified",
+   "created_at": "2026-11-24T16:38:12.201455-05:00",
+   "request_id": "333740da-7f66-4c34-b237-4c7f6a52cea0"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:12.209466-05:00",
+   "request_id": "333740da-7f66-4c34-b237-4c7f6a52cea0"
+  },
+  {
+   "action": "assigned",
+   "created_at": "2026-11-24T16:38:12.211749-05:00",
+   "request_id": "333740da-7f66-4c34-b237-4c7f6a52cea0"
+  },
+  {
+   "action": "approved",
+   "created_at": "2026-11-24T16:38:12.201455-05:00",
+   "request_id": "333740da-7f66-4c34-b237-4c7f6a52cea0"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:12.212952-05:00",
+   "request_id": "333740da-7f66-4c34-b237-4c7f6a52cea0"
+  },
+  {
+   "action": "phase_changed",
+   "created_at": "2026-11-24T16:38:12.215318-05:00",
+   "request_id": "333740da-7f66-4c34-b237-4c7f6a52cea0"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:12.215624-05:00",
+   "request_id": "333740da-7f66-4c34-b237-4c7f6a52cea0"
+  },
+  {
+   "action": "submitted",
+   "created_at": "2026-11-24T16:38:12.22227-05:00",
+   "request_id": "c28e7ec6-ce34-4654-8252-8c6a89477b82"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:12.227953-05:00",
+   "request_id": "c28e7ec6-ce34-4654-8252-8c6a89477b82"
+  },
+  {
+   "action": "priority_changed",
+   "created_at": "2026-11-24T16:38:12.228486-05:00",
+   "request_id": "c28e7ec6-ce34-4654-8252-8c6a89477b82"
+  },
+  {
+   "action": "assigned",
+   "created_at": "2026-11-24T16:38:12.229357-05:00",
+   "request_id": "c28e7ec6-ce34-4654-8252-8c6a89477b82"
+  },
+  {
+   "action": "phase_changed",
+   "created_at": "2026-11-24T16:38:12.232589-05:00",
+   "request_id": "c28e7ec6-ce34-4654-8252-8c6a89477b82"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-24T16:38:12.232895-05:00",
+   "request_id": "c28e7ec6-ce34-4654-8252-8c6a89477b82"
+  },
+  {
+   "action": "checklist_added",
+   "created_at": "2026-11-24T16:38:12.246387-05:00",
+   "request_id": "c28e7ec6-ce34-4654-8252-8c6a89477b82"
+  },
+  {
+   "action": "checklist_added",
+   "created_at": "2026-11-24T16:38:12.246879-05:00",
+   "request_id": "c28e7ec6-ce34-4654-8252-8c6a89477b82"
+  },
+  {
+   "action": "checklist_added",
+   "created_at": "2026-11-24T16:38:12.24708-05:00",
+   "request_id": "c28e7ec6-ce34-4654-8252-8c6a89477b82"
+  },
+  {
+   "action": "checklist_added",
+   "created_at": "2026-11-24T16:38:12.24726-05:00",
+   "request_id": "c28e7ec6-ce34-4654-8252-8c6a89477b82"
+  },
+  {
+   "action": "checklist_added",
+   "created_at": "2026-11-24T16:38:12.247438-05:00",
+   "request_id": "c28e7ec6-ce34-4654-8252-8c6a89477b82"
+  },
+  {
+   "action": "checklist_added",
+   "created_at": "2026-11-24T16:38:12.247609-05:00",
+   "request_id": "c28e7ec6-ce34-4654-8252-8c6a89477b82"
+  },
+  {
+   "action": "checklist_added",
+   "created_at": "2026-11-24T16:38:12.247707-05:00",
+   "request_id": "c28e7ec6-ce34-4654-8252-8c6a89477b82"
+  },
+  {
+   "action": "checklist_added",
+   "created_at": "2026-11-24T16:38:12.24777-05:00",
+   "request_id": "c28e7ec6-ce34-4654-8252-8c6a89477b82"
+  },
+  {
+   "action": "checklist_added",
+   "created_at": "2026-11-24T16:38:12.247828-05:00",
+   "request_id": "c28e7ec6-ce34-4654-8252-8c6a89477b82"
+  },
+  {
+   "action": "checklist_added",
+   "created_at": "2026-11-24T16:38:12.247882-05:00",
+   "request_id": "c28e7ec6-ce34-4654-8252-8c6a89477b82"
+  },
+  {
+   "action": "checklist_added",
+   "created_at": "2026-11-24T16:38:12.247935-05:00",
+   "request_id": "c28e7ec6-ce34-4654-8252-8c6a89477b82"
+  },
+  {
+   "action": "checklist_added",
+   "created_at": "2026-11-24T16:38:12.247986-05:00",
+   "request_id": "c28e7ec6-ce34-4654-8252-8c6a89477b82"
+  },
+  {
+   "action": "checklist_added",
+   "created_at": "2026-11-24T16:38:12.248039-05:00",
+   "request_id": "c28e7ec6-ce34-4654-8252-8c6a89477b82"
+  },
+  {
+   "action": "checklist_added",
+   "created_at": "2026-11-24T16:38:12.248119-05:00",
+   "request_id": "c28e7ec6-ce34-4654-8252-8c6a89477b82"
+  },
+  {
+   "action": "checklist_added",
+   "created_at": "2026-11-24T16:38:12.248174-05:00",
+   "request_id": "c28e7ec6-ce34-4654-8252-8c6a89477b82"
+  },
+  {
+   "action": "checklist_added",
+   "created_at": "2026-11-24T16:38:12.248225-05:00",
+   "request_id": "c28e7ec6-ce34-4654-8252-8c6a89477b82"
+  },
+  {
+   "action": "checklist_added",
+   "created_at": "2026-11-24T16:38:12.248284-05:00",
+   "request_id": "c28e7ec6-ce34-4654-8252-8c6a89477b82"
+  },
+  {
+   "action": "checklist_added",
+   "created_at": "2026-11-24T16:38:12.248334-05:00",
+   "request_id": "c28e7ec6-ce34-4654-8252-8c6a89477b82"
+  },
+  {
+   "action": "checklist_updated",
+   "created_at": "2026-11-24T16:38:12.254709-05:00",
+   "request_id": "c28e7ec6-ce34-4654-8252-8c6a89477b82"
+  },
+  {
+   "action": "checklist_updated",
+   "created_at": "2026-11-24T16:38:12.255211-05:00",
+   "request_id": "c28e7ec6-ce34-4654-8252-8c6a89477b82"
+  },
+  {
+   "action": "checklist_updated",
+   "created_at": "2026-11-24T16:38:12.255597-05:00",
+   "request_id": "c28e7ec6-ce34-4654-8252-8c6a89477b82"
+  }
+ ],
+ "users": [
+  {
+   "id": "00000000-0000-4000-8000-0000000000c2",
+   "role": "admin",
+   "email": "admin@simulado.invalid",
+   "full_name": "Admin Simulado",
+   "is_active": true,
+   "created_at": "2026-11-24T16:38:10.315183-05:00"
+  },
+  {
+   "id": "00000000-0000-4000-8000-0000000000c3",
+   "role": "developer",
+   "email": "developer@simulado.invalid",
+   "full_name": "Developer Simulado",
+   "is_active": true,
+   "created_at": "2026-11-24T16:38:10.323519-05:00"
+  },
+  {
+   "id": "00000000-0000-4000-8000-0000000000c5",
+   "role": "admin",
+   "email": "inactive@simulado.invalid",
+   "full_name": "Inactivo Simulado",
+   "is_active": false,
+   "created_at": "2026-11-24T16:38:10.339838-05:00"
+  },
+  {
+   "id": "00000000-0000-4000-8000-0000000000d2",
+   "role": "developer",
+   "email": "analista2@simulado.invalid",
+   "full_name": "QA-FICTICIO Analista Dos",
+   "is_active": true,
+   "created_at": "2026-11-24T16:38:11.245759-05:00"
+  },
+  {
+   "id": "00000000-0000-4000-8000-0000000000d1",
+   "role": "developer",
+   "email": "analista1@simulado.invalid",
+   "full_name": "QA-FICTICIO Analista Uno",
+   "is_active": true,
+   "created_at": "2026-11-24T16:38:11.231849-05:00"
+  },
+  {
+   "id": "00000000-0000-4000-8000-0000000000c1",
+   "role": "superadmin",
+   "email": "superadmin@simulado.invalid",
+   "full_name": "Superadmin Simulado",
+   "is_active": true,
+   "created_at": "2026-11-24T16:38:10.305459-05:00"
+  },
+  {
+   "id": "00000000-0000-4000-8000-0000000000c4",
+   "role": "viewer",
+   "email": "viewer@simulado.invalid",
+   "full_name": "Viewer Simulado",
+   "is_active": true,
+   "created_at": "2026-11-24T16:38:10.331736-05:00"
+  }
+ ],
+ "card_colors": {
+  "00000000-0000-4000-8000-0000000000c1": "azul",
+  "00000000-0000-4000-8000-0000000000c2": "celeste",
+  "00000000-0000-4000-8000-0000000000c3": "celeste-oscuro",
+  "00000000-0000-4000-8000-0000000000c4": "dorado",
+  "00000000-0000-4000-8000-0000000000d1": "dorado-claro",
+  "00000000-0000-4000-8000-0000000000d2": "ambar"
+ },
+ "portfolios": [
+  {
+   "id": "7da3d9f3-22ee-4aa8-b7bf-36301ad46ff6",
+   "name": "QA-FICTICIO Operaciones",
+   "is_active": true,
+   "created_at": "2026-11-24T16:38:11.107986-05:00",
+   "sort_order": 0,
+   "updated_at": "2026-11-24T16:38:11.107986-05:00",
+   "description": null
+  },
+  {
+   "id": "9bc5cbdd-b9dc-47cd-85fc-07f648e8bdea",
+   "name": "Gestión",
+   "is_active": true,
+   "created_at": "2026-11-24T16:38:10.285756-05:00",
+   "sort_order": 1,
+   "updated_at": "2026-11-24T16:38:10.285756-05:00",
+   "description": "Portafolio de iniciativas de gestión de largo alcance."
+  }
+ ],
+ "portfolio_initiatives": [
+  {
+   "id": "04e586c4-5e35-408c-b2ee-25ff00dd1469",
+   "name": "QA-FICTICIO Cierre mensual",
+   "is_active": true,
+   "created_at": "2026-11-24T16:38:11.222253-05:00",
+   "sort_order": 0,
+   "updated_at": "2026-11-24T16:38:11.222253-05:00",
+   "description": null,
+   "portfolio_id": "7da3d9f3-22ee-4aa8-b7bf-36301ad46ff6"
+  },
+  {
+   "id": "2909c4ad-8d55-4175-af8f-ba8416db63ad",
+   "name": "Beneficiarios finales",
+   "is_active": true,
+   "created_at": "2026-11-24T16:38:10.285756-05:00",
+   "sort_order": 1,
+   "updated_at": "2026-11-24T16:38:10.285756-05:00",
+   "description": "Iniciativa de largo alcance; sus tickets del tablero se asocian aquí.",
+   "portfolio_id": "9bc5cbdd-b9dc-47cd-85fc-07f648e8bdea"
+  }
+ ],
+ "studios": [
+  {
+   "id": "73342421-906c-4416-84f1-cd5abd497d2d",
+   "name": "BUSINESS ACCOMPANYING SAC",
+   "is_active": true
+  },
+  {
+   "id": "533b1f47-a296-4ef6-819a-a4d377b89c36",
+   "name": "CENTRAL DE COOPERATIVAS MINERAS RINCONADA Y LUNAR DE ORO LIMITADA",
+   "is_active": true
+  },
+  {
+   "id": "3cc5b171-3a21-4051-b2ca-75f260bcef7a",
+   "name": "COAQUIRA APAZA EWER",
+   "is_active": true
+  },
+  {
+   "id": "4e93400a-6f5e-4ab2-a7e0-46c5d90f9259",
+   "name": "COMUNIDAD CAMPESINA DE UNTUCA",
+   "is_active": true
+  },
+  {
+   "id": "0ae80e99-7d50-419b-856f-d5bce624a13a",
+   "name": "CORPORACION MINERA ANANEA S.A.",
+   "is_active": true
+  },
+  {
+   "id": "262168cc-8180-42a6-ba29-85e3f885cccc",
+   "name": "ESTUDIO CONTABLE CREY",
+   "is_active": true
+  },
+  {
+   "id": "01d2d365-237a-44bb-b210-49bb052f4faf",
+   "name": "EXPLORACION Y SERVICIO MINERO ZUSAN S.A.",
+   "is_active": true
+  },
+  {
+   "id": "a71a9d0a-844a-4e6f-aa86-b592424ed8c5",
+   "name": "INVERSIONES Y SERVICIOS MULTIPLES SAN ROMAN SA",
+   "is_active": true
+  },
+  {
+   "id": "5e2fba7f-e94f-4d87-9a2f-48a30febfe62",
+   "name": "ZELA COLLA JUAN RUBEN ROMARIO",
+   "is_active": true
+  }
+ ],
+ "studio_codes": [
+  {
+   "id": "77d25cb6-dcb5-4f8a-8dbb-85c42ec524b3",
+   "code": "ARAPA",
+   "is_active": true,
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d"
+  },
+  {
+   "id": "e8172a0e-f00e-4aea-b0cd-b04b16722dff",
+   "code": "ASPPMACSU",
+   "is_active": true,
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d"
+  },
+  {
+   "id": "a933454b-eaa3-4089-ac0d-3e58ef917e50",
+   "code": "CECOMIRL",
+   "is_active": true,
+   "studio_id": "533b1f47-a296-4ef6-819a-a4d377b89c36"
+  },
+  {
+   "id": "8e29aa9c-a963-4674-beba-0bdfc5249eb2",
+   "code": "CMASA",
+   "is_active": true,
+   "studio_id": "0ae80e99-7d50-419b-856f-d5bce624a13a"
+  },
+  {
+   "id": "f9e58acb-11a6-4e12-9ab0-382f49abf8e1",
+   "code": "COACOT",
+   "is_active": true,
+   "studio_id": "5e2fba7f-e94f-4d87-9a2f-48a30febfe62"
+  },
+  {
+   "id": "b886fccd-974a-43a5-83d1-c0a6c2fb63e5",
+   "code": "COAQUIRA",
+   "is_active": true,
+   "studio_id": "3cc5b171-3a21-4051-b2ca-75f260bcef7a"
+  },
+  {
+   "id": "4ffde3a2-97ef-4b6e-8642-4b994929d9ed",
+   "code": "CREY",
+   "is_active": true,
+   "studio_id": "262168cc-8180-42a6-ba29-85e3f885cccc"
+  },
+  {
+   "id": "34232ed7-97f0-449b-bc2d-babb0de90ed2",
+   "code": "DISFARMADENT",
+   "is_active": true,
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d"
+  },
+  {
+   "id": "553d7037-35c7-4b52-88c3-42796f255efd",
+   "code": "PROCONT",
+   "is_active": true,
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d"
+  },
+  {
+   "id": "d5020f27-558e-4d9e-b837-7ea1550c8224",
+   "code": "PROCONT_CUZ",
+   "is_active": true,
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d"
+  },
+  {
+   "id": "61c3cb1e-908c-4335-baa4-8e3f44186d63",
+   "code": "PROCONT_OLICH",
+   "is_active": true,
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d"
+  },
+  {
+   "id": "ee18d269-b996-4f5f-b839-682b9f060c13",
+   "code": "SANROMAN",
+   "is_active": true,
+   "studio_id": "a71a9d0a-844a-4e6f-aa86-b592424ed8c5"
+  },
+  {
+   "id": "2dd2c34d-c3aa-4d2a-8da0-0e0b3b38ff83",
+   "code": "UNTUCA",
+   "is_active": true,
+   "studio_id": "4e93400a-6f5e-4ab2-a7e0-46c5d90f9259"
+  },
+  {
+   "id": "e2d6242e-e286-4f51-abc1-06b75d228ab8",
+   "code": "ZUSAN",
+   "is_active": true,
+   "studio_id": "01d2d365-237a-44bb-b210-49bb052f4faf"
+  }
+ ],
+ "areas": [
+  {
+   "id": "2e608fed-92b5-4757-8e2b-6c8aa3c96cf6",
+   "code": "AD00",
+   "name": "ADMINISTRACIÓN",
+   "is_active": true,
+   "parent_id": null,
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d"
+  },
+  {
+   "id": "2100bdf9-cb68-4162-9c81-30ba422c4228",
+   "code": "L001",
+   "name": "ASESORÍA",
+   "is_active": true,
+   "parent_id": "93789e45-0636-4afc-980e-091a0e4f9001",
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d"
+  },
+  {
+   "id": "a967ae60-4cf4-4cc7-9721-fb1b39306134",
+   "code": "CB00",
+   "name": "CAJA Y BANCOS",
+   "is_active": true,
+   "parent_id": null,
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d"
+  },
+  {
+   "id": "00dbb12a-6872-4d35-89e7-b5256d4733a3",
+   "code": "C002",
+   "name": "COMERCIAL",
+   "is_active": true,
+   "parent_id": "5496e84f-ae0d-4031-ad1d-d3f4806d2ad0",
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d"
+  },
+  {
+   "id": "5496e84f-ae0d-4031-ad1d-d3f4806d2ad0",
+   "code": "C000",
+   "name": "CONTABILIDAD",
+   "is_active": true,
+   "parent_id": null,
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d"
+  },
+  {
+   "id": "53b9626c-c392-489a-8ddd-1538868a52c5",
+   "code": "G001",
+   "name": "GENERAL",
+   "is_active": true,
+   "parent_id": "8ac14156-c62e-425f-bcd6-90f95d9fa23c",
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d"
+  },
+  {
+   "id": "8ac14156-c62e-425f-bcd6-90f95d9fa23c",
+   "code": "G000",
+   "name": "GERENCIA",
+   "is_active": true,
+   "parent_id": null,
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d"
+  },
+  {
+   "id": "3d661739-d820-49a0-9c64-ff27412283d5",
+   "code": "C006",
+   "name": "GRIFOS",
+   "is_active": true,
+   "parent_id": "5496e84f-ae0d-4031-ad1d-d3f4806d2ad0",
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d"
+  },
+  {
+   "id": "9ef5a6fa-3ee6-458b-9bc7-c25c076af65c",
+   "code": "C003",
+   "name": "IMPORTACIÓN",
+   "is_active": true,
+   "parent_id": "5496e84f-ae0d-4031-ad1d-d3f4806d2ad0",
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d"
+  },
+  {
+   "id": "5448ea77-f651-45b6-a196-cc49a18d9248",
+   "code": "C004",
+   "name": "INDUSTRIAL",
+   "is_active": true,
+   "parent_id": "5496e84f-ae0d-4031-ad1d-d3f4806d2ad0",
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d"
+  },
+  {
+   "id": "93789e45-0636-4afc-980e-091a0e4f9001",
+   "code": "L000",
+   "name": "LEGAL",
+   "is_active": true,
+   "parent_id": null,
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d"
+  },
+  {
+   "id": "597979d3-b0c2-4cdf-a809-673b101794de",
+   "code": "C012",
+   "name": "MINERÍA REG. ESPECIAL",
+   "is_active": true,
+   "parent_id": "5496e84f-ae0d-4031-ad1d-d3f4806d2ad0",
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d"
+  },
+  {
+   "id": "9a2304d9-c382-41b0-8c55-88e16e2d4cec",
+   "code": "C008",
+   "name": "MINERÍA REG. GENERAL A",
+   "is_active": true,
+   "parent_id": "5496e84f-ae0d-4031-ad1d-d3f4806d2ad0",
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d"
+  },
+  {
+   "id": "500dc285-c437-4c3e-8260-c182cc4a4765",
+   "code": "C009",
+   "name": "MINERÍA REG. GENERAL B",
+   "is_active": true,
+   "parent_id": "5496e84f-ae0d-4031-ad1d-d3f4806d2ad0",
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d"
+  },
+  {
+   "id": "afc21fd1-eb06-464b-989f-b6e12ad1c9f4",
+   "code": "C010",
+   "name": "MINERÍA REG. GENERAL C",
+   "is_active": true,
+   "parent_id": "5496e84f-ae0d-4031-ad1d-d3f4806d2ad0",
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d"
+  },
+  {
+   "id": "0df9561d-76d8-4945-8daa-5e0bf671a0ff",
+   "code": "C011",
+   "name": "MINERÍA REG. MYPE TRIBUTARIO",
+   "is_active": true,
+   "parent_id": "5496e84f-ae0d-4031-ad1d-d3f4806d2ad0",
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d"
+  },
+  {
+   "id": "c3b328a7-fb47-4510-89a0-d99f876b9c50",
+   "code": "QAC",
+   "name": "QA-FICTICIO Contabilidad",
+   "is_active": true,
+   "parent_id": null,
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d"
+  },
+  {
+   "id": "39e47d11-0659-4f7d-aeba-1597b195c609",
+   "code": "C007",
+   "name": "RENTAS",
+   "is_active": true,
+   "parent_id": "5496e84f-ae0d-4031-ad1d-d3f4806d2ad0",
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d"
+  },
+  {
+   "id": "5d4d8557-7fea-40be-96aa-7feec8a22aa4",
+   "code": "C005",
+   "name": "SERVICIOS",
+   "is_active": true,
+   "parent_id": "5496e84f-ae0d-4031-ad1d-d3f4806d2ad0",
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d"
+  },
+  {
+   "id": "94af759f-c3ac-4c75-bfd0-a925ea353918",
+   "code": "C001",
+   "name": "TRANSPORTES",
+   "is_active": true,
+   "parent_id": "5496e84f-ae0d-4031-ad1d-d3f4806d2ad0",
+   "studio_id": "73342421-906c-4416-84f1-cd5abd497d2d"
+  }
+ ],
+ "catalog_systems": [
+  {
+   "id": "8c7f668e-86dc-492d-9531-1be6e94a1dbf",
+   "name": "Quipu",
+   "is_active": true,
+   "sort_order": 1,
+   "requires_subproject": true
+  },
+  {
+   "id": "0f3a932d-2a05-455b-853e-67858bcc9e95",
+   "name": "Quipu_Fac",
+   "is_active": true,
+   "sort_order": 2,
+   "requires_subproject": true
+  },
+  {
+   "id": "408d502f-e7ef-4476-bce4-4b565a1cfcb4",
+   "name": "Quipu_Gestion",
+   "is_active": true,
+   "sort_order": 3,
+   "requires_subproject": true
+  },
+  {
+   "id": "6bb4e1f6-37bd-4570-99e5-ad3339c497cc",
+   "name": "Negmin",
+   "is_active": true,
+   "sort_order": 4,
+   "requires_subproject": true
+  },
+  {
+   "id": "754f747e-a802-4f63-abad-48d14f871d69",
+   "name": "Quipu_AI",
+   "is_active": true,
+   "sort_order": 5,
+   "requires_subproject": true
+  },
+  {
+   "id": "22c6d269-df53-4a66-8e83-045976dc07e2",
+   "name": "Otros",
+   "is_active": true,
+   "sort_order": 6,
+   "requires_subproject": false
+  },
+  {
+   "id": "57bae191-4019-4c06-8dd3-7e844cb227f7",
+   "name": "Soporte tecnico",
+   "is_active": true,
+   "sort_order": 7,
+   "requires_subproject": false
+  }
+ ],
+ "request_types": [
+  {
+   "id": "d5ff941d-9b6b-4333-afdb-d3f4fdf725e0",
+   "name": "Error / Incidencia",
+   "is_active": true,
+   "sort_order": 1
+  },
+  {
+   "id": "446e2d24-4372-4fc7-8638-48e09cc58b40",
+   "name": "Nueva funcionalidad",
+   "is_active": true,
+   "sort_order": 2
+  },
+  {
+   "id": "807b447a-b2eb-4c35-9b1e-5de66b985bf0",
+   "name": "Mejora",
+   "is_active": true,
+   "sort_order": 3
+  },
+  {
+   "id": "dac41d76-c72b-4cf0-8e13-796dd4ccc72c",
+   "name": "Soporte técnico",
+   "is_active": true,
+   "sort_order": 4
+  },
+  {
+   "id": "edb6ceaa-cce7-44a6-9a30-3d763262c239",
+   "name": "Acceso / Permisos",
+   "is_active": true,
+   "sort_order": 5
+  },
+  {
+   "id": "5b1723d1-ac85-46a5-b131-255ff215437b",
+   "name": "Reporte / Extracción",
+   "is_active": true,
+   "sort_order": 6
+  },
+  {
+   "id": "4663a69b-e76b-481b-aedb-a474dcff396c",
+   "name": "Integración / Automatización",
+   "is_active": true,
+   "sort_order": 7
+  },
+  {
+   "id": "feb9ecc6-474e-4ec4-a47d-b935cdf6cfee",
+   "name": "Capacitación / Consulta",
+   "is_active": true,
+   "sort_order": 8
+  },
+  {
+   "id": "22a4da4c-d313-4161-8d09-e46a05372268",
+   "name": "Otros",
+   "is_active": true,
+   "sort_order": 9
+  }
+ ],
+ "tickets": {
+  "123a39de-cfc5-414b-9d5f-294464f00f01": "in_progress",
+  "19752b2c-abfb-4934-9877-14c5a00886cf": "in_progress",
+  "19e57ab5-1815-4119-8760-5abc4d098762": "in_progress",
+  "23684fc8-63b1-4d81-8d0e-bfa669360235": "done",
+  "258c8cae-b2a8-4f70-a311-1f38a77c716e": "in_progress",
+  "378ab879-2df4-4166-9553-a2f799e639dc": "in_progress",
+  "3946ac17-2384-4562-8b0c-e2aa63160295": "blocked",
+  "5bca5eac-6f4c-434c-a37f-db1beb2b2992": "in_progress",
+  "5fad2761-3530-4d71-be20-f143d910894e": "approved_backlog",
+  "6565de8e-9c7d-46fe-bf5c-a63a0066423b": "approved_backlog",
+  "6e6308d1-582d-4f8e-97e0-43c98831a5c2": "blocked",
+  "6fcc73a1-8bbb-4e08-b18b-6865295cd5dd": "in_progress",
+  "8f0bd437-0e09-4bff-95ab-a17b56c675e6": "in_progress",
+  "93fbab14-af0f-4987-a1ea-da8e09dc9ec5": "in_progress",
+  "c088a4a1-cebe-4250-aa98-deee12dd7ed9": "in_progress",
+  "c5a13a65-13e6-4b4b-ae4c-0d6425a28482": "approved_backlog",
+  "ccd9aaed-9d54-4fd2-99a8-4ece04a2ddab": "done",
+  "cda21f7c-c621-493b-9ef7-562c76b58bd2": "approved_backlog",
+  "e23387d1-69bf-4570-85ab-c829a1f7fabc": "in_progress"
+ }
+}

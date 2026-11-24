@@ -229,8 +229,9 @@ for (const [size, viewport] of Object.entries(SIZES)) {
     await page.locator('.kanban-scroll').evaluate(el => { el.scrollLeft = 0 })
     await page.getByText('Revisión del reporte de ventas', { exact: true }).click()
     await page.getByRole('dialog', { name: 'Detalle del ticket' }).waitFor()
-    await page.getByText(/42[.,]86%/).first().waitFor()
     const dialog = page.getByRole('dialog', { name: 'Detalle del ticket' })
+    await dialog.getByText(/Fase \d+ de 8/).waitFor()
+    assert.equal(await dialog.getByText(/42[.,]86%/).count(), 0, 'la posición de fase no se presenta como trabajo completado')
     for (let i = 0; i < 24; i++) {
       await page.keyboard.press('Tab')
       assert.equal(await dialog.evaluate(el => el.contains(document.activeElement)), true, 'Tab conserva foco en el modal')
@@ -413,7 +414,7 @@ test('[UX desktop] M17: áreas solo para el código exacto PROCONT y no para ARA
   const rows = [pending('00000000-0000-4000-8000-000000009461', 'Solicitud PROCONT ficticia', '00000000-0000-4000-8000-0000000001c1'),
     pending('00000000-0000-4000-8000-000000009462', 'Solicitud ARAPA ficticia', '00000000-0000-4000-8000-0000000001c2')]
   await page.route(`${fixture.url}/rest/v1/requests?**`, route => route.fulfill({ status: 200,
-    contentType: 'application/json', headers: { 'Access-Control-Allow-Origin': '*' }, body: JSON.stringify(rows) }))
+    contentType: 'application/json', headers: { 'Access-Control-Allow-Origin': '*', 'Access-Control-Expose-Headers': 'Content-Range', 'Content-Range': `0-${rows.length - 1}/${rows.length}` }, body: JSON.stringify(rows) }))
   await staff(page)
   await page.getByRole('button', { name: /^Requests/ }).click()
   const openModal = async title => {
@@ -531,8 +532,10 @@ for (const [size, viewport] of Object.entries(SIZES)) {
     // La prioridad definitiva usa las mismas palabras (Bajo/Medio/Alto/Urgente): se excluyen las opciones del selector.
     const requestedShown = () => dialog.locator('p').filter({ hasText: /^Alto$/ }).count()
     assert.equal(await requestedShown(), 1)
-    assert.equal(await dialog.locator('#validation-priority').inputValue(), 'urgent', 'default de aprobación heredado de urgent_requested, no de requested_priority')
-    await dialog.locator('#validation-priority').selectOption('medium')
+    assert.match(await dialog.locator('#validation-priority').innerText(), /Urgente/, 'default de aprobación heredado de urgent_requested, no de requested_priority')
+    await dialog.locator('#validation-priority').click()
+    await dialog.getByRole('option', { name: 'Medio' }).click()
+    assert.match(await dialog.locator('#validation-priority').innerText(), /Medio/)
     assert.equal(await requestedShown(), 1)
     await capture(page, `${size}-36-modal-prioridades-distintas`)
     await dialog.evaluate(el => { el.scrollTop = el.scrollHeight })

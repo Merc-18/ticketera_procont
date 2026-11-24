@@ -12,14 +12,16 @@ import RequestTimeline from './RequestTimeline'
 import RequesterUrgencySummary from '../metrics/RequesterUrgencySummary'
 import Icon from '../ui/Icon'
 import ControlLabel from '../ui/ControlLabel'
-import { PRIORITY_LABEL } from '../../lib/constants'
 import { areasApply } from '../../lib/studio-rules'
+import PrioritySelect from '../ui/PrioritySelect'
+import PortfolioProjectFields from '../boards/PortfolioProjectFields'
+import { EMPTY_CHOICE, usePortfolios, validateChoice, type PortfolioChoice } from '../../lib/portfolios'
+import type { PortfolioDecision } from '../../lib/operations'
 
 type Catalogs = ReturnType<typeof useCatalogs>
 type Mode = 'view' | 'approve' | 'reject'
 type Priority = 'low' | 'medium' | 'high' | 'urgent'
 
-const PRIORITIES: [Priority, string][] = (['low', 'medium', 'high', 'urgent'] as Priority[]).map(v => [v, PRIORITY_LABEL[v]])
 const input = 'w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary outline-none bg-surface'
 
 interface Props {
@@ -29,7 +31,7 @@ interface Props {
   catalogs: Catalogs
   users: User[]
   onApprove: (id: string, data: { title: string; priority: Priority; assigned_dev: string },
-    attempt: ReturnType<typeof createRpcAttempt>) => Promise<void>
+    attempt: ReturnType<typeof createRpcAttempt>, portfolio: PortfolioDecision) => Promise<void>
   onReject: (id: string, publicReason: string, internalNotes?: string) => Promise<void>
   onClose: () => void
 }
@@ -48,6 +50,10 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
   const [subarea, setSubarea] = useState(r.subarea_id ?? '')
   const [responsible, setResponsible] = useState('')
   const [priority, setPriority] = useState<Priority>(r.urgent_requested ? 'urgent' : 'medium')
+  // Portafolio → Proyecto/Iniciativa: elección explícita (o «Ticket independiente»), guardada al confirmar (M20).
+  const [portfolioChoice, setPortfolioChoice] = useState<PortfolioChoice>(EMPTY_CHOICE)
+  const portfolioCatalog = usePortfolios()
+  const [triedApprove, setTriedApprove] = useState(false)
   const [reason, setReason] = useState('')          // motivo público (lo ve el cliente)
   const [internalNotes, setInternalNotes] = useState('') // notas internas (no se publican)
   const [busy, setBusy] = useState(false)
@@ -85,11 +91,13 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
     if (mode === 'approve' && classified && areaApplies && studioAreas.length > 0 && !area) return 'Selecciona el área (obligatoria para el código PROCONT).'
     if (mode === 'approve' && classified && requiresSub && !subsystem) return 'Selecciona el subproyecto.'
     if (mode === 'approve' && !responsible) return 'Selecciona el responsable.'
+    if (mode === 'approve') { const e = validateChoice(portfolioChoice, portfolioCatalog.initiatives); if (e) return e }
     if (mode === 'reject' && !reason.trim()) return 'Indica el motivo del rechazo para el solicitante.'
     return null
   })()
 
   const decide = async () => {
+    if (mode === 'approve') setTriedApprove(true)
     if (missing) { toast.error(missing); return }
     setBusy(true)
     try {
@@ -98,7 +106,10 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
           area_id: areaApplies ? area || null : null, subarea_id: areaApplies ? subarea || null : null })
       }
       if (mode === 'approve') {
-        await onApprove(r.id, { title: r.title || r.request_type, priority, assigned_dev: responsible }, attempt.current)
+        const decision: PortfolioDecision = portfolioChoice.mode === 'portfolio'
+          ? { mode: 'portfolio', portfolio_id: portfolioChoice.portfolio_id!, initiative_id: portfolioChoice.initiative_id }
+          : { mode: 'independent' }
+        await onApprove(r.id, { title: r.title || r.request_type, priority, assigned_dev: responsible }, attempt.current, decision)
         toast.success('Solicitud aceptada y trabajo creado en el tablero')
       } else {
         await onReject(r.id, reason, internalNotes)
@@ -246,15 +257,17 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
                     </select>
                   </div>
                   <div>
-                    <label htmlFor="validation-priority" className="block text-sm font-medium text-gray-700 mb-1">Prioridad definitiva *</label>
-                    <select id="validation-priority" aria-describedby="validation-priority-help" value={priority} onChange={e => setPriority(e.target.value as Priority)} className={input}>
-                      {PRIORITIES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
-                    </select>
+                    <PrioritySelect id="validation-priority" label="Prioridad definitiva *" value={priority} onChange={v => setPriority(v as Priority)} />
                     <p id="validation-priority-help" className="text-sm text-gray-600 mt-1">Asignada por el personal{urgent ? '. El cliente pidió urgencia; puedes cambiarla.' : '.'}</p>
                   </div>
                   <div>
                     <p className="block text-sm font-medium text-gray-700 mb-1">Tablero</p>
                     <p className="px-3 py-2 min-h-[44px] text-sm text-gray-700 bg-gray-50 border border-gray-300 rounded-lg flex items-center"><ControlLabel icon="code">Development · inicia en Backlog</ControlLabel></p>
+                  </div>
+                  <div className="sm:col-span-3 validation-portfolio">
+                    <p className="block text-sm font-medium text-gray-700 mb-1">Portafolio y proyecto *</p>
+                    <PortfolioProjectFields idPrefix="validation" value={portfolioChoice} onChange={setPortfolioChoice} invalid={triedApprove} />
+                    <p className="text-sm text-gray-600 mt-1">Se guarda al confirmar, en la misma operación. Elige «Ticket independiente» si no pertenece a un proyecto.</p>
                   </div>
                   <div className="sm:col-span-3 bg-gray-50 border border-dashed rounded-lg px-3 py-2 text-xs text-gray-600">
                     <strong>SLA interno:</strong> Pendiente de configuración. Los plazos de Procont aún no están definidos; no se asigna fecha.

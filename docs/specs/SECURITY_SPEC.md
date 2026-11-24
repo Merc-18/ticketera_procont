@@ -118,3 +118,8 @@ Evidencia en PostgreSQL 17 local (clean/upgrade): anon y un autenticado sin perf
 ## M19 (24/11/2026)
 
 `portfolios` y `portfolio_initiatives`: RLS activa, lectura solo para perfiles internos activos y sin INSERT/UPDATE/DELETE para roles de aplicación. `projects.portfolio_id`/`initiative_id` no tienen concesión de UPDATE directa (solo `set_project_portfolio`, auditada). Las RPC nuevas y `add_flows` son `SECURITY DEFINER` con `search_path=''`; PUBLIC y anon no tienen EXECUTE y `add_flows` sigue sin ser invocable desde la API. `create_internal_ticket` exige admin/superadmin, reutiliza `classify_request` y `approve_request` (sus validaciones y su regla PROCONT) y es atómica. Evidencia: `docs/validation/m19-portfolio-checklists-cards-20261124/`.
+# Enmienda de seguridad — aprobación con portafolio (M20 local)
+
+La asociación al confirmar no acepta nombres libres ni proyectos no vinculados al portafolio elegido. `approve_request_with_portfolio` valida rol admin/superadmin antes de ejecutar, valida payload cerrado y delega la relación a `set_project_portfolio`. Ambos pasos se ejecutan en la transacción de la RPC; la clave de idempotencia evita duplicar aprobación. Ticket independiente no puede llevar IDs.
+
+ACL: SECURITY DEFINER con `search_path=''`; sin ejecución PUBLIC/anon/service_role y `authenticated` invoca el control explícito de rol interno. Verificación remota read-only posterior a M20: owner postgres, anon=false, authenticated=true, service_role=false; no equivale a invocar la RPC de aprobación. Prueba PostgreSQL previa local.

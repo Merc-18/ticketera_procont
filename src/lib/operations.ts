@@ -37,6 +37,8 @@ export interface InternalTicketInput {
   requested_priority?: Project['priority']; area_id?: string | null; subarea_id?: string | null
 }
 export interface InternalTicketReceipt { project: Project; request_number: string; request_id: string }
+/** Decisión de portafolio al confirmar: independiente (explícito) o portafolio con proyecto opcional. */
+export type PortfolioDecision = { mode: 'independent' } | { mode: 'portfolio'; portfolio_id: string; initiative_id?: string | null }
 export interface ApprovalInput {
   priority: Project['priority']; assigned_dev: string; title?: string; start_date?: string; due_date?: string
 }
@@ -108,6 +110,25 @@ export function createOperations(client: RpcClient) {
           throw new Error('No se confirmó el ticket. Reintenta con los mismos datos.')
         }
         return receipt
+      })
+    },
+    /**
+     * Confirmación con Portafolio → Proyecto (M20, approve_request_with_portfolio): aprobación y asociación en una
+     * sola transacción; «independiente» queda auditado sin asociación.
+     */
+    async approveRequestWithPortfolio(request: Request, data: ApprovalInput, portfolio: PortfolioDecision, attempt: RpcAttempt) {
+      if (!uuidPattern.test(data.assigned_dev ?? '')) throw new Error('Selecciona el responsable principal.')
+      if (portfolio.mode === 'portfolio' && !uuidPattern.test(portfolio.portfolio_id ?? '')) throw new Error('Selecciona el portafolio.')
+      const payload = { project_type: 'development', priority: data.priority,
+        title: data.title?.trim() || request.title || request.request_type,
+        start_date: nullable(data.start_date), due_date: nullable(data.due_date),
+        sla_target_date: null, sla_formal_days: null, assigned_dev: data.assigned_dev, assigned_admin: null }
+      const decision = portfolio.mode === 'independent' ? { mode: 'independent' }
+        : { mode: 'portfolio', portfolio_id: portfolio.portfolio_id, initiative_id: portfolio.initiative_id || null }
+      return attempt.run('approve_request_with_portfolio', { p_request_id: request.id, p_payload: payload, p_portfolio: decision }, async args => {
+        const project = await value<Project>('approve_request_with_portfolio', args)
+        if (!uuidPattern.test(project.id) || project.request_id !== request.id) throw new Error('No se confirmó la aprobación. Actualiza la bandeja.')
+        return project
       })
     },
     async approveRequest(request: Request, data: ApprovalInput, attempt: RpcAttempt) {

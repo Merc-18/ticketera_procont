@@ -6,11 +6,12 @@ import type { InternalTicketInput, InternalTicketReceipt } from '../../lib/opera
 import { useUsers } from '../../hooks/useUsers'
 import { useCatalogs } from '../../hooks/useCatalogs'
 import Icon from '../ui/Icon'
-import { PHASE_LABELS, PRIORITY_LABEL } from '../../lib/constants'
+import { PHASE_LABELS } from '../../lib/constants'
 import { DEVELOPMENT_PHASES } from '../../lib/board'
 import { areasApply } from '../../lib/studio-rules'
-import PortfolioSelect from '../boards/PortfolioSelect'
-import { decodePortfolio, usePortfolios } from '../../lib/portfolios'
+import PortfolioProjectFields from '../boards/PortfolioProjectFields'
+import { EMPTY_CHOICE, choiceIds, usePortfolios, validateChoice, type PortfolioChoice } from '../../lib/portfolios'
+import PrioritySelect from '../ui/PrioritySelect'
 import AttachmentPicker from '../requests/AttachmentPicker'
 import type { PreparationResult } from '../../lib/attachment-prep'
 import { uploadBoardEvidence } from '../../lib/attachments'
@@ -30,7 +31,6 @@ interface Props {
   onClose: () => void
   onCreate: (data: InternalTicketInput, attempt: RpcAttempt) => Promise<InternalTicketReceipt>
 }
-const PRIORITIES: Priority[] = ['low', 'medium', 'high', 'urgent']
 const START_PHASES = DEVELOPMENT_PHASES.filter(p => p !== 'done')
 
 export default function NewProjectModal({ onClose, onCreate }: Props) {
@@ -40,9 +40,10 @@ export default function NewProjectModal({ onClose, onCreate }: Props) {
   const attempt = useRef(createRpcAttempt())
   const [mode, setMode] = useState<Mode>('client')
   const [f, setF] = useState({ title: '', description: '', priority: 'medium' as Priority, assigned_dev: '', initial_phase: 'backlog',
-    start_date: '', due_date: '', requester_name: '', requester_email: '', portfolio: '', studio_id: '', studio_code_id: '',
+    start_date: '', due_date: '', requester_name: '', requester_email: '', studio_id: '', studio_code_id: '',
     system_id: '', subsystem_id: '', request_type_id: '', requested_priority: 'medium' as Priority, area_id: '', subarea_id: '' })
   const set = (patch: Partial<typeof f>) => setF(prev => ({ ...prev, ...patch }))
+  const [portfolioChoice, setPortfolioChoice] = useState<PortfolioChoice>(EMPTY_CHOICE)
   const [prepared, setPrepared] = useState<PreparationResult | null>({ items: [], totalBytes: 0, originalBytes: 0, ok: true, error: null })
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -71,9 +72,10 @@ export default function NewProjectModal({ onClose, onCreate }: Props) {
       if (!f.request_type_id) m.push('Tipo de solicitud')
       if (areaRequired && !f.area_id) m.push('Área')
     }
+    if (validateChoice(portfolioChoice, portfolios.initiatives)) m.push('Portafolio (o «Ticket independiente»)')
     if (f.start_date && f.due_date && f.due_date < f.start_date) m.push('Fecha objetivo posterior al inicio')
     return m
-  }, [f, mode, needsSub, areaRequired])
+  }, [f, mode, needsSub, areaRequired, portfolioChoice, portfolios.initiatives])
 
   const handleSubmit = async () => {
     setTouched(true)
@@ -82,7 +84,7 @@ export default function NewProjectModal({ onClose, onCreate }: Props) {
     if (!prepared.ok) { setError(prepared.error); return }
     setSaving(true); setError(null)
     try {
-      const target = decodePortfolio(f.portfolio, portfolios.initiatives)
+      const target = choiceIds(portfolioChoice)
       const receipt = await onCreate({
         mode, title: f.title, description: f.description, priority: f.priority, assigned_dev: f.assigned_dev,
         start_date: f.start_date || undefined, due_date: f.due_date || undefined, initial_phase: f.initial_phase,
@@ -157,11 +159,7 @@ export default function NewProjectModal({ onClose, onCreate }: Props) {
                   {catalogs.requestTypes.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
                 </select>
               </label>
-              <label className="nt-field" htmlFor="nt-requested-priority"><span>Prioridad solicitada por el cliente</span>
-                <select id="nt-requested-priority" className="ui-input" value={f.requested_priority} onChange={e => set({ requested_priority: e.target.value as Priority })}>
-                  {PRIORITIES.map(p => <option key={p} value={p}>{PRIORITY_LABEL[p]}</option>)}
-                </select>
-              </label>
+              <div className="nt-field"><PrioritySelect id="nt-requested-priority" label="Prioridad solicitada por el cliente" value={f.requested_priority} onChange={v => set({ requested_priority: v as Priority })} /></div>
             </>) : (
               <label className="nt-field nt-wide" htmlFor="nt-requester"><span>Solicitante <small>(opcional; por defecto, tú)</small></span>
                 <input id="nt-requester" className="ui-input" maxLength={200} value={f.requester_name} onChange={e => set({ requester_name: e.target.value })} />
@@ -217,11 +215,7 @@ export default function NewProjectModal({ onClose, onCreate }: Props) {
 
           <section className="new-ticket-section" aria-labelledby="nt-work">
             <h3 id="nt-work">Gestión interna</h3>
-            <label className="nt-field" htmlFor="nt-priority"><span>Prioridad asignada{req}</span>
-              <select id="nt-priority" className="ui-input" value={f.priority} onChange={e => set({ priority: e.target.value as Priority })}>
-                {PRIORITIES.map(p => <option key={p} value={p}>{PRIORITY_LABEL[p]}</option>)}
-              </select>
-            </label>
+            <div className="nt-field"><PrioritySelect id="nt-priority" label="Prioridad asignada *" value={f.priority} onChange={v => set({ priority: v as Priority })} /></div>
             <label className="nt-field" htmlFor="nt-assignee"><span>Responsable principal{req}</span>
               <select id="nt-assignee" className="ui-input" value={f.assigned_dev} onChange={e => set({ assigned_dev: e.target.value })} {...invalid(!f.assigned_dev)}>
                 <option value="">Selecciona…</option>
@@ -233,9 +227,7 @@ export default function NewProjectModal({ onClose, onCreate }: Props) {
                 {START_PHASES.map(p => <option key={p} value={p}>{PHASE_LABELS[p] ?? p}</option>)}
               </select>
             </label>
-            <label className="nt-field" htmlFor="nt-portfolio"><span>Portafolio <small>(opcional)</small></span>
-              <PortfolioSelect id="nt-portfolio" value={f.portfolio} onChange={v => set({ portfolio: v })} />
-            </label>
+            <div className="nt-wide"><PortfolioProjectFields idPrefix="nt" value={portfolioChoice} onChange={setPortfolioChoice} invalid={touched} /></div>
             <label className="nt-field" htmlFor="nt-start"><span>Fecha de inicio <small>(opcional)</small></span>
               <input id="nt-start" type="date" className="ui-input" value={f.start_date} onChange={e => set({ start_date: e.target.value })} />
             </label>

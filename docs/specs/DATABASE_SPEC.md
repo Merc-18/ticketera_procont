@@ -494,3 +494,10 @@ M18 fue **aplicada en producción** el 24/11/2026 (dry-run solo con M18, aplicac
 - **`create_internal_ticket`:** modo `client` inserta una solicitud con la forma del portal (origen «Cliente», estudio, producto, subproyecto, tipo, título, prioridad solicitada) y en la **misma transacción** llama a `classify_request` (regla de área solo para el código exacto PROCONT) y a `approve_request`. El modo `internal` llama a `create_internal_project`. Ambos aceptan Portafolio/iniciativa y fase inicial (`operate_board_ticket`, auditado; nunca Done). Cualquier error revierte todo.
 
 **Evidencia:** `supabase/tests/m19_portfolio_checklists_local.py` → `docs/validation/m19-portfolio-checklists-cards-20261124/data/m19-{clean,upgrade}.json`.
+# M20 — asociar Portafolio al aprobar una solicitud
+
+Fecha 24/11/2026 · archivo `20261124000300_approve_request_with_portfolio.sql` (SHA-256 `0d5990cb4a4abbe34142f0666a3359f8fbf8b352f63fce4637954a39d37e83e3`).
+
+M20 requiere M19 y crea solo `public.approve_request_with_portfolio(uuid,jsonb,jsonb,uuid)`. No añade tablas/columnas ni reescribe filas. SECURITY DEFINER, `search_path=''`, rol admin/superadmin, idempotency key requerida. Revoca PUBLIC, anon, authenticated y service_role antes de conceder EXECUTE a authenticated; el control de rol interno está dentro de la función. Independiente y portfolio son opciones excluyentes; asociación validada por RPC M19 y auditada. Operación transaccional sin asociación parcial.
+
+Aplicación local: evidencia PostgreSQL 17.12 en `data/m20-qa.json` (14 checks, ROLLBACK, idempotencia, fixtures, roles/relaciones). No repetida en esta sesión por ausencia de binarios PG. M20 se aplicó al remoto después de confirmar en dry-run que era la única pendiente; historial final 21/21. No se cambian M1–M19.

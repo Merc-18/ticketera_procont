@@ -7,6 +7,7 @@ import type {
   BoardTicket, BoardFlow, PendingItem, Phase, Priority, EvidenceGrant, BoardRpcClient,
 } from '../../contracts/board-operations-client.d.mts'
 import { errorMessage } from './supabase-errors.ts'
+import { checklistProgress } from './checklist-progress.ts'
 
 export type { BoardTicket, BoardFlow, PendingItem, Phase, Priority, EvidenceGrant }
 export { DEVELOPMENT_PHASES }
@@ -106,8 +107,10 @@ export function phasePosition(flowType: string, phase: string) {
   const index = list.indexOf(phase)
   return { index, count: list.length, label: index < 0 ? '—' : `${index + 1}/${list.length}` }
 }
-/** Conteo del checklist cargado con el flujo (sin porcentaje calculado en el navegador). */
-export function checklistCount(flow: { checklist_items?: { completed: boolean }[] }) {
-  const items = flow.checklist_items ?? []
-  return { done: items.filter(i => i.completed).length, total: items.length }
+/**
+ * Conteo de filas persistidas en el checklist; sugerencias no materializadas nunca cuentan.
+ * Los históricos ambiguos se conservan y no se reclasifican por coincidencia temporal.
+ */
+export function checklistCount(flow: { checklist_items?: { id?: string; completed: boolean; created_at?: string | null }[] }) {
+  return checklistProgress(flow.checklist_items ?? [])
 }

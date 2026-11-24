@@ -56,7 +56,7 @@ export function useProjects() {
         .from('projects')
         .select(`
           *,
-          project_flows (*, checklist_items(id, completed)),
+          project_flows (*, checklist_items(id, completed, created_at)),
           requests (*)
         `)
         .eq('status', status)

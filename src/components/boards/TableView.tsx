@@ -7,7 +7,7 @@ import { stageTone } from '../../lib/board-stages'
 import Icon from '../ui/Icon'
 import { checklistCount, phasePosition } from '../../lib/board'
 import { avatarClass, ownerClass, useOwnerColors } from '../../lib/card-colors'
-import { portfolioLabel, usePortfolios } from '../../lib/portfolios'
+import { usePortfolios } from '../../lib/portfolios'
 
 interface ProjectWithRelations extends Project {
   project_flows?: ProjectFlow[]
@@ -30,11 +30,13 @@ type SortDir = 'asc' | 'desc'
 
 const PRIORITY_ORDER: Record<string, number> = { urgent: 0, high: 1, medium: 2, low: 3 }
 
-function exportTableCSV(sorted: Array<{ project: ProjectWithRelations; flow: ProjectFlow }>, procontCodeId?: string | null) {
+function exportTableCSV(sorted: Array<{ project: ProjectWithRelations; flow: ProjectFlow }>, procontCodeId?: string | null, names: { portfolio: (id?: string | null) => string; project: (id?: string | null) => string } = { portfolio: () => '', project: () => '' }) {
   const PRIORITY_ES: Record<string, string> = { urgent: 'Urgente', high: 'Alta', medium: 'Media', low: 'Baja' }
-  const headers = ['Título', 'Prioridad', 'Área', 'Fase', 'Posición de fase', 'Checklist', 'Bloqueado', 'Fecha objetivo', 'Creado']
+  const headers = ['Título', 'Portafolio', 'Proyecto', 'Prioridad', 'Área', 'Fase', 'Posición de fase', 'Checklist', 'Bloqueado', 'Fecha objetivo', 'Creado']
   const rows = sorted.map(({ project, flow }) => [
     project.title,
+    names.portfolio(project.portfolio_id),
+    names.project(project.initiative_id),
     PRIORITY_ES[project.priority] ?? project.priority,
     project.requests?.studio_code_id === procontCodeId && procontCodeId ? project.requests?.requester_area ?? '' : '',
     PHASE_LABELS[flow.current_phase] ?? flow.current_phase,
@@ -149,6 +151,7 @@ export default function TableView({ projects, boardType, onProjectClick, loading
               <SortHeader k="priority"   label="Prioridad" />
               <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 whitespace-nowrap">Responsable</th>
               <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 whitespace-nowrap">Portafolio</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 whitespace-nowrap">Proyecto</th>
               <SortHeader k="area"       label="Área" />
               <SortHeader k="phase"      label="Fase" />
               <SortHeader k="progress"   label="Checklist" />
@@ -193,8 +196,11 @@ export default function TableView({ projects, boardType, onProjectClick, loading
                     ) : <span className="text-gray-500">Sin responsable</span>}
                   </td>
                   {/* Portafolio · iniciativa (M19) */}
+                  <td className="px-4 py-3 text-sm text-gray-700 max-w-[200px]">
+                    {portfolios.portfolios.find(x => x.id === project.portfolio_id)?.name ?? <span className="text-gray-500">Sin portafolio</span>}
+                  </td>
                   <td className="px-4 py-3 text-sm text-gray-700 max-w-[220px]">
-                    {portfolioLabel(portfolios, project.portfolio_id, project.initiative_id) ?? <span className="text-gray-500">—</span>}
+                    {portfolios.initiatives.find(x => x.id === project.initiative_id)?.name ?? <span className="text-gray-500">—</span>}
                   </td>
                   {/* Área */}
                   <td className="px-4 py-3 whitespace-nowrap text-gray-600 text-xs">
@@ -239,7 +245,7 @@ export default function TableView({ projects, boardType, onProjectClick, loading
       <div className="px-4 py-2 bg-gray-50 border-t text-xs text-gray-500 flex items-center justify-between">
         <span>{sorted.length} proyecto{sorted.length !== 1 ? 's' : ''}</span>
         <button
-          onClick={() => exportTableCSV(sorted, procontCodeId)}
+          onClick={() => exportTableCSV(sorted, procontCodeId, { portfolio: id => portfolios.portfolios.find(x => x.id === id)?.name ?? 'Sin portafolio', project: id => portfolios.initiatives.find(x => x.id === id)?.name ?? '' })}
           className="ui-button ui-button-secondary"
         >
           <ControlLabel icon="download">Exportar CSV</ControlLabel>

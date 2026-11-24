@@ -10,6 +10,7 @@ import { toast } from '../../lib/toast'
 import { phasesFor } from '../../lib/board'
 import Icon from '../ui/Icon'
 import { missingTemplateTasks } from '../../lib/checklist-templates'
+import { checklistProgress, progressLabel } from '../../lib/checklist-progress'
 
 interface Props {
   flow: ProjectFlow
@@ -97,19 +98,16 @@ export default function ChecklistSection({ flow, onChanged }: Props) {
     return <p role="status" className="text-sm text-gray-600 py-2">Cargando checklist…</p>
   }
 
-  const totalItems = items.length
-  const completedItems = items.filter(i => i.completed).length
-  // El porcentaje del checklist lo calcula el servidor (snapshot); aquí solo se muestran conteos.
+  // Solo las filas del checklist cuentan. Las sugerencias permanecen fuera de items hasta que se agregan.
+  const progress = checklistProgress(items)
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
     <div className="space-y-1.5 mt-3">
-      {/* Resumen global */}
-      {totalItems > 0 && (
-        <div className="text-xs text-gray-500 mb-2">
-          <span>{completedItems} de {totalItems} tareas completadas</span>
-        </div>
-      )}
+      {/* Resumen de tareas persistidas; las sugerencias no materializadas no cuentan. */}
+      <div className="checklist-section-summary">
+        <span>{progressLabel(progress)}</span>
+      </div>
 
       {phases.map(phase => {
         const phaseItems = itemsByPhase[phase] || []
@@ -147,7 +145,7 @@ export default function ChecklistSection({ flow, onChanged }: Props) {
               </div>
               <div className="flex items-center gap-2">
                 {phaseItems.length > 0 && (
-                  <span className={`text-xs ${allDone ? 'text-green-700 font-semibold' : 'text-gray-500'}`}>
+                  <span className={`text-xs ${allDone ? 'text-green-700 font-semibold' : 'text-gray-600'}`}>
                     {completedCount}/{phaseItems.length}
                   </span>
                 )}

@@ -1377,3 +1377,17 @@ Revisión local: **23/11/2026** · Base de código: `3ec665907bfc13dc64f17f7236c
 | SEC-003 | Preferencias inaccesibles a clientes | Quipu/QuipuFac no pueden consultar tabla ni ejecutar RPC internas. Internos activos autorizados según roles existentes. | ACL/RLS y pruebas PostgreSQL locales M17. | CUMPLE local; remoto NO VERIFICADO |
 
 Los seis ajustes UX/UI de D-041–D-046 se conservan; D-041 y D-043 se actualizan por M17 según [DECISION_LOG.md](DECISION_LOG.md). La existencia de M17 en el árbol no demuestra que se haya aplicado en Supabase.
+# Enmienda local — Dashboard, Equipo, Portafolio y progreso (24/11/2026)
+
+Base de implementación `16064c5c096f3b69943a81a0d1c64fef5ae8e5f0`; cambios aún no publicados al redactar.
+
+| ID | Requisito adicional aprobado | Implementación/evidencia | Estado |
+|---|---|---|---|
+| DASH-004 | Dashboard no ofrece filtros Estudio/Área; Tickets por estudio incluye todos los estudios con filtro de periodo. Exportar mantiene CSV activos/completados. Los conteos no se truncan a 1.000 ni se presentan parciales. | `DashboardView.tsx`, `useDashboardData.ts`, `verified-pagination.ts`, pruebas Node/UI. | CUMPLE local; remoto pendiente |
+| TEAM-001 | Equipo centraliza usuarios internos, carga de trabajo y gestión Portafolios/proyectos respetando permisos existentes. | `App.tsx`, `WorkloadView.tsx`, `PortfolioPanel.tsx`; suite UI. | CUMPLE local |
+| PORT-002 | Confirmar solicitud ofrece asociación dependiente Portafolio→Iniciativa o independiente, validada y auditada atómicamente por servidor. | M20 `approve_request_with_portfolio`; UI; `m20-qa.json` PostgreSQL local previo. | PARCIAL hasta publicar frontend; M20 remota aplicada |
+| BOARD-004 | Tarjetas ordenan Portafolio→Proyecto→Título y separan REQ, prioridad, fase y responsable. | `ProjectCard.tsx`, Tabla, pruebas UI. | CUMPLE local |
+| BOARD-005 | Fase es posición y no porcentaje; checklist cuenta únicamente filas persistidas, nunca sugerencias no aceptadas. Históricos ambiguos no se reclasifican. | `ProjectModal.tsx`, `ChecklistSection.tsx`, `checklist-progress.ts`, pruebas Node/UI. | CUMPLE local |
+| QA-001 | QA usa datos `QA-FICTICIO` locales; nunca inserta solicitudes de prueba en producción. | Generador y fixture UI, `QA_FIXTURES.md`. | CUMPLE |
+
+Ver evidencia y límites de cada prueba en [informe de validación](../validation/dashboard-team-portfolio-progress-20261124/REPORT.md). Esta enmienda no autoriza convertir evidencia local/simulada en evidencia remota.

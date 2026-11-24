@@ -1,0 +1,989 @@
+{
+  "captures": [
+    {
+      "stage": "despues",
+      "file": "despues-dashboard-light-1920.png",
+      "theme": "light",
+      "view": "dashboard",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "sha256": "f8ada53a1152b013b3a893f7a01d3361b8f7075eaa9fd66900395e33816ee064"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-kanban-light-1920.png",
+      "theme": "light",
+      "view": "kanban",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "sha256": "dd0c096be7231954cbf8ed859b9a4770de51cf4c5f1b35c4c8f85d7df6674e78"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-gantt-light-1920.png",
+      "theme": "light",
+      "view": "gantt",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "sha256": "05597ac3ffd5af48f851b311e8ad7b782aeeb55128f91e05016a1422204cb279"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-roadmap-light-1920.png",
+      "theme": "light",
+      "view": "roadmap",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "sha256": "510aa93b49ea52600817d222c6361091df6aa7650f73f2a94dc212b4afaf2e0b"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-nuevo-ticket-light-1920.png",
+      "theme": "light",
+      "view": "new-ticket",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "sha256": "1911051d5a0c928623e602a3da5f2cf644de3029b7a1cf1d862e6d27fa8d8ea5"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-dashboard-light-1440.png",
+      "theme": "light",
+      "view": "dashboard",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "6b8361bc660587aadab60d651ba48b1e634bc7ffb4afa93ef2f89d51d0f38668"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-dashboard-exportar-light.png",
+      "theme": "light",
+      "view": "dashboard-export",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "5fc705be98c126f6463759bc31747b4c1ff4efda01c3779148eaffa801fce904"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-kanban-light-1440.png",
+      "theme": "light",
+      "view": "kanban",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "c4c5445fe612ae541993f24d69206e3489dc522e83f99122198580de81ce3455"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-gantt-light-1440.png",
+      "theme": "light",
+      "view": "gantt",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "32de1f886672bd9a85b86ab0fb7ec9cf1f22a850fb1e78a7f2d4c3cbd641192c"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-roadmap-light-1440.png",
+      "theme": "light",
+      "view": "roadmap",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "01e7481c866c70ba27209e07294e98b915547221137184c8ef82799d4de1f9a6"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-nuevo-ticket-light-1440.png",
+      "theme": "light",
+      "view": "new-ticket",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "864aa0895b65ab32d19453014846ff79de7b925903a6f1f0fd081e962421049b"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-columna-analysis-light.png",
+      "theme": "light",
+      "view": "column",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "4a37706485764a6b191d7588ae353e8591088ec4cd07a23a160df06b19c6f4b5"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-detalle-progreso-light.png",
+      "theme": "light",
+      "view": "detail-progress",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "f945335562337a58e0c47f63a8a0e7e22fe87963faebdd55115139236d817785"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-detalle-checklist-historico-light.png",
+      "theme": "light",
+      "view": "detail-checklist",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "15d972a9168b34ebc16ae00f74c26b3d53f536d48bbfd1079b21da171287bd8a"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-detalle-sin-tareas-light.png",
+      "theme": "light",
+      "view": "detail-empty",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "25852a9974e1c4124548e1666739cd4423186aa7bafe2f0d57d3f580d6632d30"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-tabla-light.png",
+      "theme": "light",
+      "view": "table",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "e4db8d32077520b2b4ab6c17e37d043972b915a7b839e6eeb094ef050e559ceb"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-confirmar-solicitud-light.png",
+      "theme": "light",
+      "view": "approve",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "f6c59ee07b0284ffef81edf4a58dfe353bf93b46d9ffb969906b658f4673a012"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-equipo-light.png",
+      "theme": "light",
+      "view": "team",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "721b897fb81642b19883aac617ad8d5742cb510fb65d2600ee5981e07972344c"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-equipo-usuarios-light.png",
+      "theme": "light",
+      "view": "team-users",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "f7376b7ebc0e17e905734547da40681d14e2c337d578697fc5eca2d54b909f7a"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-equipo-carga-light.png",
+      "theme": "light",
+      "view": "team",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "c9a52b14fb0369ef1e6d9f448e3ccfc26b5b481bb008a612e7f96020d2075dad"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-equipo-portafolios-light.png",
+      "theme": "light",
+      "view": "team",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "9d57bc9a78e89fcb254e1f726a9ea9b7de7563593108079b578257109d889fa5"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-dashboard-light-768.png",
+      "theme": "light",
+      "view": "dashboard",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "sha256": "d1a3a143634172112f0d6b41b146c57d79cccba893eeb2463bc361c0e1b7b1ec"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-kanban-light-768.png",
+      "theme": "light",
+      "view": "kanban",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "sha256": "354b91176d22bb2771b997f709a147675cfe1692a49888d660799d74a87fb88a"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-gantt-light-768.png",
+      "theme": "light",
+      "view": "gantt",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "sha256": "5c9f4150112009aac746692c8306e0980c9e9973f2110e6f0d183f2c56cea979"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-roadmap-light-768.png",
+      "theme": "light",
+      "view": "roadmap",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "sha256": "10b4ea4e964300662edd3b881647d1f933a16cb8ba32dc4ed4273bfee904594f"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-nuevo-ticket-light-768.png",
+      "theme": "light",
+      "view": "new-ticket",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "sha256": "08026a1b7b734ad3f0b7ca4cd1dfeecc454fb9567619c59f8699ffbeaacd2b8b"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-dashboard-light-390.png",
+      "theme": "light",
+      "view": "dashboard",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "0d8a38dbe0ce9a4cf5a9f7558bf1069b8ff47cd7e9f4718691a9b0846f1e306a"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-kanban-light-390.png",
+      "theme": "light",
+      "view": "kanban",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "2ecbef28a57c76fac57527052cb4d08da6079cb68ffb1652b070d68ff8389027"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-gantt-light-390.png",
+      "theme": "light",
+      "view": "gantt",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "9a24c3ea554e9efb9c060dcfb4839a68a714ac4f4ac9ef4ff2c0030eaea5dd9d"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-roadmap-light-390.png",
+      "theme": "light",
+      "view": "roadmap",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "cb78b7af726fe7fd0ea000bf698d06ac7767f25bd6381c19405de18b332c56cc"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-nuevo-ticket-light-390.png",
+      "theme": "light",
+      "view": "new-ticket",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "dc31a327caddd99218ef95da0549cf00c42d18582e6dd211740781d1cbce61e1"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-dashboard-light-360.png",
+      "theme": "light",
+      "view": "dashboard",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 360,
+        "height": 780
+      },
+      "sha256": "be5978ebb5855d403319f1db949997336f8a9a2fdf44ea055b730263bc761223"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-kanban-light-360.png",
+      "theme": "light",
+      "view": "kanban",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 360,
+        "height": 780
+      },
+      "sha256": "241611e7c70a9b91d68c630ce692254fce7b9ad71f5b9fa4e847deaf8968373c"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-gantt-light-360.png",
+      "theme": "light",
+      "view": "gantt",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 360,
+        "height": 780
+      },
+      "sha256": "da6e39b355785b57cf2588988396e2cd0a985d744fec6e5446181ad888433a25"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-roadmap-light-360.png",
+      "theme": "light",
+      "view": "roadmap",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 360,
+        "height": 780
+      },
+      "sha256": "4614c7f39fc5a6d4ef6e0184d57c58b60c4b5ecd940be1d5d65655115ecc558c"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-nuevo-ticket-light-360.png",
+      "theme": "light",
+      "view": "new-ticket",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 360,
+        "height": 780
+      },
+      "sha256": "0fff4b5f05d852f511bc68d06227a2a890424f9559ee82200c355a13fcae6cc6"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-dashboard-light-320.png",
+      "theme": "light",
+      "view": "dashboard",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 320,
+        "height": 700
+      },
+      "sha256": "e18df2a9d4dfee00bcffc25ada8b2c2601a80a23f0f5a3c42636d0dcae6891d1"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-kanban-light-320.png",
+      "theme": "light",
+      "view": "kanban",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 320,
+        "height": 700
+      },
+      "sha256": "0258b4cc06c26e76919afa10395b3a3deca717fe40dbd911e36d2b74a2f56072"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-gantt-light-320.png",
+      "theme": "light",
+      "view": "gantt",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 320,
+        "height": 700
+      },
+      "sha256": "043ad08ac4aafe2a98b4fdcd546ff45c5459715f32e7f9d073abb26ea9dedccc"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-roadmap-light-320.png",
+      "theme": "light",
+      "view": "roadmap",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 320,
+        "height": 700
+      },
+      "sha256": "6a3333225994f7a1516ab29fddac78ce8771bca50a698b6b68868e17bdeba842"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-nuevo-ticket-light-320.png",
+      "theme": "light",
+      "view": "new-ticket",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 320,
+        "height": 700
+      },
+      "sha256": "7e7933622c01d9efca968fc1a156c9c0fcdc5bbbe004390309dc6184b00c3991"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-dashboard-dark-1920.png",
+      "theme": "dark",
+      "view": "dashboard",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "sha256": "e04b408a70321fa833f03bdcebb34880a321fec41339157c643b8579062f803e"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-kanban-dark-1920.png",
+      "theme": "dark",
+      "view": "kanban",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "sha256": "b06bd936841755afec7efea1efe70f58ecc0fa346c933483fd29736b876133ff"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-gantt-dark-1920.png",
+      "theme": "dark",
+      "view": "gantt",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "sha256": "974ae15d22b79af67db8064357425076ef05f8e95a6f10efa9b907e0be970ec5"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-roadmap-dark-1920.png",
+      "theme": "dark",
+      "view": "roadmap",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "sha256": "b1b177f45b7bc8af9a77f9638316b82e66d02ed053563367db3be13b0e77ca06"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-nuevo-ticket-dark-1920.png",
+      "theme": "dark",
+      "view": "new-ticket",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "sha256": "f6b9f80b0053786220f09386b95a8c8f0c8a3a9cfac2fe30950bf3b8e7a33648"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-dashboard-dark-1440.png",
+      "theme": "dark",
+      "view": "dashboard",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "28a2f475ee596ebe69e20aa836a7a594ea90913b5221f4ccea7bb6b2ec5960cd"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-dashboard-exportar-dark.png",
+      "theme": "dark",
+      "view": "dashboard-export",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "84ffcb03a63220573b735d335d78be976ca2968bc4727c69833fa861c8a80abe"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-kanban-dark-1440.png",
+      "theme": "dark",
+      "view": "kanban",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "e3cf9630086a2db948c01e53d1b1e8ff7dbc5701ed502af8bd5e25fe7b4f17f4"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-gantt-dark-1440.png",
+      "theme": "dark",
+      "view": "gantt",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "3b0f5904f33d131ba1150f85406697bc12c380ae89e2c63b7348a47bb51f96f2"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-roadmap-dark-1440.png",
+      "theme": "dark",
+      "view": "roadmap",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "5b8cc1703895e2de29e694c9032920dba0cbec36d185e6ac5358fd36eb92e9af"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-nuevo-ticket-dark-1440.png",
+      "theme": "dark",
+      "view": "new-ticket",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "9a3359df74ab6be3791b4f4330ec13d5a2ec92c7af5141bccdb7c10831cbbbd2"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-columna-analysis-dark.png",
+      "theme": "dark",
+      "view": "column",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "13203cbf35e29acb0c1518ff39ac5ab18545d0f84c34213773bff1235518f40c"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-detalle-progreso-dark.png",
+      "theme": "dark",
+      "view": "detail-progress",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "67c9a6dafba952d5a3183337b60673bdbb7e334e49ede9de51d1b5f1347e5a9d"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-detalle-checklist-historico-dark.png",
+      "theme": "dark",
+      "view": "detail-checklist",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "cb662b5e7ecf58be8c10dbccf211fff64b5310d69af042dfca828be59ada5da4"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-detalle-sin-tareas-dark.png",
+      "theme": "dark",
+      "view": "detail-empty",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "cb6dacfe89107bcdd0bade7174d64525a3cd78f8792193a79644c018f5d69685"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-tabla-dark.png",
+      "theme": "dark",
+      "view": "table",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "6b4fa62e1ff6d7d015a6edfc70da312f207fc1c4079a4e70069b15afef2e8a90"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-confirmar-solicitud-dark.png",
+      "theme": "dark",
+      "view": "approve",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "07eb1c228908a7375d33e9c63c7da5c1cd29679cc9548d6da5bf6e4f2a171abd"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-equipo-dark.png",
+      "theme": "dark",
+      "view": "team",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "fce1944bbef08d29a7f96cf700c2b1bd3e6ec8f9f32531d49403aa62cba454f9"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-equipo-usuarios-dark.png",
+      "theme": "dark",
+      "view": "team-users",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "7f50631a07a3f6be043c78deb3a6ae5dd90e9d9b10bf1e87e1a9239269e99c3b"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-equipo-carga-dark.png",
+      "theme": "dark",
+      "view": "team",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "5b1eafa91e839bb8948796a92fd2dd9a9f1a7c0c57bb910a12ec91386de03e20"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-equipo-portafolios-dark.png",
+      "theme": "dark",
+      "view": "team",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "d806065692082027d2195a433beb48163a6edbef583cf7fb2e50839742ed5c7a"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-dashboard-dark-768.png",
+      "theme": "dark",
+      "view": "dashboard",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "sha256": "5c028a9b58e6095d3be6daf2fbda39eac2241deccdc7b47237c1e0e6c5632b1c"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-kanban-dark-768.png",
+      "theme": "dark",
+      "view": "kanban",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "sha256": "33d3cb5046a41ebf0be500518d62cbedd564037510a6cedab6405bea0cdd9f67"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-gantt-dark-768.png",
+      "theme": "dark",
+      "view": "gantt",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "sha256": "f6ab66ecdb78278c7eac8817b094f419fe92ea1da28b80f0c84fa96033382246"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-roadmap-dark-768.png",
+      "theme": "dark",
+      "view": "roadmap",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "sha256": "cdb13a5bd3674b1c4a355b55c683a75f154e51b2010c43f95b6666023012b4b1"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-nuevo-ticket-dark-768.png",
+      "theme": "dark",
+      "view": "new-ticket",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "sha256": "ea70715fef8036b537f50a56fc5021d1ca2425a1678a9e187930d4947fab57b1"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-dashboard-dark-390.png",
+      "theme": "dark",
+      "view": "dashboard",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "d060f111763efab5e84b9bd1e2f29453a93aee995c4e72767dd10a8e2247675a"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-kanban-dark-390.png",
+      "theme": "dark",
+      "view": "kanban",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "4758a517133ddbe3522ad14716a9910ca494038c3001ecfe4c979a38a6627a21"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-gantt-dark-390.png",
+      "theme": "dark",
+      "view": "gantt",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "c4397746539d81c0de7e191fff9107faa6ebc8da01fb387b849a54e54f3d3326"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-roadmap-dark-390.png",
+      "theme": "dark",
+      "view": "roadmap",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "1a6c228a0a4be0976acf34c941c13cbd89adf094c07cc249169084460157f8ba"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-nuevo-ticket-dark-390.png",
+      "theme": "dark",
+      "view": "new-ticket",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "38014356805a0ca8551af0489aa7287f504e384fd746abf99eb51e114064071d"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-dashboard-dark-360.png",
+      "theme": "dark",
+      "view": "dashboard",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 360,
+        "height": 780
+      },
+      "sha256": "0a161298a5d391be8634deb0306b19bf28028ea0ddd2a4bff2a10453df0d1f72"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-kanban-dark-360.png",
+      "theme": "dark",
+      "view": "kanban",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 360,
+        "height": 780
+      },
+      "sha256": "b5dc47db3a8409b6185f2d4d417bc6bfc9da9afd718274a12930874db04372a3"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-gantt-dark-360.png",
+      "theme": "dark",
+      "view": "gantt",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 360,
+        "height": 780
+      },
+      "sha256": "806b20edf37dd8c6ec2c2eb5eab8128a50cd10c10d2f029a10c92ca6f77cde8f"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-roadmap-dark-360.png",
+      "theme": "dark",
+      "view": "roadmap",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 360,
+        "height": 780
+      },
+      "sha256": "a34889b5e350ab0e9545f6f0110adf453d32cede9c6bc95b8a0821d55c4d3361"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-nuevo-ticket-dark-360.png",
+      "theme": "dark",
+      "view": "new-ticket",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 360,
+        "height": 780
+      },
+      "sha256": "8dd13d3dd1c665598111a73d41f56493d718b307ac8f65956d99e063fba9ec2d"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-dashboard-dark-320.png",
+      "theme": "dark",
+      "view": "dashboard",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 320,
+        "height": 700
+      },
+      "sha256": "cd4d1d4f5c3990914168a56efeba30450d991c973227a025a90703e1593a0d7f"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-kanban-dark-320.png",
+      "theme": "dark",
+      "view": "kanban",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 320,
+        "height": 700
+      },
+      "sha256": "a2c5f67df01082d4083f0686d712957b7e08d4a6673447bb037bb306e5a56878"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-gantt-dark-320.png",
+      "theme": "dark",
+      "view": "gantt",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 320,
+        "height": 700
+      },
+      "sha256": "b8050d496e5b035a2378c9ac1efbb1ec63c1c47bd0bed7eb3b7f2a4395fa13e3"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-roadmap-dark-320.png",
+      "theme": "dark",
+      "view": "roadmap",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 320,
+        "height": 700
+      },
+      "sha256": "ba19216194c36cfdbb1cb3aca87ee16fb8a31050eea8d5fbc6fb080558adc467"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-nuevo-ticket-dark-320.png",
+      "theme": "dark",
+      "view": "new-ticket",
+      "version": "Versión 202611241807",
+      "viewport": {
+        "width": 320,
+        "height": 700
+      },
+      "sha256": "95015933e15e047741bdd27197076168be5e8ad8bee5de58c558889beee88fa5"
+    }
+  ],
+  "buildVersion": "Versión 202611241807"
+}

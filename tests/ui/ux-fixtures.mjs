@@ -42,11 +42,23 @@ export async function installVisualFixtures(page, fixtureUrl) {
   const send = (route, body) => route.fulfill({ status: 200, contentType: 'application/json', headers: {
     'Access-Control-Allow-Origin': '*', 'Access-Control-Expose-Headers': 'Content-Range', 'Content-Range': `0-${Math.max(0, (body?.length ?? 1) - 1)}/${body?.length ?? 1}`,
   }, body: JSON.stringify(body) })
+  // Dashboard exige conteos verificables y pagina hasta el total real. Simular el contrato PostgREST,
+  // incluidos Range/Content-Range, para que los tests no oculten resultados parciales.
+  const sendPaged = (route, allRows) => {
+    const range = route.request().headers().range ?? '0-999'
+    const [from, to] = range.split('-').map(Number)
+    const rows = allRows.slice(from, to + 1)
+    const end = rows.length ? from + rows.length - 1 : '*'
+    return route.fulfill({ status: 200, contentType: 'application/json', headers: {
+      'Access-Control-Allow-Origin': '*', 'Access-Control-Expose-Headers': 'Content-Range',
+      'Content-Range': `${rows.length ? `${from}-${end}` : '*'}/${allRows.length}`,
+    }, body: JSON.stringify(rows) })
+  }
   await page.route(`${fixtureUrl}/rest/v1/projects?**`, route => {
     const status = new URL(route.request().url()).searchParams.get('status')
-    return send(route, status === 'eq.completed' || status === 'eq.archived' ? [] : visualProjects)
+    return sendPaged(route, status === 'eq.completed' || status === 'eq.archived' ? [] : visualProjects)
   })
-  await page.route(`${fixtureUrl}/rest/v1/requests?**`, route => send(route, visualRequests))
+  await page.route(`${fixtureUrl}/rest/v1/requests?**`, route => sendPaged(route, visualRequests))
   await page.route(`${fixtureUrl}/storage/v1/object/list/**`, route => send(route, []))
   await page.route(`${fixtureUrl}/rest/v1/rpc/metrics_requester_urgency`, route => send(route, null))
   await page.route(`${fixtureUrl}/rest/v1/rpc/get_board_ticket`, route => {

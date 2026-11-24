@@ -161,11 +161,12 @@ for (const theme of ['light', 'dark']) {
     assert.equal(await blocked.count(), 1)
     await blocked.getByText('Bloqueado', { exact: true }).waitFor()
     assert.notEqual(await css(blocked, 'background-color'), surfaces[0])
-    // Información conservada: título, prioridad, solicitante, REQ, progreso, responsable y acciones.
+    // Jerarquía compacta; el nombre del solicitante permanece en el detalle.
     const first = page.locator('.project-card[data-priority="urgent"]').first()
-    for (const sel of ['.card-title', '.card-priority', '.card-requester', '.card-number', '.card-progress', '.card-owner', '.assign-toggle', '.card-select input']) {
+    for (const sel of ['.card-title', '.card-priority', '.card-hierarchy', '.card-number', '.card-progress', '.card-owner', '.assign-toggle', '.card-select input']) {
       assert.equal(await first.locator(sel).count(), 1, `conserva ${sel}`)
     }
+    assert.equal(await first.locator('.card-requester').count(), 0, 'el nombre completo no ocupa la tarjeta')
     assert.deepEqual(page.errors, [])
     await page.context().close()
   })

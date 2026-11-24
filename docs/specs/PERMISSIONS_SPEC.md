@@ -111,3 +111,6 @@ Sin cambios de permisos: lectura del equipo para perfiles internos activos (`sup
 | Asociar un ticket a un portafolio o iniciativa | Sí | Sí | Sí | No | No |
 | Crear un ticket interno (`create_internal_ticket`, ambos modos) | Sí | Sí | No | No | No |
 | Agregar, editar o completar tareas de checklist | Sí | Sí | Sí | No | No |
+# Enmienda M20 — aprobar y asociar
+
+`approve_request_with_portfolio`: solo admin y superadmin según `app_private.require_role`; viewer/developer/anon no pueden completar aprobación. Es SECURITY DEFINER, pero solo se otorga EXECUTE al rol PostgreSQL authenticated y la función valida el perfil/rol interno. El cliente no puede llamar esta RPC con sesión Quipu/QuipuFac porque no pertenece al perfil interno admitido. Tabla íntegra de roles se mantiene según las secciones anteriores. M20 aplicada; consulta remota de solo lectura confirma ACL anon=false/authenticated=true/service_role=false y owner postgres.

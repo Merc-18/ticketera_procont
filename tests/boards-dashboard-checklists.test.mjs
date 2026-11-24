@@ -6,6 +6,7 @@ import { OWNER_COLORS, OWNER_PALETTE, availableColors, isOfferedColor } from '..
 import { countTicketsByStudio, ticketsByStudioRows, TicketsByStudioError } from '../src/lib/tickets-by-studio.ts'
 import { DEFAULT_CHECKLIST } from '../src/lib/checklist-defaults.ts'
 import { missingTemplateTasks, normalizeTask, phaseTemplate } from '../src/lib/checklist-templates.ts'
+import { checklistProgress, progressLabel } from '../src/lib/checklist-progress.ts'
 import * as checklistTemplates from '../src/lib/checklist-templates.ts'
 import { DEVELOPMENT_PHASES } from '../contracts/board-operations-client.mjs'
 
@@ -134,4 +135,19 @@ test('sin duplicados: solo se sugieren las tareas que la fase no tiene (texto no
   const missing = missingTemplateTasks('development', 'analysis', have)
   assert.equal(missing.length, phaseTemplate('development', 'analysis').length - 1)
   assert.ok(!missing.some(t => normalizeTask(t) === 'definir criterios de aceptacion'))
+})
+
+test('checklist: solo cuentan filas persistidas; sugerencias no materializadas y fases vacías no generan porcentaje', () => {
+  const empty = checklistProgress([])
+  assert.deepEqual(empty, { done: 0, total: 0, percent: null })
+  assert.equal(progressLabel(empty), 'Sin tareas de checklist agregadas')
+  const accepted = checklistProgress([{ id: '1', completed: true }, { id: '2', completed: false }, { id: '3', completed: false }])
+  assert.deepEqual(accepted, { done: 1, total: 3, percent: 33.33 })
+  assert.match(progressLabel(accepted), /^1 de 3 tareas completadas/)
+})
+
+test('checklist: no reclasifica históricos ambiguos por coincidencia de created_at con el flujo', () => {
+  const at = '2026-11-24T21:38:00.000Z'
+  const progress = checklistProgress(Array.from({ length: 18 }, (_, i) => ({ id: String(i), completed: i < 4, created_at: at })))
+  assert.deepEqual(progress, { done: 4, total: 18, percent: 22.22 })
 })

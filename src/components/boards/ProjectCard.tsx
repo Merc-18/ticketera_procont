@@ -4,7 +4,8 @@ import { canEdit } from '../../lib/access'
 import type { Project, ProjectFlow, User } from '../../types/database.types'
 import { getInitials, PRIORITY_COLORS, PRIORITY_LABEL, AREA_COLORS } from '../../lib/constants'
 import { avatarClass, ownerClass, useOwnerColors } from '../../lib/card-colors'
-import { portfolioLabel, usePortfolios } from '../../lib/portfolios'
+import { usePortfolios } from '../../lib/portfolios'
+import { checklistCount } from '../../lib/board'
 
 interface ProjectWithArea extends Project {
   requests?: { requester_area: string | null; requester_name?: string; request_number?: string; studio_id?: string | null; studio_code_id?: string | null } | null
@@ -35,17 +36,16 @@ function getDueDateBadge(dueDate?: string | null) {
 export default function ProjectCard({ project, flow, onClick, users = [], onAssign, selected, onSelect, procontCodeId }: Props) {
   const area = project.requests?.studio_code_id === procontCodeId && procontCodeId ? project.requests?.requester_area : null
   const ownerColors = useOwnerColors()
-  const portfolio = portfolioLabel(usePortfolios(), project.portfolio_id, project.initiative_id)
+  const catalog = usePortfolios()
+  const portfolioName = catalog.portfolios.find(p => p.id === project.portfolio_id)?.name ?? null
+  const initiativeName = catalog.initiatives.find(i => i.id === project.initiative_id)?.name ?? null
   const owner = ownerClass(ownerColors, flow.assigned_to)
-  const requesterName = project.requests?.requester_name
-  const showRequester = requesterName && requesterName !== '—'
   const requestNumber = project.requests?.request_number ?? project.project_number
   const areaColorClass = area ? (AREA_COLORS[area] ?? 'bg-gray-100 text-gray-600') : ''
   const dueBadge = getDueDateBadge(project.due_date)
 
-  const checklistItems: Array<{ id: string; completed: boolean }> = (flow as any).checklist_items ?? []
-  const checkTotal = checklistItems.length
-  const checkDone  = checklistItems.filter(i => i.completed).length
+  // Solo tareas incorporadas; las sugerencias y las heredadas de la siembra anterior no cuentan (checklist-progress.ts).
+  const { done: checkDone, total: checkTotal } = checklistCount(flow as any)
   const [showAssign, setShowAssign] = useState(false)
   const assignRef = useRef<HTMLDivElement>(null)
 
@@ -88,27 +88,16 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
         </div>
       )}
 
-      {/* Metadatos: número REQ y solicitante (lectura rápida, sin insignias) */}
-      <p className="card-meta">
-        {requestNumber
-          ? <span className="card-number">{requestNumber}</span>
-          : <span className="card-internal">Interno</span>}
-        {showRequester && (
-          <span className="card-requester" title={`Solicitante: ${requesterName}`}>
-            <Icon name="user" size={13} aria-hidden="true" /><span className="sr-only">Solicitante: </span><span className="truncate">{requesterName}</span>
-          </span>
-        )}
+      {/* Jerarquía: Portafolio → Proyecto/Iniciativa → título (24/11/2026). Sin nombres de personas en la tarjeta. */}
+      <p className="card-hierarchy" aria-label={portfolioName ? `Portafolio ${portfolioName}${initiativeName ? `, proyecto ${initiativeName}` : ''}` : 'Sin portafolio'}>
+        {portfolioName ? (<>
+          <span className="card-tag card-tag-portfolio" title={`Portafolio: ${portfolioName}`}><Icon name="layers" size={12} aria-hidden="true" /><span className="truncate">{portfolioName}</span></span>
+          {initiativeName && <><Icon name="arrow" size={12} className="card-tag-sep" aria-hidden="true" /><span className="card-tag card-tag-project" title={`Proyecto: ${initiativeName}`}><span className="truncate">{initiativeName}</span></span></>}
+        </>) : <span className="card-tag card-tag-none">Sin portafolio</span>}
       </p>
 
-      {/* Título */}
+      {/* Título: elemento principal */}
       <h3 className="card-title line-clamp-2">{project.title}</h3>
-
-      {/* Portafolio · iniciativa (M19) */}
-      {portfolio && (
-        <p className="card-portfolio" title={`Portafolio: ${portfolio}`}>
-          <Icon name="layers" size={13} aria-hidden="true" /><span className="sr-only">Portafolio: </span><span className="truncate">{portfolio}</span>
-        </p>
-      )}
 
       {/* Estado crítico: indicador semántico propio, independiente de prioridad y responsable */}
       {project.is_blocked && (
@@ -139,16 +128,21 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
         )}
       </div>
 
-      {/* Pie: progreso del checklist y responsable */}
+      {/* Pie: número REQ (metadato secundario), progreso REAL del checklist y responsable (avatar con su color) */}
       <div className="project-card-footer">
-        {checkTotal > 0 ? (
+        <span className="card-foot-meta">
+        {requestNumber
+          ? <span className="card-number">{requestNumber}</span>
+          : <span className="card-internal">Interno</span>}
+        {checkTotal > 0 && (
           <span className={`card-progress ${checkDone === checkTotal ? 'is-complete' : ''}`} aria-label={`Checklist ${checkDone} de ${checkTotal}`}>
             <span className="card-progress-track" aria-hidden="true">
               <span className="card-progress-fill" style={{ transform: `scaleX(${checkDone / checkTotal})` }} />
             </span>
             <span aria-hidden="true" className="card-progress-label"><Icon name="check" size={12} />{checkDone}/{checkTotal}</span>
           </span>
-        ) : <span />}
+        )}
+        </span>
 
         <div className="card-owner">
           {/* Responsables asignados (anillo = color personal persistido en Supabase) */}
@@ -156,15 +150,12 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
             <div className="flex items-center gap-1.5 min-w-0">
               <div className="card-avatars">
                 {assignedUsers.map(({ user, flowType }) => (
-                  <div key={user.id} title={`${user.full_name} (${flowType === 'development' ? 'Development' : 'Administrative'})`}
+                  <div key={user.id} role="img" aria-label={`Responsable: ${user.full_name}`} title={`${user.full_name} (${flowType === 'development' ? 'Development' : 'Administrative'})`}
                     className={`card-avatar ${avatarClass(ownerColors, user.id, user.full_name)}`}>
                     {getInitials(user.full_name)}
                   </div>
                 ))}
               </div>
-              {owners === 1 && (
-                <span className="card-owner-name">{assignedUsers[0].user.full_name.split(' ')[0]}</span>
-              )}
             </div>
           ) : (
             <span className="card-unassigned"><span className="card-avatar-empty" aria-hidden="true" />Sin responsable</span>

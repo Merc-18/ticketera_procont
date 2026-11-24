@@ -24,6 +24,7 @@ const preloadBoards = () => { for (const load of [loadKanbanBoard, loadBoardSele
 const RequestInbox = lazy(() => import('./components/requests/RequestInbox'))
 const UserManagementPanel = lazy(() => import('./components/admin/UserManagementPanel'))
 const WorkloadView = lazy(() => import('./components/admin/WorkloadView'))
+const PortfolioPanel = lazy(() => import('./components/admin/PortfolioPanel'))
 const PapeleraView = lazy(() => import('./components/admin/PapeleraView'))
 const CatalogsPanel = lazy(() => import('./components/admin/CatalogsPanel'))
 // Rutas públicas secundarias y espacio del cliente: fuera del JavaScript inicial del portal (Taste perf.md).
@@ -59,7 +60,7 @@ function Dashboard() {
   const { user, signOut } = useAuth()
   const [currentBoard, setCurrentBoard] = useState<'development' | 'administrative'>('development')
   const [currentTab, setCurrentTab]   = useState<'dashboard' | 'boards' | 'requests' | 'equipo'>('dashboard')
-  const [adminSubTab, setAdminSubTab] = useState<'usuarios' | 'carga' | 'papelera' | 'areas'>('carga')
+  const [adminSubTab, setAdminSubTab] = useState<'usuarios' | 'carga' | 'portafolios' | 'papelera' | 'areas'>(() => 'carga')
   const [openProjectId, setOpenProjectId] = useState<string | null>(null)
   const isAdminOrSuperAdmin = user?.role === 'admin' || user?.role === 'superadmin'
   const isSuperAdmin = user?.role === 'superadmin'
@@ -148,7 +149,7 @@ function Dashboard() {
 
       {/* Main Content */}
       <main id="main-content" tabIndex={-1} className="enterprise-main max-w-[1600px] mx-auto px-4 sm:px-6">
-        {currentTab === 'dashboard' && <Suspense fallback={viewLoading}><DashboardView /></Suspense>}
+        {currentTab === 'dashboard' && <Suspense fallback={viewLoading}><DashboardView onOpenTeam={canSeeEquipo ? () => { setAdminSubTab(isAdminOrSuperAdmin ? 'usuarios' : 'carga'); setCurrentTab('equipo') } : undefined} /></Suspense>}
 
         {currentTab === 'boards' && (
           <Suspense fallback={viewLoading}>
@@ -183,61 +184,26 @@ function Dashboard() {
               </p>
             </div>
 
-            {/* Sub-tabs */}
-            <div className="flex flex-wrap gap-1 bg-gray-100 p-1 rounded-lg w-fit mb-6">
-              <button
-                onClick={() => setAdminSubTab('carga')}
-                className={`px-4 py-2 rounded-md font-medium text-sm transition ${
-                  adminSubTab === 'carga'
-                    ? 'bg-surface text-primary shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                <ControlLabel icon="chart">Carga de trabajo</ControlLabel>
-              </button>
-              {isAdminOrSuperAdmin && (
-                <button
-                  onClick={() => setAdminSubTab('usuarios')}
-                  className={`px-4 py-2 rounded-md font-medium text-sm transition ${
-                    adminSubTab === 'usuarios'
-                      ? 'bg-surface text-primary shadow-sm'
-                      : 'text-gray-600 hover:text-gray-900'
-                  }`}
-                >
-                  <ControlLabel icon="key">Usuarios</ControlLabel>
+            {/* Equipo (24/11/2026): usuarios internos, carga de trabajo y Portafolios y proyectos en un solo lugar. */}
+            <div role="tablist" aria-label="Secciones de Equipo" className="team-tabs segmented mb-6">
+              {([
+                ...(isAdminOrSuperAdmin ? [['usuarios', 'Usuarios', 'key']] : []),
+                ['carga', 'Carga de trabajo', 'chart'],
+                ['portafolios', 'Portafolios y proyectos', 'layers'],
+                ...(isAdminOrSuperAdmin ? [['papelera', 'Papelera', 'trash']] : []),
+                ...(isSuperAdmin ? [['areas', 'Catálogos', 'tickets']] : []),
+              ] as [typeof adminSubTab, string, IconName][]).map(([tab, label, icon]) => (
+                <button key={tab} role="tab" aria-selected={adminSubTab === tab} onClick={() => setAdminSubTab(tab)}
+                  className={`px-4 py-2 rounded-md font-medium text-sm transition ${adminSubTab === tab ? 'bg-surface text-primary shadow-sm' : 'text-gray-600 hover:text-gray-900'}`}>
+                  <ControlLabel icon={icon}>{label}</ControlLabel>
                 </button>
-              )}
-
-              {isAdminOrSuperAdmin && (
-                <button
-                  onClick={() => setAdminSubTab('papelera')}
-                  className={`px-4 py-2 rounded-md font-medium text-sm transition ${
-                    adminSubTab === 'papelera'
-                      ? 'bg-surface text-primary shadow-sm'
-                      : 'text-gray-600 hover:text-gray-900'
-                  }`}
-                >
-                  <ControlLabel icon="trash">Papelera</ControlLabel>
-                </button>
-              )}
-
-              {isSuperAdmin && (
-                <button
-                  onClick={() => setAdminSubTab('areas')}
-                  className={`px-4 py-2 rounded-md font-medium text-sm transition ${
-                    adminSubTab === 'areas'
-                      ? 'bg-surface text-primary shadow-sm'
-                      : 'text-gray-600 hover:text-gray-900'
-                  }`}
-                >
-                  <ControlLabel icon="tickets">Catálogos</ControlLabel>
-                </button>
-              )}
+              ))}
             </div>
 
             <Suspense fallback={viewLoading}>
             {adminSubTab === 'carga'    && <WorkloadView />}
-            {adminSubTab === 'usuarios' && <UserManagementPanel />}
+            {adminSubTab === 'usuarios' && isAdminOrSuperAdmin && <UserManagementPanel />}
+            {adminSubTab === 'portafolios' && <PortfolioPanel canManage={isAdminOrSuperAdmin} />}
 
             {adminSubTab === 'papelera' && <PapeleraView />}
             {adminSubTab === 'areas' && isSuperAdmin && <CatalogsPanel />}

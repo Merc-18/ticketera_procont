@@ -1,5 +1,5 @@
 import ControlLabel from '../ui/ControlLabel'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useDashboardData } from '../../hooks/useDashboardData'
 import { toast } from '../../lib/toast'
@@ -15,6 +15,7 @@ import { buildCompletedExport, ExportError, type ExportClient } from '../../lib/
 import Icon, { type IconName } from '../ui/Icon'
 import { PRIORITY_LABEL, PRIORITY_BAR } from '../../lib/constants'
 import { ticketsByStudioRows } from '../../lib/tickets-by-studio'
+import { readVerifiedPages } from '../../lib/verified-pagination'
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -36,14 +37,18 @@ function downloadCSV(filename: string, headers: string[], rows: (string | number
 
 /** Proyectos activos. Sin columnas SLA heredadas: solo la fecha límite ordinaria (due_date). */
 async function exportActiveCSV(canonicalProcontCodeId: string | null) {
-  const { data: projects, error } = await supabase
-    .from('projects')
-    .select('title, priority, project_type, status, is_blocked, due_date, created_at, requests(requester_area, studio_code_id), project_flows(flow_type, current_phase, assigned_to)')
-    .eq('status', 'active')
-    .order('created_at', { ascending: false })
-
-  if (error) { toast.error('No se pudieron cargar los proyectos activos. Inténtalo nuevamente.'); return }
-  if (!projects?.length) { toast.info('No hay proyectos activos para exportar.'); return }
+  let projects
+  try {
+    projects = await readVerifiedPages((from, to) => supabase
+      .from('projects')
+      .select('id, title, priority, project_type, status, is_blocked, due_date, created_at, requests(requester_area, studio_code_id), project_flows(flow_type, current_phase, assigned_to)', { count: 'exact' })
+      .eq('status', 'active')
+      .order('created_at', { ascending: false }).order('id', { ascending: true }).range(from, to))
+  } catch {
+    toast.error('No se pudo completar la exportación de proyectos activos. No se descargó ningún archivo.')
+    return
+  }
+  if (!projects.length) { toast.info('No hay proyectos activos para exportar.'); return }
 
   const headers = ['Proyecto', 'Área', 'Prioridad', 'Tipo', 'Bloqueado', 'Fase Dev', 'Fase Admin (histórico)', 'Fecha límite', 'Fecha creación']
   const rows = projects.map(p => {
@@ -173,26 +178,34 @@ const PERIOD_OPTIONS = [
   { value: null, label: 'Todo el tiempo' },
 ] as const
 
-export default function DashboardView() {
+/**
+ * Dashboard global (24/11/2026): sin filtros de Estudio ni Área (las métricas son de todo Ticketera; «Tickets por
+ * estudio» ya compara estudios). Exportaciones en el menú «Exportar»; el espacio principal abre «Equipo».
+ */
+export default function DashboardView({ onOpenTeam }: { onOpenTeam?: () => void }) {
   const [period, setPeriod] = useState<number | null>(null)
-  const [studioFilter, setStudioFilter] = useState<string | null>(null)
-  const [areaFilter, setAreaFilter] = useState<string | null>(null)
-  const { studios, codes, areas } = useCatalogs('member')
+  const studioFilter: string | null = null
+  const { studios, codes } = useCatalogs('member')
   const { users } = useUsers()
-  // Área solo para el estudio PROCONT (studio-rules.ts): con otro estudio se oculta y se limpia.
   const procontId = procontStudioId(codes)
   const canonicalProcontCodeId = procontCodeId(codes)
-  const areaApplies = !!canonicalProcontCodeId && (!studioFilter || studioFilter === procontId)
-  useEffect(() => { if (!areaApplies && areaFilter) setAreaFilter(null) }, [areaApplies, areaFilter])
   const [exporting, setExporting] = useState<'completed' | 'active' | null>(null)
-  const { stats, loading, error, reload } = useDashboardData({ periodDays: period, studioId: studioFilter,
-    areaId: areaApplies ? areaFilter : null, procontStudioId: procontId, procontCodeId: canonicalProcontCodeId })
+  const [exportOpen, setExportOpen] = useState(false)
+  const exportRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!exportOpen) return
+    const close = (e: MouseEvent) => { if (!exportRef.current?.contains(e.target as Node)) setExportOpen(false) }
+    const esc = (e: KeyboardEvent) => { if (e.key === 'Escape') setExportOpen(false) }
+    document.addEventListener('mousedown', close); document.addEventListener('keydown', esc)
+    return () => { document.removeEventListener('mousedown', close); document.removeEventListener('keydown', esc) }
+  }, [exportOpen])
+  const { stats, loading, error, reload } = useDashboardData({ periodDays: period, studioId: null,
+    areaId: null, procontStudioId: procontId, procontCodeId: canonicalProcontCodeId })
   const { user } = useAuth()
   const canSeeUrgency = user?.role === 'superadmin' || user?.role === 'admin'
   // Promedios del servidor (metrics_time_averages, contrato de Codex). Sin cálculos locales.
   const [averages, setAverages] = useState<MetricResult<TimeAverages> | null>(null)
   useEffect(() => { void metrics.timeAverages({ periodDays: period, studioId: studioFilter }).then(setAverages) }, [period, studioFilter])
-  const procontAreas = areas.filter(a => a.studio_id === procontId && !a.parent_id)
 
   const handleExportCompleted = async () => {
     setExporting('completed')
@@ -224,7 +237,7 @@ export default function DashboardView() {
       <div className="flex items-start justify-between flex-wrap gap-3">
         <div>
           <h1 className="view-title"><ControlLabel icon="chart">Dashboard</ControlLabel></h1>
-          <p className="text-sm text-gray-600 mt-1">Situación operativa · {studioName ?? 'todos los estudios'}{areaApplies && areaFilter ? ` · ${procontAreas.find(a => a.id === areaFilter)?.name ?? ''}` : ''}</p>
+          <p className="text-sm text-gray-600 mt-1">Situación operativa de todos los estudios</p>
         </div>
       </div>
 
@@ -240,30 +253,29 @@ export default function DashboardView() {
         </div>
         <span className="dashboard-filter-note">Periodo: solicitudes aprobadas/rechazadas y Cycle/Lead Time. Trabajo y bandeja muestran su estado actual.</span>
         </div>
-        {studios.length > 0 && (
-          <label className="toolbar-field">
-            <span>Estudio</span>
-            <select value={studioFilter ?? ''} onChange={e => setStudioFilter(e.target.value || null)} className="ui-input toolbar-select">
-              <option value="">Todos los estudios</option>
-              {studios.map(st => <option key={st.id} value={st.id}>{st.name}</option>)}
-            </select>
-          </label>
+        {onOpenTeam && (
+          <button type="button" className="dashboard-team-entry" onClick={onOpenTeam}>
+            <span className="kpi-tile tone-brand" aria-hidden="true"><Icon name="team" size={20} /></span>
+            <span className="dashboard-team-copy"><strong>Equipo</strong><small>Gestión de usuarios y carga de trabajo del equipo</small></span>
+            <Icon name="arrow" size={16} className="dashboard-team-arrow" aria-hidden="true" />
+          </button>
         )}
-        {areaApplies && procontAreas.length > 0 && (
-          <label className="toolbar-field">
-            <span>Área · código PROCONT</span>
-            <select value={areaFilter ?? ''} onChange={e => setAreaFilter(e.target.value || null)} className="ui-input toolbar-select">
-              <option value="">Todas las áreas</option>
-              {procontAreas.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
-            </select>
-          </label>
-        )}
-        <button onClick={handleExportActive} disabled={exporting !== null} className="ui-button ui-button-primary">
-          <ControlLabel icon={exporting === 'active' ? 'clock' : 'download'}>{exporting === 'active' ? 'Exportando…' : 'Activos CSV'}</ControlLabel>
-        </button>
-        <button onClick={handleExportCompleted} disabled={exporting !== null} className="ui-button ui-button-secondary">
-          <ControlLabel icon={exporting === 'completed' ? 'clock' : 'download'}>{exporting === 'completed' ? 'Exportando…' : 'Completados CSV'}</ControlLabel>
-        </button>
+        <div className="dashboard-export" ref={exportRef}>
+          <button type="button" className="ui-button ui-button-secondary" aria-haspopup="menu" aria-expanded={exportOpen} aria-controls="dashboard-export-menu"
+            onClick={() => setExportOpen(o => !o)} disabled={exporting !== null}>
+            <ControlLabel icon={exporting ? 'clock' : 'download'}>{exporting ? 'Exportando…' : 'Exportar'}</ControlLabel>
+          </button>
+          {exportOpen && (
+            <div id="dashboard-export-menu" role="menu" aria-label="Exportar" className="dashboard-export-menu">
+              <button role="menuitem" type="button" onClick={() => { setExportOpen(false); void handleExportActive() }}>
+                <Icon name="download" size={16} aria-hidden="true" /><span><strong>Activos CSV</strong><small>Proyectos en ejecución</small></span>
+              </button>
+              <button role="menuitem" type="button" onClick={() => { setExportOpen(false); void handleExportCompleted() }}>
+                <Icon name="download" size={16} aria-hidden="true" /><span><strong>Completados CSV</strong><small>Tickets terminados con métricas del servidor</small></span>
+              </button>
+            </div>
+          )}
+        </div>
         <button onClick={() => { void reload() }} className="ui-button ui-button-secondary">
           <ControlLabel icon="refresh">Actualizar</ControlLabel>
         </button>
@@ -321,7 +333,7 @@ export default function DashboardView() {
           {/* Urgencias por solicitante y estudio: solo usuarios internos autorizados */}
           {canSeeUrgency && <UrgencyStatsPanel studios={studios} studioId={studioFilter} />}
           <TicketsByStudioPanel rows={studioRows} total={stats.ticketsByStudio?.total ?? 0} error={stats.ticketsError}
-            period={period} studioName={studioName} areaActive={areaApplies && !!areaFilter} />
+            period={period} studioName={studioName} areaActive={false} />
         </div>
       </>)}
     </div>

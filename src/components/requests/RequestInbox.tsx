@@ -312,7 +312,7 @@ export default function RequestInbox() {
           canManage={canManage}
           catalogs={catalogs}
           users={assignableUsers}
-          onApprove={async (id, data, attempt) => { await approveRequest(id, data, attempt) }}
+          onApprove={async (id, data, attempt, portfolio) => { await approveRequest(id, data, attempt, portfolio) }}
           onReject={rejectRequest}
           onClose={() => { setSelected(null); void reload() }}
         /></Suspense>
