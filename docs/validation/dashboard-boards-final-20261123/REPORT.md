@@ -67,3 +67,16 @@ El entorno no tiene cliente/credenciales de Supabase ni de Vercel ni herramienta
 **No publicar frontend dependiente de M17 antes de verificar el proyecto Supabase exacto, confirmar M16b como última migración, comprobar capacidad de color, aplicar exclusivamente M17 y verificar ACL/RLS/RPC.** Después, se requiere commit local, bundle final verificable y publicación ordenada, seguida de revisión del deployment Vercel Production. La autorización del usuario existe, pero el acceso de ejecución falta.
 
 Estado final local: **implementación y pruebas locales aprobadas con observaciones; activación remota bloqueada/no ejecutada**. No se declara producción lista.
+
+## Integración Git y respaldo local
+
+- Commit de implementación local: `f75fd531879e95d5147af40778dc35839fcef5b1`, descendiente directo de `5c6640ec390685cc097a51de42fddd679efa3731`.
+- `origin/main` permanece en `3ec665907bfc13dc64f17f7236c0dcb02bebf8f2`; consulta final de refs devuelve únicamente `refs/heads/main`. No se movió `main`, no hubo push.
+- Bundle de implementación `.agent-backups/ticketera-dashboard-boards-final-20261123.bundle`: verificación y restauración bare reprodujeron `f75fd531879e95d5147af40778dc35839fcef5b1`. SHA-256 registrado en la entrega del agente. `git fsck --full` terminó sin errores; reportó dos objetos dangling, conservados sin cambios.
+- Se conserva el bundle original de Claude y su checksum; no se sobrescribió.
+
+## Criterio de no publicación
+
+Aunque el usuario autorizó la activación, el preflight remoto obligatorio no se pudo realizar: no hay cliente/token/conector Supabase ni herramienta/configuración autenticada de Vercel accesibles desde este entorno. No se puede confirmar de forma independiente el Project ID, las 17 migraciones remotas, que M16b siga siendo la última, que M17 no exista, el número real de perfiles activos, ACL/RLS remotos ni Deployment Production.
+
+No aplicar M17 ni publicar el frontend sin esos datos: su backfill ofrece 24 colores únicos y podría fallar si el equipo remoto excede esa capacidad. No se ejecutó `supabase db push`, Management API, SQL remoto, cambios de Vercel, push GitHub o despliegue. El estado remoto M17 permanece **NO VERIFICADO / NO APLICADO POR ESTA EJECUCIÓN**. La versión alojada y su commit siguen siendo los del último estado confirmado por el usuario, no una versión nueva creada aquí.
