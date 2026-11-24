@@ -6,7 +6,7 @@ export async function observeScripts(page) {
   await session.send('Network.enable')
   await session.send('Network.setCacheDisabled', { cacheDisabled: true })
   session.on('Network.requestWillBeSent', ({ requestId, request, type }) => {
-    requests.set(requestId, { url: request.url, type, decoded: 0, encoded: 0, status: 0 })
+    requests.set(requestId, { url: request.url, type, decoded: 0, encoded: 0, status: 0, canceled: false, failed: false })
   })
   session.on('Network.dataReceived', ({ requestId, dataLength }) => {
     const row = requests.get(requestId)
@@ -19,6 +19,10 @@ export async function observeScripts(page) {
   session.on('Network.loadingFinished', ({ requestId, encodedDataLength }) => {
     const row = requests.get(requestId)
     if (row) row.encoded = encodedDataLength
+  })
+  session.on('Network.loadingFailed', ({ requestId, canceled }) => {
+    const row = requests.get(requestId)
+    if (row) { row.failed = true; row.canceled = canceled === true }
   })
   return {
     reset() { requests.clear() },

@@ -426,27 +426,37 @@ html[data-theme-switching] *, html[data-theme-switching] *::before, html[data-th
 .toolbar-select.prio-filter-low { box-shadow: inset 4px 0 0 var(--prio-low); }
 
 /* Color personal del responsable: paleta oficial y derivados (sin violeta, rojo ni verde). */
-.owner-azul { --owner: #1e3a8a; } .owner-celeste { --owner: #60a5fa; } .owner-dorado { --owner: #eebb31; }
-.owner-ambar { --owner: #a16207; } .owner-grafito { --owner: #374151; } .owner-pizarra { --owner: #94a3b8; }
-:root[data-theme="dark"] .owner-azul { --owner: #3b82f6; } :root[data-theme="dark"] .owner-celeste { --owner: #93c5fd; }
-:root[data-theme="dark"] .owner-ambar { --owner: #ca8a04; } :root[data-theme="dark"] .owner-grafito { --owner: #cbd5e1; }
-:root[data-theme="dark"] .owner-pizarra { --owner: #64748b; }
-.project-card.has-owner { box-shadow: inset 4px 0 0 var(--owner); padding-left: 20px; }
-:root[data-theme="dark"] .board-column .project-card.has-owner { box-shadow: inset 4px 0 0 var(--owner), inset 0 1px 0 rgb(255 255 255 / .05); }
-.owner-ring { outline: 2px solid var(--owner); outline-offset: 2px; }
-.data-view td.has-owner { box-shadow: inset 4px 0 0 var(--owner); }
-.owner-swatch { display: inline-block; width: 16px; height: 16px; border-radius: 50%; background: var(--owner); border: 1px solid var(--line); flex-shrink: 0; }
+.owner-azul { --owner: #1e3a8a; } .owner-azul-claro { --owner: #3e6992; } .owner-azul-oscuro { --owner: #0e2b49; } .owner-azul-acero { --owner: #52718f; }
+.owner-celeste { --owner: #60a5fa; } .owner-celeste-claro { --owner: #83b7df; } .owner-celeste-oscuro { --owner: #28628f; } .owner-celeste-acero { --owner: #5c829f; }
+.owner-dorado { --owner: #eebb31; } .owner-dorado-claro { --owner: #e2c77f; } .owner-dorado-oscuro { --owner: #a47b24; } .owner-dorado-ocre { --owner: #b69a5b; }
+.owner-ambar { --owner: #a16207; } .owner-ambar-claro { --owner: #c48937; } .owner-ambar-oscuro { --owner: #70430a; } .owner-ambar-bronce { --owner: #8e6a3a; }
+.owner-grafito { --owner: #374151; } .owner-grafito-claro { --owner: #667080; } .owner-grafito-oscuro { --owner: #202833; } .owner-grafito-humo { --owner: #59616c; }
+.owner-pizarra { --owner: #94a3b8; } .owner-pizarra-claro { --owner: #aab8c8; } .owner-pizarra-oscuro { --owner: #4b6077; } .owner-pizarra-acero { --owner: #63778b; }
+:root[data-theme="dark"] .owner-azul { --owner: #3b82f6; } :root[data-theme="dark"] .owner-azul-claro { --owner: #85b2d7; } :root[data-theme="dark"] .owner-azul-oscuro { --owner: #47749c; } :root[data-theme="dark"] .owner-azul-acero { --owner: #7899b6; }
+:root[data-theme="dark"] .owner-celeste { --owner: #93c5fd; } :root[data-theme="dark"] .owner-celeste-claro { --owner: #a7d0ee; } :root[data-theme="dark"] .owner-celeste-oscuro { --owner: #5895c5; } :root[data-theme="dark"] .owner-celeste-acero { --owner: #83a9c4; }
+:root[data-theme="dark"] .owner-dorado { --owner: #eebb31; } :root[data-theme="dark"] .owner-dorado-claro { --owner: #eed896; } :root[data-theme="dark"] .owner-dorado-oscuro { --owner: #c59b43; } :root[data-theme="dark"] .owner-dorado-ocre { --owner: #cbb275; }
+:root[data-theme="dark"] .owner-ambar { --owner: #ca8a04; } :root[data-theme="dark"] .owner-ambar-claro { --owner: #d6a65f; } :root[data-theme="dark"] .owner-ambar-oscuro { --owner: #a87939; } :root[data-theme="dark"] .owner-ambar-bronce { --owner: #bd9867; }
+:root[data-theme="dark"] .owner-grafito { --owner: #cbd5e1; } :root[data-theme="dark"] .owner-grafito-claro { --owner: #c1cad4; } :root[data-theme="dark"] .owner-grafito-oscuro { --owner: #7e8b9b; } :root[data-theme="dark"] .owner-grafito-humo { --owner: #adb7c3; }
+:root[data-theme="dark"] .owner-pizarra { --owner: #64748b; } :root[data-theme="dark"] .owner-pizarra-claro { --owner: #b8c8da; } :root[data-theme="dark"] .owner-pizarra-oscuro { --owner: #7188a2; } :root[data-theme="dark"] .owner-pizarra-acero { --owner: #91a6bb; }
+.project-card.has-owner { box-shadow: inset 4px 0 0 var(--owner), inset 5px 0 0 var(--p-ink); padding-left: 20px; }
+:root[data-theme="dark"] .board-column .project-card.has-owner { box-shadow: inset 4px 0 0 var(--owner), inset 5px 0 0 var(--p-ink), inset 0 1px 0 rgb(255 255 255 / .05); }
+.owner-ring { outline: 2px solid var(--owner); outline-offset: 2px; box-shadow: 0 0 0 1px var(--p-surface), 0 0 0 2px var(--p-ink); }
+.data-view td.has-owner { box-shadow: inset 4px 0 0 var(--owner), inset 5px 0 0 var(--p-ink); }
+.owner-swatch { display: inline-block; width: 16px; height: 16px; border-radius: 50%; background: var(--owner); border: 1px solid var(--p-ink); flex-shrink: 0; }
 .owner-swatch.owner-none { background: transparent; border: 1px dashed var(--field-line); }
 .owner-panel { position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: min(300px, calc(100vw - 32px)); display: grid; gap: 12px; padding: 16px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--p-elevated); box-shadow: var(--p-modal-shadow); }
 .owner-panel fieldset { border: 0; padding: 0; margin: 0; }
 .owner-panel legend { font-size: 14px; font-weight: 500; color: var(--p-ink); margin-bottom: 8px; }
+.owner-note { font-size: 12px; line-height: 1.45; color: var(--p-ink-2); }
+.owner-error { font-size: 12px; color: var(--p-danger); }
+.owner-option input:disabled + .owner-swatch { opacity: .48; }
 .owner-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; }
 .owner-option { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 8px; border-radius: var(--r-sm); font-size: 14px; color: var(--p-ink-2); cursor: pointer; }
 .owner-option:has(input:checked) { background: var(--p-tint); color: var(--p-action); }
 .owner-option input { accent-color: var(--p-action-fill); }
 .owner-preview-label { font-size: 13px; font-weight: 500; color: var(--p-muted); }
 .owner-preview { display: grid; gap: 4px; padding: 12px 12px 12px 20px; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--p-surface); cursor: default; }
-.owner-preview.has-owner, .owner-preview[class*="owner-"] { box-shadow: inset 4px 0 0 var(--owner); }
+.owner-preview.has-owner, .owner-preview[class*="owner-"] { box-shadow: inset 4px 0 0 var(--owner), inset 5px 0 0 var(--p-ink); }
 .owner-preview-meta { display: inline-flex; gap: 6px; align-items: center; font-size: 14px; color: var(--p-muted); }
 .owner-note { font-size: 13px; color: var(--p-muted); }
 @media (max-width: 767px) { .owner-panel { left: 0; right: auto; } }

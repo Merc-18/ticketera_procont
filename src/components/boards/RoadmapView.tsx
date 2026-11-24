@@ -11,13 +11,14 @@ interface Project {
   is_blocked: boolean
   due_date: string | null
   project_number?: string
-  requests?: { requester_area?: string } | null
+  requests?: { requester_area?: string; studio_code_id?: string | null } | null
 }
 
 interface Props {
   projects: Project[]
   onProjectClick: (p: { project: Project; flow: any }) => void
   loading?: boolean
+  procontCodeId?: string | null
 }
 
 function getQuarters(year: number) {
@@ -29,7 +30,7 @@ function getQuarters(year: number) {
   ]
 }
 
-export default function RoadmapView({ projects, onProjectClick, loading }: Props) {
+export default function RoadmapView({ projects, onProjectClick, loading, procontCodeId }: Props) {
   const year = new Date().getFullYear()
   const [showYear, setShowYear] = useState(year)
 
@@ -153,7 +154,7 @@ export default function RoadmapView({ projects, onProjectClick, loading }: Props
                                     {new Date(date + 'T12:00:00').toLocaleDateString('es-PE', { day: '2-digit', month: 'short' })}
                                   </span>
                                 )}
-                                {p.requests?.requester_area && (
+                                {p.requests?.studio_code_id === procontCodeId && procontCodeId && p.requests?.requester_area && (
                                   <span className="text-[13px] text-gray-600 truncate">{p.requests.requester_area}</span>
                                 )}
                               </div>

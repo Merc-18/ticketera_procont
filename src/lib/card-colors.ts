@@ -1,65 +1,84 @@
-// Color personal de tarjeta para usuarios INTERNOS (nunca clientes). Identifica al responsable; la prioridad y el
-// estado conservan sus propios canales (borde superior + insignia, y tinte/insignia de estado). D-043.
-//
-// Persistencia: no existe un mecanismo de preferencias en el backend (public.users solo guarda id, email, nombre,
-// rol y estado) y no se crean migraciones sin autorización. La preferencia vive en localStorage de ESTE navegador,
-// asociada al UUID del usuario interno: { [uuid]: colorId }. Sin datos de clientes; otro navegador o dispositivo no la ve.
-import { useSyncExternalStore } from 'react'
+// Preferencias compartidas del color del responsable (M17). Supabase es la fuente de verdad;
+// el UUID del usuario siempre procede de Supabase Auth y nunca de una elección del navegador.
+import { useEffect, useSyncExternalStore } from 'react'
+import { supabase } from './supabase'
 
-export const OWNER_COLOR_KEY = 'ticketera-owner-colors'
-
-/** Paleta oficial Procont y derivados aprobados (escalas blue/yellow/slate del sitio). Sin violeta, sin rojo ni verde
- *  (reservados para estados). Cada valor tiene variante clara y oscura en src/index.css (.owner-*). */
 export const OWNER_COLORS = [
-  { id: 'azul', label: 'Azul Procont' },
-  { id: 'celeste', label: 'Celeste' },
-  { id: 'dorado', label: 'Dorado' },
-  { id: 'ambar', label: 'Ámbar' },
-  { id: 'grafito', label: 'Grafito' },
-  { id: 'pizarra', label: 'Pizarra' },
+  { id: 'azul', label: 'Azul Procont' }, { id: 'azul-claro', label: 'Azul claro' },
+  { id: 'azul-oscuro', label: 'Azul profundo' }, { id: 'azul-acero', label: 'Azul acero' },
+  { id: 'celeste', label: 'Celeste' }, { id: 'celeste-claro', label: 'Celeste claro' },
+  { id: 'celeste-oscuro', label: 'Celeste intenso' }, { id: 'celeste-acero', label: 'Celeste acero' },
+  { id: 'dorado', label: 'Dorado' }, { id: 'dorado-claro', label: 'Dorado claro' },
+  { id: 'dorado-oscuro', label: 'Dorado tostado' }, { id: 'dorado-ocre', label: 'Dorado ocre' },
+  { id: 'ambar', label: 'Ámbar' }, { id: 'ambar-claro', label: 'Ámbar claro' },
+  { id: 'ambar-oscuro', label: 'Ámbar profundo' }, { id: 'ambar-bronce', label: 'Ámbar bronce' },
+  { id: 'grafito', label: 'Grafito' }, { id: 'grafito-claro', label: 'Grafito claro' },
+  { id: 'grafito-oscuro', label: 'Grafito oscuro' }, { id: 'grafito-humo', label: 'Grafito humo' },
+  { id: 'pizarra', label: 'Pizarra' }, { id: 'pizarra-claro', label: 'Pizarra claro' },
+  { id: 'pizarra-oscuro', label: 'Pizarra oscuro' }, { id: 'pizarra-acero', label: 'Pizarra acero' },
 ] as const
 export type OwnerColorId = typeof OWNER_COLORS[number]['id']
 const VALID = new Set<string>(OWNER_COLORS.map(c => c.id))
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
+type State = { assignments: Record<string, OwnerColorId>; loading: boolean; error: string | null }
+let state: State = { assignments: {}, loading: false, error: null }
+let inFlight: Promise<Record<string, OwnerColorId>> | null = null
 const listeners = new Set<() => void>()
-let cache: string | null = null
-let snapshot: Record<string, OwnerColorId> = {}
+const publish = (next: State) => { state = next; listeners.forEach(listener => listener()) }
+const subscribe = (listener: () => void) => { listeners.add(listener); return () => listeners.delete(listener) }
 
-function read(): Record<string, OwnerColorId> {
-  let raw: string | null = null
-  try { raw = localStorage.getItem(OWNER_COLOR_KEY) } catch { /* almacenamiento bloqueado */ }
-  if (raw === cache) return snapshot
-  cache = raw
-  const out: Record<string, OwnerColorId> = {}
-  try {
-    const parsed = raw ? JSON.parse(raw) : {}
-    for (const [id, color] of Object.entries(parsed ?? {})) if (UUID.test(id) && typeof color === 'string' && VALID.has(color)) out[id] = color as OwnerColorId
-  } catch { /* valor corrupto: se ignora */ }
-  snapshot = out
+export async function refreshOwnerColors(): Promise<Record<string, OwnerColorId>> {
+  if (inFlight) return inFlight
+  publish({ ...state, loading: true, error: null })
+  inFlight = (async () => {
+    const { data, error } = await supabase.rpc('internal_card_colors')
+    if (error) throw new Error(error.code === '42501' ? 'Se requiere una sesión interna activa.' : 'No se pudieron cargar los colores del equipo.')
+    const assignments: Record<string, OwnerColorId> = {}
+    const raw = data && typeof data === 'object' ? (data as { assignments?: Record<string, unknown> }).assignments : null
+    for (const [userId, color] of Object.entries(raw ?? {})) {
+      if (UUID.test(userId) && typeof color === 'string' && VALID.has(color)) assignments[userId] = color as OwnerColorId
+    }
+    publish({ assignments, loading: false, error: null })
+    return assignments
+  })().catch(error => {
+    publish({ ...state, loading: false, error: error instanceof Error ? error.message : 'No se pudieron cargar los colores del equipo.' })
+    throw error
+  }).finally(() => { inFlight = null })
+  return inFlight
+}
+
+export async function setOwnerColor(color: OwnerColorId): Promise<Record<string, OwnerColorId>> {
+  if (!VALID.has(color)) throw new Error('El color seleccionado no está disponible.')
+  publish({ ...state, loading: true, error: null })
+  const { error } = await supabase.rpc('set_my_internal_card_color', { p_color_id: color })
+  if (error) {
+    const message = error.code === '23505' ? 'Ese color ya está asignado. Elige otro color disponible.'
+      : error.code === '42501' ? 'Se requiere una sesión interna activa.' : 'No se pudo guardar el color. Inténtalo de nuevo.'
+    publish({ ...state, loading: false, error: message })
+    throw new Error(message)
+  }
+  if (inFlight) { try { await inFlight } catch { /* una consulta anterior puede haber fallado; se vuelve a leer */ } }
+  inFlight = null
+  return refreshOwnerColors()
+}
+
+export function useOwnerColors() {
+  const snapshot = useSyncExternalStore(subscribe, () => state.assignments, () => ({} as Record<string, OwnerColorId>))
+  useEffect(() => { void refreshOwnerColors().catch(() => undefined) }, [])
   return snapshot
 }
 
-export function setOwnerColor(userId: string, color: OwnerColorId | null) {
-  if (!UUID.test(userId)) return
-  const next = { ...read() }
-  if (color) next[userId] = color; else delete next[userId]
-  try { localStorage.setItem(OWNER_COLOR_KEY, JSON.stringify(next)) } catch { /* solo esta visita */ }
-  listeners.forEach(l => l())
+export function useOwnerColorStatus() {
+  const current = useSyncExternalStore(subscribe, () => state, () => state)
+  return { loading: current.loading, error: current.error }
 }
 
-function subscribe(listener: () => void) {
-  listeners.add(listener)
-  const onStorage = (e: StorageEvent) => { if (e.key === OWNER_COLOR_KEY) listener() }
-  window.addEventListener('storage', onStorage)
-  return () => { listeners.delete(listener); window.removeEventListener('storage', onStorage) }
+// Al regresar al tablero se vuelve a consultar el estado compartido. No se usa Realtime ni
+// se guarda una copia persistente en el navegador.
+if (typeof window !== 'undefined') {
+  window.addEventListener('focus', () => { void refreshOwnerColors().catch(() => undefined) })
 }
 
-/** Mapa vigente { uuid: color } (se actualiza al elegir y entre pestañas). */
-export function useOwnerColors() {
-  return useSyncExternalStore(subscribe, read, () => ({}) as Record<string, OwnerColorId>)
-}
-
-/** Clase de color del responsable de una tarjeta, o '' si no eligió color. */
 export const ownerClass = (colors: Record<string, OwnerColorId>, userId?: string | null) =>
   userId && colors[userId] ? `owner-${colors[userId]}` : ''

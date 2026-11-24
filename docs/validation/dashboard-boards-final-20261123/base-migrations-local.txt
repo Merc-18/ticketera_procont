@@ -1,0 +1,25 @@
+Isolation verified: expected /tmp cluster, Unix socket only
+PASS auth_stub.sql
+PASS 20261117000100_schema.sql
+PASS 20261117000200_security.sql
+PASS 20261117000300_operations.sql
+PASS 20261117000400_reference_checklists.sql
+PASS 20261118000100_account_administration.sql
+PASS 20261118000200_areas.sql
+PASS 20261118000300_ticket_catalogs.sql
+PASS 20261118000400_request_intake.sql
+Disposable test database removed; cluster lifecycle remains with caller
+Traceback (most recent call last):
+  File "/home/procont/projects/ticketera-procont/.agent-workspaces/claude-integration/supabase/tests/run_local.py", line 83, in <module>
+    file(migration)
+    ~~~~^^^^^^^^^^^
+  File "/home/procont/projects/ticketera-procont/.agent-workspaces/claude-integration/supabase/tests/run_local.py", line 63, in file
+    raise RuntimeError(f'{path.name}:\n{result.stderr}')
+RuntimeError: 20261118000500_ticket_security.sql:
+WARNING: password file "/dev/null" is not a plain file
+psql:/home/procont/projects/ticketera-procont/.agent-workspaces/claude-integration/supabase/migrations/20261118000500_ticket_security.sql:9: ERROR:  relation "storage.buckets" does not exist
+LINE 1: NOT EXISTS (SELECT 1 FROM storage.buckets WHERE id='request-...
+                                  ^
+QUERY:  NOT EXISTS (SELECT 1 FROM storage.buckets WHERE id='request-attachments'
+      AND public=false AND allowed_mime_types IS NOT NULL)
+CONTEXT:  PL/pgSQL function inline_code_block line 2 at IF

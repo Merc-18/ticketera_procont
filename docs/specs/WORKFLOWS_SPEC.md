@@ -59,3 +59,11 @@ Bloquear conserva fase y responsable. Impide fase, cierre y reapertura, pero per
 No convertir Administrative/Dual ni crear otros nuevos. `workflow_version=null` conserva históricos; versión 2 identifica nuevos. Un histórico con fases incoherentes no se arregla por migración automática; reapertura explícita permite volver a una fase no final con motivo.
 
 Ante 23514 revisar estado, bloqueo, pendientes/huella, clasificación o cupo según operación; ante 42501 revisar rol activo y permisos; no compensar reabriendo permisos. Ante respuesta incierta conservar UUID y consultar recibo/estado antes de reenviar. [API](API_CONTRACTS.md), [permisos](PERMISSIONS_SPEC.md) y [operación](DEPLOYMENT_SPEC.md).
+
+## Addendum M17 — áreas y color personal
+
+Revisión local 23/11/2026; fuente de código M17, aún NO verificada como aplicada remotamente.
+
+- En validación/clasificación, el servidor resuelve el código canónico de estudio. Solo igualdad exacta con `PROCONT` permite seleccionar área/subárea. El área activa debe pertenecer al estudio; subárea activa debe ser hija del área. Otros códigos descartan las áreas enviadas por formularios legacy. Al cambiar de PROCONT a otro código se limpian asociaciones nuevas; históricos no se migran.
+- Las tarjetas de Kanban y filas de Tabla toman el color de la preferencia persistida del responsable interno. Selector: miembro elige color disponible; asignación automática al activar perfil; se libera al desactivar. Unicidad impuesta por PostgreSQL; el color no cambia prioridad ni estado.
+- APIs internas: `internal_card_colors()` lee catálogo y mapa de asignaciones; `set_my_internal_card_color(p_color_id)` cambia solo al actor autenticado. RLS/RPC requieren perfil interno activo.

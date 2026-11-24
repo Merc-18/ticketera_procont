@@ -12,12 +12,11 @@ import { useAuth } from '../../hooks/useAuth'
 import { toast } from '../../lib/toast'
 import { errorMessage } from '../../lib/supabase-errors'
 import type { ProjectFlow } from '../../types/database.types'
-import { useAreas } from '../../hooks/useAreas'
 import { useCatalogs } from '../../hooks/useCatalogs'
 import { board } from '../../lib/api'
 import { actionKey, needsPendingConfirmation, type BoardTicket, type Phase } from '../../lib/board'
 import { DoneConfirmDialog } from '../projects/BoardDialogs'
-import { areasApply, procontStudioId } from '../../lib/studio-rules'
+import { procontCodeId, procontStudioId, studyHasProcontCode } from '../../lib/studio-rules'
 import OwnerColorPicker from './OwnerColorPicker'
 
 // Vistas y modales secundarios del tablero en carga diferida (Taste perf.md: JS por vista). Se piden por
@@ -111,11 +110,13 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
   const [priorityFilter, setPriorityFilter] = useState(() => localStorage.getItem('kanban_priorityFilter') || 'all')
   const [areaFilter, setAreaFilter]         = useState(() => localStorage.getItem('kanban_areaFilter') || 'all')
   const [studioFilter, setStudioFilter]     = useState(() => localStorage.getItem('kanban_studioFilter') || 'all')
-  const { studios, codes } = useCatalogs('member')
-  // Área solo aplica al estudio PROCONT (studio-rules.ts). Con otro estudio, el filtro se oculta y se limpia.
+  const { studios, codes, areas } = useCatalogs('member')
+  // La selección de área opera exclusivamente sobre solicitudes cuyo código es PROCONT.
   const procontId = procontStudioId(codes)
-  // Mientras el catálogo de códigos carga no se decide nada (no se borra un filtro guardado).
-  const areaFilterApplies = studioFilter === 'all' || codes.length === 0 || areasApply(studioFilter, codes)
+  const canonicalProcontCodeId = procontCodeId(codes)
+  // Mientras el catálogo carga no se borra el filtro guardado.
+  const areaFilterApplies = codes.length === 0 || (studioFilter === 'all'
+    ? !!canonicalProcontCodeId : studyHasProcontCode(studioFilter, codes))
   useEffect(() => { if (!areaFilterApplies && areaFilter !== 'all') setAreaFilter('all') }, [areaFilterApplies, areaFilter])
   const [userFilter, setUserFilter]         = useState(() => localStorage.getItem('kanban_userFilter') || 'all')
   const [myProjectsOnly, setMyProjectsOnly] = useState(() => localStorage.getItem('kanban_myProjectsOnly') === 'true')
@@ -156,9 +157,8 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
 
   const phases = PHASES[boardType]
   // Opciones de área: catálogo activo de Supabase + áreas presentes en los proyectos + filtro guardado
-  const { activeNames } = useAreas()
-  const areaOptions = Array.from(new Set([...activeNames,
-    ...projects.filter(p => { const sid = (p as any).requests?.studio_id; return !sid || sid === procontId })
+  const areaOptions = Array.from(new Set([...areas.filter(a => a.studio_id === procontId && !a.parent_id).map(a => a.name),
+    ...projects.filter(p => (p as any).requests?.studio_code_id === canonicalProcontCodeId && canonicalProcontCodeId)
       .map(p => (p as any).requests?.requester_area as string | undefined).filter((a): a is string => !!a),
     ...(areaFilter !== 'all' ? [areaFilter] : [])])).sort()
 
@@ -166,8 +166,8 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
   const filteredProjects = projects.filter(project => {
     if (priorityFilter !== 'all' && project.priority !== priorityFilter) return false
     const req = (project as any).requests
-    // El área cuenta solo en proyectos del estudio PROCONT o internos (sin estudio); nunca en otros estudios.
-    const area = !req?.studio_id || req.studio_id === procontId ? req?.requester_area : null
+    // Solo se presenta/filtra el área de solicitudes clasificadas con el código exacto PROCONT.
+    const area = req?.studio_code_id === canonicalProcontCodeId && canonicalProcontCodeId ? req?.requester_area : null
     if (areaFilter !== 'all' && area !== areaFilter) return false
     if (studioFilter !== 'all' && (project as any).requests?.studio_id !== studioFilter) return false
 
@@ -341,8 +341,8 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
           <span aria-hidden="true" className="toolbar-divider" />
         )}
 
-        {/* Filtros de prioridad y área (solo en vista activa) */}
-        {statusFilter === 'active' && (
+        {/* Filtro de áreas solo cuando existe el código interno exacto PROCONT. */}
+        {statusFilter === 'active' && canonicalProcontCodeId && (
           <>
             <label className="toolbar-field">
               <span>Prioridad</span>
@@ -359,10 +359,11 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
 
             {areaFilterApplies && <label className="toolbar-field">
 
-              <span>{studioFilter === 'all' ? 'Área (solo PROCONT)' : 'Área'}</span>
+              <span>Área (código PROCONT)</span>
 
-              <select
-                value={areaFilter}
+            <select
+              aria-label="Área · código interno PROCONT"
+              value={areaFilter}
                 onChange={e => setAreaFilter(e.target.value)}
                 className="ui-input toolbar-select"
               >
@@ -474,7 +475,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
         <TableView
           projects={filteredProjects as any}
           boardType={boardType}
-          procontStudioId={procontId}
+          procontCodeId={canonicalProcontCodeId}
           onProjectClick={setSelectedProject}
           loading={loading}
         />
@@ -485,6 +486,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
         <GanttView
           projects={filteredProjects as any}
           boardType={boardType}
+          procontCodeId={canonicalProcontCodeId}
           onProjectClick={setSelectedProject}
           loading={loading}
         />
@@ -494,6 +496,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
       {viewMode === 'roadmap' && (
         <RoadmapView
           projects={filteredProjects as any}
+          procontCodeId={canonicalProcontCodeId}
           onProjectClick={setSelectedProject}
           loading={loading}
         />
@@ -529,7 +532,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
                 canManage={canManage}
                 selectedIds={canEdit ? selectedIds : []}
                 onSelect={canEdit ? (id => setSelectedIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id])) : undefined}
-                procontStudioId={procontId}
+                procontCodeId={canonicalProcontCodeId}
               />
             ))}
           </div>
@@ -543,6 +546,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
           boardType={boardType}
           onProjectClick={setSelectedProject}
           status={statusFilter}
+          procontCodeId={canonicalProcontCodeId}
         />
       )}
 

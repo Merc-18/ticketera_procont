@@ -6,12 +6,12 @@ import { getAvatarColor, getInitials, PRIORITY_COLORS, PRIORITY_LABEL, AREA_COLO
 import { ownerClass, useOwnerColors } from '../../lib/card-colors'
 
 interface ProjectWithArea extends Project {
-  requests?: { requester_area: string; requester_name?: string; request_number?: string; studio_id?: string | null } | null
+  requests?: { requester_area: string | null; requester_name?: string; request_number?: string; studio_id?: string | null; studio_code_id?: string | null } | null
 }
 
 interface Props {
-  /** Id del estudio PROCONT: el área solo se muestra en sus proyectos y en los internos (sin estudio). */
-  procontStudioId?: string | null
+  /** UUID del código interno exacto PROCONT. */
+  procontCodeId?: string | null
   project: ProjectWithArea
   flow: ProjectFlow
   onClick: () => void
@@ -31,9 +31,8 @@ function getDueDateBadge(dueDate?: string | null) {
   return { label: new Date(dueDate + 'T00:00:00').toLocaleDateString('es-PE', { day: '2-digit', month: 'short' }), icon: 'calendar' as const, cls: 'bg-gray-100 text-gray-600 border border-gray-300' }
 }
 
-export default function ProjectCard({ project, flow, onClick, users = [], onAssign, selected, onSelect, procontStudioId }: Props) {
-  const studioId = project.requests?.studio_id
-  const area = !studioId || (procontStudioId && studioId === procontStudioId) ? project.requests?.requester_area : null
+export default function ProjectCard({ project, flow, onClick, users = [], onAssign, selected, onSelect, procontCodeId }: Props) {
+  const area = project.requests?.studio_code_id === procontCodeId && procontCodeId ? project.requests?.requester_area : null
   const ownerColors = useOwnerColors()
   const owner = ownerClass(ownerColors, flow.assigned_to)
   const requesterName = project.requests?.requester_name

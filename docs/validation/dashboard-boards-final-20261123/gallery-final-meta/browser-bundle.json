@@ -1,0 +1,1419 @@
+{
+  "metric": "Taste: sum Script Network.dataReceived.dataLength || encodedDataLength; cache disabled; after scroll/idle",
+  "limitsKiB": {
+    "warn": 450,
+    "fail": 900
+  },
+  "measures": [
+    {
+      "label": "desktop:portal-inicial-tras-scroll",
+      "bytes": 406244,
+      "kib": 396.7,
+      "verdict": "PASS",
+      "scripts": [
+        {
+          "url": "http://127.0.0.1:38581/assets/index-Coyxv31O.js",
+          "type": "Script",
+          "decoded": 382919,
+          "encoded": 114903,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/motion/motion.js",
+          "type": "Script",
+          "decoded": 23325,
+          "encoded": 8763,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "label": "desktop:cliente-autenticado",
+      "bytes": 479534,
+      "kib": 468.3,
+      "verdict": "WARN",
+      "scripts": [
+        {
+          "url": "http://127.0.0.1:38581/assets/index-Coyxv31O.js",
+          "type": "Script",
+          "decoded": 382919,
+          "encoded": 114903,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/motion/motion.js",
+          "type": "Script",
+          "decoded": 23325,
+          "encoded": 8763,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/ClientHome-CHCuBeiO.js",
+          "type": "Script",
+          "decoded": 5984,
+          "encoded": 2716,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/client-session-store-Dhh8Ahcg.js",
+          "type": "Script",
+          "decoded": 12738,
+          "encoded": 4929,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/client-request-data-DPr4ph1Q.js",
+          "type": "Script",
+          "decoded": 81,
+          "encoded": 401,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/request-status-BPv8RpKo.js",
+          "type": "Script",
+          "decoded": 937,
+          "encoded": 1259,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/ticket-security-client-BJIQH8qw.js",
+          "type": "Script",
+          "decoded": 973,
+          "encoded": 1295,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/ClientWorkspace-Bg-l8HOS.js",
+          "type": "Script",
+          "decoded": 4251,
+          "encoded": 2210,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/rpc-attempt-B1DJ_B50.js",
+          "type": "Script",
+          "decoded": 551,
+          "encoded": 873,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/useCatalogs-7N1V2RSa.js",
+          "type": "Script",
+          "decoded": 1718,
+          "encoded": 1155,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/ClientNewTicket-CtKHQTEy.js",
+          "type": "Script",
+          "decoded": 14973,
+          "encoded": 5457,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/AttachmentPicker-wlkhfZPu.js",
+          "type": "Script",
+          "decoded": 5622,
+          "encoded": 2932,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/attachments-CvTqME7L.js",
+          "type": "Script",
+          "decoded": 1712,
+          "encoded": 1330,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/api-YqiFXED8.js",
+          "type": "Script",
+          "decoded": 11368,
+          "encoded": 4801,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/MyTickets-Cli2isNb.js",
+          "type": "Script",
+          "decoded": 7311,
+          "encoded": 3211,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/RequestedPriority-B_Kdq8ls.js",
+          "type": "Script",
+          "decoded": 442,
+          "encoded": 764,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/ClientTicketDetail-B-Kk6qaE.js",
+          "type": "Script",
+          "decoded": 4629,
+          "encoded": 2156,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "label": "desktop:dashboard",
+      "bytes": 447735,
+      "kib": 437.2,
+      "verdict": "PASS",
+      "scripts": [
+        {
+          "url": "http://127.0.0.1:38581/assets/index-Coyxv31O.js",
+          "type": "Script",
+          "decoded": 382919,
+          "encoded": 114903,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/motion/motion.js",
+          "type": "Script",
+          "decoded": 23325,
+          "encoded": 8763,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/DashboardView-Ch9wRDuy.js",
+          "type": "Script",
+          "decoded": 21144,
+          "encoded": 7862,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/useUsers-CIUUun6C.js",
+          "type": "Script",
+          "decoded": 3507,
+          "encoded": 2059,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/api-YqiFXED8.js",
+          "type": "Script",
+          "decoded": 11368,
+          "encoded": 4801,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/request-status-BPv8RpKo.js",
+          "type": "Script",
+          "decoded": 937,
+          "encoded": 1259,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/ticket-security-client-BJIQH8qw.js",
+          "type": "Script",
+          "decoded": 973,
+          "encoded": 1295,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/studio-rules-GtswpXsi.js",
+          "type": "Script",
+          "decoded": 389,
+          "encoded": 711,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/useCatalogs-7N1V2RSa.js",
+          "type": "Script",
+          "decoded": 1718,
+          "encoded": 1155,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/MetricState-DAIyBrTo.js",
+          "type": "Script",
+          "decoded": 468,
+          "encoded": 790,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/constants-BqJWUN31.js",
+          "type": "Script",
+          "decoded": 987,
+          "encoded": 1309,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "label": "desktop:bandeja-antes-de-importar",
+      "bytes": 461202,
+      "kib": 450.4,
+      "verdict": "WARN",
+      "scripts": [
+        {
+          "url": "http://127.0.0.1:38581/assets/index-Coyxv31O.js",
+          "type": "Script",
+          "decoded": 382919,
+          "encoded": 114903,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/motion/motion.js",
+          "type": "Script",
+          "decoded": 23325,
+          "encoded": 8763,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/DashboardView-Ch9wRDuy.js",
+          "type": "Script",
+          "decoded": 21144,
+          "encoded": 7862,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/useUsers-CIUUun6C.js",
+          "type": "Script",
+          "decoded": 3507,
+          "encoded": 2059,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/api-YqiFXED8.js",
+          "type": "Script",
+          "decoded": 11368,
+          "encoded": 4801,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/request-status-BPv8RpKo.js",
+          "type": "Script",
+          "decoded": 937,
+          "encoded": 1259,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/ticket-security-client-BJIQH8qw.js",
+          "type": "Script",
+          "decoded": 973,
+          "encoded": 1295,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/studio-rules-GtswpXsi.js",
+          "type": "Script",
+          "decoded": 389,
+          "encoded": 711,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/useCatalogs-7N1V2RSa.js",
+          "type": "Script",
+          "decoded": 1718,
+          "encoded": 1155,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/MetricState-DAIyBrTo.js",
+          "type": "Script",
+          "decoded": 468,
+          "encoded": 790,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/constants-BqJWUN31.js",
+          "type": "Script",
+          "decoded": 987,
+          "encoded": 1309,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/RequestInbox-ZNth7lUs.js",
+          "type": "Script",
+          "decoded": 12944,
+          "encoded": 4161,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/RequestedPriority-B_Kdq8ls.js",
+          "type": "Script",
+          "decoded": 442,
+          "encoded": 764,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/client-request-data-DPr4ph1Q.js",
+          "type": "Script",
+          "decoded": 81,
+          "encoded": 401,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "label": "desktop:importador-abierto",
+      "bytes": 805000,
+      "kib": 786.1,
+      "verdict": "WARN",
+      "scripts": [
+        {
+          "url": "http://127.0.0.1:38581/assets/index-Coyxv31O.js",
+          "type": "Script",
+          "decoded": 382919,
+          "encoded": 114903,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/motion/motion.js",
+          "type": "Script",
+          "decoded": 23325,
+          "encoded": 8763,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/DashboardView-Ch9wRDuy.js",
+          "type": "Script",
+          "decoded": 21144,
+          "encoded": 7862,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/useUsers-CIUUun6C.js",
+          "type": "Script",
+          "decoded": 3507,
+          "encoded": 2059,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/api-YqiFXED8.js",
+          "type": "Script",
+          "decoded": 11368,
+          "encoded": 4801,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/request-status-BPv8RpKo.js",
+          "type": "Script",
+          "decoded": 937,
+          "encoded": 1259,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/ticket-security-client-BJIQH8qw.js",
+          "type": "Script",
+          "decoded": 973,
+          "encoded": 1295,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/studio-rules-GtswpXsi.js",
+          "type": "Script",
+          "decoded": 389,
+          "encoded": 711,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/useCatalogs-7N1V2RSa.js",
+          "type": "Script",
+          "decoded": 1718,
+          "encoded": 1155,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/MetricState-DAIyBrTo.js",
+          "type": "Script",
+          "decoded": 468,
+          "encoded": 790,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/constants-BqJWUN31.js",
+          "type": "Script",
+          "decoded": 987,
+          "encoded": 1309,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/RequestInbox-ZNth7lUs.js",
+          "type": "Script",
+          "decoded": 12944,
+          "encoded": 4161,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/RequestedPriority-B_Kdq8ls.js",
+          "type": "Script",
+          "decoded": 442,
+          "encoded": 764,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/client-request-data-DPr4ph1Q.js",
+          "type": "Script",
+          "decoded": 81,
+          "encoded": 401,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/PlannerImportModal-BDfo62GE.js",
+          "type": "Script",
+          "decoded": 343247,
+          "encoded": 117748,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/rpc-attempt-B1DJ_B50.js",
+          "type": "Script",
+          "decoded": 551,
+          "encoded": 873,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "label": "desktop:kanban",
+      "bytes": 592575,
+      "kib": 578.7,
+      "verdict": "WARN",
+      "scripts": [
+        {
+          "url": "http://127.0.0.1:38581/assets/index-Coyxv31O.js",
+          "type": "Script",
+          "decoded": 382919,
+          "encoded": 114903,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/motion/motion.js",
+          "type": "Script",
+          "decoded": 23325,
+          "encoded": 8763,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/DashboardView-Ch9wRDuy.js",
+          "type": "Script",
+          "decoded": 21144,
+          "encoded": 7862,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/useUsers-CIUUun6C.js",
+          "type": "Script",
+          "decoded": 3507,
+          "encoded": 2059,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/api-YqiFXED8.js",
+          "type": "Script",
+          "decoded": 11368,
+          "encoded": 4801,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/request-status-BPv8RpKo.js",
+          "type": "Script",
+          "decoded": 937,
+          "encoded": 1259,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/ticket-security-client-BJIQH8qw.js",
+          "type": "Script",
+          "decoded": 973,
+          "encoded": 1295,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/studio-rules-GtswpXsi.js",
+          "type": "Script",
+          "decoded": 389,
+          "encoded": 711,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/useCatalogs-7N1V2RSa.js",
+          "type": "Script",
+          "decoded": 1718,
+          "encoded": 1155,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/MetricState-DAIyBrTo.js",
+          "type": "Script",
+          "decoded": 468,
+          "encoded": 790,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/constants-BqJWUN31.js",
+          "type": "Script",
+          "decoded": 987,
+          "encoded": 1309,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/KanbanBoard-C6_Xg-MN.js",
+          "type": "Script",
+          "decoded": 144114,
+          "encoded": 44364,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/BoardSelector-D3HoXiAY.js",
+          "type": "Script",
+          "decoded": 726,
+          "encoded": 1048,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "label": "movil:portal-inicial-tras-scroll",
+      "bytes": 406244,
+      "kib": 396.7,
+      "verdict": "PASS",
+      "scripts": [
+        {
+          "url": "http://127.0.0.1:38581/assets/index-Coyxv31O.js",
+          "type": "Script",
+          "decoded": 382919,
+          "encoded": 114903,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/motion/motion.js",
+          "type": "Script",
+          "decoded": 23325,
+          "encoded": 8763,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "label": "movil:cliente-autenticado",
+      "bytes": 479534,
+      "kib": 468.3,
+      "verdict": "WARN",
+      "scripts": [
+        {
+          "url": "http://127.0.0.1:38581/assets/index-Coyxv31O.js",
+          "type": "Script",
+          "decoded": 382919,
+          "encoded": 114903,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/motion/motion.js",
+          "type": "Script",
+          "decoded": 23325,
+          "encoded": 8763,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/ClientHome-CHCuBeiO.js",
+          "type": "Script",
+          "decoded": 5984,
+          "encoded": 2716,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/client-session-store-Dhh8Ahcg.js",
+          "type": "Script",
+          "decoded": 12738,
+          "encoded": 4929,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/client-request-data-DPr4ph1Q.js",
+          "type": "Script",
+          "decoded": 81,
+          "encoded": 401,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/request-status-BPv8RpKo.js",
+          "type": "Script",
+          "decoded": 937,
+          "encoded": 1259,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/ticket-security-client-BJIQH8qw.js",
+          "type": "Script",
+          "decoded": 973,
+          "encoded": 1295,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/ClientWorkspace-Bg-l8HOS.js",
+          "type": "Script",
+          "decoded": 4251,
+          "encoded": 2210,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/rpc-attempt-B1DJ_B50.js",
+          "type": "Script",
+          "decoded": 551,
+          "encoded": 873,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/useCatalogs-7N1V2RSa.js",
+          "type": "Script",
+          "decoded": 1718,
+          "encoded": 1155,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/ClientNewTicket-CtKHQTEy.js",
+          "type": "Script",
+          "decoded": 14973,
+          "encoded": 5457,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/AttachmentPicker-wlkhfZPu.js",
+          "type": "Script",
+          "decoded": 5622,
+          "encoded": 2932,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/attachments-CvTqME7L.js",
+          "type": "Script",
+          "decoded": 1712,
+          "encoded": 1330,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/api-YqiFXED8.js",
+          "type": "Script",
+          "decoded": 11368,
+          "encoded": 4801,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/MyTickets-Cli2isNb.js",
+          "type": "Script",
+          "decoded": 7311,
+          "encoded": 3211,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/RequestedPriority-B_Kdq8ls.js",
+          "type": "Script",
+          "decoded": 442,
+          "encoded": 764,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/ClientTicketDetail-B-Kk6qaE.js",
+          "type": "Script",
+          "decoded": 4629,
+          "encoded": 2156,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "label": "movil:dashboard",
+      "bytes": 447735,
+      "kib": 437.2,
+      "verdict": "PASS",
+      "scripts": [
+        {
+          "url": "http://127.0.0.1:38581/assets/index-Coyxv31O.js",
+          "type": "Script",
+          "decoded": 382919,
+          "encoded": 114903,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/motion/motion.js",
+          "type": "Script",
+          "decoded": 23325,
+          "encoded": 8763,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/DashboardView-Ch9wRDuy.js",
+          "type": "Script",
+          "decoded": 21144,
+          "encoded": 7862,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/useUsers-CIUUun6C.js",
+          "type": "Script",
+          "decoded": 3507,
+          "encoded": 2059,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/api-YqiFXED8.js",
+          "type": "Script",
+          "decoded": 11368,
+          "encoded": 4801,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/request-status-BPv8RpKo.js",
+          "type": "Script",
+          "decoded": 937,
+          "encoded": 1259,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/ticket-security-client-BJIQH8qw.js",
+          "type": "Script",
+          "decoded": 973,
+          "encoded": 1295,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/studio-rules-GtswpXsi.js",
+          "type": "Script",
+          "decoded": 389,
+          "encoded": 711,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/useCatalogs-7N1V2RSa.js",
+          "type": "Script",
+          "decoded": 1718,
+          "encoded": 1155,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/MetricState-DAIyBrTo.js",
+          "type": "Script",
+          "decoded": 468,
+          "encoded": 790,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/constants-BqJWUN31.js",
+          "type": "Script",
+          "decoded": 987,
+          "encoded": 1309,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "label": "movil:bandeja-antes-de-importar",
+      "bytes": 461202,
+      "kib": 450.4,
+      "verdict": "WARN",
+      "scripts": [
+        {
+          "url": "http://127.0.0.1:38581/assets/index-Coyxv31O.js",
+          "type": "Script",
+          "decoded": 382919,
+          "encoded": 114903,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/motion/motion.js",
+          "type": "Script",
+          "decoded": 23325,
+          "encoded": 8763,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/DashboardView-Ch9wRDuy.js",
+          "type": "Script",
+          "decoded": 21144,
+          "encoded": 7862,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/useUsers-CIUUun6C.js",
+          "type": "Script",
+          "decoded": 3507,
+          "encoded": 2059,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/api-YqiFXED8.js",
+          "type": "Script",
+          "decoded": 11368,
+          "encoded": 4801,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/request-status-BPv8RpKo.js",
+          "type": "Script",
+          "decoded": 937,
+          "encoded": 1259,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/ticket-security-client-BJIQH8qw.js",
+          "type": "Script",
+          "decoded": 973,
+          "encoded": 1295,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/studio-rules-GtswpXsi.js",
+          "type": "Script",
+          "decoded": 389,
+          "encoded": 711,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/useCatalogs-7N1V2RSa.js",
+          "type": "Script",
+          "decoded": 1718,
+          "encoded": 1155,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/MetricState-DAIyBrTo.js",
+          "type": "Script",
+          "decoded": 468,
+          "encoded": 790,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/constants-BqJWUN31.js",
+          "type": "Script",
+          "decoded": 987,
+          "encoded": 1309,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/RequestInbox-ZNth7lUs.js",
+          "type": "Script",
+          "decoded": 12944,
+          "encoded": 4161,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/RequestedPriority-B_Kdq8ls.js",
+          "type": "Script",
+          "decoded": 442,
+          "encoded": 764,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/client-request-data-DPr4ph1Q.js",
+          "type": "Script",
+          "decoded": 81,
+          "encoded": 401,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "label": "movil:importador-abierto",
+      "bytes": 805000,
+      "kib": 786.1,
+      "verdict": "WARN",
+      "scripts": [
+        {
+          "url": "http://127.0.0.1:38581/assets/index-Coyxv31O.js",
+          "type": "Script",
+          "decoded": 382919,
+          "encoded": 114903,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/motion/motion.js",
+          "type": "Script",
+          "decoded": 23325,
+          "encoded": 8763,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/DashboardView-Ch9wRDuy.js",
+          "type": "Script",
+          "decoded": 21144,
+          "encoded": 7862,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/useUsers-CIUUun6C.js",
+          "type": "Script",
+          "decoded": 3507,
+          "encoded": 2059,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/api-YqiFXED8.js",
+          "type": "Script",
+          "decoded": 11368,
+          "encoded": 4801,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/request-status-BPv8RpKo.js",
+          "type": "Script",
+          "decoded": 937,
+          "encoded": 1259,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/ticket-security-client-BJIQH8qw.js",
+          "type": "Script",
+          "decoded": 973,
+          "encoded": 1295,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/studio-rules-GtswpXsi.js",
+          "type": "Script",
+          "decoded": 389,
+          "encoded": 711,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/useCatalogs-7N1V2RSa.js",
+          "type": "Script",
+          "decoded": 1718,
+          "encoded": 1155,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/MetricState-DAIyBrTo.js",
+          "type": "Script",
+          "decoded": 468,
+          "encoded": 790,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/constants-BqJWUN31.js",
+          "type": "Script",
+          "decoded": 987,
+          "encoded": 1309,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/RequestInbox-ZNth7lUs.js",
+          "type": "Script",
+          "decoded": 12944,
+          "encoded": 4161,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/RequestedPriority-B_Kdq8ls.js",
+          "type": "Script",
+          "decoded": 442,
+          "encoded": 764,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/client-request-data-DPr4ph1Q.js",
+          "type": "Script",
+          "decoded": 81,
+          "encoded": 401,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/PlannerImportModal-BDfo62GE.js",
+          "type": "Script",
+          "decoded": 343247,
+          "encoded": 117748,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/rpc-attempt-B1DJ_B50.js",
+          "type": "Script",
+          "decoded": 551,
+          "encoded": 873,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "label": "movil:kanban",
+      "bytes": 592575,
+      "kib": 578.7,
+      "verdict": "WARN",
+      "scripts": [
+        {
+          "url": "http://127.0.0.1:38581/assets/index-Coyxv31O.js",
+          "type": "Script",
+          "decoded": 382919,
+          "encoded": 114903,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/motion/motion.js",
+          "type": "Script",
+          "decoded": 23325,
+          "encoded": 8763,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/DashboardView-Ch9wRDuy.js",
+          "type": "Script",
+          "decoded": 21144,
+          "encoded": 7862,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/useUsers-CIUUun6C.js",
+          "type": "Script",
+          "decoded": 3507,
+          "encoded": 2059,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/api-YqiFXED8.js",
+          "type": "Script",
+          "decoded": 11368,
+          "encoded": 4801,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/request-status-BPv8RpKo.js",
+          "type": "Script",
+          "decoded": 937,
+          "encoded": 1259,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/ticket-security-client-BJIQH8qw.js",
+          "type": "Script",
+          "decoded": 973,
+          "encoded": 1295,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/studio-rules-GtswpXsi.js",
+          "type": "Script",
+          "decoded": 389,
+          "encoded": 711,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/useCatalogs-7N1V2RSa.js",
+          "type": "Script",
+          "decoded": 1718,
+          "encoded": 1155,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/MetricState-DAIyBrTo.js",
+          "type": "Script",
+          "decoded": 468,
+          "encoded": 790,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/constants-BqJWUN31.js",
+          "type": "Script",
+          "decoded": 987,
+          "encoded": 1309,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/KanbanBoard-C6_Xg-MN.js",
+          "type": "Script",
+          "decoded": 144114,
+          "encoded": 44364,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        },
+        {
+          "url": "http://127.0.0.1:38581/assets/BoardSelector-D3HoXiAY.js",
+          "type": "Script",
+          "decoded": 726,
+          "encoded": 1048,
+          "status": 200,
+          "canceled": false,
+          "failed": false
+        }
+      ]
+    }
+  ]
+}

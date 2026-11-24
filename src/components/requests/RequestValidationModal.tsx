@@ -69,8 +69,8 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
   const classified = !!r.studio_id
   const system = catalogs.systems.find(s => s.id === r.system_id)
   const subs = catalogs.subsystems.filter(s => s.system_id === r.system_id)
-  // Áreas solo para el estudio PROCONT (código canónico, studio-rules.ts); en otro estudio no se muestran ni se envían.
-  const areaApplies = areasApply(r.studio_id, catalogs.codes)
+  // El código exacto seleccionado decide si aplican áreas; el estudio por sí solo no alcanza.
+  const areaApplies = areasApply(code, catalogs.codes)
   const studioAreas = areaApplies ? catalogs.areas.filter(a => a.studio_id === r.studio_id && !a.parent_id) : []
   const subareas = catalogs.areas.filter(a => a.parent_id === area && area)
   const codes = catalogs.codes.filter(c => c.studio_id === r.studio_id)
@@ -82,7 +82,7 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
   // en solicitudes históricas sin estudio (antes se omitían y solo el servidor las rechazaba).
   const missing = (() => {
     if (classified && !code) return 'Selecciona el código interno del estudio.'
-    if (mode === 'approve' && classified && studioAreas.length > 0 && !area) return 'Selecciona el área (obligatoria para este estudio).'
+    if (mode === 'approve' && classified && areaApplies && studioAreas.length > 0 && !area) return 'Selecciona el área (obligatoria para el código PROCONT).'
     if (mode === 'approve' && classified && requiresSub && !subsystem) return 'Selecciona el subproyecto.'
     if (mode === 'approve' && !responsible) return 'Selecciona el responsable.'
     if (mode === 'reject' && !reason.trim()) return 'Indica el motivo del rechazo para el solicitante.'
@@ -167,14 +167,14 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-gray-50 border rounded-lg p-3">
                   <div><p className="text-xs text-gray-500">Código interno</p><p className="text-sm font-mono font-medium">{catalogs.codes.find(c => c.id === r.studio_code_id)?.code ?? '—'}</p></div>
                   {info('Subproyecto', name(catalogs.subsystems, r.subsystem_id))}
-                  {info('Área', name(catalogs.areas, r.area_id))}
-                  {info('Subárea', name(catalogs.areas, r.subarea_id))}
+                  {areasApply(r.studio_code_id, catalogs.codes) && info('Área', name(catalogs.areas, r.area_id))}
+                  {areasApply(r.studio_code_id, catalogs.codes) && info('Subárea', name(catalogs.areas, r.subarea_id))}
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label htmlFor="validation-code" className="block text-sm font-medium text-gray-700 mb-1">Código interno del estudio *</label>
-                    <select id="validation-code" value={code} onChange={e => setCode(e.target.value)} className={input}>
+                    <select id="validation-code" value={code} onChange={e => { setCode(e.target.value); setArea(''); setSubarea('') }} className={input}>
                       <option value="">Selecciona un código</option>
                       {codes.map(c => <option key={c.id} value={c.id}>{c.code}</option>)}
                     </select>
@@ -208,7 +208,7 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
                       )}
                     </>
                   ) : (
-                    <p className="text-sm text-gray-600 self-end pb-2">Área y subárea no aplican a este estudio.</p>
+                    <p className="text-sm text-gray-600 self-end pb-2">Área y subárea solo aplican al código PROCONT.</p>
                   )}
                 </div>
               )}

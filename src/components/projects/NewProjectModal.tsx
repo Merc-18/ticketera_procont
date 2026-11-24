@@ -4,7 +4,6 @@ import { useState, useRef } from 'react'
 import { createRpcAttempt, type RpcAttempt } from '../../lib/rpc-attempt'
 import type { InternalProjectInput } from '../../lib/operations'
 import { useUsers } from '../../hooks/useUsers'
-import AreaInput from '../ui/AreaInput'
 import Icon from '../ui/Icon'
 import { PRIORITY_LABEL } from '../../lib/constants'
 
@@ -30,7 +29,6 @@ export default function NewProjectModal({ onClose, onCreate }: Props) {
   const [priority, setPriority] = useState<'low' | 'medium' | 'high' | 'urgent'>('medium')
   const [startDate, setStartDate] = useState('')
   const [dueDate, setDueDate] = useState('')
-  const [area, setArea] = useState('')
   const [requesterName, setRequesterName] = useState('')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -47,7 +45,6 @@ export default function NewProjectModal({ onClose, onCreate }: Props) {
         priority,
         start_date: startDate || undefined,
         due_date: dueDate || undefined,
-        area: area || undefined,
         requester_name: requesterName.trim() || undefined,
       }, attempt.current)
       onClose()
@@ -153,18 +150,7 @@ export default function NewProjectModal({ onClose, onCreate }: Props) {
             </div>
           </div>
 
-          {/* Área + Solicitante */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-semibold text-gray-600 mb-1.5">Área</label>
-              <AreaInput
-                value={area}
-                onChange={setArea}
-                placeholder="Sin área"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              />
-            </div>
-            <div>
+          <div>
               <label className="block text-xs font-semibold text-gray-600 mb-1.5">
                 Solicitante <span className="text-gray-600 font-normal">(opcional)</span>
               </label>
@@ -175,7 +161,6 @@ export default function NewProjectModal({ onClose, onCreate }: Props) {
                 placeholder="Nombre de quien solicita..."
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
-            </div>
           </div>
 
           {error && (

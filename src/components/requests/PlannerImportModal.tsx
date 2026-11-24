@@ -6,7 +6,6 @@ import { useRequests } from '../../hooks/useRequests'
 import { createRpcAttempt, type RpcAttempt } from '../../lib/rpc-attempt'
 import { errorMessage } from '../../lib/supabase-errors'
 import { toast } from '../../lib/toast'
-import AreaInput from '../ui/AreaInput'
 import Icon from '../ui/Icon'
 
 interface PlannerRow {
@@ -84,8 +83,6 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
   const [done, setDone] = useState(false)
   const [imported, setImported] = useState(0)
   const [step, setStep] = useState<'upload' | 'preview'>('upload')
-  // Área asignada a las solicitudes importadas: la indica el operador (sin valor por defecto organizacional)
-  const [importArea, setImportArea] = useState('')
 
   const handleFile = (file: File) => {
     const reader = new FileReader()
@@ -152,8 +149,7 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
 
   const handleImport = async () => {
     const toImport = rows.map((row, index) => ({ row, index })).filter(item => selected.has(item.index))
-    const area = importArea.trim()
-    if (toImport.length === 0 || !area) return
+    if (toImport.length === 0) return
     setImporting(true)
 
     let count = 0
@@ -166,7 +162,6 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
         await createRequest({
           requester_name:       row.requester_name,
           requester_email:      '',
-          requester_area:       area,
           request_type:         row.bucket || 'Otro',
           origin:               'Interno',
           data_system_involved: '',
@@ -345,14 +340,7 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
             {/* Footer */}
             <div className="px-6 py-4 border-t bg-gray-50 flex flex-wrap items-center justify-between gap-3 shrink-0">
               <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500">
-                <span>Se importarán con prioridad <strong>Bajo</strong> y área</span>
-                <AreaInput
-                  required
-                  value={importArea}
-                  onChange={setImportArea}
-                  placeholder="Área (obligatoria)"
-                  className="w-44 px-2 py-1 border border-gray-300 rounded-md text-xs text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary"
-                />
+                <span>Se importarán con prioridad <strong>Bajo</strong> y sin área hasta su clasificación.</span>
               </div>
               <div className="flex gap-3">
                 <button
@@ -363,7 +351,7 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
                 </button>
                 <button
                   onClick={handleImport}
-                  disabled={selected.size === 0 || importing || !importArea.trim()}
+                  disabled={selected.size === 0 || importing}
                   className="px-5 py-2 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-brand-700 transition disabled:opacity-50 flex items-center gap-2"
                 >
                   {importing ? (

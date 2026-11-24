@@ -142,3 +142,18 @@ Las suites restantes están inventariadas con rutas en [CODE_INVENTORY.md](CODE_
 | Logout posterior a M15 | NO VERIFICADO | Sin sesión activa que cerrar; no inventar una con clave de servidor. |
 
 Si luego se autoriza y hay sesiones válidas: consultar primero títulos/marcadores para no duplicar; máximo dos QA nuevos (uno por proveedor), un envío por ticket, notificaciones externas verificadas previamente, archivo ficticio pequeño, registrar solo REQ/UUID/estado. Conservar los anteriores. Ante respuesta incierta consultar antes de reenviar. Estas instrucciones **no son una nueva autorización de creación**.
+
+## M17 local — rama `dashboard-boards-20261123`
+
+Estas ejecuciones son evidencia local de PostgreSQL 17 y React/Chromium con servicios simulados; **no son Supabase remoto**. Los JSON en `docs/validation/dashboard-boards-m17-clean.json` y `dashboard-boards-m17-upgrade.json` identifican cada escenario. No se ejecutaron escrituras en Supabase ni Vercel.
+
+| Ejecución | Resultado | Alcance |
+|---|---:|---|
+| Clean M1–M17 | 25 grupos integrados PASS (según JSON actualizado) | Instalación PostgreSQL 17 desechable, Auth/Storage stubs; prueba rollback transaccional de M17 antes de aplicarla. Incluye código exacto PROCONT/exclusiones, seguridad/RPC/RLS y color concurrente. |
+| Upgrade M15→M16→M16b→M17 | 29 grupos integrados PASS (según JSON actualizado) | Preservación de históricos, flujo Administrative anterior y aplicación ordenada. |
+| Node | 173/173 PASS | Adaptadores y unitarias; simulación según suite. |
+| UI focalizada color personal | 2/2 PASS | React/Chromium simulado, temas Light/Dark. |
+| UI completa | 91 PASS, 0 FAIL, 6 omitidas (97 totales) | Segunda ejecución completa de `npm run test:ui`, después de alinear el test Planner con la regla M17. Las seis omisiones existentes siguen identificadas por la suite. |
+| TypeScript/build | PASS | Build local posterior a cambios frontend, sin servicio remoto. |
+
+Los conteos de cada escenario se mantienen separados y no se suman. Si la suite UI completa no termina con resultado recuperable, repetirla y registrar su salida real antes del commit.

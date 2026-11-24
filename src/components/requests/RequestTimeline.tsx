@@ -69,10 +69,13 @@ export default function RequestTimeline({ requestId, projectId, catalogs, refres
         continue
       }
       let detail: string | undefined
-      if (e.action === 'classified') detail = [codeOf(d.studio_code_id) && `Código ${codeOf(d.studio_code_id)}`,
-        nameOf(catalogs.subsystems, d.subsystem_id) && `Subproyecto ${nameOf(catalogs.subsystems, d.subsystem_id)}`,
-        nameOf(catalogs.areas, d.area_id) && `Área ${nameOf(catalogs.areas, d.area_id)}`,
-        nameOf(catalogs.areas, d.subarea_id) && `Subárea ${nameOf(catalogs.areas, d.subarea_id)}`].filter(Boolean).join(' · ')
+      if (e.action === 'classified') {
+        const isProcont = codeOf(d.studio_code_id) === 'PROCONT'
+        detail = [codeOf(d.studio_code_id) && `Código ${codeOf(d.studio_code_id)}`,
+          nameOf(catalogs.subsystems, d.subsystem_id) && `Subproyecto ${nameOf(catalogs.subsystems, d.subsystem_id)}`,
+          isProcont && nameOf(catalogs.areas, d.area_id) && `Área ${nameOf(catalogs.areas, d.area_id)}`,
+          isProcont && nameOf(catalogs.areas, d.subarea_id) && `Subárea ${nameOf(catalogs.areas, d.subarea_id)}`].filter(Boolean).join(' · ')
+      }
       if (e.action === 'phase_changed') detail = `${d.flow_type ? `${FLOW[d.flow_type] ?? d.flow_type}: ` : ''}${phase(d.from)} → ${phase(d.to)}`
       if (e.action === 'blocked') detail = `Motivo: ${d.reason || '—'}`
       if (e.action === 'unblocked') detail = `Motivo previo: ${d.reason || '—'}${d.blocked_since ? ` · Bloqueado desde ${limaDateTime(d.blocked_since)}` : ''}`

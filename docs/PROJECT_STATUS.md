@@ -29,3 +29,12 @@ Revisión: **23/11/2026** · Código de producción: **`2f9ab74aff3d612951596986
 - 3 solicitudes de clientes históricas pendientes sin subproyecto: el personal debe clasificarlas antes de aprobar (trigger existente).
 
 No declarar producción completamente validada. En la activación del 23/11 no se crearon solicitudes ni se cambiaron Edge, variables de Vercel, CORS ni secretos. [Pruebas por clase y ejecución](specs/TESTING_SPEC.md), [roles](specs/PERMISSIONS_SPEC.md), [operación y contingencia](specs/DEPLOYMENT_SPEC.md).
+
+## Extensión dashboard/boards M17 — estado de esta rama
+
+La rama `dashboard-boards-20261123` conserva el commit de Claude `5c6640ec390685cc097a51de42fddd679efa3731` y añade M17, preferencias compartidas, alcance exacto de áreas y validaciones locales. `origin/main` se verificó por lectura en `3ec665907bfc13dc64f17f7236c0dcb02bebf8f2`. M17 SQL y pruebas pasaron en PostgreSQL 17 desechable, escenarios limpio y upgrade. **No se pudo consultar ni modificar Supabase remoto; no afirmar 18/18 aplicado. No hubo push, cambios Vercel ni despliegue.** Vercel Production y versión nueva: NO VERIFICADOS.
+
+- Áreas: backend y frontend limitan áreas nuevas al código exacto PROCONT; otros códigos limpian/ignoran nuevos valores, históricos preservados.
+- Color de responsable: persistencia compartida en Supabase diseñada en M17; no disponible en remoto mientras M17 no se aplique. Build local usa el contrato nuevo.
+- Pruebas locales: PostgreSQL M17 clean/upgrade PASS, Node 173/173 PASS; UI focalizada color 2/2 PASS; UI completa 91 PASS, 0 FAIL, 6 omitidas; TypeScript/build PASS.
+- Bloqueo de publicación: falta acceso efectivo a Supabase para comprobar 17/17, ejecutar dry-run/aplicar únicamente M17 y verificar 18/18; además verificar Vercel Production tras push. No aplicar frontend dependiente de M17 antes de su migración.

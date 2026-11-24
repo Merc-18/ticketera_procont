@@ -36,3 +36,5 @@ Ocultar el área para ARAPA haría fallar la aprobación en el servidor. Por eso
 - PROCONT muestra el selector de área con sus opciones; otro estudio no y muestra «no aplican»;
 - el filtro del Kanban se oculta y se limpia al pasar a otro estudio;
 - en el Dashboard: «No aplica», filtro de área solo con PROCONT y limpieza al cambiar de estudio.
+
+> **Estado actualizado 23/11/2026:** Esta evidencia describe la implementación frontend de la decisión inicial D-041, que identificaba el estudio asociado como PROCONT. D-047 la precisa: solo el código interno canónico exacto `PROCONT` puede usar áreas. El frontend y servidor actuales aplican igualdad exacta; otros códigos del mismo estudio también quedan excluidos. M17 local implementa la validación servidor. La aplicación remota de M17 no está verificada en esta ejecución.

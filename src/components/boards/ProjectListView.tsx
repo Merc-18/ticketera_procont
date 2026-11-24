@@ -5,7 +5,7 @@ import { checklistCount, phasePosition } from '../../lib/board'
 
 interface ProjectWithRelations extends Project {
   project_flows?: ProjectFlow[]
-  requests?: { requester_area: string; requester_name: string; request_type: string } | null
+  requests?: { requester_area: string; requester_name: string; request_type: string; studio_code_id?: string | null } | null
 }
 
 interface Props {
@@ -13,9 +13,10 @@ interface Props {
   boardType: 'development' | 'administrative'
   onProjectClick: (item: { project: ProjectWithRelations; flow: ProjectFlow }) => void
   status: 'completed' | 'archived'
+  procontCodeId?: string | null
 }
 
-export default function ProjectListView({ projects, boardType, onProjectClick, status }: Props) {
+export default function ProjectListView({ projects, boardType, onProjectClick, status, procontCodeId }: Props) {
   const statusLabel = status === 'completed' ? 'completados' : 'archivados'
   const statusIcon = status === 'completed' ? 'check' as const : 'archive' as const
 
@@ -44,7 +45,7 @@ export default function ProjectListView({ projects, boardType, onProjectClick, s
       </p>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {items.map(({ project, flow }) => {
-          const area = project.requests?.requester_area
+          const area = project.requests?.studio_code_id === procontCodeId && procontCodeId ? project.requests?.requester_area : null
           const areaColorClass = area ? (AREA_COLORS[area] ?? 'bg-gray-100 text-gray-600') : ''
           const requesterName = project.requests?.requester_name
           const showRequester = requesterName && requesterName !== '—'

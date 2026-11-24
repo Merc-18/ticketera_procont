@@ -6,7 +6,7 @@ import Icon from '../ui/Icon'
 
 interface ProjectWithRelations extends Project {
   project_flows?: ProjectFlow[]
-  requests?: { requester_area: string; requester_name: string; request_type: string } | null
+  requests?: { requester_area: string; requester_name: string; request_type: string; studio_code_id?: string | null } | null
 }
 
 interface Props {
@@ -14,6 +14,7 @@ interface Props {
   boardType: 'development' | 'administrative'
   onProjectClick: (item: { project: ProjectWithRelations; flow: ProjectFlow }) => void
   loading?: boolean
+  procontCodeId?: string | null
 }
 
 
@@ -33,13 +34,13 @@ function monthsBetween(start: Date, end: Date): number {
 
 const MONTH_NAMES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
 
-function exportGanttCSV(items: Array<{ project: ProjectWithRelations; flow: ProjectFlow }>) {
+function exportGanttCSV(items: Array<{ project: ProjectWithRelations; flow: ProjectFlow }>, procontCodeId?: string | null) {
   const PRIORITY_ES: Record<string, string> = { urgent: 'Urgente', high: 'Alta', medium: 'Media', low: 'Baja' }
   const headers = ['Título', 'Prioridad', 'Área', 'Inicio', 'Fecha objetivo', 'Fase']
   const rows = items.map(({ project, flow }) => [
     project.title,
     PRIORITY_ES[project.priority] ?? project.priority,
-    project.requests?.requester_area ?? '',
+    project.requests?.studio_code_id === procontCodeId && procontCodeId ? project.requests?.requester_area ?? '' : '',
     project.start_date ?? project.created_at?.slice(0, 10) ?? '',
     project.due_date ?? '',
     PHASE_LABELS[flow.current_phase] ?? flow.current_phase,
@@ -56,7 +57,7 @@ function exportGanttCSV(items: Array<{ project: ProjectWithRelations; flow: Proj
   URL.revokeObjectURL(url)
 }
 
-export default function GanttView({ projects, boardType, onProjectClick, loading }: Props) {
+export default function GanttView({ projects, boardType, onProjectClick, loading, procontCodeId }: Props) {
   const today = new Date()
 
   if (loading) {
@@ -232,7 +233,7 @@ export default function GanttView({ projects, boardType, onProjectClick, loading
       <div className="px-4 py-3 bg-gray-50 border-t text-xs text-gray-600 flex flex-wrap gap-3 items-center justify-between">
         <span>{items.length} proyecto{items.length !== 1 ? 's' : ''} · Arrastra horizontalmente para ver el timeline completo</span>
         <button
-          onClick={() => exportGanttCSV(items)}
+          onClick={() => exportGanttCSV(items, procontCodeId)}
           className="px-3 py-1 bg-surface border border-gray-200 text-gray-600 rounded text-xs hover:bg-gray-100 transition"
         >
           <ControlLabel icon="download">Exportar CSV</ControlLabel>

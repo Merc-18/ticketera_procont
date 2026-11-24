@@ -9,14 +9,14 @@ import { ownerClass, useOwnerColors } from '../../lib/card-colors'
 
 interface ProjectWithRelations extends Project {
   project_flows?: ProjectFlow[]
-  requests?: { requester_area: string; requester_name: string; request_type: string; studio_id?: string | null } | null
+  requests?: { requester_area: string | null; requester_name: string; request_type: string; studio_id?: string | null; studio_code_id?: string | null } | null
 }
 
 interface Props {
   projects: ProjectWithRelations[]
   boardType: 'development' | 'administrative'
   /** Área solo en proyectos del estudio PROCONT o internos (studio-rules.ts). */
-  procontStudioId?: string | null
+  procontCodeId?: string | null
   onProjectClick: (item: { project: ProjectWithRelations; flow: ProjectFlow }) => void
   loading?: boolean
 }
@@ -26,13 +26,13 @@ type SortDir = 'asc' | 'desc'
 
 const PRIORITY_ORDER: Record<string, number> = { urgent: 0, high: 1, medium: 2, low: 3 }
 
-function exportTableCSV(sorted: Array<{ project: ProjectWithRelations; flow: ProjectFlow }>) {
+function exportTableCSV(sorted: Array<{ project: ProjectWithRelations; flow: ProjectFlow }>, procontCodeId?: string | null) {
   const PRIORITY_ES: Record<string, string> = { urgent: 'Urgente', high: 'Alta', medium: 'Media', low: 'Baja' }
   const headers = ['Título', 'Prioridad', 'Área', 'Fase', 'Posición de fase', 'Checklist', 'Bloqueado', 'Fecha objetivo', 'Creado']
   const rows = sorted.map(({ project, flow }) => [
     project.title,
     PRIORITY_ES[project.priority] ?? project.priority,
-    project.requests?.requester_area ?? '',
+    project.requests?.studio_code_id === procontCodeId && procontCodeId ? project.requests?.requester_area ?? '' : '',
     PHASE_LABELS[flow.current_phase] ?? flow.current_phase,
     phasePosition(flow.flow_type, flow.current_phase).label,
     (({ done, total }) => total ? `${done}/${total}` : 'Sin tareas')(checklistCount(flow as any)),
@@ -52,7 +52,7 @@ function exportTableCSV(sorted: Array<{ project: ProjectWithRelations; flow: Pro
   URL.revokeObjectURL(url)
 }
 
-export default function TableView({ projects, boardType, onProjectClick, loading, procontStudioId }: Props) {
+export default function TableView({ projects, boardType, onProjectClick, loading, procontCodeId }: Props) {
   const ownerColors = useOwnerColors()
   const [sortKey, setSortKey] = useState<SortKey>('created_at')
   const [sortDir, setSortDir] = useState<SortDir>('desc')
@@ -74,7 +74,8 @@ export default function TableView({ projects, boardType, onProjectClick, loading
     const pa = a.project, pb = b.project
     if (sortKey === 'title')      cmp = pa.title.localeCompare(pb.title)
     if (sortKey === 'priority')   cmp = PRIORITY_ORDER[pa.priority] - PRIORITY_ORDER[pb.priority]
-    if (sortKey === 'area')       cmp = ((pa.requests?.requester_area ?? '') > (pb.requests?.requester_area ?? '') ? 1 : -1)
+    if (sortKey === 'area')       cmp = (((pa.requests?.studio_code_id === procontCodeId && procontCodeId ? pa.requests?.requester_area : '') ?? '') >
+      ((pb.requests?.studio_code_id === procontCodeId && procontCodeId ? pb.requests?.requester_area : '') ?? '') ? 1 : -1)
     if (sortKey === 'phase')      cmp = phasePosition(a.flow.flow_type, a.flow.current_phase).index - phasePosition(b.flow.flow_type, b.flow.current_phase).index
     if (sortKey === 'progress')   cmp = (({ done, total }) => total ? done / total : -1)(checklistCount(a.flow as any)) - (({ done, total }) => total ? done / total : -1)(checklistCount(b.flow as any))
     if (sortKey === 'due_date')   cmp = ((pa.due_date ?? '9999') > (pb.due_date ?? '9999') ? 1 : -1)
@@ -150,8 +151,7 @@ export default function TableView({ projects, boardType, onProjectClick, loading
           </thead>
           <tbody className="divide-y divide-gray-100">
             {sorted.map(({ project, flow }) => {
-              const sid = project.requests?.studio_id
-              const area = !sid || sid === procontStudioId ? project.requests?.requester_area : null
+              const area = project.requests?.studio_code_id === procontCodeId && procontCodeId ? project.requests?.requester_area : null
               const owner = ownerClass(ownerColors, flow?.assigned_to)
               const isOverdue = project.due_date && project.due_date < today && project.status === 'active'
               return (
@@ -215,7 +215,7 @@ export default function TableView({ projects, boardType, onProjectClick, loading
       <div className="px-4 py-2 bg-gray-50 border-t text-xs text-gray-500 flex items-center justify-between">
         <span>{sorted.length} proyecto{sorted.length !== 1 ? 's' : ''}</span>
         <button
-          onClick={() => exportTableCSV(sorted)}
+          onClick={() => exportTableCSV(sorted, procontCodeId)}
           className="ui-button ui-button-secondary"
         >
           <ControlLabel icon="download">Exportar CSV</ControlLabel>

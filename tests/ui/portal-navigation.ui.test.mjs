@@ -395,12 +395,12 @@ test('integración: Planner procesa Excel real y conserva payload/acuse de la RP
     mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     buffer: XLSX.write(book, { type: 'buffer', bookType: 'xlsx' }) })
   await page.getByText('Solicitud Planner integrada', { exact: true }).waitFor()
-  // Con catálogo de áreas (fixture con el estudio PROCONT simulado), AreaInput es una lista; sin catálogo, texto libre.
-  await page.getByRole('combobox').filter({ has: page.getByRole('option', { name: 'CONTABILIDAD' }) }).selectOption('CONTABILIDAD')
+  // Planner no conoce aún el código interno del estudio; M17 impide asociar áreas en este intake.
+  assert.equal(await page.getByRole('combobox').filter({ has: page.getByRole('option', { name: 'CONTABILIDAD' }) }).count(), 0)
   await page.getByRole('button', { name: 'Importar 1 solicitud', exact: true }).click()
   await page.getByRole('heading', { name: '1 solicitudes confirmadas' }).waitFor()
   assert.equal(submitted.p_payload.requester_name, 'Operador ficticio')
-  assert.equal(submitted.p_payload.requester_area, 'CONTABILIDAD')
+  assert.equal(Object.hasOwn(submitted.p_payload, 'requester_area'), false)
   assert.equal(submitted.p_payload.requested_date, '2026-12-01')
   assert.equal(submitted.p_payload.origin, 'Interno')
   assert.match(submitted.p_idempotency_key, /^[0-9a-f-]{36}$/)

@@ -1364,3 +1364,16 @@ Cada entrada contiene nombre, descripción/regla, comportamiento esperado, acept
 - Exportación sin snapshot único y Mis tickets sin controles de paginación más allá de su primer lote: limitaciones visibles, sin inventar cuotas ni prometer exportación consistente bajo toda concurrencia.
 
 Decisiones cronológicas y sustituciones: [DECISION_LOG.md](DECISION_LOG.md). Relación completa ID→documento→código→SQL→prueba→evidencia: [TRACEABILITY_MATRIX.md](TRACEABILITY_MATRIX.md).
+
+## Extensión M17 — áreas PROCONT y color personal
+
+Revisión local: **23/11/2026** · Base de código: `3ec665907bfc13dc64f17f7236c0dcb02bebf8f2`; M17 preparada en la rama `dashboard-boards-20261123`. No implica aplicación remota.
+
+| ID | Requisito | Regla / aceptación | Evidencia local | Estado |
+|---|---|---|---|---|
+| AREA-001 | Áreas limitadas al código interno exacto PROCONT | El servidor resuelve `studio_codes.code` por UUID y estudio. Solo el texto canónico exacto `PROCONT` admite/solicita nuevas áreas. No usar prefijos, nombre del estudio ni valores del cliente como autoridad. | M17 `classify_request`, `guard_request_classification`, pruebas M17 de código exacto. | CUMPLE local; remoto NO VERIFICADO |
+| AREA-002 | Otros códigos sin nuevas áreas | ARAPA, DISFARMADENT, PROCONT_CUZ, PROCONT_OLICH y cualquier código distinto descartan área/subárea nueva. Cambiar desde PROCONT limpia la asociación nueva; no se reescriben históricos. | PostgreSQL local M17; fixtures en un mismo estudio y verificación de históricos. | CUMPLE local; remoto NO VERIFICADO |
+| BOARD-003 | Color propio persistente del responsable | Preferencia vinculada a `auth.uid()` y perfil interno activo; los miembros internos ven el mismo color. Solo colores catalogados y únicos; cambio/liberación atómicos. Kanban y Tabla separan responsable, prioridad y estado. | `internal_card_preferences`, RPC M17, UI local Light/Dark, prueba PostgreSQL concurrente. | CUMPLE local; remoto NO VERIFICADO |
+| SEC-003 | Preferencias inaccesibles a clientes | Quipu/QuipuFac no pueden consultar tabla ni ejecutar RPC internas. Internos activos autorizados según roles existentes. | ACL/RLS y pruebas PostgreSQL locales M17. | CUMPLE local; remoto NO VERIFICADO |
+
+Los seis ajustes UX/UI de D-041–D-046 se conservan; D-041 y D-043 se actualizan por M17 según [DECISION_LOG.md](DECISION_LOG.md). La existencia de M17 en el árbol no demuestra que se haya aplicado en Supabase.

@@ -41,3 +41,5 @@ Algunas franjas tienen menos de 3:1 sobre la tarjeta (celeste, dorado y pizarra 
 
 - El panel tiene un `fieldset` con leyenda y opciones de radio con etiqueta visible de 44 px.
 - Se cierra con Escape o con clic fuera, y el botón usa `aria-expanded` y `aria-controls`.
+
+> **Estado actualizado 23/11/2026:** Este informe conserva la decisión y evidencia original D-043, que guardaba la preferencia localmente. D-048 la sustituye: el comportamiento actual de la rama obtiene preferencias compartidas desde Supabase mediante M17; `localStorage` ya no es la fuente principal. M17 y las pruebas PostgreSQL/UI son locales, no se verificó su aplicación remota.

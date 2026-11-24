@@ -1,4 +1,4 @@
-# Base de datos y migraciones M1–M16b
+# Base de datos y migraciones M1–M17 (M17 local; remoto no verificado)
 
 Revisión: **23/11/2026** · Código de referencia: **`2f9ab74aff3d612951596986490b5641a27f3932`** (tag `ticketera-production-20261123`, [release](../validation/production-release-20261123/REPORT.md)). Revisión anterior: 20/11/2026 sobre `c857a72`.
 
@@ -95,6 +95,7 @@ Los nombres de diagrama representan tablas de `public`, `app_private`, `auth` y 
 | M15 | [20261119000300_security_request_creation.sql](../../supabase/migrations/20261119000300_security_request_creation.sql) | Security request creation | APLICADA; evidencia 20/11/2026, historial 15/15 |
 | M16 | [20261123000100_client_request_data_security.sql](../../supabase/migrations/20261123000100_client_request_data_security.sql) | Identidad Quipu/QuipuFac, prioridad solicitada, subproyecto original, procedencia del nombre, `client_subprojects` | APLICADA 23/11/2026 15:55 UTC; historial 17/17 |
 | M16b | [20261123000200_client_legacy_payload_compat.sql](../../supabase/migrations/20261123000200_client_legacy_payload_compat.sql) | Compatibilidad con el frontend anterior (nombre Quipu descartado; NULL sin clave `subsystem_id`) | APLICADA 23/11/2026 15:55 UTC; historial 17/17 |
+| M17 | [20261123000300_internal_area_scope_and_card_preferences.sql](../../supabase/migrations/20261123000300_internal_area_scope_and_card_preferences.sql) | Áreas solo para código exacto PROCONT; preferencias de color internas persistentes, únicas y protegidas | PREPARADA y probada en PostgreSQL 17 local; aplicación remota NO VERIFICADA; no sumar al historial remoto 17/17 |
 
 ## Especificación por migración
 
@@ -451,3 +452,15 @@ La función de asociación acepta destino activo de RUC igual o nulo, o null par
 Los manifiestos de preparación originales de cuatro entradas (`docs/validation/fase-2b2-migrations.json`, fase-2b3d) acreditan integridad de **esa fase**, no la cantidad de migraciones actuales. No reemplazarlos por quince entradas ni cambiar sus hashes. `scripts/prepare_supabase_local.py` y pruebas relacionadas distinguen prefijo histórico del árbol vigente; los activadores M12/M13 fijan su alcance y no se reutilizan como activadores generales.
 
 `supabase/recovery/compensate_01..04.sql` cubren objetos de aquel estado inicial, no una reversión autorizada de M15 ni de datos actuales. No ejecutar restauraciones antiguas sobre historia M12/M13. Después de M15 se mantiene el cierre anónimo y se corrige hacia adelante. No usar repair para fabricar un historial aplicado ni ejecutar seed/roles por accidente. [DEPLOYMENT_SPEC.md](DEPLOYMENT_SPEC.md).
+
+## M17 — alcance exacto de áreas y preferencias de color (local)
+
+**Archivo:** [20261123000300_internal_area_scope_and_card_preferences.sql](../../supabase/migrations/20261123000300_internal_area_scope_and_card_preferences.sql). Base de referencia `3ec665907bfc13dc64f17f7236c0dcb02bebf8f2`. M17 es aditiva y fue aplicada/probada en PostgreSQL local con escenarios limpio y upgrade; su **aplicación remota NO está verificada**. M1–M16b no fueron modificadas.
+
+- Reemplaza funciones conservando firmas/permisos existentes para aplicar la comparación exacta `studio_codes.code='PROCONT'` al validar áreas. No modifica datos de solicitudes históricas. Los formularios antiguos pueden enviar área para otros códigos; el servidor la descarta. Clasificación PROCONT valida área activa del estudio y dependencia de subárea.
+- Crea catálogo privado de 24 IDs estables derivados de seis familias existentes y `public.internal_card_preferences(user_id,color_id,updated_at)`, con FK a perfil y catálogo, PK de usuario y `UNIQUE(color_id)`.
+- RLS activa; ACL directa revocada salvo lectura autenticada sujeta a política de perfil interno activo. RPC definer con search_path vacío: `internal_card_colors()` y `set_my_internal_card_color(text)`; solo roles internos activos superadmin/admin/developer/viewer. No cliente ni anon.
+- `app_private.ensure_internal_card_color` asigna atómicamente, verifica actor/perfil activo, usa lock exclusivo de tabla y conserva restricción UNIQUE como última defensa ante concurrencia. Trigger entrega color al activar perfil y elimina preferencia al desactivar. No almacena email ni atributos adicionales.
+- Migración no altera registros existentes; el backfill inicial crea únicamente preferencias de perfiles activos. Los códigos no PROCONT no reciben nuevas asociaciones. No se infiere área faltante para históricos.
+
+**Evidencia:** `supabase/tests/dashboard_boards_m17_local.py`; JSON de escenarios `dashboard-boards-m17-clean.json` y `dashboard-boards-m17-upgrade.json`. Son ejecuciones locales sobre PostgreSQL, no estado de Supabase remoto.

@@ -10,7 +10,7 @@ import { supabase } from '../lib/supabase'
  * - Trabajo: estado actual de los proyectos (en ejecución, bloqueados, vencidos) y totales completados/archivados.
  * - Prioridad: solo trabajo en ejecución.
  * - Carga: tickets en ejecución por responsable (flujos con assigned_to).
- * - Áreas: solo proyectos del estudio PROCONT, por área de catálogo (`requests.area_id`); nunca otros estudios.
+ * - Áreas: solo solicitudes/proyectos cuyo código interno canónico es exactamente PROCONT.
  * La clasificación por tipo (development / administrative / dual) ya no forma parte del Dashboard.
  */
 export interface DashboardStats {
@@ -22,14 +22,14 @@ export interface DashboardStats {
   areas: { applies: boolean; byAreaId: Record<string, number>; withoutArea: number }
 }
 
-interface Filters { periodDays: number | null; studioId: string | null; areaId: string | null; procontStudioId: string | null }
+interface Filters { periodDays: number | null; studioId: string | null; areaId: string | null; procontStudioId: string | null; procontCodeId: string | null }
 
-type ReqRow = { id: string; status: 'pending' | 'approved' | 'rejected'; created_at: string; studio_id: string | null; area_id: string | null }
-type ProjRow = { id: string; status: string; priority: keyof DashboardStats['priorityActive']; is_blocked: boolean; due_date: string | null; requests: { studio_id: string | null; area_id: string | null } | null; project_flows: { assigned_to: string | null }[] | null }
+type ReqRow = { id: string; status: 'pending' | 'approved' | 'rejected'; created_at: string; studio_id: string | null; studio_code_id: string | null; area_id: string | null }
+type ProjRow = { id: string; status: string; priority: keyof DashboardStats['priorityActive']; is_blocked: boolean; due_date: string | null; requests: { studio_id: string | null; studio_code_id: string | null; area_id: string | null } | null; project_flows: { assigned_to: string | null }[] | null }
 
 const chunk = <T,>(list: T[], size: number) => Array.from({ length: Math.ceil(list.length / size) }, (_, i) => list.slice(i * size, i * size + size))
 
-export function useDashboardData({ periodDays, studioId, areaId, procontStudioId }: Filters) {
+export function useDashboardData({ periodDays, studioId, areaId, procontStudioId, procontCodeId }: Filters) {
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -37,18 +37,18 @@ export function useDashboardData({ periodDays, studioId, areaId, procontStudioId
   const load = useCallback(async () => {
     setLoading(true); setError(null)
     const [projects, requests] = await Promise.all([
-      supabase.from('projects').select('id, status, priority, is_blocked, due_date, requests(studio_id, area_id), project_flows(assigned_to)').neq('status', 'deleted'),
-      supabase.from('requests').select('id, status, created_at, studio_id, area_id'),
+      supabase.from('projects').select('id, status, priority, is_blocked, due_date, requests(studio_id, studio_code_id, area_id), project_flows(assigned_to)').neq('status', 'deleted'),
+      supabase.from('requests').select('id, status, created_at, studio_id, studio_code_id, area_id'),
     ])
     if (projects.error || requests.error) { setError('No se pudieron cargar las métricas. Usa «Actualizar» para reintentar.'); setLoading(false); return }
 
-    const areaApplies = !!studioId && studioId === procontStudioId
-    const inScope = (sid: string | null | undefined, aid: string | null | undefined) =>
-      (!studioId || sid === studioId) && (!areaApplies || !areaId || aid === areaId)
+    const areaApplies = !!procontCodeId && (!studioId || studioId === procontStudioId)
+    const inScope = (sid: string | null | undefined, codeId: string | null | undefined, aid: string | null | undefined) =>
+      (!studioId || sid === studioId) && (!areaId || (areaApplies && codeId === procontCodeId && aid === areaId))
 
     // ── Solicitudes ─────────────────────────────────────────────────────────────
     const since = periodDays ? Date.now() - periodDays * 86_400_000 : null
-    const reqs = ((requests.data ?? []) as ReqRow[]).filter(r => inScope(r.studio_id, r.area_id))
+    const reqs = ((requests.data ?? []) as ReqRow[]).filter(r => inScope(r.studio_id, r.studio_code_id, r.area_id))
     const pending = reqs.filter(r => r.status === 'pending')
     const reviewed = new Set<string>()
     for (const ids of chunk(pending.map(r => r.id), 100)) {
@@ -68,7 +68,7 @@ export function useDashboardData({ periodDays, studioId, areaId, procontStudioId
     }
 
     // ── Trabajo ─────────────────────────────────────────────────────────────────
-    const projs = ((projects.data ?? []) as unknown as ProjRow[]).filter(p => inScope(p.requests?.studio_id, p.requests?.area_id))
+    const projs = ((projects.data ?? []) as unknown as ProjRow[]).filter(p => inScope(p.requests?.studio_id, p.requests?.studio_code_id, p.requests?.area_id))
     const today = new Date().toISOString().slice(0, 10)
     const active = projs.filter(p => p.status === 'active')
     const priorityActive = { urgent: 0, high: 0, medium: 0, low: 0 }
@@ -84,9 +84,9 @@ export function useDashboardData({ periodDays, studioId, areaId, procontStudioId
     // ── Áreas (solo PROCONT) ────────────────────────────────────────────────────
     const byAreaId: Record<string, number> = {}
     let withoutArea = 0
-    if (procontStudioId && (!studioId || areaApplies)) {
+    if (procontCodeId && (!studioId || areaApplies)) {
       for (const p of active) {
-        if (p.requests?.studio_id !== procontStudioId) continue
+        if (p.requests?.studio_code_id !== procontCodeId) continue
         const aid = p.requests?.area_id
         if (aid) byAreaId[aid] = (byAreaId[aid] ?? 0) + 1; else withoutArea++
       }
@@ -105,10 +105,10 @@ export function useDashboardData({ periodDays, studioId, areaId, procontStudioId
     setStats({
       requests: requestsStats, work, priorityActive, workload,
       unassignedActive: active.filter(p => !withOwner.has(p.id)).length,
-      areas: { applies: !!procontStudioId && (!studioId || areaApplies), byAreaId, withoutArea },
+      areas: { applies: !!procontCodeId && (!studioId || areaApplies), byAreaId, withoutArea },
     })
     setLoading(false)
-  }, [periodDays, studioId, areaId, procontStudioId])
+  }, [periodDays, studioId, areaId, procontStudioId, procontCodeId])
 
   useEffect(() => { void load() }, [load])
 

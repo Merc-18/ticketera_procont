@@ -18,6 +18,9 @@ const SYSTEMS = ['Quipu', 'Quipu_Fac', 'Quipu_Gestion', 'Negmin', 'Quipu_AI'].ma
   id: `00000000-0000-4000-8000-0000000000a${i + 1}`, name, requires_subproject: false, sort_order: i, is_active: true }))
 const REQUEST_TYPES = ['Error / Incidencia', 'Mejora', 'Soporte técnico'].map((name, i) => ({
   id: `00000000-0000-4000-8000-0000000000f${i + 1}`, name, sort_order: i, is_active: true }))
+const CARD_COLOR_IDS = ['azul','azul-claro','azul-oscuro','azul-acero','celeste','celeste-claro','celeste-oscuro','celeste-acero',
+  'dorado','dorado-claro','dorado-oscuro','dorado-ocre','ambar','ambar-claro','ambar-oscuro','ambar-bronce',
+  'grafito','grafito-claro','grafito-oscuro','grafito-humo','pizarra','pizarra-claro','pizarra-oscuro','pizarra-acero']
 // Proyectos ficticios: uno activo con fecha SLA heredada próxima (para comprobar que no dispara
 // alertas) y dos terminados para la exportación por ticket.
 const SOON = new Date(Date.now() + 86400000).toISOString().slice(0, 10)
@@ -54,7 +57,10 @@ const TABLES = {
   request_types: REQUEST_TYPES,
   studio_codes: [{ id: '00000000-0000-4000-8000-0000000001c1', studio_id: '00000000-0000-4000-8000-000000000177', code: 'PROCONT', is_active: true },
     { id: '00000000-0000-4000-8000-0000000001c2', studio_id: '00000000-0000-4000-8000-000000000177', code: 'ARAPA', is_active: true },
-    { id: '00000000-0000-4000-8000-0000000001c3', studio_id: '00000000-0000-4000-8000-0000000000b1', code: 'SIMULADO', is_active: true }],
+    { id: '00000000-0000-4000-8000-0000000001c3', studio_id: '00000000-0000-4000-8000-000000000177', code: 'DISFARMADENT', is_active: true },
+    { id: '00000000-0000-4000-8000-0000000001c4', studio_id: '00000000-0000-4000-8000-000000000177', code: 'PROCONT_CUZ', is_active: true },
+    { id: '00000000-0000-4000-8000-0000000001c5', studio_id: '00000000-0000-4000-8000-000000000177', code: 'PROCONT_OLICH', is_active: true },
+    { id: '00000000-0000-4000-8000-0000000000b1', studio_id: '00000000-0000-4000-8000-0000000000b1', code: 'SIMULADO', is_active: true }],
   projects: PROJECTS,
 }
 
@@ -73,6 +79,8 @@ export function performanceScenario({ notDone = 0, done = 0, doneFrom = 100000 }
 
 export async function startFixtureServer() {
   const log = []
+  const cardColors = Object.fromEntries(Object.entries(STAFF).map(([email, user], i) =>
+    [user.id, ['azul', 'azul-claro', 'azul-oscuro', 'azul-acero'][i]]))
   let performance = PERFORMANCE
   let failPerformancePage = null, performanceCalls = 0
   const server = createServer(async (req, res) => {
@@ -103,6 +111,20 @@ export async function startFixtureServer() {
     // ── RPC ──
     if (url.pathname.startsWith('/rest/v1/rpc/')) {
       const name = url.pathname.slice('/rest/v1/rpc/'.length)
+      if (name === 'internal_card_colors') return send(200, { user_id: null, assignments: cardColors,
+        colors: CARD_COLOR_IDS.map(id => ({ id, label: id, assigned_to: Object.entries(cardColors).find(([, value]) => value === id)?.[0] ?? null })) })
+      if (name === 'set_my_internal_card_color') {
+        const token = String(req.headers.authorization ?? '').replace(/^Bearer\s+/i, '').split('.')[1]
+        let actor = null
+        try { actor = JSON.parse(Buffer.from(token, 'base64url').toString()).sub } catch {}
+        const { p_color_id } = JSON.parse(body || '{}')
+        if (!cardColors[actor]) return send(403, { code: '42501', message: 'internal profile required' })
+        if (!CARD_COLOR_IDS.includes(p_color_id)) return send(400, { code: '22023', message: 'invalid color' })
+        const owner = Object.entries(cardColors).find(([id, color]) => id !== actor && color === p_color_id)
+        if (owner) return send(409, { code: '23505', message: 'color assigned' })
+        cardColors[actor] = p_color_id
+        return send(200, { user_id: actor, color_id: p_color_id })
+      }
       if (name === 'track_request_status') {
         const { p_request_number } = JSON.parse(body || '{}')
         return send(200, p_request_number === 'REQ26-9201' ? { request_number: 'REQ26-9201', status: 'in_progress' } : null)

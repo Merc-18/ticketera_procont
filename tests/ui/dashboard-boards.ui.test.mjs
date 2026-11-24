@@ -2,6 +2,8 @@
 // por tests/ui/fixture-server.mjs y fixtures visuales; sin red externa, sin credenciales reales, sin tickets reales.
 import test, { before, after } from 'node:test'
 import assert from 'node:assert/strict'
+import { mkdirSync, writeFileSync } from 'node:fs'
+import { createHash } from 'node:crypto'
 import { fileURLToPath } from 'node:url'
 import { createServer as createViteServer } from 'vite'
 import { chromium } from 'playwright-core'
@@ -11,6 +13,17 @@ import { MOCK_RUC, MOCK_PASSWORD } from '../../src/dev/client-portal-mock.ts'
 
 const ROOT = fileURLToPath(new URL('../..', import.meta.url))
 const PROCONT = '00000000-0000-4000-8000-000000000177', OTHER = '00000000-0000-4000-8000-0000000000b1'
+const M17_SHOTS = process.env.M17_UI_SCREENSHOTS
+const M17_CAPTURES = []
+async function captureM17(page, file) {
+  mkdirSync(M17_SHOTS, { recursive: true })
+  const path = `${M17_SHOTS}/${file}`
+  const png = await page.screenshot({ path, fullPage: true, animations: 'disabled' })
+  const version = (await page.getByTestId('build-version').innerText()).trim()
+  const viewport = page.viewportSize()
+  M17_CAPTURES.push({ file, version, viewport, sha256: createHash('sha256').update(png).digest('hex') })
+  writeFileSync(`${M17_SHOTS}/m17-area-manifest.json`, JSON.stringify({ captures: M17_CAPTURES }, null, 2) + '\n')
+}
 const DEV = STAFF['developer@simulado.invalid'].id
 let fixture, vite, browser, base
 
@@ -67,10 +80,10 @@ test('Identidad TI: «Acceso del equipo de TI» en el portal, el modal y /login;
 
 test('Área solo PROCONT: el modal de validación muestra áreas para PROCONT y no para otro estudio', async () => {
   const page = await open()
-  const pending = (id, studio, title) => ({ id, request_number: `REQ26-${id.slice(-4)}`, title, requester_name: 'Solicitante ficticio', requester_area: 'Contabilidad',
+  const pending = (id, studio, title, code) => ({ id, request_number: `REQ26-${id.slice(-4)}`, title, requester_name: 'Solicitante ficticio', requester_area: 'Contabilidad', studio_code_id: code,
     request_type: 'Mejora', needs_code: true, status: 'pending', description: 'Datos ficticios.', requested_priority: 'medium', urgent_requested: false,
     studio_id: studio, system_id: '00000000-0000-4000-8000-0000000000a1', created_at: '2026-11-19T15:00:00Z', projects: null, area_id: null })
-  await page.route(`${fixture.url}/rest/v1/requests?**`, route => send(route, [pending('00000000-0000-4000-8000-000000008801', PROCONT, 'Solicitud PROCONT'), pending('00000000-0000-4000-8000-000000008802', OTHER, 'Solicitud de otro estudio')]))
+  await page.route(`${fixture.url}/rest/v1/requests?**`, route => send(route, [pending('00000000-0000-4000-8000-000000008801', PROCONT, 'Solicitud PROCONT', '00000000-0000-4000-8000-0000000001c1'), pending('00000000-0000-4000-8000-000000008802', PROCONT, 'Solicitud ARAPA', '00000000-0000-4000-8000-0000000001c2')]))
   await staff(page)
   await page.getByRole('button', { name: /^Requests/ }).click()
   const openModal = async title => {
@@ -81,11 +94,15 @@ test('Área solo PROCONT: el modal de validación muestra áreas para PROCONT y 
   await openModal('Solicitud PROCONT')
   assert.equal(await page.locator('#validation-area').count(), 1, 'PROCONT muestra el selector de área')
   assert.deepEqual(await page.$$eval('#validation-area option', o => o.map(x => x.textContent)), ['Selecciona un área', 'CONTABILIDAD', 'LEGAL'])
+  if (M17_SHOTS) {
+    await captureM17(page, 'm17-procont-area.png')
+  }
   await page.getByRole('dialog').getByRole('button', { name: 'Cerrar', exact: true }).first().click()
   await page.getByRole('dialog').waitFor({ state: 'detached' })
-  await openModal('Solicitud de otro estudio')
-  assert.equal(await page.locator('#validation-area').count(), 0, 'otro estudio no muestra áreas')
-  await page.getByText('Área y subárea no aplican a este estudio.').waitFor()
+  await openModal('Solicitud ARAPA')
+  assert.equal(await page.locator('#validation-area').count(), 0, 'otro código dentro del mismo estudio no muestra áreas')
+  await page.getByText('Área y subárea solo aplican al código PROCONT.').waitFor()
+  if (M17_SHOTS) await captureM17(page, 'm17-arapa-no-area.png')
   await page.context().close()
 })
 
@@ -116,19 +133,39 @@ for (const theme of ['light', 'dark']) {
     await page.locator('.project-card').first().waitFor()
     await page.getByRole('button', { name: 'Mi color de tarjeta' }).click()
     const panel = page.getByRole('dialog', { name: 'Mi color de tarjeta' })
-    await panel.getByLabel('Ámbar').check()
+    const originalPalette = theme === 'light'
+      ? { azul: 'rgb(30, 58, 138)', celeste: 'rgb(96, 165, 250)', dorado: 'rgb(238, 187, 49)', ambar: 'rgb(161, 98, 7)', grafito: 'rgb(55, 65, 81)', pizarra: 'rgb(148, 163, 184)' }
+      : { azul: 'rgb(59, 130, 246)', celeste: 'rgb(147, 197, 253)', dorado: 'rgb(238, 187, 49)', ambar: 'rgb(202, 138, 4)', grafito: 'rgb(203, 213, 225)', pizarra: 'rgb(100, 116, 139)' }
+    for (const [id, color] of Object.entries(originalPalette)) {
+      assert.equal(await panel.locator(`.owner-swatch.owner-${id}`).first().evaluate(el => getComputedStyle(el).backgroundColor), color, `${theme}: color aprobado original ${id}`)
+    }
+    await panel.getByRole('radio', { name: 'Ámbar', exact: true }).click()
+    await new Promise(resolve => setTimeout(resolve, 500))
     assert.equal(await panel.locator('.owner-preview.owner-ambar').count(), 1, 'vista previa')
     const card = page.locator('.project-card.has-owner').first()
     await card.waitFor()
     assert.match(await card.evaluate(el => getComputedStyle(el).boxShadow), /inset/, 'franja lateral')
     assert.equal(await card.evaluate(el => getComputedStyle(el).borderTopWidth), '3px', 'la prioridad conserva su acento')
-    assert.deepEqual(JSON.parse(await page.evaluate(() => localStorage.getItem('ticketera-owner-colors'))), { [DEV]: 'ambar' }, 'solo UUID interno → color')
+    assert.equal(await page.evaluate(() => localStorage.getItem('ticketera-owner-colors')), null, 'Supabase es la fuente de verdad; no se persiste en localStorage')
+    assert.ok(fixture.log.some(item => item.path.endsWith('/rpc/set_my_internal_card_color') && JSON.parse(item.body).p_color_id === 'ambar'), 'la preferencia se guardó mediante la RPC autenticada')
     await page.keyboard.press('Escape')
     await page.reload(); await page.locator('nav[aria-label="Secciones"]').waitFor()
     await page.getByRole('button', { name: /^Boards/ }).click()
     await page.locator('.project-card.has-owner.owner-ambar').first().waitFor()
     await page.getByRole('button', { name: /Tabla/ }).click()
     await page.locator('.data-view td.has-owner.owner-ambar').first().waitFor()
+    const otherPage = await open(theme)
+    await staff(otherPage, 'admin@simulado.invalid')
+    await otherPage.getByRole('button', { name: /^Boards/ }).click()
+    await otherPage.locator('.project-card').first().waitFor()
+    const picker = otherPage.getByRole('button', { name: 'Mi color de tarjeta' })
+    await picker.waitFor()
+    await picker.click()
+    const dialog = otherPage.getByRole('dialog', { name: 'Mi color de tarjeta' })
+    await dialog.waitFor()
+    const assigned = dialog.getByRole('radio', { name: /^Ámbar \(asignado/ })
+    assert.equal(await assigned.isDisabled(), true, 'el resto del equipo ve el color compartido como no disponible')
+    await otherPage.context().close()
     await page.context().close()
   })
 }
@@ -150,13 +187,14 @@ test('Kanban: el filtro de área solo aplica a PROCONT y se limpia al cambiar a 
   await staff(page)
   await page.getByRole('button', { name: /^Boards/ }).click()
   await page.locator('.project-card').first().waitFor()
-  await page.getByText('Área (solo PROCONT)', { exact: true }).waitFor()
-  await page.locator('label').filter({ hasText: 'Área (solo PROCONT)' }).locator('select').selectOption('Contabilidad')
+  const boardArea = page.getByLabel('Área · código interno PROCONT')
+  await boardArea.waitFor()
+  await boardArea.selectOption('Contabilidad')
   const studio = page.locator('label').filter({ hasText: /^Estudio/ }).locator('select')
   await studio.selectOption(OTHER)
   assert.equal(await page.locator('label').filter({ hasText: /^Área/ }).count(), 0, 'otro estudio: sin filtro de área')
   await studio.selectOption(PROCONT)
-  const areaSelect = page.locator('label.toolbar-field', { has: page.getByText('Área', { exact: true }) }).locator('select')
+  const areaSelect = page.getByLabel('Área · código interno PROCONT')
   assert.equal(await areaSelect.inputValue(), 'all', 'la selección anterior se limpió')
   await page.context().close()
 })
@@ -188,10 +226,10 @@ test('Dashboard: sin «Por Tipo»; secciones con datos reales; áreas solo PROCO
   const box = await urgency.boundingBox()
   assert.ok(box.height < 420, `bloque compacto: ${box.height}px`)
   // Áreas: todos los estudios → «solo estudio PROCONT»; otro estudio → «No aplica»; PROCONT → filtro de área.
-  await page.getByRole('heading', { name: 'Áreas · solo estudio PROCONT' }).waitFor()
+  await page.getByRole('heading', { name: 'Áreas · código PROCONT' }).waitFor()
   const studio = page.locator('.dashboard-toolbar label').filter({ hasText: 'Estudio' }).locator('select')
   await studio.selectOption(OTHER)
-  await page.getByText('No aplica: las áreas solo se usan en el estudio PROCONT.').waitFor()
+  await page.getByText('No aplica: las áreas solo se usan con el código interno PROCONT.').waitFor()
   assert.equal(await page.locator('.dashboard-toolbar label').filter({ hasText: /^Área/ }).count(), 0)
   await studio.selectOption(PROCONT)
   const area = page.locator('.dashboard-toolbar label').filter({ hasText: /^Área/ }).locator('select')

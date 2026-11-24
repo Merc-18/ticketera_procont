@@ -4,7 +4,7 @@ import { supabase } from '../../lib/supabase'
 import { useDashboardData } from '../../hooks/useDashboardData'
 import { toast } from '../../lib/toast'
 import { useUsers } from '../../hooks/useUsers'
-import { procontStudioId } from '../../lib/studio-rules'
+import { procontCodeId, procontStudioId } from '../../lib/studio-rules'
 import { useCatalogs } from '../../hooks/useCatalogs'
 import { useAuth } from '../../hooks/useAuth'
 import { metrics } from '../../lib/api'
@@ -34,10 +34,10 @@ function downloadCSV(filename: string, headers: string[], rows: (string | number
 }
 
 /** Proyectos activos. Sin columnas SLA heredadas: solo la fecha límite ordinaria (due_date). */
-async function exportActiveCSV() {
+async function exportActiveCSV(canonicalProcontCodeId: string | null) {
   const { data: projects, error } = await supabase
     .from('projects')
-    .select('title, priority, project_type, status, is_blocked, due_date, created_at, requests(requester_area), project_flows(flow_type, current_phase, assigned_to)')
+    .select('title, priority, project_type, status, is_blocked, due_date, created_at, requests(requester_area, studio_code_id), project_flows(flow_type, current_phase, assigned_to)')
     .eq('status', 'active')
     .order('created_at', { ascending: false })
 
@@ -51,7 +51,8 @@ async function exportActiveCSV() {
     const admFlow  = flows.find((f: any) => f.flow_type === 'administrative')
     return [
       p.title,
-      (p as any).requests?.requester_area ?? '',
+      (p as any).requests?.studio_code_id === canonicalProcontCodeId && canonicalProcontCodeId
+        ? (p as any).requests?.requester_area ?? '' : '',
       PRIORITY_ES[p.priority] ?? p.priority,
       TYPE_ES[p.project_type] ?? p.project_type,
       p.is_blocked ? 'Sí' : 'No',
@@ -147,10 +148,12 @@ export default function DashboardView() {
   const { users } = useUsers()
   // Área solo para el estudio PROCONT (studio-rules.ts): con otro estudio se oculta y se limpia.
   const procontId = procontStudioId(codes)
-  const areaApplies = !!studioFilter && studioFilter === procontId
+  const canonicalProcontCodeId = procontCodeId(codes)
+  const areaApplies = !!canonicalProcontCodeId && (!studioFilter || studioFilter === procontId)
   useEffect(() => { if (!areaApplies && areaFilter) setAreaFilter(null) }, [areaApplies, areaFilter])
   const [exporting, setExporting] = useState<'completed' | 'active' | null>(null)
-  const { stats, loading, error, reload } = useDashboardData({ periodDays: period, studioId: studioFilter, areaId: areaApplies ? areaFilter : null, procontStudioId: procontId })
+  const { stats, loading, error, reload } = useDashboardData({ periodDays: period, studioId: studioFilter,
+    areaId: areaApplies ? areaFilter : null, procontStudioId: procontId, procontCodeId: canonicalProcontCodeId })
   const { user } = useAuth()
   const canSeeUrgency = user?.role === 'superadmin' || user?.role === 'admin'
   // Promedios del servidor (metrics_time_averages, contrato de Codex). Sin cálculos locales.
@@ -165,7 +168,7 @@ export default function DashboardView() {
   }
   const handleExportActive = async () => {
     setExporting('active')
-    try { await exportActiveCSV() }
+    try { await exportActiveCSV(canonicalProcontCodeId) }
     finally { setExporting(null) }
   }
 
@@ -195,13 +198,16 @@ export default function DashboardView() {
       </div>
 
       <div className="dashboard-toolbar flex items-end gap-2 flex-wrap">
-        <div className="dashboard-segment flex items-center bg-gray-100 rounded-lg p-1 gap-1" role="group" aria-label="Periodo">
+        <div className="dashboard-period-control">
+        <div className="dashboard-segment flex items-center bg-gray-100 rounded-lg p-1 gap-1" role="group" aria-label="Periodo de solicitudes y tiempos">
           {PERIOD_OPTIONS.map(opt => (
             <button key={String(opt.value)} onClick={() => setPeriod(opt.value)} aria-pressed={period === opt.value}
               className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${period === opt.value ? 'bg-brand-100 text-brand-700' : 'text-gray-600 hover:text-brand-700'}`}>
               {opt.label}
             </button>
           ))}
+        </div>
+        <span className="dashboard-filter-note">Periodo: solicitudes aprobadas/rechazadas y Cycle/Lead Time. Trabajo y bandeja muestran su estado actual.</span>
         </div>
         {studios.length > 0 && (
           <label className="toolbar-field">
@@ -214,7 +220,7 @@ export default function DashboardView() {
         )}
         {areaApplies && procontAreas.length > 0 && (
           <label className="toolbar-field">
-            <span>Área</span>
+            <span>Área · código PROCONT</span>
             <select value={areaFilter ?? ''} onChange={e => setAreaFilter(e.target.value || null)} className="ui-input toolbar-select">
               <option value="">Todas las áreas</option>
               {procontAreas.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
@@ -286,11 +292,11 @@ export default function DashboardView() {
           {!stats.areas.applies ? (
             <section className="metric-chart" aria-label="Áreas">
               <h2>Áreas</h2>
-              <p className="metric-note metric-empty">{procontId ? 'No aplica: las áreas solo se usan en el estudio PROCONT.' : 'El catálogo de estudios aún no está disponible.'}</p>
+              <p className="metric-note metric-empty">{canonicalProcontCodeId ? 'No aplica: las áreas solo se usan con el código interno PROCONT.' : 'El catálogo de códigos internos aún no está disponible.'}</p>
             </section>
           ) : (
-            <HBarChart title={studioFilter ? 'Áreas' : 'Áreas · solo estudio PROCONT'}
-              note={`Trabajo en ejecución del estudio PROCONT por área${stats.areas.withoutArea ? ` · ${stats.areas.withoutArea} sin área registrada` : ''}.`}
+            <HBarChart title={studioFilter ? 'Áreas · código PROCONT' : 'Áreas · código PROCONT'}
+              note={`Trabajo en ejecución clasificado con el código interno exacto PROCONT${stats.areas.withoutArea ? ` · ${stats.areas.withoutArea} sin área registrada` : ''}.`}
               items={areaItems} empty="Sin trabajo en ejecución con área registrada." />
           )}
         </div>

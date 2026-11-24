@@ -98,3 +98,13 @@ Auditoría M12 es inmutable frente a roles de aplicación y captura actor/rol al
 - No se reabren permisos anónimos como rollback ni se usa la clave técnica de servidor para reemplazar una sesión administrativa.
 
 Estado y evidencias: [EVIDENCE_20261120.md](EVIDENCE_20261120.md), [TESTING_SPEC.md](TESTING_SPEC.md).
+
+## M17 local — áreas y preferencias internas
+
+Revisión local 23/11/2026, base `3ec665907bfc13dc64f17f7236c0dcb02bebf8f2`; M17 **no confirmada remotamente** desde esta ejecución.
+
+El código interno de estudio para reglas de área proviene de `studio_codes` en servidor y se compara por igualdad exacta con `PROCONT`. El payload no puede decidir qué estudio/código obtiene área. Para otros códigos, valores legacy de área/subárea se descartan en nuevas escrituras; datos históricos se conservan.
+
+`internal_card_preferences` enlaza UUID real de `public.users`/`auth.uid()`, sin email, y usa catálogo de color estable y `UNIQUE(color_id)`. RLS y las RPC `internal_card_colors()` / `set_my_internal_card_color(text)` exigen perfil activo con rol interno autorizado. Cliente, anon y acceso directo no reciben permiso para consultar o modificar la preferencia. Las funciones definer usan `search_path=''`, validan `auth.uid()` mediante `has_role` y no aceptan user_id del payload. Bloqueo de tabla más UNIQUE protegen carreras. Trigger entrega color al activar perfil y lo libera al desactivar.
+
+Evidencia local en PostgreSQL 17: perfil externo no obtiene filas ni puede ejecutar RPC; anon no ejecuta; cambio de color libera el anterior; dos reclamaciones concurrentes producen un propietario y un error UNIQUE. Esto no acredita permisos remotos ni aplicación de M17 en producción.

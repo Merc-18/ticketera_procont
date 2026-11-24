@@ -91,3 +91,9 @@ Historial: INSERT autorizado por funciones/triggers, UPDATE/DELETE/TRUNCATE bloq
 ## Alcance de verificación
 
 M15 remoto: anon y perfil externo sin registro no ejecutan creador antiguo/RPC internas; superadmin alcanza validación sin crear datos. Se revisó que guardas preceden replay y que M13/M14 mantienen cuerpo. Las cuentas reales admin/developer/viewer/inactivas no estaban disponibles: **prueba con esas cuentas remotas NO VERIFICADA**. Sí están cubiertas por fixtures de PostgreSQL aislado M15/integración; no presentar esa simulación de identidad como login remoto real. Detalle en [TESTING_SPEC.md](TESTING_SPEC.md).
+
+## M17 local — preferencias de color de Boards
+
+M17 preparada y probada localmente; estado remoto NO VERIFICADO. `internal_card_preferences` no concede escritura directa a roles de aplicación. Lectura de equipo se limita por RLS a perfiles internos activos con `superadmin`, `admin`, `developer` o `viewer`; cambios solo mediante `set_my_internal_card_color(text)`, que deriva el UUID de `auth.uid()` y nunca acepta el usuario destino. `internal_card_colors()` expone las asignaciones del equipo a esos mismos roles. Anon y clientes autenticados sin perfil interno autorizado no pueden ejecutar las RPC ni leer filas. `service_role` no recibe una concesión directa explícita.
+
+Las funciones usan `SECURITY DEFINER`, `search_path=''`, permisos PUBLIC revocados y validación de rol/perfil. Restricción `UNIQUE(color_id)` impide duplicados también bajo concurrencia; la actualización del usuario y lock de tabla serializan las asignaciones. El trigger de ciclo de vida asigna a perfiles activos y libera al desactivar. Los colores personales son indicadores de responsable, no reemplazan prioridad ni estado.

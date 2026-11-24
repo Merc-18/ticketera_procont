@@ -322,7 +322,7 @@ for (const size of ['desktop', 'movil']) {
       const result = await probe.snapshot(`${size}:${label}`)
       bundleMeasures.push(result)
       assert.notEqual(result.verdict, 'FAIL', `${result.label}: ${result.bytes} bytes JS cargados`)
-      assert.ok(result.scripts.every(s => s.status === 200), 'scripts sin errores')
+      assert.ok(result.scripts.every(s => s.status === 200 || (s.failed && s.canceled)), 'scripts HTTP correctos; se permiten cancelaciones de navegación explícitas')
       return result
     }
     const contains = (result, file) => result.scripts.some(s => new URL(s.url).pathname === `/${file}`)
@@ -400,6 +400,40 @@ for (const size of ['desktop', 'movil']) {
     await board.context().close()
   })
 }
+
+test('[UX desktop] M17: áreas solo para el código exacto PROCONT y no para ARAPA del mismo estudio', async () => {
+  const page = await open(SIZES.desktop)
+  const studio = '00000000-0000-4000-8000-000000000177'
+  const system = '00000000-0000-4000-8000-0000000000a1'
+  const pending = (id, title, code) => ({ id, request_number: `REQ26-${id.slice(-4)}`, title,
+    requester_name: 'Solicitante ficticio', requester_area: null, studio_code_id: code,
+    request_type: 'Mejora', needs_code: true, status: 'pending', description: 'Datos locales ficticios.',
+    requested_priority: 'medium', urgent_requested: false, studio_id: studio, system_id: system,
+    created_at: '2026-11-23T15:00:00Z', projects: null, area_id: null })
+  const rows = [pending('00000000-0000-4000-8000-000000009461', 'Solicitud PROCONT ficticia', '00000000-0000-4000-8000-0000000001c1'),
+    pending('00000000-0000-4000-8000-000000009462', 'Solicitud ARAPA ficticia', '00000000-0000-4000-8000-0000000001c2')]
+  await page.route(`${fixture.url}/rest/v1/requests?**`, route => route.fulfill({ status: 200,
+    contentType: 'application/json', headers: { 'Access-Control-Allow-Origin': '*' }, body: JSON.stringify(rows) }))
+  await staff(page)
+  await page.getByRole('button', { name: /^Requests/ }).click()
+  const openModal = async title => {
+    const card = page.locator('.request-card').filter({ hasText: title })
+    await card.getByRole('button', { name: /Aprobar/ }).click()
+    await page.locator('#validation-code').waitFor()
+  }
+  await openModal('Solicitud PROCONT ficticia')
+  assert.equal(await page.locator('#validation-area').count(), 1)
+  assert.deepEqual(await page.$$eval('#validation-area option', options => options.map(option => option.textContent)),
+    ['Selecciona un área', 'CONTABILIDAD', 'LEGAL'])
+  await capture(page, 'desktop-46-procont-area')
+  await page.getByRole('dialog').getByRole('button', { name: 'Cerrar', exact: true }).first().click()
+  await page.getByRole('dialog').waitFor({ state: 'detached' })
+  await openModal('Solicitud ARAPA ficticia')
+  assert.equal(await page.locator('#validation-area').count(), 0)
+  await page.getByText('Área y subárea solo aplican al código PROCONT.').waitFor()
+  await capture(page, 'desktop-47-arapa-no-area')
+  await page.context().close()
+})
 
 // Correcciones del cliente M16: misma compilación y servicios HTTP locales del resto de la galería.
 const clientRpc = (page, name) => page.calls.filter(c => c.path.endsWith(`/rpc/${name}`))

@@ -19,10 +19,10 @@ import { toast } from '../../lib/toast'
 import { getAvatarColor, getInitials, AREA_COLORS, PHASE_LABELS, PRIORITY_COLORS, PRIORITY_LABEL } from '../../lib/constants'
 import { GENERAL_STATUS, isGeneralStatus } from '../../lib/request-status'
 import { actionKey, needsPendingConfirmation, pct, phasesFor, type BoardFlow, type BoardTicket, type Phase, type Priority } from '../../lib/board'
-import AreaInput from '../ui/AreaInput'
+import { areasApply } from '../../lib/studio-rules'
 
 interface Props {
-  project: Project & { requests?: { requester_area: string; requester_name: string; request_type: string } | null }
+  project: Project & { requests?: { requester_area: string; requester_name: string; request_type: string; studio_code_id?: string | null; area_id?: string | null } | null }
   flows: ProjectFlow[]
   onClose: () => void
   /** Recarga la lista del tablero tras una operación. */
@@ -48,6 +48,7 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
   const { assignableUsers, users } = useUsers()
   const { user } = useAuth()
   const catalogs = useCatalogs('member')
+  const hasProcontArea = areasApply(project.requests?.studio_code_id, catalogs.codes)
   const editable = canEdit(user)
   const canManage = user?.role === 'superadmin' || user?.role === 'admin'
   const { ticket, setTicket, error: ticketError, reload: reloadTicket } = useBoardTicket(project.id)
@@ -141,10 +142,7 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
               ) : (
                 <span className={`px-3 py-1 rounded-full text-xs font-medium border ${PRIORITY_COLORS[project.priority]}`}><Icon name="flag" size={12} className="inline-block mr-1 -mt-0.5" />Prioridad definitiva: {PRIORITY_LABEL[project.priority] ?? project.priority}</span>
               )}
-              {editMode ? (
-                <AreaInput value={editData.requester_area} onChange={v => setEditData(p => ({ ...p, requester_area: v }))} placeholder="Sin área"
-                  className="w-40 px-2 py-0.5 rounded-full text-xs font-medium border border-gray-300 bg-surface outline-none focus:ring-2 focus:ring-primary" />
-              ) : area ? (
+              {hasProcontArea && area ? (
                 <span className={`px-3 py-1 rounded-full text-xs font-medium border ${AREA_COLORS[area] ?? 'bg-gray-100 text-gray-700 border-gray-200'}`}><Icon name="pin" size={12} className="inline-block mr-1 -mt-0.5" />{area}</span>
               ) : null}
               {project.requests?.request_type && (

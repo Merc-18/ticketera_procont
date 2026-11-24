@@ -8,6 +8,7 @@ import type { Request } from '../../types/database.types'
 import ModalFocus from '../ui/ModalFocus'
 import { useCatalogs } from '../../hooks/useCatalogs'
 import Icon from '../ui/Icon'
+import { areasApply } from '../../lib/studio-rules'
 
 // XLSX solo forma parte de la descarga iniciada al abrir el importador.
 const PlannerImportModal = lazy(() => import('./PlannerImportModal'))
@@ -53,7 +54,7 @@ export default function RequestInbox() {
     <p className="text-sm text-gray-600 flex flex-wrap gap-x-3">
       {r.studio_id && <span className="inline-flex items-center gap-1"><Icon name="building" size={14} /><span className="sr-only">Estudio: </span>{nameOf(catalogs.studios, r.studio_id) ?? '—'}</span>}
       {r.system_id && <span className="inline-flex items-center gap-1"><Icon name="package" size={14} /><span className="sr-only">Producto: </span>{nameOf(catalogs.systems, r.system_id) ?? '—'}</span>}
-      {r.requester_area && <span className="inline-flex items-center gap-1"><Icon name="pin" size={14} /><span className="sr-only">Área: </span>{r.requester_area}</span>}
+      {areasApply(r.studio_code_id, catalogs.codes) && r.requester_area && <span className="inline-flex items-center gap-1"><Icon name="pin" size={14} /><span className="sr-only">Área: </span>{r.requester_area}</span>}
     </p>
   )
   const { assignableUsers } = useUsers()

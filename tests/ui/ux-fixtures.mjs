@@ -11,7 +11,7 @@ export const visualProjects = PHASES.map((phase, i) => ({
   blocked_reason: i === 1 ? 'Pendiente de información del solicitante.' : null,
   blocked_since: i === 1 ? '2026-11-19T15:00:00Z' : null,
   start_date: '2026-11-10', due_date: '2026-12-15', created_at: '2026-11-10T15:00:00Z', updated_at: '2026-11-19T15:00:00Z',
-  requests: { requester_area: 'Contabilidad', requester_name: 'Persona ficticia', request_number: `REQ26-${7100 + i}`, request_type: 'Mejora', studio_id: id(177), area_id: i % 3 === 2 ? null : i % 2 ? '00000000-0000-4000-8000-0000000001a2' : '00000000-0000-4000-8000-0000000001a1' },
+  requests: { requester_area: 'Contabilidad', requester_name: 'Persona ficticia', request_number: `REQ26-${7100 + i}`, request_type: 'Mejora', studio_id: id(177), studio_code_id: '00000000-0000-4000-8000-0000000001c1', area_id: i % 3 === 2 ? null : i % 2 ? '00000000-0000-4000-8000-0000000001a2' : '00000000-0000-4000-8000-0000000001a1' },
   project_flows: [{ id: id(7200 + i), project_id: id(7100 + i), flow_type: 'development', current_phase: phase,
     assigned_to: STAFF['developer@simulado.invalid'].id, checklist_items: [{ id: id(7400 + i), completed: i > 3 }] }],
 }))
@@ -20,7 +20,7 @@ const visualRequests = [0, 1, 2, 3].map((i) => ({
   requester_name: 'Solicitante ficticio', requester_area: 'Contabilidad', request_type: 'Mejora', needs_code: true,
   status: i < 2 ? 'pending' : i === 2 ? 'approved' : 'rejected', description: 'Datos ficticios para revisar la interfaz local de la bandeja de solicitudes.',
   requested_priority: ['high','low','medium',null][i],
-  urgent_requested: i === 0, studio_id: '00000000-0000-4000-8000-0000000000b1', system_id: '00000000-0000-4000-8000-0000000000a1',
+  urgent_requested: i === 0, studio_id: '00000000-0000-4000-8000-000000000177', studio_code_id: '00000000-0000-4000-8000-0000000001c1', system_id: '00000000-0000-4000-8000-0000000000a1',
   created_at: '2026-11-19T15:00:00Z', projects: i === 2 ? { status: 'active' } : null,
   public_rejection_reason: i === 3 ? 'Solicitud duplicada según el escenario ficticio.' : null,
 }))
