@@ -101,3 +101,13 @@ Las funciones usan `SECURITY DEFINER`, `search_path=''`, permisos PUBLIC revocad
 ## M18 local — preferencias de color (24/11/2026)
 
 Sin cambios de permisos: lectura del equipo para perfiles internos activos (`superadmin`, `admin`, `developer`, `viewer`) y cambios solo propios mediante `set_my_internal_card_color(text)`. M18 restringe **qué** colores se pueden elegir (los 10 ofrecidos, o conservar el actual) y qué entrega la autoasignación. Clientes y anon siguen sin acceso. Las plantillas de checklist (`checklist_templates`) no cambian de permisos. M18 **no está aplicada en remoto**.
+
+## M19 (24/11/2026)
+
+| Acción | superadmin | admin | developer | viewer | cliente/anon |
+|---|---|---|---|---|---|
+| Ver portafolios e iniciativas | Sí | Sí | Sí | Sí | No |
+| Crear, renombrar o desactivar portafolios e iniciativas | Sí | Sí | No | No | No |
+| Asociar un ticket a un portafolio o iniciativa | Sí | Sí | Sí | No | No |
+| Crear un ticket interno (`create_internal_ticket`, ambos modos) | Sí | Sí | No | No | No |
+| Agregar, editar o completar tareas de checklist | Sí | Sí | Sí | No | No |

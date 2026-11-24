@@ -5,7 +5,8 @@ import { readFileSync } from 'node:fs'
 import { OWNER_COLORS, OWNER_PALETTE, availableColors, isOfferedColor } from '../src/lib/card-palette.ts'
 import { countTicketsByStudio, ticketsByStudioRows, TicketsByStudioError } from '../src/lib/tickets-by-studio.ts'
 import { DEFAULT_CHECKLIST } from '../src/lib/checklist-defaults.ts'
-import { missingTemplateTasks, normalizeTask, phaseTemplate, seedPhaseOnArrival, shouldSeedOnArrival } from '../src/lib/checklist-templates.ts'
+import { missingTemplateTasks, normalizeTask, phaseTemplate } from '../src/lib/checklist-templates.ts'
+import * as checklistTemplates from '../src/lib/checklist-templates.ts'
 import { DEVELOPMENT_PHASES } from '../contracts/board-operations-client.mjs'
 
 // ── Colores personales ──────────────────────────────────────────────────────
@@ -47,11 +48,16 @@ test('M18: el servidor ofrece exactamente la misma paleta de 10, sin reasignar y
   assert.match(sql, /^-- M18/); assert.match(sql, /\nBEGIN;\n/); assert.match(sql, /\nCOMMIT;\n$/)
 })
 
-test('M18: las plantillas de Analysis y Code Review del servidor son idénticas a las del frontend', () => {
-  const sql = readFileSync(new URL('../supabase/migrations/20261124000100_limit_card_colors_and_seed_missing_checklists.sql', import.meta.url), 'utf8')
-  const rows = [...sql.matchAll(/\('development','(analysis|code_review)','([^']+)',(\d)\)/g)]
-  assert.equal(rows.length, 8)
-  for (const [, phase, text, index] of rows) assert.equal(phaseTemplate('development', phase)[Number(index)], text, `${phase}/${index}`)
+test('M19: las 45 plantillas del servidor (3 por fase real) son idénticas a las sugerencias del frontend', () => {
+  const sql = readFileSync(new URL('../supabase/migrations/20261124000200_suggested_checklists_portfolios_internal_tickets.sql', import.meta.url), 'utf8')
+  const rows = [...sql.matchAll(/\('(development|administrative)','([a-z_]+)',(\d),'([^']+)'\)/g)]
+  assert.equal(rows.length, 45)
+  const server = {}
+  for (const [, flow, phase, index, text] of rows) { (server[`${flow}/${phase}`] ??= [])[Number(index)] = text }
+  const front = Object.fromEntries(Object.entries(DEFAULT_CHECKLIST).flatMap(([flow, phases]) => Object.entries(phases).map(([phase, list]) => [`${flow}/${phase}`, list])))
+  assert.deepEqual(server, front)
+  assert.match(sql, /CREATE OR REPLACE FUNCTION app_private\.add_flows/)
+  assert.doesNotMatch(sql.slice(sql.indexOf('FUNCTION app_private.add_flows'), sql.indexOf('END $$;', sql.indexOf('FUNCTION app_private.add_flows'))), /checklist_items/, 'add_flows ya no siembra tareas')
 })
 
 // ── Tickets por estudio ─────────────────────────────────────────────────────
@@ -107,21 +113,20 @@ test('tickets por estudio: filas ordenadas de mayor a menor, nombres del catálo
 })
 
 // ── Checklist por fase ──────────────────────────────────────────────────────
-test('plantillas: una por cada una de las 8 fases reales, distintas entre sí; Analysis y Code Review incluidas', () => {
+test('sugerencias: exactamente 3 por cada fase real (8 Development, 7 Administrative), sin repetir dentro del flujo', () => {
   assert.deepEqual([...DEVELOPMENT_PHASES], ['backlog', 'analysis', 'design', 'dev', 'code_review', 'testing', 'deploy', 'done'])
-  const lists = DEVELOPMENT_PHASES.map(p => phaseTemplate('development', p))
-  for (const [i, list] of lists.entries()) assert.ok(list.length >= 2, DEVELOPMENT_PHASES[i])
-  const all = lists.flat().map(normalizeTask)
-  assert.equal(new Set(all).size, all.length, 'ninguna tarea se repite entre fases')
   assert.deepEqual(Object.keys(DEFAULT_CHECKLIST.development).sort(), [...DEVELOPMENT_PHASES].sort())
+  assert.deepEqual(Object.keys(DEFAULT_CHECKLIST.administrative).sort(), ['backlog', 'build', 'deployed', 'design', 'discovery', 'ready_to_start', 'uat_validation'])
+  for (const [flow, phases] of Object.entries(DEFAULT_CHECKLIST)) {
+    for (const [phase, list] of Object.entries(phases)) assert.equal(list.length, 3, `${flow}/${phase}`)
+    const all = Object.values(phases).flat().map(normalizeTask)
+    assert.equal(new Set(all).size, all.length, `${flow}: ninguna tarea se repite entre fases`)
+  }
 })
 
-test('plantillas: las fases con plantilla en la base de datos conservan exactamente su texto (no se duplican)', () => {
-  const sql = readFileSync(new URL('../supabase/migrations/20261117000400_reference_checklists.sql', import.meta.url), 'utf8')
-  for (const m of sql.matchAll(/\('(development|administrative)','([a-z_]+)','([^']+)',(\d+)\)/g)) {
-    const [, flow, phase, text, index] = m
-    assert.equal(phaseTemplate(flow, phase)[Number(index)], text, `${flow}/${phase}/${index}`)
-  }
+test('sin siembra automática: el módulo ya no expone funciones que materialicen tareas', () => {
+  assert.equal('seedPhaseOnArrival' in checklistTemplates, false)
+  assert.equal('shouldSeedOnArrival' in checklistTemplates, false)
 })
 
 test('sin duplicados: solo se sugieren las tareas que la fase no tiene (texto normalizado, tildes y espacios)', () => {
@@ -129,37 +134,4 @@ test('sin duplicados: solo se sugieren las tareas que la fase no tiene (texto no
   const missing = missingTemplateTasks('development', 'analysis', have)
   assert.equal(missing.length, phaseTemplate('development', 'analysis').length - 1)
   assert.ok(!missing.some(t => normalizeTask(t) === 'definir criterios de aceptacion'))
-})
-
-test('siembra al llegar: solo si la fase está vacía y nunca en la fase final', () => {
-  assert.equal(shouldSeedOnArrival('development', 'analysis', 0), true)
-  assert.equal(shouldSeedOnArrival('development', 'analysis', 1), false, 'con tareas existentes no se toca')
-  assert.equal(shouldSeedOnArrival('development', 'done', 0), false, 'Done cierra el ticket')
-  assert.equal(shouldSeedOnArrival('administrative', 'deployed', 0), false)
-})
-
-function fakeChecklist(existing) {
-  const inserts = []
-  const client = { from(table) {
-    assert.equal(table, 'checklist_items')
-    return {
-      select() { const f = {}; const q = { eq(c, v) { f[c] = v; return q }, then(res) {
-        res({ data: existing.filter(r => r.project_flow_id === f.project_flow_id && r.phase === f.phase), error: null }) } }; return q },
-      insert(rows) { inserts.push(rows); existing.push(...rows.map(r => ({ ...r, completed: false }))); return Promise.resolve({ data: null, error: null }) },
-    }
-  } }
-  return { client, inserts, existing }
-}
-
-test('siembra: fase vacía → una sola inserción sin completar; fase con tareas → nada; no borra ni desmarca', async () => {
-  const done = { project_flow_id: 'f1', phase: 'backlog', description: 'Tarea hecha', order_index: 0, completed: true }
-  const { client, inserts, existing } = fakeChecklist([done])
-  assert.equal(await seedPhaseOnArrival(client, 'f1', 'development', 'analysis'), 4)
-  assert.equal(inserts.length, 1, 'todas en una sentencia')
-  assert.ok(inserts[0].every(r => r.phase === 'analysis' && r.project_flow_id === 'f1' && !('completed' in r)))
-  assert.equal(await seedPhaseOnArrival(client, 'f1', 'development', 'analysis'), 0, 'volver a la fase no duplica')
-  assert.equal(await seedPhaseOnArrival(client, 'f1', 'development', 'backlog'), 0, 'fase con tareas: intacta')
-  assert.equal(await seedPhaseOnArrival(client, 'f1', 'development', 'done'), 0)
-  assert.equal(inserts.length, 1)
-  assert.equal(existing[0], done); assert.equal(done.completed, true, 'la tarea completada sigue completada')
 })

@@ -115,14 +115,14 @@ for (const theme of ['light', 'dark']) {
     const badge = p => page.locator(`.project-card[data-priority="${p}"] [title="Prioridad definitiva asignada por el personal"]`).first()
     const medium = await bg(badge('medium')), high = await bg(badge('high')), low = await bg(badge('low'))
     assert.equal(new Set([medium, high, low]).size, 3, 'tres prioridades distintas')
-    assert.equal(high, 'rgb(238, 187, 49)', 'Alto = dorado Procont')
+    assert.equal(high, 'rgb(194, 65, 12)', 'Alto = naranja (semáforo, 24/11/2026)')
     const topWidth = p => page.locator(`.project-card[data-priority="${p}"]`).first().evaluate(el => getComputedStyle(el).borderTopWidth)
     // 24/11/2026: sin barra superior por prioridad (era la barra azul universal); el color vive en la insignia.
     assert.equal(await topWidth('medium'), '1px'); assert.equal(await topWidth('high'), '1px'); assert.equal(await topWidth('low'), '1px')
     // Prioridad ≠ estado: el azul de «Medio» (relleno) no es el tinte de «Trabajo en proceso».
     assert.notEqual(medium, theme === 'light' ? 'rgb(219, 234, 254)' : 'rgb(23, 43, 92)')
     await page.locator('label').filter({ hasText: 'Prioridad' }).locator('select').first().selectOption('high')
-    assert.match(await page.locator('select.prio-filter-high').evaluate(el => getComputedStyle(el).boxShadow), /238, 187, 49/)
+    assert.match(await page.locator('select.prio-filter-high').evaluate(el => getComputedStyle(el).boxShadow), /194, 65, 12/)
     assert.deepEqual(page.errors, [])
     await page.context().close()
   })

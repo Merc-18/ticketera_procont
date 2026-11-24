@@ -1,0 +1,20 @@
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✔ [light] Tarjeta: fondo con tinte sutil del color personal, avatar con ese color y semáforo de prioridad legible (1982.31871ms)
+✔ [dark] Tarjeta: fondo con tinte sutil del color personal, avatar con ese color y semáforo de prioridad legible (1129.02032ms)
+✔ Portafolio: chip en la tarjeta, filtro por portafolio/iniciativa, columna en Tabla y búsqueda (932.789672ms)
+✔ Portafolio: el detalle asocia un ticket a una iniciativa con la RPC auditada; el catálogo se gestiona desde «Portafolios» (1288.303941ms)
+✔ Portafolio: un developer ve el filtro pero no el botón de gestión del catálogo (717.428989ms)
+✔ [light] Nuevo ticket (originado por cliente): campos obligatorios, área solo con código exacto PROCONT, adjunto y payload completo (1302.869756ms)
+✔ [dark] Nuevo ticket (originado por cliente): campos obligatorios, área solo con código exacto PROCONT, adjunto y payload completo (1332.295436ms)
+✔ Nuevo ticket (interno u operativo): sin datos de cliente; solicitante opcional; payload mínimo correcto (1333.229451ms)
+✔ Responsive: barra con Portafolio y formulario «Nuevo ticket» sin desbordes a 1440, 768, 390 y 320 (3899.232547ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 14288.373129

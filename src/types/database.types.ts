@@ -59,6 +59,9 @@ export interface Project {
   is_blocked: boolean;
   blocked_reason?: string | null;
   blocked_since?: string | null;
+  /** M19: Portafolio (nivel superior) e iniciativa de largo alcance; opcionales. */
+  portfolio_id?: string | null;
+  initiative_id?: string | null;
 
   created_at: string;
   updated_at: string;

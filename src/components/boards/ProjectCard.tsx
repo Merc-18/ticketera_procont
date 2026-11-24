@@ -2,8 +2,9 @@ import Icon from '../ui/Icon'
 import { useState, useRef, useEffect } from 'react'
 import { canEdit } from '../../lib/access'
 import type { Project, ProjectFlow, User } from '../../types/database.types'
-import { getAvatarColor, getInitials, PRIORITY_COLORS, PRIORITY_LABEL, AREA_COLORS } from '../../lib/constants'
-import { ownerClass, useOwnerColors } from '../../lib/card-colors'
+import { getInitials, PRIORITY_COLORS, PRIORITY_LABEL, AREA_COLORS } from '../../lib/constants'
+import { avatarClass, ownerClass, useOwnerColors } from '../../lib/card-colors'
+import { portfolioLabel, usePortfolios } from '../../lib/portfolios'
 
 interface ProjectWithArea extends Project {
   requests?: { requester_area: string | null; requester_name?: string; request_number?: string; studio_id?: string | null; studio_code_id?: string | null } | null
@@ -34,6 +35,7 @@ function getDueDateBadge(dueDate?: string | null) {
 export default function ProjectCard({ project, flow, onClick, users = [], onAssign, selected, onSelect, procontCodeId }: Props) {
   const area = project.requests?.studio_code_id === procontCodeId && procontCodeId ? project.requests?.requester_area : null
   const ownerColors = useOwnerColors()
+  const portfolio = portfolioLabel(usePortfolios(), project.portfolio_id, project.initiative_id)
   const owner = ownerClass(ownerColors, flow.assigned_to)
   const requesterName = project.requests?.requester_name
   const showRequester = requesterName && requesterName !== '—'
@@ -101,6 +103,13 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
       {/* Título */}
       <h3 className="card-title line-clamp-2">{project.title}</h3>
 
+      {/* Portafolio · iniciativa (M19) */}
+      {portfolio && (
+        <p className="card-portfolio" title={`Portafolio: ${portfolio}`}>
+          <Icon name="layers" size={13} aria-hidden="true" /><span className="sr-only">Portafolio: </span><span className="truncate">{portfolio}</span>
+        </p>
+      )}
+
       {/* Estado crítico: indicador semántico propio, independiente de prioridad y responsable */}
       {project.is_blocked && (
         <p className="card-blocked line-clamp-2" title={project.blocked_reason || 'Bloqueado'}>
@@ -148,7 +157,7 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
               <div className="card-avatars">
                 {assignedUsers.map(({ user, flowType }) => (
                   <div key={user.id} title={`${user.full_name} (${flowType === 'development' ? 'Development' : 'Administrative'})`}
-                    className={`card-avatar ${getAvatarColor(user.full_name)} ${ownerColors[user.id] ? `owner-ring owner-${ownerColors[user.id]}` : ''}`}>
+                    className={`card-avatar ${avatarClass(ownerColors, user.id, user.full_name)}`}>
                     {getInitials(user.full_name)}
                   </div>
                 ))}
@@ -189,7 +198,7 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
                         flow.assigned_to === u.id ? 'bg-brand-50 text-brand-700 font-medium' : ''
                       }`}
                     >
-                      <div className={`w-7 h-7 rounded-full ${getAvatarColor(u.full_name)} ${ownerColors[u.id] ? `owner-ring owner-${ownerColors[u.id]}` : ''} flex items-center justify-center text-white text-[13px] font-medium shrink-0`}>
+                      <div className={`w-7 h-7 rounded-full ${avatarClass(ownerColors, u.id, u.full_name)} flex items-center justify-center text-white text-[13px] font-medium shrink-0`}>
                         {getInitials(u.full_name)}
                       </div>
                       {u.full_name.split(' ').slice(0, 2).join(' ')}

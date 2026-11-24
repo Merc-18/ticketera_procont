@@ -16,12 +16,13 @@ import { operations, board } from '../../lib/api'
 import { canEdit } from '../../lib/access'
 import { errorMessage } from '../../lib/supabase-errors'
 import { toast } from '../../lib/toast'
-import { getAvatarColor, getInitials, AREA_COLORS, PHASE_LABELS, PRIORITY_COLORS, PRIORITY_LABEL } from '../../lib/constants'
+import { getInitials, AREA_COLORS, PHASE_LABELS, PRIORITY_COLORS, PRIORITY_LABEL } from '../../lib/constants'
 import { GENERAL_STATUS, isGeneralStatus } from '../../lib/request-status'
 import { actionKey, needsPendingConfirmation, pct, phasesFor, type BoardFlow, type BoardTicket, type Phase, type Priority } from '../../lib/board'
 import { areasApply } from '../../lib/studio-rules'
-import { supabase } from '../../lib/supabase'
-import { seedPhaseOnArrival, type ChecklistClient } from '../../lib/checklist-templates'
+import { avatarClass, useOwnerColors } from '../../lib/card-colors'
+import PortfolioSelect from '../boards/PortfolioSelect'
+import { decodePortfolio, encodePortfolio, portfolioLabel, setProjectPortfolio, usePortfolios } from '../../lib/portfolios'
 
 interface Props {
   project: Project & { requests?: { requester_area: string; requester_name: string; request_type: string; studio_code_id?: string | null; area_id?: string | null } | null }
@@ -49,6 +50,21 @@ function Bar({ value, tone }: { value: number | null; tone: string }) {
 export default function ProjectModal({ project, onClose, onUpdate, updateProject }: Props) {
   const { assignableUsers, users } = useUsers()
   const { user } = useAuth()
+  const ownerColors = useOwnerColors()
+  const portfolioCatalog = usePortfolios()
+  const currentPortfolio = encodePortfolio(project.portfolio_id, project.initiative_id)
+  const [portfolioDraft, setPortfolioDraft] = useState(currentPortfolio)
+  useEffect(() => { setPortfolioDraft(currentPortfolio) }, [currentPortfolio])
+  const [savingPortfolio, setSavingPortfolio] = useState(false)
+  const savePortfolioLink = async () => {
+    setSavingPortfolio(true)
+    try {
+      const target = decodePortfolio(portfolioDraft, portfolioCatalog.initiatives)
+      await setProjectPortfolio(project.id, target.portfolio_id, target.initiative_id)
+      toast.success('Portafolio actualizado'); onUpdate?.()
+    } catch (err) { toast.error(errorMessage(err)) }
+    finally { setSavingPortfolio(false) }
+  }
   const catalogs = useCatalogs('member')
   const hasProcontArea = areasApply(project.requests?.studio_code_id, catalogs.codes)
   const editable = canEdit(user)
@@ -93,15 +109,7 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
   const requestMove = (flow: BoardFlow, target: Phase) => {
     if (!ticket || target === flow.phase) return
     if (needsPendingConfirmation(ticket, flow.id, target)) { setDialog({ kind: 'done', flowId: flow.id, target, key: actionKey() }); return }
-    void run(async () => {
-      const next = await board.movePhase(project.id, target, actionKey(), { flowId: flow.id })
-      // Tareas sugeridas de la nueva fase si está vacía; un fallo no deshace el cambio de fase.
-      try {
-        const added = await seedPhaseOnArrival(supabase as unknown as ChecklistClient, flow.id, flow.flow_type, target)
-        if (added) toast.info(`Se agregaron ${added} tareas sugeridas para ${PHASE_LABELS[target] ?? target}.`)
-      } catch (err) { toast.error(errorMessage(err)) }
-      return next
-    }, `Fase: ${PHASE_LABELS[target] ?? target}`)
+    void run(() => board.movePhase(project.id, target, actionKey(), { flowId: flow.id }), `Fase: ${PHASE_LABELS[target] ?? target}`)
   }
 
   const handleSaveEdit = async () => {
@@ -226,6 +234,20 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
                 </div>
               ) : null}
 
+              {/* Portafolio → iniciativa (M19): organización del trabajo de largo alcance; auditado en el servidor. */}
+              <div>
+                <h3 className="font-semibold text-gray-900 mb-2">Portafolio</h3>
+                {editable && ticket?.project_status !== 'deleted' ? (
+                  <div className="flex flex-wrap items-end gap-2">
+                    <label className="toolbar-field grow" htmlFor="project-portfolio"><span>Portafolio e iniciativa</span>
+                      <PortfolioSelect id="project-portfolio" value={portfolioDraft} onChange={setPortfolioDraft} />
+                    </label>
+                    <button type="button" className="ui-button ui-button-secondary" disabled={savingPortfolio || portfolioDraft === currentPortfolio}
+                      onClick={() => { void savePortfolioLink() }}>{savingPortfolio ? 'Guardando…' : 'Guardar portafolio'}</button>
+                  </div>
+                ) : <p className="text-gray-700">{portfolioLabel(portfolioCatalog, project.portfolio_id, project.initiative_id) ?? 'Sin portafolio'}</p>}
+              </div>
+
               {/* Flujo(s): fase, progreso de fase, progreso de checklist y responsable */}
               <div>
                 <h3 className="font-semibold text-gray-900 mb-3">{(ticket?.flows.length ?? 0) > 1 ? 'Flujos del ticket' : 'Flujo del ticket'}</h3>
@@ -293,7 +315,7 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
                               </div>
                             ) : current ? (
                               <div className="flex items-center gap-2">
-                                <div className={`w-7 h-7 rounded-full ${getAvatarColor(current.full_name)} flex items-center justify-center text-white text-xs font-bold`}>{getInitials(current.full_name)}</div>
+                                <div className={`w-7 h-7 rounded-full ${avatarClass(ownerColors, current.id, current.full_name)} flex items-center justify-center text-white text-xs font-bold`}>{getInitials(current.full_name)}</div>
                                 <p className="text-sm font-medium text-gray-800">{current.full_name} <span className="text-xs text-gray-400">({current.role})</span></p>
                               </div>
                             ) : <p className="text-sm text-gray-500 italic">{userName(flow.assignee_id) ?? 'Sin responsable'}</p>}

@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useUsers } from '../../hooks/useUsers'
 import type { User } from '../../types/database.types'
-import { PRIORITY_COLORS, PRIORITY_LABEL, PHASE_LABELS, getAvatarColor, getInitials } from '../../lib/constants'
+import { PRIORITY_COLORS, PRIORITY_LABEL, PHASE_LABELS, getInitials } from '../../lib/constants'
+import { avatarClass, useOwnerColors } from '../../lib/card-colors'
 import { metrics } from '../../lib/api'
 import { averageLabel, type MetricResult, type TimeAverages } from '../../lib/metrics-adapter'
 import Icon from '../ui/Icon'
@@ -124,6 +125,7 @@ const ROLE_BADGE: Record<string, string> = {
 }
 
 function UserCard({ user, tickets, isExpanded, onToggle }: { user: User; tickets: Ticket[]; isExpanded: boolean; onToggle: () => void }) {
+  const ownerColors = useOwnerColors()
   const blockedCount = tickets.filter(t => t.project.is_blocked).length
   const byPhase = new Map<string, number>()
   for (const t of tickets) for (const ph of new Set(t.phases)) byPhase.set(ph, (byPhase.get(ph) ?? 0) + 1)
@@ -131,7 +133,7 @@ function UserCard({ user, tickets, isExpanded, onToggle }: { user: User; tickets
     <div className="bg-surface rounded-xl border shadow-sm overflow-hidden">
       <div className="p-4">
         <div className="flex items-start gap-3">
-          <div className={`w-10 h-10 rounded-full ${getAvatarColor(user.full_name)} flex items-center justify-center text-white text-sm font-bold shrink-0`}>
+          <div className={`w-10 h-10 rounded-full ${avatarClass(ownerColors, user.id, user.full_name)} flex items-center justify-center text-white text-sm font-bold shrink-0`}>
             {getInitials(user.full_name)}
           </div>
           <div className="flex-1 min-w-0">

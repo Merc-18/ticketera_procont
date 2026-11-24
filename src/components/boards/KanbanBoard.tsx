@@ -17,6 +17,9 @@ import { board } from '../../lib/api'
 import { actionKey, needsPendingConfirmation, type BoardTicket, type Phase } from '../../lib/board'
 import { DoneConfirmDialog } from '../projects/BoardDialogs'
 import { procontCodeId } from '../../lib/studio-rules'
+import PortfolioSelect from './PortfolioSelect'
+import PortfolioManagerModal from './PortfolioManagerModal'
+import { portfolioLabel, usePortfolios } from '../../lib/portfolios'
 import OwnerColorPicker from './OwnerColorPicker'
 
 // Vistas y modales secundarios del tablero en carga diferida (Taste perf.md: JS por vista). Se piden por
@@ -95,7 +98,7 @@ const VIEW_MODES: { value: ViewMode; label: string; icon: IconName }[] = [
 ]
 
 export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }: Props) {
-  const { projects, loading, error, hasMore, loadMore, statusFilter, setStatusFilter, moveFlow, assignFlow, updateProject, createProject, reload, bulkUpdate } = useProjects()
+  const { projects, loading, error, hasMore, loadMore, statusFilter, setStatusFilter, moveFlow, assignFlow, updateProject, createTicket, reload, bulkUpdate } = useProjects()
   const { activeUsers } = useUsers()
   const { user: currentUser } = useAuth()
   const role = currentUser?.role ?? 'viewer'
@@ -109,6 +112,10 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
   const [closing, setClosing] = useState(false)
   const [priorityFilter, setPriorityFilter] = useState(() => localStorage.getItem('kanban_priorityFilter') || 'all')
   const [studioFilter, setStudioFilter]     = useState(() => localStorage.getItem('kanban_studioFilter') || 'all')
+  // Portafolio: 'all' | '' (sin portafolio) | 'p:<id>' | 'i:<id>' (M19).
+  const [portfolioFilter, setPortfolioFilter] = useState(() => localStorage.getItem('kanban_portfolioFilter') ?? 'all')
+  const portfolioCatalog = usePortfolios()
+  const [showPortfolios, setShowPortfolios] = useState(false)
   const { studios, codes } = useCatalogs('member')
   // El área solo se muestra (tarjeta, tabla, búsqueda) en solicitudes del código interno exacto PROCONT.
   const canonicalProcontCodeId = procontCodeId(codes)
@@ -124,6 +131,14 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
   // 24/11/2026: Boards ya no filtra por área. Se retira el filtro guardado para que no oculte tarjetas en silencio.
   useEffect(() => { try { localStorage.removeItem('kanban_areaFilter') } catch { /* almacenamiento no disponible */ } }, [])
   useEffect(() => { localStorage.setItem('kanban_studioFilter', studioFilter) },     [studioFilter])
+  useEffect(() => { localStorage.setItem('kanban_portfolioFilter', portfolioFilter) }, [portfolioFilter])
+  // Un filtro guardado que apunta a un portafolio o iniciativa que ya no existe no debe ocultar tarjetas.
+  useEffect(() => {
+    if (!portfolioCatalog.loaded || portfolioFilter === 'all' || portfolioFilter === '') return
+    const id = portfolioFilter.slice(2)
+    const exists = portfolioFilter.startsWith('p:') ? portfolioCatalog.portfolios.some(p => p.id === id) : portfolioCatalog.initiatives.some(i => i.id === id)
+    if (!exists) setPortfolioFilter('all')
+  }, [portfolioCatalog, portfolioFilter])
   useEffect(() => { localStorage.setItem('kanban_userFilter', userFilter) },         [userFilter])
   useEffect(() => { localStorage.setItem('kanban_myProjectsOnly', String(myProjectsOnly)) }, [myProjectsOnly])
   useEffect(() => { localStorage.setItem('kanban_viewMode', viewMode) },              [viewMode])
@@ -157,6 +172,11 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
     // Solo se presenta/filtra el área de solicitudes clasificadas con el código exacto PROCONT.
     const area = req?.studio_code_id === canonicalProcontCodeId && canonicalProcontCodeId ? req?.requester_area : null
     if (studioFilter !== 'all' && (project as any).requests?.studio_id !== studioFilter) return false
+    if (portfolioFilter !== 'all') {
+      if (portfolioFilter === '' && project.portfolio_id) return false
+      if (portfolioFilter.startsWith('p:') && project.portfolio_id !== portfolioFilter.slice(2)) return false
+      if (portfolioFilter.startsWith('i:') && project.initiative_id !== portfolioFilter.slice(2)) return false
+    }
 
     // Filtro por responsable / usuario
     if (canManage) {
@@ -179,7 +199,8 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
       const titleMatch = project.title?.toLowerCase().includes(q)
       const numMatch   = (project as any).project_number?.toLowerCase().includes(q)
       const areaMatch  = area?.toLowerCase().includes(q)
-      if (!titleMatch && !numMatch && !areaMatch) return false
+      const portfolioMatch = portfolioLabel(portfolioCatalog, project.portfolio_id, project.initiative_id)?.toLowerCase().includes(q)
+      if (!titleMatch && !numMatch && !areaMatch && !portfolioMatch) return false
     }
     return true
   })
@@ -231,7 +252,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
     } finally { setClosing(false) }
   }
 
-  const hasFilters = priorityFilter !== 'all' || studioFilter !== 'all' || (canManage ? userFilter !== 'all' : myProjectsOnly) || searchQuery.trim() !== ''
+  const hasFilters = priorityFilter !== 'all' || portfolioFilter !== 'all' || studioFilter !== 'all' || (canManage ? userFilter !== 'all' : myProjectsOnly) || searchQuery.trim() !== ''
   const filteredCount = filteredProjects.length
   const totalCount = projects.length
 
@@ -345,7 +366,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
                 {...preloadOnIntent(loadNewProjectModal)}
                 className="ui-button ui-button-primary board-new-project"
               >
-                <ControlLabel icon="plus">Nuevo proyecto</ControlLabel>
+                <ControlLabel icon="plus">Nuevo ticket</ControlLabel>
               </button>
             )}
           </div>
@@ -381,6 +402,14 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
                 </label>
               )}
 
+              {portfolioCatalog.portfolios.length > 0 && (
+                <label className="toolbar-field board-filter-portfolio">
+                  <span>Portafolio</span>
+                  <PortfolioSelect value={portfolioFilter} onChange={setPortfolioFilter} className="ui-input toolbar-select"
+                    extraOptions={[{ value: 'all', label: 'Todos' }]} />
+                </label>
+              )}
+
               {canManage ? (
                 <label className="toolbar-field board-filter-owner">
                   <span>Responsable</span>
@@ -413,7 +442,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
               {hasFilters && (
                 <div className="board-filter-reset">
                   <button
-                    onClick={() => { setPriorityFilter('all'); setStudioFilter('all'); setUserFilter('all'); setMyProjectsOnly(false); setSearchQuery('') }}
+                    onClick={() => { setPriorityFilter('all'); setPortfolioFilter('all'); setStudioFilter('all'); setUserFilter('all'); setMyProjectsOnly(false); setSearchQuery('') }}
                     className="ui-button ui-button-quiet"
                   >
                     <ControlLabel icon="close">Limpiar filtros</ControlLabel>
@@ -424,7 +453,15 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
             </div>
           )}
           {/* Color personal de tarjeta (usuarios internos; el panel no es accesible para clientes) */}
-          {currentUser && <div className="board-toolbar-color"><OwnerColorPicker userId={currentUser.id} userName={currentUser.full_name} /></div>}
+          {currentUser && <div className="board-toolbar-color">
+            {canManage && (
+              <button type="button" className="ui-button ui-button-secondary" onClick={() => setShowPortfolios(true)}>
+                <ControlLabel icon="layers">Portafolios</ControlLabel>
+              </button>
+            )}
+            <OwnerColorPicker userId={currentUser.id} userName={currentUser.full_name} />
+          </div>}
+          {showPortfolios && <PortfolioManagerModal onClose={() => setShowPortfolios(false)} />}
         </div>
       </div>
 
@@ -470,7 +507,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
           <Icon name="search" size={40} className="mb-3 text-gray-500" />
           <p className="text-base font-medium text-gray-500">Sin proyectos con los filtros aplicados</p>
           <button
-            onClick={() => { setPriorityFilter('all'); setStudioFilter('all'); setMyProjectsOnly(false); setSearchQuery('') }}
+            onClick={() => { setPriorityFilter('all'); setPortfolioFilter('all'); setStudioFilter('all'); setMyProjectsOnly(false); setSearchQuery('') }}
             className="mt-3 text-sm text-primary hover:underline"
           >
             Limpiar filtros
@@ -601,7 +638,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
       {showNewModal && (
         <Suspense fallback={null}><NewProjectModal
           onClose={() => setShowNewModal(false)}
-          onCreate={createProject}
+          onCreate={createTicket}
         /></Suspense>
       )}
     </>

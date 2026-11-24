@@ -168,3 +168,12 @@ Los conteos de cada escenario se mantienen separados y no se suman. Si la suite 
 | `tests/boards-dashboard-checklists.test.mjs` | 14/14 | Paridad de la paleta y de las plantillas entre M18 y el frontend |
 
 Los arneses fijados a un número de migraciones (`client_access` 13, `client_login_throttle` 14, `integrated_security_client_flow` y `security_request_creation` 15, `client_data_security` 17, `dashboard_boards_m17` 18) son instantáneas históricas de su etapa y no se adaptan. El arnés de M18 repite las comprobaciones de color de M17 que siguen vigentes. No se repitieron las suites Node ni de interfaz completas: el único código frontend que cambió es un comentario.
+
+## M19 (24/11/2026)
+
+| Suite | Alcance |
+|---|---|
+| `supabase/tests/m19_portfolio_checklists_local.py --scenario clean/upgrade` | PostgreSQL 17: ROLLBACK, idempotencia, 45 plantillas = frontend, add_flows sin siembra, RLS y concesiones, catálogo de portafolio, asociación auditada, `create_internal_ticket` en ambos modos (PROCONT con y sin área, otro código, atomicidad, idempotencia), históricos intactos |
+| `board_operations_local.py` y `board_frontend_local.py` con M1–M19 | Ejecutadas sobre una copia desechable (no sobrescriben sus JSON históricos) |
+| `tests/portfolio-internal-ticket.test.mjs`, `tests/boards-dashboard-checklists.test.mjs` | Modelo de portafolio, payload de alta interna, semáforo y paridad de plantillas |
+| `tests/ui/portfolio-cards-ticket.ui.test.mjs` | Tinte y avatar por color personal, contraste del semáforo, Portafolio en tarjeta/filtro/Tabla/detalle/gestión, «Nuevo ticket» en ambos modos, responsive |

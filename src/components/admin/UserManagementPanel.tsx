@@ -5,7 +5,8 @@ import { canManageProfile } from '../../lib/access'
 import { errorMessage } from '../../lib/supabase-errors'
 import { toast } from '../../lib/toast'
 import UserModal from './UserModal'
-import { getAvatarColor, getInitials } from '../../lib/constants'
+import { getInitials } from '../../lib/constants'
+import { avatarClass, useOwnerColors } from '../../lib/card-colors'
 import type { User } from '../../types/database.types'
 import Icon, { type IconName } from '../ui/Icon'
 
@@ -28,6 +29,7 @@ const ROLE_LABEL: Record<string, string> = {
 
 export default function UserManagementPanel() {
   const { users, loading, error, reload, createUser, updateUser, deleteUser } = useUsers()
+  const ownerColors = useOwnerColors()
   const { user: currentUser } = useAuth()
   const currentUserRole = (currentUser?.role ?? 'viewer') as RoleOption
   const isSuperAdmin = currentUserRole === 'superadmin'
@@ -216,7 +218,7 @@ export default function UserManagementPanel() {
                     {/* Avatar + Nombre */}
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <div className={`w-9 h-9 rounded-full ${getAvatarColor(u.full_name)} flex items-center justify-center text-white text-sm font-bold shrink-0`}>
+                        <div className={`w-9 h-9 rounded-full ${avatarClass(ownerColors, u.id, u.full_name)} flex items-center justify-center text-white text-sm font-bold shrink-0`}>
                           {getInitials(u.full_name)}
                         </div>
                         <span className="font-medium text-gray-900 text-sm">{u.full_name}</span>

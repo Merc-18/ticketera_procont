@@ -125,13 +125,13 @@ for (const theme of ['light', 'dark']) {
     assert.equal(await bar.locator('label').filter({ hasText: /^Área/ }).count(), 0)
     await bar.locator('label').filter({ hasText: /^Estudio/ }).waitFor()   // el catálogo de estudios llega aparte
     assert.deepEqual((await bar.locator('.toolbar-field > span').allInnerTexts()).map(t => t.trim()), ['Prioridad', 'Estudio', 'Responsable'])
-    for (const name of ['Activos', 'Completados', 'Archivados', 'Nuevo proyecto', 'Kanban', 'Tabla', 'Gantt', 'Roadmap', 'Mi color de tarjeta']) {
+    for (const name of ['Activos', 'Completados', 'Archivados', 'Nuevo ticket', 'Kanban', 'Tabla', 'Gantt', 'Roadmap', 'Mi color de tarjeta']) {
       assert.equal(await bar.getByRole('button', { name, exact: false }).first().isVisible(), true, name)
     }
     const box = await bar.boundingBox()
     assert.ok(box.height <= 170, `barra compacta: ${Math.round(box.height)}px`)
-    // «Nuevo proyecto» y las vistas en la misma fila
-    const np = await bar.getByRole('button', { name: /Nuevo proyecto/ }).boundingBox()
+    // «Nuevo ticket» y las vistas en la misma fila
+    const np = await bar.getByRole('button', { name: /Nuevo ticket/ }).boundingBox()
     const vm = await bar.locator('.board-view-modes').boundingBox()
     assert.ok(Math.abs((np.y + np.height / 2) - (vm.y + vm.height / 2)) < 4, 'alineados')
     await shot(page, `${STAGE}-boards-barra-${theme}-1440.png`, { theme, view: 'boards-toolbar' }, bar)
@@ -223,14 +223,14 @@ for (const theme of ['light', 'dark']) {
     await openCard(page, analysisCard().title)
     const box = page.locator('.checklist-suggested')
     await box.getByText('Tareas sugeridas para Analysis').waitFor()
-    assert.equal(await box.locator('li').count(), 4)
+    assert.equal(await box.locator('li').count(), 3, 'exactamente 3 sugerencias')
     assert.equal(page.state.log.filter(l => l.method === 'POST').length, 0, 'nada se guarda sin acción explícita')
     await shot(page, `${STAGE}-checklist-sugerido-${theme}.png`, { theme, view: 'checklist-suggested' }, page.getByRole('dialog'))
-    await box.getByRole('button', { name: 'Agregar tareas sugeridas (4)' }).click()
+    await box.getByRole('button', { name: 'Agregar tareas sugeridas (3)' }).click()
     await page.locator('.checklist-suggested').waitFor({ state: 'detached' })
     const posts = page.state.log.filter(l => l.method === 'POST')
     assert.equal(posts.length, 1, 'una sola inserción')
-    assert.deepEqual(posts[0].rows.map(r => [r.phase, r.completed]), Array(4).fill(['analysis', false]))
+    assert.deepEqual(posts[0].rows.map(r => [r.phase, r.completed]), Array(3).fill(['analysis', false]))
     const backlog = page.state.items.filter(i => i.phase === 'backlog' && i.project_flow_id === page.state.analysisFlow)
     assert.equal(backlog.length, 3); assert.ok(backlog.every(i => i.completed), 'Backlog sigue completo')
     await shot(page, `${STAGE}-checklist-agregado-${theme}.png`, { theme, view: 'checklist-added' }, page.getByRole('dialog'))
@@ -242,7 +242,7 @@ for (const theme of ['light', 'dark']) {
 test('Checklist: edición manual, eliminación y alta conservan el resto de tareas', async () => {
   const page = await open()
   await openCard(page, analysisCard().title)
-  await page.getByRole('button', { name: 'Agregar tareas sugeridas (4)' }).click()
+  await page.getByRole('button', { name: 'Agregar tareas sugeridas (3)' }).click()
   await page.locator('.checklist-suggested').waitFor({ state: 'detached' })
   const first = page.state.items.find(i => i.phase === 'analysis')
   await page.getByRole('button', { name: `Editar tarea: ${first.description}` }).click()
@@ -252,13 +252,13 @@ test('Checklist: edición manual, eliminación y alta conservan el resto de tare
   assert.deepEqual(page.state.log.find(l => l.method === 'PATCH').body, { description: 'Revisar el requerimiento con Finanzas' }, 'solo cambia el texto')
   const last = page.state.items.filter(i => i.phase === 'analysis').at(-1)
   await page.getByRole('button', { name: `Eliminar tarea: ${last.description}` }).click()
-  await page.waitForFunction(() => document.querySelectorAll('[aria-label^="Eliminar tarea"]').length === 3)   // solo la fase abierta
-  assert.equal(page.state.items.filter(i => i.phase === 'analysis').length, 3)
+  await page.waitForFunction(() => document.querySelectorAll('[aria-label^="Eliminar tarea"]').length === 2)   // solo la fase abierta
+  assert.equal(page.state.items.filter(i => i.phase === 'analysis').length, 2)
   assert.equal(page.state.items.filter(i => i.phase === 'backlog' && i.completed).length, 3)
   await page.context().close()
 })
 
-test('Checklist: al cambiar de fase se agregan las tareas de la nueva fase solo si está vacía; sin duplicar ni desmarcar', async () => {
+test('Checklist: cambiar de fase NO materializa tareas; cada fase vacía sugiere 3 y se agregan solo con la acción explícita', async () => {
   const page = await open()
   const card = kanbanProjects[0]   // Backlog, sin tareas en ninguna fase
   const flow = card.project_flows[0].id
@@ -273,20 +273,22 @@ test('Checklist: al cambiar de fase se agregan las tareas de la nueva fase solo 
   }
   const count = phase => page.state.items.filter(i => i.project_flow_id === flow && i.phase === phase)
   await move('analysis')
-  await page.waitForFunction(() => document.querySelectorAll('[aria-label^="Eliminar tarea"]').length === 4)
-  assert.equal(count('analysis').length, 4); assert.ok(count('analysis').every(i => !i.completed))
-  // completar una, pasar a Design y volver a Analysis: no se duplica ni se desmarca
+  await dialog.getByText('Tareas sugeridas para Analysis').waitFor()
+  assert.equal(count('analysis').length, 0, 'el cambio de fase no inserta nada')
+  assert.equal(page.state.log.filter(l => l.method === 'POST').length, 0)
+  await dialog.getByRole('button', { name: 'Agregar tareas sugeridas (3)' }).click()
+  await page.waitForFunction(() => document.querySelectorAll('[aria-label^="Eliminar tarea"]').length === 3)
+  assert.equal(count('analysis').length, 3); assert.ok(count('analysis').every(i => !i.completed))
   await dialog.getByRole('checkbox').first().click()   // controlado: cambia tras confirmar el servidor
   await page.waitForFunction(() => document.querySelector('[role=dialog] input[type=checkbox]')?.checked)
   await move('design')
-  await page.waitForFunction(() => document.querySelectorAll('[aria-label^="Eliminar tarea"]').length >= 3)
-  assert.equal(count('design').length, 3)
+  await dialog.getByText('Tareas sugeridas para Design').waitFor()
+  assert.equal(count('design').length, 0)
   await move('analysis')
   await page.waitForTimeout(300)
-  assert.equal(count('analysis').length, 4, 'sin duplicados al volver')
+  assert.equal(count('analysis').length, 3, 'sin duplicados al volver')
   assert.equal(count('analysis').filter(i => i.completed).length, 1, 'la completada sigue completada')
-  // La fase final no se siembra (Done cierra el ticket; su confirmación de pendientes no cambia).
-  assert.equal(page.state.log.filter(l => l.method === 'POST').length, 2, 'una inserción por fase vacía visitada')
+  assert.equal(page.state.log.filter(l => l.method === 'POST').length, 1, 'solo la inserción explícita')
   await shot(page, `${STAGE}-checklist-cambio-fase.png`, { theme: 'light', view: 'checklist-phase-change' }, dialog)
   await page.context().close()
 })

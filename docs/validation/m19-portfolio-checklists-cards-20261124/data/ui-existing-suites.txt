@@ -1,0 +1,30 @@
+== boards-dashboard-checklists
+ℹ tests 12
+ℹ pass 12
+ℹ fail 0
+ℹ skipped 0
+== kanban-attachments
+ℹ tests 17
+ℹ pass 17
+ℹ fail 0
+ℹ skipped 0
+== dashboard-boards
+ℹ tests 9
+ℹ pass 9
+ℹ fail 0
+ℹ skipped 0
+== theme
+ℹ tests 8
+ℹ pass 8
+ℹ fail 0
+ℹ skipped 0
+== ux-four-areas
+ℹ tests 37
+ℹ pass 31
+ℹ fail 0
+ℹ skipped 6
+== portal-navigation
+ℹ tests 31
+ℹ pass 31
+ℹ fail 0
+ℹ skipped 0

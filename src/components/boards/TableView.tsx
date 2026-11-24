@@ -2,11 +2,12 @@ import ControlLabel from '../ui/ControlLabel'
 import ScrollHint from '../ui/ScrollHint'
 import { useState } from 'react'
 import type { Project, ProjectFlow, User } from '../../types/database.types'
-import { PRIORITY_COLORS, PHASE_LABELS, PRIORITY_LABEL, getAvatarColor, getInitials } from '../../lib/constants'
+import { PRIORITY_COLORS, PHASE_LABELS, PRIORITY_LABEL, getInitials } from '../../lib/constants'
 import { stageTone } from '../../lib/board-stages'
 import Icon from '../ui/Icon'
 import { checklistCount, phasePosition } from '../../lib/board'
-import { ownerClass, useOwnerColors } from '../../lib/card-colors'
+import { avatarClass, ownerClass, useOwnerColors } from '../../lib/card-colors'
+import { portfolioLabel, usePortfolios } from '../../lib/portfolios'
 
 interface ProjectWithRelations extends Project {
   project_flows?: ProjectFlow[]
@@ -57,6 +58,7 @@ function exportTableCSV(sorted: Array<{ project: ProjectWithRelations; flow: Pro
 
 export default function TableView({ projects, boardType, onProjectClick, loading, procontCodeId, users = [] }: Props) {
   const ownerColors = useOwnerColors()
+  const portfolios = usePortfolios()
   const [sortKey, setSortKey] = useState<SortKey>('created_at')
   const [sortDir, setSortDir] = useState<SortDir>('desc')
 
@@ -146,6 +148,7 @@ export default function TableView({ projects, boardType, onProjectClick, loading
               <SortHeader k="title"      label="Título" />
               <SortHeader k="priority"   label="Prioridad" />
               <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 whitespace-nowrap">Responsable</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 whitespace-nowrap">Portafolio</th>
               <SortHeader k="area"       label="Área" />
               <SortHeader k="phase"      label="Fase" />
               <SortHeader k="progress"   label="Checklist" />
@@ -184,10 +187,14 @@ export default function TableView({ projects, boardType, onProjectClick, loading
                   <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
                     {assignee ? (
                       <span className="table-owner" title={assignee.full_name}>
-                        <span className={`card-avatar ${getAvatarColor(assignee.full_name)} ${ownerColors[assignee.id] ? `owner-ring owner-${ownerColors[assignee.id]}` : ''}`} aria-hidden="true">{getInitials(assignee.full_name)}</span>
+                        <span className={`card-avatar ${avatarClass(ownerColors, assignee.id, assignee.full_name)}`} aria-hidden="true">{getInitials(assignee.full_name)}</span>
                         {assignee.full_name.split(' ')[0]}
                       </span>
                     ) : <span className="text-gray-500">Sin responsable</span>}
+                  </td>
+                  {/* Portafolio · iniciativa (M19) */}
+                  <td className="px-4 py-3 text-sm text-gray-700 max-w-[220px]">
+                    {portfolioLabel(portfolios, project.portfolio_id, project.initiative_id) ?? <span className="text-gray-500">—</span>}
                   </td>
                   {/* Área */}
                   <td className="px-4 py-3 whitespace-nowrap text-gray-600 text-xs">

@@ -97,6 +97,7 @@ Los nombres de diagrama representan tablas de `public`, `app_private`, `auth` y 
 | M16b | [20261123000200_client_legacy_payload_compat.sql](../../supabase/migrations/20261123000200_client_legacy_payload_compat.sql) | Compatibilidad con el frontend anterior (nombre Quipu descartado; NULL sin clave `subsystem_id`) | APLICADA 23/11/2026 15:55 UTC; historial 17/17 |
 | M17 | [20261123000300_internal_area_scope_and_card_preferences.sql](../../supabase/migrations/20261123000300_internal_area_scope_and_card_preferences.sql) | Áreas solo para código exacto PROCONT; preferencias de color internas persistentes, únicas y protegidas | PREPARADA y probada en PostgreSQL 17 local; aplicación remota NO VERIFICADA; no sumar al historial remoto 17/17 |
 | M18 | [20261124000100_limit_card_colors_and_seed_missing_checklists.sql](../../supabase/migrations/20261124000100_limit_card_colors_and_seed_missing_checklists.sql) | Paleta ofrecida de 10 colores en la autoasignación; plantillas de checklist de Analysis y Code Review | PREPARADA y probada en PostgreSQL 17 local (24/11/2026); **NO aplicada en remoto** (requiere autorización). Historial remoto informado por el usuario: 18 (M1–M17) |
+| M19 | [20261124000200_suggested_checklists_portfolios_internal_tickets.sql](../../supabase/migrations/20261124000200_suggested_checklists_portfolios_internal_tickets.sql) | Checklist solo sugerido (3 por fase); Portafolio/iniciativa (fase 1); `create_internal_ticket` con paridad | Ver sección M19 (estado de aplicación al final del documento) |
 
 ## Especificación por migración
 
@@ -478,3 +479,18 @@ Los manifiestos de preparación originales de cuatro entradas (`docs/validation/
 - No reasigna colores, no hace actualizaciones masivas, no elimina tablas ni columnas.
 
 **Evidencia:** `supabase/tests/m18_colors_checklists_local.py` (escenarios `clean` y `upgrade`) → `docs/validation/m18-colors-checklists-20261124/data/m18-{clean,upgrade}.json`.
+
+## Actualización de estado M18 (24/11/2026)
+
+M18 fue **aplicada en producción** el 24/11/2026 (dry-run solo con M18, aplicación y postcheck de solo lectura: 19/19, 10 colores ofrecidos, `azul`/`pizarra` intactos, 43 plantillas). Sustituye la mención «no aplicada» de la sección M18.
+
+## M19 — checklist sugerido, Portafolio y alta interna completa (24/11/2026)
+
+**Archivo:** [20261124000200_suggested_checklists_portfolios_internal_tickets.sql](../../supabase/migrations/20261124000200_suggested_checklists_portfolios_internal_tickets.sql). Requiere M18. Transaccional e idempotente; no modifica checklists, proyectos ni solicitudes existentes.
+
+- **Checklist:** `app_private.add_flows` (misma firma) deja de copiar `checklist_templates` a los proyectos nuevos. `checklist_templates` queda con **exactamente 3 sugerencias por cada una de las 15 fases reales** (45 filas, idénticas a `src/lib/checklist-defaults.ts`); es catálogo de referencia, ningún `checklist_items` cambia. Las tareas se agregan solo con la acción explícita «Agregar tareas sugeridas (3)».
+- **Portafolio (fase 1):** `public.portfolios(id,name,description,is_active,sort_order,…)` con nombre único sin distinguir mayúsculas; `public.portfolio_initiatives(id,portfolio_id,name,…)` con `UNIQUE(id,portfolio_id)` y nombre único por portafolio. `projects.portfolio_id` y `projects.initiative_id` (nulos), FK simple a `portfolios` y FK compuesta `(initiative_id,portfolio_id)` → `portfolio_initiatives(id,portfolio_id)`, más `CHECK (initiative_id IS NULL OR portfolio_id IS NOT NULL)`. Valores iniciales: «Gestión» → «Beneficiarios finales». RLS: lectura solo para internos activos; sin escritura directa.
+- **RPC:** `save_portfolio(jsonb)`, `save_portfolio_initiative(jsonb)` (admin/superadmin; sin borrado, se desactivan; una iniciativa no cambia de portafolio), `set_project_portfolio(uuid,uuid,uuid)` (superadmin/admin/developer; deriva el portafolio de la iniciativa; audita `portfolio_changed` en `activity_logs`), `create_internal_ticket(jsonb,uuid)` (admin/superadmin; idempotente). Todas `SECURITY DEFINER`, `search_path=''`, EXECUTE solo para `authenticated`.
+- **`create_internal_ticket`:** modo `client` inserta una solicitud con la forma del portal (origen «Cliente», estudio, producto, subproyecto, tipo, título, prioridad solicitada) y en la **misma transacción** llama a `classify_request` (regla de área solo para el código exacto PROCONT) y a `approve_request`. El modo `internal` llama a `create_internal_project`. Ambos aceptan Portafolio/iniciativa y fase inicial (`operate_board_ticket`, auditado; nunca Done). Cualquier error revierte todo.
+
+**Evidencia:** `supabase/tests/m19_portfolio_checklists_local.py` → `docs/validation/m19-portfolio-checklists-cards-20261124/data/m19-{clean,upgrade}.json`.

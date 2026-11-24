@@ -215,3 +215,13 @@ M18 está preparada y probada localmente; **no está aplicada en remoto**. Las f
 - `set_my_internal_card_color(p_color_id text) RETURNS jsonb`: acepta uno de los 10 colores ofrecidos, o el color actual del actor aunque esté retirado (lo conserva). Errores: `22023` (color retirado o inexistente), `23505` (ocupado por otro miembro), `42501` (sin perfil interno activo). Cambiar de color libera el anterior.
 - Autoasignación (activación de perfil): solo entre los 10 ofrecidos; si están todos ocupados, el perfil queda sin color (no es un error).
 - Checklist: una tarjeta creada con `create_internal_project` o `approve_request` recibe también las plantillas de `analysis` y `code_review` (8 tareas). El CRUD de `checklist_items` y `operate_board_ticket` no cambian.
+
+## M19 — Portafolio y alta interna (24/11/2026)
+
+- `save_portfolio(p_payload jsonb) RETURNS jsonb`: `{id?, name, description?, is_active?, sort_order?}`. Errores: `42501` (sin rol admin/superadmin), `22023` (nombre vacío o id inexistente), `23505` (nombre repetido).
+- `save_portfolio_initiative(p_payload jsonb) RETURNS jsonb`: `{id?, portfolio_id, name, description?, is_active?, sort_order?}`. Crear exige un portafolio activo; editar no puede cambiar el portafolio.
+- `set_project_portfolio(p_project_id uuid, p_portfolio_id uuid, p_initiative_id uuid) RETURNS jsonb`: `{project_id, portfolio_id, initiative_id}`. Con una iniciativa, el portafolio se deriva; una iniciativa de otro portafolio o inactiva (salvo la actual) da `22023`. `NULL,NULL` quita la asociación.
+- `create_internal_ticket(p_payload jsonb, p_idempotency_key uuid) RETURNS jsonb`: `{project, request_number, request_id}`.
+  - Comunes: `mode` (`client`|`internal`), `title`*, `description`*, `priority`, `assigned_dev`*, `start_date`, `due_date`, `requester_name`, `portfolio_id`, `initiative_id`, `initial_phase` (cualquier fase de Development salvo `done`).
+  - Solo `client`: `requester_name`*, `requester_email`, `studio_id`*, `studio_code_id`*, `system_id`*, `subsystem_id` (obligatorio si el producto lo exige), `request_type_id`*, `requested_priority`, `area_id`/`subarea_id` (solo con el código exacto PROCONT; ahí el área es obligatoria). En modo `internal`, cualquier clave de cliente da `22023`.
+- Checklist: `create_internal_project`/`approve_request` ya no insertan tareas; las sugerencias viven en `checklist_templates` (3 por fase) y en el frontend.

@@ -46,3 +46,8 @@ La rama `dashboard-boards-20261123` conserva el commit de Claude `5c6640ec390685
 - M18 (`20261124000100_limit_card_colors_and_seed_missing_checklists.sql`): preparada y probada en PostgreSQL 17 local (clean y upgrade). **No aplicada en remoto; requiere autorización.** Aplicar M18 antes de publicar el frontend `30d00e3`+ no es obligatorio (el frontend es compatible con y sin M18), pero sin M18 la autoasignación puede entregar colores retirados.
 - Pendiente de producción: autorizar `db push --dry-run` / aplicación única de M18, verificar 19/19, publicar el frontend y comprobar Vercel.
 - Fuera de alcance por ahora: jerarquía de proyectos largos (D-054) y el límite de 1.000 solicitudes de los KPI del Dashboard.
+
+## Estado 24/11/2026 (tarde) — M18 en producción y lote M19
+
+- M18 **aplicada** en producción (19/19) y `main` `2382b36` publicado (versión 202611241452). Las menciones anteriores de «M18 no aplicada» quedan superadas.
+- Lote M19 (checklist sugerido de 3 tareas por fase, tarjetas con tinte personal, avatar y semáforo, Portafolio fase 1 y alta interna con paridad): ver `docs/validation/m19-portfolio-checklists-cards-20261124/REPORT.md` para el estado de publicación.

@@ -1,0 +1,169 @@
+{
+  "captures": [
+    {
+      "file": "despues-kanban-tarjetas-light-1440.png",
+      "stage": "despues",
+      "theme": "light",
+      "view": "kanban-cards",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "fdf06da93d47314e0528147e12dc9b1a4207a581e7ffc429d08975b155fa97f6"
+    },
+    {
+      "file": "despues-columna-development-light.png",
+      "stage": "despues",
+      "theme": "light",
+      "view": "kanban-column",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "b94dda35a60152f27897a1abf6147e0701ba585c2edf1233a7b640ebfb07697d"
+    },
+    {
+      "file": "despues-kanban-tarjetas-dark-1440.png",
+      "stage": "despues",
+      "theme": "dark",
+      "view": "kanban-cards",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "08acee02c90b3a64080254d298558aa48c23f12b497cd9b12fce4d12996bc32c"
+    },
+    {
+      "file": "despues-columna-development-dark.png",
+      "stage": "despues",
+      "theme": "dark",
+      "view": "kanban-column",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "010c35e47361c9c6cc26566a2c42bb29f3118d167cfc9d221a9e9176d0a3f699"
+    },
+    {
+      "file": "despues-detalle-portafolio.png",
+      "stage": "despues",
+      "theme": "light",
+      "view": "project-portfolio",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "7771b00b1dcdc23d0aedaed4387080cd0a178ae6b22ef42bd3216ce52483eb33"
+    },
+    {
+      "file": "despues-portafolios-gestion.png",
+      "stage": "despues",
+      "theme": "light",
+      "view": "portfolio-manager",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "b4002487f63781b314031000f0f3d5e62e766ec0223a4150a768b6839c19a128"
+    },
+    {
+      "file": "despues-nuevo-ticket-cliente-light.png",
+      "stage": "despues",
+      "theme": "light",
+      "view": "new-ticket-client",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "3af6d212cec5bf516c94adbcb116818dca7e8339b1d73cb23d61a9de52684aca"
+    },
+    {
+      "file": "despues-nuevo-ticket-cliente-dark.png",
+      "stage": "despues",
+      "theme": "dark",
+      "view": "new-ticket-client",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "02503f74562f3823b9d71aed8fcb2549d5a0cc8c76b5b1078e9707294249f40e"
+    },
+    {
+      "file": "despues-nuevo-ticket-interno.png",
+      "stage": "despues",
+      "theme": "light",
+      "view": "new-ticket-internal",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "a4eb27c3f9e9abb1a02fac3432244bbe1e94529db1500baf2dd4d542f88cd113"
+    },
+    {
+      "file": "despues-nuevo-ticket-390.png",
+      "stage": "despues",
+      "theme": "light",
+      "view": "new-ticket-mobile",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "259ac3301a96a218341bf835b5640dbfdc61b1b1a2f55cdc895230df513e2a17"
+    },
+    {
+      "file": "despues-checklist-sugerido-light.png",
+      "stage": "despues",
+      "theme": "light",
+      "view": "checklist-suggested",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "3d9067cb71aa61283db687d9f9f029b13fd8860dcff1ea9f9b634d4f57174186"
+    },
+    {
+      "file": "despues-checklist-agregado-light.png",
+      "stage": "despues",
+      "theme": "light",
+      "view": "checklist-added",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "251f597a98b31193dfe35e071420c1d9ab2fb202ab4cc0c6f902bb25d6fdf04d"
+    },
+    {
+      "file": "despues-checklist-sugerido-dark.png",
+      "stage": "despues",
+      "theme": "dark",
+      "view": "checklist-suggested",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "5a2bf58dadec0dd4856b29dd07998214a6b31919dda542632a2cd1fdc01e0ef8"
+    },
+    {
+      "file": "despues-checklist-agregado-dark.png",
+      "stage": "despues",
+      "theme": "dark",
+      "view": "checklist-added",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "816b58a49f599efeb7a05156c8c1ec3fee6551132bc3fb957db07d4ee621cd12"
+    },
+    {
+      "file": "despues-checklist-cambio-fase.png",
+      "stage": "despues",
+      "theme": "light",
+      "view": "checklist-phase-change",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "924abcf0c0e27fac9ca95bcb5aa3e7d09c7c0df31fda619a5de538d05a39381f"
+    }
+  ]
+}

@@ -2,6 +2,7 @@
 // el UUID del usuario siempre procede de Supabase Auth y nunca de una elección del navegador.
 import { useEffect, useSyncExternalStore } from 'react'
 import { supabase } from './supabase'
+import { getAvatarColor } from './constants'
 
 import { OWNER_COLORS, OWNER_PALETTE, type OwnerColorId } from './card-palette.ts'
 export * from './card-palette.ts'
@@ -70,3 +71,11 @@ if (typeof window !== 'undefined') {
 
 export const ownerClass = (colors: Record<string, OwnerColorId>, userId?: string | null) =>
   userId && colors[userId] ? `owner-${colors[userId]}` : ''
+
+/**
+ * Clases del avatar de un responsable (24/11/2026): con color personal, el avatar se rellena con ese color y su aro
+ * coincide (`owner-ring`), con la tinta de iniciales de mayor contraste (`--owner-ink`, index.css). Sin color personal,
+ * conserva el tono neutro de avatar de siempre.
+ */
+export const avatarClass = (colors: Record<string, OwnerColorId>, userId: string | null | undefined, name: string) =>
+  userId && colors[userId] ? `owner-avatar owner-ring owner-${colors[userId]}` : getAvatarColor(name)

@@ -24,6 +24,19 @@ export interface InternalClassification {
 export type InternalProjectInput = Pick<Project, 'title' | 'description' | 'priority'> & {
   assigned_dev: string; start_date?: string; due_date?: string; area?: string; requester_name?: string
 }
+/**
+ * Alta interna con paridad (M19, create_internal_ticket). `client`: solicitud de un cliente registrada por TI, con los
+ * mismos datos que el portal más la clasificación del validador; `internal`: trabajo interno u operativo.
+ */
+export interface InternalTicketInput {
+  mode: 'client' | 'internal'
+  title: string; description: string; priority: Project['priority']; assigned_dev: string
+  start_date?: string; due_date?: string; requester_name?: string; requester_email?: string
+  portfolio_id?: string | null; initiative_id?: string | null; initial_phase?: string
+  studio_id?: string; studio_code_id?: string; system_id?: string; subsystem_id?: string | null; request_type_id?: string
+  requested_priority?: Project['priority']; area_id?: string | null; subarea_id?: string | null
+}
+export interface InternalTicketReceipt { project: Project; request_number: string; request_id: string }
 export interface ApprovalInput {
   priority: Project['priority']; assigned_dev: string; title?: string; start_date?: string; due_date?: string
 }
@@ -75,6 +88,26 @@ export function createOperations(client: RpcClient) {
         const project = await value<Project>('create_internal_project', args)
         if (!uuidPattern.test(project.id) || !project.request_id) throw new Error('No se confirmó el proyecto. Reintenta con los mismos datos.')
         return project
+      })
+    },
+    async createInternalTicket(data: InternalTicketInput, attempt: RpcAttempt) {
+      if (!uuidPattern.test(data.assigned_dev ?? '')) throw new Error('Selecciona el responsable principal.')
+      // Solo se envían las claves con valor: el servidor rechaza datos de cliente en el modo interno.
+      const raw: Record<string, unknown> = { mode: data.mode, title: data.title.trim(), description: data.description.trim(),
+        priority: data.priority, assigned_dev: data.assigned_dev, start_date: nullable(data.start_date), due_date: nullable(data.due_date),
+        requester_name: nullable(data.requester_name), requester_email: nullable(data.requester_email),
+        portfolio_id: data.portfolio_id || null, initiative_id: data.initiative_id || null,
+        initial_phase: data.initial_phase && data.initial_phase !== 'backlog' ? data.initial_phase : null }
+      if (data.mode === 'client') Object.assign(raw, { studio_id: data.studio_id, studio_code_id: data.studio_code_id,
+        system_id: data.system_id, subsystem_id: data.subsystem_id || null, request_type_id: data.request_type_id,
+        requested_priority: data.requested_priority ?? 'medium', area_id: data.area_id || null, subarea_id: data.subarea_id || null })
+      const payload = Object.fromEntries(Object.entries(raw).filter(([, v]) => v !== null && v !== undefined && v !== ''))
+      return attempt.run('create_internal_ticket', { p_payload: payload }, async args => {
+        const receipt = await value<InternalTicketReceipt>('create_internal_ticket', args)
+        if (!uuidPattern.test(receipt?.project?.id ?? '') || !/^(REQ|INT)\d{2}-\d{3,}$/.test(receipt.request_number ?? '')) {
+          throw new Error('No se confirmó el ticket. Reintenta con los mismos datos.')
+        }
+        return receipt
       })
     },
     async approveRequest(request: Request, data: ApprovalInput, attempt: RpcAttempt) {

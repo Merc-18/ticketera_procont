@@ -132,17 +132,22 @@ for (const theme of ['light', 'dark']) {
     const bgs = {}
     for (const p of ['urgent', 'high', 'medium', 'low']) bgs[p] = await css(badge(p), 'background-color')
     assert.equal(new Set(Object.values(bgs)).size, 4, 'cuatro prioridades distintas')
-    assert.equal(bgs.high, 'rgb(238, 187, 49)', 'Alto = dorado Procont')
+    // Semáforo (24/11/2026): Bajo verde, Medio ámbar (dorado Procont), Alto naranja, Urgente rojo.
+    assert.equal(bgs.high, 'rgb(194, 65, 12)', 'Alto = naranja')
     assert.equal(bgs.urgent, theme === 'light' ? 'rgb(185, 28, 28)' : 'rgb(220, 38, 38)', 'Urgente = rojo')
-    assert.equal(bgs.medium, theme === 'light' ? 'rgb(30, 58, 138)' : 'rgb(37, 99, 235)', 'Medio = azul corporativo')
-    assert.notEqual(await css(badge('low'), 'border-top-color'), bgs.low, 'Bajo = neutro con contorno')
+    assert.equal(bgs.medium, 'rgb(238, 187, 49)', 'Medio = ámbar')
+    assert.equal(bgs.low, 'rgb(21, 128, 61)', 'Bajo = verde')
     for (const p of ['urgent', 'high', 'medium', 'low']) {
       const r = await contrast(page, await css(badge(p), 'color'), bgs[p])
       assert.ok(r >= 4.5, `${theme} insignia ${p}: ${r.toFixed(2)}:1`)
     }
     // La tarjeta no se pinta del color de su prioridad: superficie neutra común.
-    const surfaces = await page.locator('.project-card:not(.is-blocked)').evaluateAll(els => [...new Set(els.map(el => getComputedStyle(el).backgroundColor))])
-    assert.equal(surfaces.length, 1, 'misma superficie neutra para todas las prioridades')
+    // Sin color personal: superficie neutra común. Con color personal: tinte sutil de ese color (24/11/2026), nunca el de prioridad.
+    const surfaces = await page.locator('.project-card:not(.is-blocked):not(.has-owner)').evaluateAll(els => [...new Set(els.map(el => getComputedStyle(el).backgroundColor))])
+    assert.equal(surfaces.length, 1, 'misma superficie neutra para las tarjetas sin responsable')
+    const tinted = await page.locator('.project-card.has-owner.owner-dorado:not(.is-blocked)').evaluateAll(els => [...new Set(els.map(el => getComputedStyle(el).backgroundColor))])
+    assert.equal(tinted.length, 1, 'mismo tinte para el mismo responsable, sea cual sea la prioridad')
+    assert.notEqual(tinted[0], surfaces[0])
     // Responsable: franja lateral y anillo con el color persistido (azul para el developer simulado).
     const devCard = page.locator('.project-card.has-owner.owner-azul').first()
     const owner = await css(devCard, '--owner')

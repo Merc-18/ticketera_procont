@@ -20,20 +20,20 @@ export const PRIORITY_LABEL: Record<string, string> = {
 export const PRIORITY_ORDER: Record<string, number> = { urgent: 0, high: 1, medium: 2, low: 3 }
 
 /**
- * Badge de prioridad (incluye borde; usar con `border`). Texto ≥ 4,5:1 sobre su fondo (D-042).
- * Regla de canales: la PRIORIDAD va en relleno (Urgente rojo, Alto dorado oficial, Medio azul corporativo) y Bajo
- * en contorno neutro visible; los ESTADOS van siempre en tinte o contorno (request-status.ts), así nunca coinciden.
+ * Prioridad en SEMÁFORO (24/11/2026): Bajo verde · Medio ámbar (dorado Procont) · Alto naranja · Urgente rojo.
+ * Clases CSS con valores por tema en index.css («Prioridad en semáforo»); texto ≥ 4,5:1 sobre el relleno en claro y
+ * oscuro. Se usa igual en Kanban, Tabla, detalle, Gantt, Roadmap, Dashboard y prioridad solicitada.
  */
 export const PRIORITY_COLORS: Record<string, string> = {
-  urgent: 'bg-red-700 text-white border-red-700',
-  high:   'bg-accent-400 text-on-accent border-accent-400',
-  medium: 'bg-brand-600 text-white border-brand-600',
-  low:    'bg-surface text-gray-700 border-gray-400',
+  urgent: 'prio-fill prio-fill-urgent',
+  high:   'prio-fill prio-fill-high',
+  medium: 'prio-fill prio-fill-medium',
+  low:    'prio-fill prio-fill-low',
 }
 
-/** Barra del Gantt y punto del Roadmap: paleta oficial (rojo, dorado, azul, neutro). */
+/** Barras (Gantt, Dashboard) y puntos (Roadmap): mismo semáforo, solo fondo. */
 export const PRIORITY_BAR: Record<string, string> = {
-  urgent: 'bg-red-700', high: 'bg-accent-400', medium: 'bg-brand-600', low: 'bg-gray-400',
+  urgent: 'prio-bg-urgent', high: 'prio-bg-high', medium: 'prio-bg-medium', low: 'prio-bg-low',
 }
 export const PRIORITY_DOT = PRIORITY_BAR
 
