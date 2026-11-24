@@ -20,7 +20,8 @@ export type OwnerColorId = typeof OWNER_COLORS[number]['id']
  * (azul, celeste, dorado, ámbar, grafito, pizarra; incluyen las dos asignaciones reales: azul y pizarra) y los
  * 4 tonos del catálogo M17 más alejados de ellos en CIELAB, medido en claro y oscuro (BOARD_COLOR_PALETTE.md).
  * Los otros 14 identificadores siguen siendo válidos para PINTAR una asignación previa, pero no se ofrecen.
- * Mientras no se aplique la migración propuesta, la autoasignación del servidor aún puede entregar uno retirado.
+ * El servidor aplica la misma lista desde M18 (20261124000100): la autoasignación solo usa estos 10 y, sin
+ * capacidad, deja al perfil sin color. Una prueba unitaria compara ambas listas.
  */
 export const OWNER_PALETTE: readonly OwnerColorId[] = [
   'azul', 'celeste', 'dorado', 'ambar', 'grafito', 'pizarra', 'dorado-claro', 'ambar-bronce', 'celeste-oscuro', 'pizarra-acero',

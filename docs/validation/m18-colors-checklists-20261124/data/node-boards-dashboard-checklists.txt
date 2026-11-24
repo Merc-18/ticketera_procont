@@ -1,0 +1,22 @@
+✔ paleta: exactamente 10 colores únicos, todos del catálogo M17 aprobado (sin paleta nueva) (1.618081ms)
+✔ paleta: incluye las asignaciones reales verificadas (azul y pizarra) y los 6 colores originales (0.115885ms)
+✔ unicidad: un color asignado a otro no está disponible; el propio sí; sin capacidad → lista vacía (0.455025ms)
+✔ M18: el servidor ofrece exactamente la misma paleta de 10, sin reasignar y sin bloquear la activación (0.432415ms)
+✔ M18: las plantillas de Analysis y Code Review del servidor son idénticas a las del frontend (0.218901ms)
+✔ tickets por estudio: pagina más allá de 1000 filas y el total coincide con count=exact (2.254934ms)
+✔ tickets por estudio: periodo y estudio se aplican en el servidor; sin estudio aparte (0.301561ms)
+✔ tickets por estudio: si el total no se puede verificar o una página falla, error en vez de un total parcial (1.157975ms)
+✔ tickets por estudio: filas ordenadas de mayor a menor, nombres del catálogo y «Sin estudio asignado» al final (0.301915ms)
+✔ plantillas: una por cada una de las 8 fases reales, distintas entre sí; Analysis y Code Review incluidas (0.373809ms)
+✔ plantillas: las fases con plantilla en la base de datos conservan exactamente su texto (no se duplican) (0.301393ms)
+✔ sin duplicados: solo se sugieren las tareas que la fase no tiene (texto normalizado, tildes y espacios) (0.160407ms)
+✔ siembra al llegar: solo si la fase está vacía y nunca en la fase final (0.065227ms)
+✔ siembra: fase vacía → una sola inserción sin completar; fase con tareas → nada; no borra ni desmarca (0.682866ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 78.485303

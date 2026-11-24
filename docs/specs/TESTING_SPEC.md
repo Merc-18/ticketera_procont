@@ -157,3 +157,14 @@ Estas ejecuciones son evidencia local de PostgreSQL 17 y React/Chromium con serv
 | TypeScript/build | PASS | Build local posterior a cambios frontend, sin servicio remoto. |
 
 Los conteos de cada escenario se mantienen separados y no se suman. Si la suite UI completa no termina con resultado recuperable, repetirla y registrar su salida real antes del commit.
+
+## M18 local — paleta de 10 y plantillas (24/11/2026)
+
+| Suite | Resultado | Alcance |
+|---|---|---|
+| `supabase/tests/m18_colors_checklists_local.py --scenario clean` | ver `m18-clean.json` | PostgreSQL 17.12 desechable por socket: M1–M17, prueba de ROLLBACK de M18, M18, idempotencia (segunda ejecución sin cambios en ninguna tabla), colores, seguridad, concurrencia, capacidad y plantillas |
+| `… --scenario upgrade` | ver `m18-upgrade.json` | Base M17 con colores retirados asignados y un proyecto con Backlog completado: M18 no cambia ningún histórico; colores retirados conservados y cambiables |
+| `board_operations_local.py` y `board_frontend_local.py` con M1–M18 | 74 y 26 PASS | Ejecutadas en una copia desechable del árbol para no sobrescribir sus JSON históricos |
+| `tests/boards-dashboard-checklists.test.mjs` | 14/14 | Paridad de la paleta y de las plantillas entre M18 y el frontend |
+
+Los arneses fijados a un número de migraciones (`client_access` 13, `client_login_throttle` 14, `integrated_security_client_flow` y `security_request_creation` 15, `client_data_security` 17, `dashboard_boards_m17` 18) son instantáneas históricas de su etapa y no se adaptan. El arnés de M18 repite las comprobaciones de color de M17 que siguen vigentes. No se repitieron las suites Node ni de interfaz completas: el único código frontend que cambió es un comentario.

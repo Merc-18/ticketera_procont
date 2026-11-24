@@ -37,13 +37,21 @@ test('unicidad: un color asignado a otro no está disponible; el propio sí; sin
   assert.deepEqual(availableColors(full, 'u-nuevo'), [], 'con 10 asignados no hay color libre: no se repite ninguno')
 })
 
-test('migración propuesta (no aplicada): 10 ofrecidos, sin reasignar y sin fallar la activación por capacidad', () => {
-  const sql = readFileSync(new URL('../docs/validation/boards-dashboard-checklists-20261124/proposed-migration/20261124000100_internal_card_palette_10.sql', import.meta.url), 'utf8')
-  const listed = sql.match(/SET offered = color_id IN\s*\(([^)]+)\)/)[1].match(/'([a-z-]+)'/g).map(s => s.slice(1, -1))
-  assert.deepEqual(listed, [...OWNER_PALETTE])
-  assert.match(sql, /IF selected IS NULL THEN RETURN NULL; END IF;/)
-  assert.doesNotMatch(sql, /UPDATE public\.internal_card_preferences/, 'no cambia colores de usuarios')
-  assert.match(sql, /^-- PROPUESTA — NO APLICADA/)
+test('M18: el servidor ofrece exactamente la misma paleta de 10, sin reasignar y sin bloquear la activación', () => {
+  const sql = readFileSync(new URL('../supabase/migrations/20261124000100_limit_card_colors_and_seed_missing_checklists.sql', import.meta.url), 'utf8')
+  const listed = sql.match(/SET offered = color_id = ANY\(ARRAY\[([^\]]+)\]\)/)[1].match(/'([a-z-]+)'/g).map(s => s.slice(1, -1))
+  assert.deepEqual([...listed].sort(), [...OWNER_PALETTE].sort())
+  assert.match(sql, /IF selected IS NULL THEN RETURN NULL; END IF;/, 'sin capacidad: perfil sin color, la activación continúa')
+  assert.doesNotMatch(sql, /UPDATE public\.internal_card_preferences|DELETE FROM public\.internal_card_preferences/, 'no cambia colores de usuarios')
+  assert.doesNotMatch(sql, /DROP (TABLE|COLUMN)/i)
+  assert.match(sql, /^-- M18/); assert.match(sql, /\nBEGIN;\n/); assert.match(sql, /\nCOMMIT;\n$/)
+})
+
+test('M18: las plantillas de Analysis y Code Review del servidor son idénticas a las del frontend', () => {
+  const sql = readFileSync(new URL('../supabase/migrations/20261124000100_limit_card_colors_and_seed_missing_checklists.sql', import.meta.url), 'utf8')
+  const rows = [...sql.matchAll(/\('development','(analysis|code_review)','([^']+)',(\d)\)/g)]
+  assert.equal(rows.length, 8)
+  for (const [, phase, text, index] of rows) assert.equal(phaseTemplate('development', phase)[Number(index)], text, `${phase}/${index}`)
 })
 
 // ── Tickets por estudio ─────────────────────────────────────────────────────

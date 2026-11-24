@@ -206,3 +206,12 @@ Revisión local: 23/11/2026 · base `3ec665907bfc13dc64f17f7236c0dcb02bebf8f2`. 
 - Errores: `42501` perfil/rol no autorizado; `22023` color inválido; `23505` color ocupado o sin disponibilidad. Una violación de unicidad no reasigna el color de otro miembro.
 - El acceso al catálogo/tabla está cerrado directamente; los colores compartidos se obtienen por RPC. RLS permite solo lectura de equipo a roles internos activos; la escritura pública directa está revocada.
 - `classify_request` conserva su firma. Para un código resuelto por servidor distinto exactamente de `PROCONT`, `area_id` y `subarea_id` se limpian/ignoran. Para `PROCONT`, el área pertenece al estudio, está activa y es raíz; subárea activa debe depender de ella. Planner y creación de proyecto interno no establecen una nueva asociación de área.
+
+## Extensión M18 local — paleta de 10 y plantillas (24/11/2026)
+
+M18 está preparada y probada localmente; **no está aplicada en remoto**. Las firmas no cambian.
+
+- `internal_card_colors() RETURNS jsonb`: `{user_id, capacity, colors:[{id,label,offered,assigned_to}], assignments:{<user_uuid>:<color_id>}}`. `capacity` = 10. `colors` contiene los 10 ofrecidos más cualquier color retirado que siga asignado. Los campos nuevos son aditivos; el frontend actual solo lee `assignments`.
+- `set_my_internal_card_color(p_color_id text) RETURNS jsonb`: acepta uno de los 10 colores ofrecidos, o el color actual del actor aunque esté retirado (lo conserva). Errores: `22023` (color retirado o inexistente), `23505` (ocupado por otro miembro), `42501` (sin perfil interno activo). Cambiar de color libera el anterior.
+- Autoasignación (activación de perfil): solo entre los 10 ofrecidos; si están todos ocupados, el perfil queda sin color (no es un error).
+- Checklist: una tarjeta creada con `create_internal_project` o `approve_request` recibe también las plantillas de `analysis` y `code_review` (8 tareas). El CRUD de `checklist_items` y `operate_board_ticket` no cambian.

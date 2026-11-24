@@ -96,6 +96,7 @@ Los nombres de diagrama representan tablas de `public`, `app_private`, `auth` y 
 | M16 | [20261123000100_client_request_data_security.sql](../../supabase/migrations/20261123000100_client_request_data_security.sql) | Identidad Quipu/QuipuFac, prioridad solicitada, subproyecto original, procedencia del nombre, `client_subprojects` | APLICADA 23/11/2026 15:55 UTC; historial 17/17 |
 | M16b | [20261123000200_client_legacy_payload_compat.sql](../../supabase/migrations/20261123000200_client_legacy_payload_compat.sql) | Compatibilidad con el frontend anterior (nombre Quipu descartado; NULL sin clave `subsystem_id`) | APLICADA 23/11/2026 15:55 UTC; historial 17/17 |
 | M17 | [20261123000300_internal_area_scope_and_card_preferences.sql](../../supabase/migrations/20261123000300_internal_area_scope_and_card_preferences.sql) | Áreas solo para código exacto PROCONT; preferencias de color internas persistentes, únicas y protegidas | PREPARADA y probada en PostgreSQL 17 local; aplicación remota NO VERIFICADA; no sumar al historial remoto 17/17 |
+| M18 | [20261124000100_limit_card_colors_and_seed_missing_checklists.sql](../../supabase/migrations/20261124000100_limit_card_colors_and_seed_missing_checklists.sql) | Paleta ofrecida de 10 colores en la autoasignación; plantillas de checklist de Analysis y Code Review | PREPARADA y probada en PostgreSQL 17 local (24/11/2026); **NO aplicada en remoto** (requiere autorización). Historial remoto informado por el usuario: 18 (M1–M17) |
 
 ## Especificación por migración
 
@@ -464,3 +465,16 @@ Los manifiestos de preparación originales de cuatro entradas (`docs/validation/
 - Migración no altera registros existentes; el backfill inicial crea únicamente preferencias de perfiles activos. Los códigos no PROCONT no reciben nuevas asociaciones. No se infiere área faltante para históricos.
 
 **Evidencia:** `supabase/tests/dashboard_boards_m17_local.py`; JSON de escenarios `dashboard-boards-m17-clean.json` y `dashboard-boards-m17-upgrade.json`. Son ejecuciones locales sobre PostgreSQL, no estado de Supabase remoto.
+
+## M18 — paleta de 10 colores y plantillas de checklist faltantes (local, 24/11/2026)
+
+**Archivo:** [20261124000100_limit_card_colors_and_seed_missing_checklists.sql](../../supabase/migrations/20261124000100_limit_card_colors_and_seed_missing_checklists.sql). Base `30d00e3` (sobre `main` `485e449`). Aditiva, transaccional e idempotente. **No aplicada en remoto.** M1–M17 sin cambios (sus bytes son idénticos a los de `485e449`).
+
+- `app_private.internal_card_color_catalog` recibe `offered boolean NOT NULL DEFAULT false`: 10 en `true` (`azul`, `celeste`, `dorado`, `ambar`, `grafito`, `pizarra`, `dorado-claro`, `ambar-bronce`, `celeste-oscuro`, `pizarra-acero`; los mismos que `src/lib/card-palette.ts`). Las 24 filas se conservan y la migración verifica 24 en total y 10 ofrecidas.
+- `app_private.ensure_internal_card_color` (reemplazo con la misma firma): la autoasignación elige solo colores ofrecidos y libres, por `sort_order`, bajo el mismo `LOCK TABLE … IN EXCLUSIVE MODE` y con `UNIQUE(color_id)`. **Sin capacidad devuelve NULL y no inserta**, así que la activación del perfil nunca falla ni se repite un color. Una petición explícita acepta un color ofrecido o conservar el propio actual (aunque esté retirado); cualquier otro da `22023` y uno ocupado da `23505`.
+- `public.internal_card_colors()`: añade `capacity` y `offered` por color. `colors` contiene los ofrecidos más los retirados que sigan asignados. `assignments` no cambia.
+- `set_my_internal_card_color(text)`, el trigger `internal_card_color_profile_sync`, la tabla `internal_card_preferences`, su RLS y sus permisos **no cambian**.
+- `public.checklist_templates`: 8 filas de `development` (4 `analysis`, 4 `code_review`) con el texto de `src/lib/checklist-defaults.ts`. Se insertan solo si no existe la misma posición o el mismo texto. `add_flows` (sin cambios) las copia únicamente a proyectos **nuevos**; los `checklist_items` existentes no se tocan.
+- No reasigna colores, no hace actualizaciones masivas, no elimina tablas ni columnas.
+
+**Evidencia:** `supabase/tests/m18_colors_checklists_local.py` (escenarios `clean` y `upgrade`) → `docs/validation/m18-colors-checklists-20261124/data/m18-{clean,upgrade}.json`.

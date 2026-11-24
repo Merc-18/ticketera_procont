@@ -1,0 +1,19 @@
+PASS Base: M1-M17 (18 migraciones) aplicadas en orden; 35 plantillas sin Analysis ni Code Review (clean)
+PASS M18: ejecutada dentro de una transacción y revertida con ROLLBACK, la base queda idéntica (sin columna offered ni plantillas)
+PASS M18: se aplica y una segunda ejecución no cambia ninguna tabla (idempotente)
+PASS Colores: exactamente los 10 aprobados están ofrecidos; el catálogo conserva sus 24 identificadores
+PASS Seguridad: funciones SECURITY DEFINER con search_path vacío; ensure solo interna; RPC solo para authenticated; PUBLIC y anon revocados
+PASS Seguridad: anon (clientes Quipu/QuipuFac usan anon + token) y un autenticado sin perfil interno no leen ni modifican preferencias
+PASS Seguridad: sin UPDATE/INSERT/DELETE directos sobre preferencias (solo SELECT con RLS); nadie cambia el color de otro; los internos activos ven la misma asignación
+PASS Colores: un color ocupado devuelve 23505; cambiar de color libera el anterior
+PASS Colores: un color retirado o inexistente no se puede elegir (22023)
+PASS Concurrencia: dos peticiones simultáneas del mismo color → un dueño y un rechazo 23505
+PASS Concurrencia: dos activaciones simultáneas reciben colores distintos y ofrecidos (dorado, azul)
+PASS Capacidad: con los 10 ocupados, un perfil nuevo se activa SIN color; nunca se entrega un retirado ni se repite
+PASS Capacidad: desactivar libera el color y el perfil sin color puede elegirlo
+PASS Checklist: Analysis y Code Review tienen plantilla en el servidor, con el mismo texto y orden que el frontend
+PASS Checklist: las 35 plantillas anteriores (6 fases Development + Administrative) no cambian; total 43
+PASS Checklist: una tarjeta nueva nace con las 8 fases cubiertas (25 tareas, ninguna completada), vía add_flows sin cambios
+PASS Checklist: editar, completar, añadir y borrar bajo RLS; el cambio de fase (operate_board_ticket) no duplica ni desmarca
+PASS Checklist: la auditoría existente (checklist_added/updated/deleted) sigue registrando los cambios
+18 comprobaciones M18 (clean) superadas; servidor detenido.

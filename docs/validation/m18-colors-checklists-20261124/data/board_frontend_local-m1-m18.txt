@@ -1,0 +1,27 @@
+PASS NewProjectModal payload: Development, Backlog, principal assignee, no SLA
+PASS RequestValidationModal payload: one Development flow, assigned_admin null accepted
+PASS descriptive edit (title/description/dates) still allowed for editors
+PASS old direct priority/status write path is rejected
+PASS old direct phase/progress write path is rejected
+PASS browser cannot append activity_logs
+PASS phase skips/regressions via drag; in_progress after leaving Backlog
+PASS phase progress and checklist progress are separate server values
+PASS block without reason rejected
+PASS blocked ticket cannot change phase
+PASS blocked ticket cannot finish
+PASS while blocked: checklist, comments and mention notifications still allowed
+PASS developer cannot reassign blocked ticket
+PASS admin reassignment while blocked audited with previous/new assignee and actor
+PASS unblock restores phase-derived status and keeps the previous reason in audit
+PASS Done with pending checklist requires explicit confirmation
+PASS confirmed Done records pending items, actor and fingerprint
+PASS finished ticket cannot be dragged without reopening
+PASS reopen without reason rejected
+PASS reopen to Done rejected
+PASS reopen with reason returns to chosen phase and links previous completion
+PASS bulk priority: single transaction with per-ticket audit
+PASS viewer cannot run bulk operations
+PASS viewer cannot run ticket commands
+PASS viewer can read the board snapshot
+PASS bulk archive and restore through the contract
+26 frontend board checks passed; isolated PostgreSQL stopped.

@@ -38,3 +38,11 @@ La rama `dashboard-boards-20261123` conserva el commit de Claude `5c6640ec390685
 - Color de responsable: persistencia compartida en Supabase diseñada en M17; no disponible en remoto mientras M17 no se aplique. Build local usa el contrato nuevo.
 - Pruebas locales: PostgreSQL M17 clean/upgrade PASS, Node 173/173 PASS; UI focalizada color 2/2 PASS; UI completa 91 PASS, 0 FAIL, 6 omitidas; TypeScript/build PASS.
 - Bloqueo de publicación: falta acceso efectivo a Supabase para comprobar 17/17, ejecutar dry-run/aplicar únicamente M17 y verificar 18/18; además verificar Vercel Production tras push. No aplicar frontend dependiente de M17 antes de su migración.
+
+## M18 local — paleta de 10 colores y plantillas de checklist (24/11/2026)
+
+- `main` publicado: `485e449` (Kanban por etapas y adjuntos, versión 202611241130). Historial remoto informado por el usuario: **18 migraciones (M1–M17)**.
+- Rama local `local/boards-dashboard-checklists-20261124`: `30d00e3` (paleta de 10 en el frontend, Boards sin Área, Tickets por estudio, checklist por fase) más el commit de M18. **Sin push.**
+- M18 (`20261124000100_limit_card_colors_and_seed_missing_checklists.sql`): preparada y probada en PostgreSQL 17 local (clean y upgrade). **No aplicada en remoto; requiere autorización.** Aplicar M18 antes de publicar el frontend `30d00e3`+ no es obligatorio (el frontend es compatible con y sin M18), pero sin M18 la autoasignación puede entregar colores retirados.
+- Pendiente de producción: autorizar `db push --dry-run` / aplicación única de M18, verificar 19/19, publicar el frontend y comprobar Vercel.
+- Fuera de alcance por ahora: jerarquía de proyectos largos (D-054) y el límite de 1.000 solicitudes de los KPI del Dashboard.

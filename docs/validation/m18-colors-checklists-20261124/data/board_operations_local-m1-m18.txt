@@ -1,0 +1,75 @@
+PASS M12 performs no backfill: existing requests/projects/flows/checklists/audit are unchanged
+PASS new approval rejects administrative
+PASS new approval rejects dual
+PASS internal creation also rejects Administrative
+PASS new ticket requires one explicit principal assignee
+PASS new ticket has only Development, Backlog, one principal and no generated deadlines
+PASS initial priority decision is captured in server audit as well as subsequent changes
+PASS internal creation defaults to Development with its explicit principal
+PASS unauthorized board command None
+PASS unauthorized board command 00000000-0000-4000-8000-000000000004
+PASS unauthorized board command 00000000-0000-4000-8000-000000000005
+PASS unauthorized board command 00000000-0000-4000-8000-000000000006
+PASS active viewer reads board snapshot but cannot mutate
+PASS direct alternate write denied: current_phase='done'
+PASS direct alternate write denied: progress=99
+PASS direct alternate write denied: assigned_to='00000000-0000-4000-8000-000000000003'
+PASS direct alternate write denied: status='completed'
+PASS direct alternate write denied: priority='urgent'
+PASS direct alternate write denied: is_blocked=true
+PASS forged GUC does not authorize a completion
+PASS private context cannot be forged
+PASS private command helper cannot bypass public authorization
+PASS historical type mutation cannot delete flows
+PASS historical Dual flows and their tasks are preserved
+PASS historical Dual operations require explicit flow selection
+PASS historical Dual completes/reopens explicitly without deleting flows/tasks or rewriting prior closure
+PASS all eight Development stages accepted; every effective transition is server-audited
+PASS stage skips and regression to Backlog retain history without overwriting checklist progress
+PASS checklist percentage is server-derived and independent; completion edit is immutable-audited
+PASS checklist completion timestamp cannot be forged
+PASS checklist insert/delete are recorded with full previous/new item snapshots
+PASS blank server blocking reason rejected
+PASS blocked ticket cannot move
+PASS blocked ticket cannot finish even with confirmation
+PASS developer cannot reassign blocked ticket
+PASS blocked work retains phase, allows administrator reassignment/checklist/comments
+PASS anonymous cannot use an internal upload capability
+PASS different internal actor cannot use the reservation
+PASS viewer cannot reserve operational evidence
+PASS public tracking upload stays closed after approval
+PASS internal evidence shares the existing byte budget
+PASS blocked ticket accepts authenticated private evidence with real size checks, actor binding and shared limits
+PASS unblock restores phase-derived public state and keeps the original reason permanently
+PASS pending checklist cannot finish without explicit confirmation
+PASS confirmation alone cannot acknowledge an unseen pending list
+PASS stale pending fingerprint is rejected
+PASS Done synchronizes project/public state, exact pending decision, completion and continuous metrics
+PASS finished project cannot use ordinary movement as reopening
+PASS reopening needs a nonblank reason
+PASS reopening cannot target Done
+PASS controlled reopen/recomplete retains original start and all prior completion events
+PASS 100 percent checklist never moves phase; clean checklist closes without override
+PASS restoring archived Done does not bypass explicit reopening
+PASS assignment/removal history survives archive; restoring finished work does not reopen it
+PASS idempotency key cannot be reused for different mutation
+PASS idempotent retry does not duplicate assignment/priority/audit writes
+PASS bulk missing ticket rolls back every selected mutation
+PASS bulk action writes per-ticket immutable audit with a shared command ID
+PASS application cannot append arbitrary request_events
+PASS application superadmin cannot delete request_events
+PASS owner normal SQL cannot edit immutable request_events
+PASS application cannot append arbitrary activity_logs
+PASS application superadmin cannot delete activity_logs
+PASS owner normal SQL cannot edit immutable activity_logs
+PASS audit cannot be truncated by normal SQL
+PASS project cascade purge is blocked
+PASS flow/checklist cascade destruction is blocked
+PASS legacy purge RPC is closed
+PASS deleting an audit actor cannot null immutable actor history
+PASS concurrent checklist mutation serializes against closing; stale confirmation cannot win
+PASS concurrent identical command retries emit exactly one completion
+PASS concurrent internal evidence reservations retain four-file combined quota
+PASS existing pending public token upload still works under its original window
+PASS public tracking remains minimal; command context is cleared; no personal audit data leaks
+74 new checks passed; isolated PostgreSQL stopped.
