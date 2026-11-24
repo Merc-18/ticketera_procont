@@ -643,3 +643,58 @@ main p.attachment-error, .attachment-error { font-size: 14px; color: var(--dange
   .attachment-thumb, .attachment-type { grid-row: 1 / span 2; }
 }
 @media (max-width: 359px) { .attachment-drop-icon { display: none; } .attachment-dropzone { grid-template-columns: minmax(0, 1fr); } }
+
+/* ─── Barra de Boards compacta (24/11/2026) ──────────────────────────────────────────────────────────────────
+   Fila 1: estado (izquierda) · vistas + «Nuevo proyecto» alineados (derecha). Fila 2: filtros (izquierda) ·
+   «Mi color de tarjeta» (derecha), separados por una línea. Sin filtro de área. Etiquetas visibles y 44 px. */
+.board-toolbar { display: grid; gap: 8px; padding: 10px 16px; }
+.board-toolbar-row { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px; min-width: 0; }
+.board-toolbar-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-left: auto; }
+.board-toolbar-filters { padding-top: 8px; border-top: 1px solid var(--line); }
+.board-filter-group { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px 12px; min-width: 0; }
+.board-filter-studio .toolbar-select { max-width: 260px; }
+.board-filter-owner .toolbar-select { max-width: 240px; }
+.board-filter-reset { display: inline-flex; align-items: center; gap: 4px; }
+.board-toolbar-color { margin-left: auto; }
+.board-mine { background: var(--p-surface); color: var(--p-ink-2); border-color: var(--line); }
+.board-mine.is-on { background: var(--p-tint); color: var(--p-action); border-color: color-mix(in srgb, var(--p-action) 40%, var(--line)); }
+@media (max-width: 767px) {
+  .board-toolbar { padding: 12px; }
+  .board-toolbar-row > .segmented, .board-toolbar-actions { width: 100%; margin-left: 0; }
+  .board-toolbar-row > .segmented { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .board-toolbar-row > .segmented button { justify-content: center; padding-inline: 4px; }
+  .board-new-project { width: 100%; }
+  .board-filter-group { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
+  .board-filter-group .toolbar-select { width: 100%; max-width: none; }
+  .board-filter-owner, .board-filter-reset { grid-column: 1 / -1; }
+  .board-toolbar-color { width: 100%; margin-left: 0; }
+  .board-toolbar-color .ui-button { width: 100%; }
+}
+@media (max-width: 479px) { .board-toolbar-row > .segmented .control-label { flex-direction: column; gap: 4px; font-size: 13px; } .board-toolbar-row > .segmented button { min-width: 0; } }
+@media (max-width: 359px) { .board-filter-group { grid-template-columns: minmax(0, 1fr); } }
+.owner-count { font-weight: 400; color: var(--p-muted); }
+.owner-retired { padding: 8px 10px; border-radius: var(--r-sm); background: var(--warning-bg); color: var(--warning-ink); }
+
+/* ─── Dashboard: Tickets por estudio (24/11/2026) ────────────────────────────────────────────────────────────
+   Barras horizontales en azul de marca (un solo tono: compara cantidades, no categorías); «Sin estudio» en neutro
+   y separado por una línea. Barra por transform (Emil); sin animación de entrada. */
+.studio-tickets-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.studio-tickets-total { display: inline-flex; align-items: baseline; gap: 6px; font-size: 14px; color: var(--p-muted); white-space: nowrap; }
+.studio-tickets-total > .tabular-nums { font-family: var(--font-mono); font-size: 24px; font-weight: 500; color: var(--p-ink); letter-spacing: -.03em; }
+.studio-tickets-list { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 10px; max-height: 336px; overflow-y: auto; }
+.studio-tickets-list li { display: grid; grid-template-columns: minmax(96px, 34%) minmax(0, 1fr) 3.5ch; align-items: center; gap: 12px; }
+.studio-tickets-list li.is-none { padding-top: 10px; border-top: 1px dashed var(--line); }
+.studio-tickets-name { font-size: 14px; color: var(--p-ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.studio-tickets-bar { height: 12px; border-radius: 999px; background: var(--p-alt); border: 1px solid var(--line); overflow: hidden; }
+.studio-tickets-bar > span { display: block; height: 100%; width: 100%; transform-origin: left; border-radius: inherit; background: var(--p-action-fill); }
+.studio-tickets-list li.is-none .studio-tickets-bar > span { background: var(--p-meta); }
+.studio-tickets-value { text-align: right; font-family: var(--font-mono); font-size: 14px; font-weight: 500; color: var(--p-ink); }
+@media (max-width: 479px) { .studio-tickets-list li { grid-template-columns: minmax(0, 1fr) 3.5ch; } .studio-tickets-bar { grid-column: 1 / -1; grid-row: 2; } }
+
+/* Checklist: tareas sugeridas por fase y edición en línea (24/11/2026). */
+.checklist-suggested { display: grid; gap: 8px; padding: 12px; margin-bottom: 8px; border: 1px dashed var(--field-line); border-radius: var(--r-sm); background: var(--p-tint-weak); }
+.checklist-suggested-title { font-size: 14px; font-weight: 500; color: var(--p-ink); }
+.checklist-suggested ul { margin: 0; padding-left: 18px; list-style: disc; display: grid; gap: 2px; font-size: 14px; color: var(--p-ink-2); }
+.checklist-suggested .ui-button { justify-self: start; }
+.checklist-edit { display: flex; flex: 1; flex-wrap: wrap; gap: 6px; align-items: center; min-width: 0; }
+.checklist-edit .ui-input { flex: 1 1 200px; min-height: 40px; padding: 8px 12px; font-size: 14px; }

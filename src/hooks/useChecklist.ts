@@ -38,6 +38,21 @@ export function useChecklist(flowId: string) {
       phase, description: description.trim(), order_index: last + 1 }).select('*').single(), 'Tarea') as ChecklistItem
     setItems(prev => [...prev, row])
   }
+  /** Varias tareas de una fase en una sola sentencia (todas o ninguna); se colocan después de las existentes. */
+  const addMany = async (phase: string, descriptions: string[]) => {
+    if (!descriptions.length) return
+    const last = Math.max(-1, ...items.filter(item => item.phase === phase).map(item => item.order_index))
+    const result = await supabase.from('checklist_items').insert(descriptions.map((description, i) => ({ project_flow_id: flowId,
+      phase, description: description.trim(), order_index: last + 1 + i }))).select('*')
+    if (result.error) throw result.error
+    setItems(prev => [...prev, ...((result.data ?? []) as ChecklistItem[])])
+  }
+  /** Edición del texto; no cambia fase, orden ni estado completado. */
+  const editItem = async (id: string, description: string) => {
+    const row = requireData(await supabase.from('checklist_items').update({ description: description.trim() }).eq('id', id)
+      .select('*').single(), 'Tarea') as ChecklistItem
+    setItems(prev => prev.map(item => item.id === id ? row : item))
+  }
   const reorderItems = async (phase: string, from: number, to: number) => {
     const rows = items.filter(item => item.phase === phase)
     const [moved] = rows.splice(from, 1)
@@ -54,5 +69,5 @@ export function useChecklist(flowId: string) {
       throw new Error(`No se confirmó todo el orden; se recargaron las tareas: ${errorMessage(err)}`)
     }
   }
-  return { items, loading, error, toggleItem, addItem, deleteItem, reorderItems, reload: loadItems }
+  return { items, loading, error, toggleItem, addItem, addMany, editItem, deleteItem, reorderItems, reload: loadItems }
 }

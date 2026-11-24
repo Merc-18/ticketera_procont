@@ -16,7 +16,7 @@ import { useCatalogs } from '../../hooks/useCatalogs'
 import { board } from '../../lib/api'
 import { actionKey, needsPendingConfirmation, type BoardTicket, type Phase } from '../../lib/board'
 import { DoneConfirmDialog } from '../projects/BoardDialogs'
-import { procontCodeId, procontStudioId, studyHasProcontCode } from '../../lib/studio-rules'
+import { procontCodeId } from '../../lib/studio-rules'
 import OwnerColorPicker from './OwnerColorPicker'
 
 // Vistas y modales secundarios del tablero en carga diferida (Taste perf.md: JS por vista). Se piden por
@@ -108,16 +108,10 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
   const [pendingClose, setPendingClose] = useState<{ ticket: BoardTicket; flowId: string; title: string; key: string } | null>(null)
   const [closing, setClosing] = useState(false)
   const [priorityFilter, setPriorityFilter] = useState(() => localStorage.getItem('kanban_priorityFilter') || 'all')
-  const [areaFilter, setAreaFilter]         = useState(() => localStorage.getItem('kanban_areaFilter') || 'all')
   const [studioFilter, setStudioFilter]     = useState(() => localStorage.getItem('kanban_studioFilter') || 'all')
-  const { studios, codes, areas } = useCatalogs('member')
-  // La selección de área opera exclusivamente sobre solicitudes cuyo código es PROCONT.
-  const procontId = procontStudioId(codes)
+  const { studios, codes } = useCatalogs('member')
+  // El área solo se muestra (tarjeta, tabla, búsqueda) en solicitudes del código interno exacto PROCONT.
   const canonicalProcontCodeId = procontCodeId(codes)
-  // Mientras el catálogo carga no se borra el filtro guardado.
-  const areaFilterApplies = codes.length === 0 || (studioFilter === 'all'
-    ? !!canonicalProcontCodeId : studyHasProcontCode(studioFilter, codes))
-  useEffect(() => { if (!areaFilterApplies && areaFilter !== 'all') setAreaFilter('all') }, [areaFilterApplies, areaFilter])
   const [userFilter, setUserFilter]         = useState(() => localStorage.getItem('kanban_userFilter') || 'all')
   const [myProjectsOnly, setMyProjectsOnly] = useState(() => localStorage.getItem('kanban_myProjectsOnly') === 'true')
   const [searchQuery, setSearchQuery] = useState('')
@@ -127,7 +121,8 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
   })
 
   useEffect(() => { localStorage.setItem('kanban_priorityFilter', priorityFilter) }, [priorityFilter])
-  useEffect(() => { localStorage.setItem('kanban_areaFilter', areaFilter) },         [areaFilter])
+  // 24/11/2026: Boards ya no filtra por área. Se retira el filtro guardado para que no oculte tarjetas en silencio.
+  useEffect(() => { try { localStorage.removeItem('kanban_areaFilter') } catch { /* almacenamiento no disponible */ } }, [])
   useEffect(() => { localStorage.setItem('kanban_studioFilter', studioFilter) },     [studioFilter])
   useEffect(() => { localStorage.setItem('kanban_userFilter', userFilter) },         [userFilter])
   useEffect(() => { localStorage.setItem('kanban_myProjectsOnly', String(myProjectsOnly)) }, [myProjectsOnly])
@@ -156,19 +151,11 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
   }, [openProjectId, projects])
 
   const phases = PHASES[boardType]
-  // Opciones de área: catálogo activo de Supabase + áreas presentes en los proyectos + filtro guardado
-  const areaOptions = Array.from(new Set([...areas.filter(a => a.studio_id === procontId && !a.parent_id).map(a => a.name),
-    ...projects.filter(p => (p as any).requests?.studio_code_id === canonicalProcontCodeId && canonicalProcontCodeId)
-      .map(p => (p as any).requests?.requester_area as string | undefined).filter((a): a is string => !!a),
-    ...(areaFilter !== 'all' ? [areaFilter] : [])])).sort()
-
-
   const filteredProjects = projects.filter(project => {
     if (priorityFilter !== 'all' && project.priority !== priorityFilter) return false
     const req = (project as any).requests
     // Solo se presenta/filtra el área de solicitudes clasificadas con el código exacto PROCONT.
     const area = req?.studio_code_id === canonicalProcontCodeId && canonicalProcontCodeId ? req?.requester_area : null
-    if (areaFilter !== 'all' && area !== areaFilter) return false
     if (studioFilter !== 'all' && (project as any).requests?.studio_id !== studioFilter) return false
 
     // Filtro por responsable / usuario
@@ -244,7 +231,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
     } finally { setClosing(false) }
   }
 
-  const hasFilters = priorityFilter !== 'all' || areaFilter !== 'all' || studioFilter !== 'all' || (canManage ? userFilter !== 'all' : myProjectsOnly) || searchQuery.trim() !== ''
+  const hasFilters = priorityFilter !== 'all' || studioFilter !== 'all' || (canManage ? userFilter !== 'all' : myProjectsOnly) || searchQuery.trim() !== ''
   const filteredCount = filteredProjects.length
   const totalCount = projects.length
 
@@ -320,150 +307,124 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
         </label>
       </div>
 
-      {/* Fila única: Vista + Filtros + Toggle de modo */}
-      <div className="board-toolbar flex items-center gap-2 mb-4 flex-wrap">
-        <div role="group" aria-label="Estado de los proyectos" className="segmented">
-          {STATUS_OPTIONS.map(opt => (
-            <button
-              key={opt.value}
-              aria-pressed={statusFilter === opt.value}
-              onClick={() => setStatusFilter(opt.value)}
-              {...preloadOnIntent(STATUS_LOADERS[opt.value] ?? noop)}
-              className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${statusFilter === opt.value ? 'bg-brand-100 text-brand-700' : 'text-gray-600 hover:text-brand-700'}`}
-            >
-              <ControlLabel icon={opt.icon}>{opt.label}</ControlLabel>
-            </button>
-          ))}
-        </div>
-
-        {/* Separador */}
-        {statusFilter === 'active' && (
-          <span aria-hidden="true" className="toolbar-divider" />
-        )}
-
-        {/* Filtro de áreas solo cuando existe el código interno exacto PROCONT. */}
-        {statusFilter === 'active' && canonicalProcontCodeId && (
-          <>
-            <label className="toolbar-field">
-              <span>Prioridad</span>
-              <select
-                value={priorityFilter}
-                onChange={e => setPriorityFilter(e.target.value)}
-                className={`ui-input toolbar-select ${priorityFilter !== 'all' ? `prio-filter-${priorityFilter}` : ''}`}
-              >
-                {PRIORITY_OPTS.map(opt => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
-                ))}
-              </select>
-            </label>
-
-            {areaFilterApplies && <label className="toolbar-field">
-
-              <span>Área (código PROCONT)</span>
-
-            <select
-              aria-label="Área · código interno PROCONT"
-              value={areaFilter}
-                onChange={e => setAreaFilter(e.target.value)}
-                className="ui-input toolbar-select"
-              >
-                <option value="all">Todas</option>
-                {areaOptions.map(area => (
-                  <option key={area} value={area}>{area}</option>
-                ))}
-              </select>
-
-            </label>}
-
-            {/* Filtro por Estudio (independiente del área) */}
-            {studios.length > 0 && (
-              <label className="toolbar-field">
-                <span>Estudio</span>
-                <select
-                  value={studioFilter}
-                  onChange={e => setStudioFilter(e.target.value)}
-                  className="ui-input toolbar-select"
-                >
-                  <option value="all">Todos</option>
-                  {studios.map(st => <option key={st.id} value={st.id}>{st.name}</option>)}
-                </select>
-              </label>
-            )}
-
-            {/* Filtro por Responsable / Usuario */}
-            {canManage ? (
-              <label className="toolbar-field">
-                <span>Responsable</span>
-                <select
-                  value={userFilter}
-                  onChange={e => setUserFilter(e.target.value)}
-                  className="ui-input toolbar-select"
-                >
-                  <option value="all">Todos</option>
-                  <option value="me">Mis proyectos</option>
-                  <optgroup label="Filtrar por Usuario">
-                    {activeUsers.map(u => (
-                      <option key={u.id} value={u.id}>
-                        {u.full_name} ({u.role})
-                      </option>
-                    ))}
-                  </optgroup>
-                </select>
-              </label>
-            ) : (
+      {/* Barra de Boards (24/11/2026): fila 1 = estado, vistas y acción principal; fila 2 = filtros y color personal.
+          Sin filtro de área: el área solo existe para el código interno exacto PROCONT y se clasifica en sus formularios. */}
+      <div className="board-toolbar mb-4">
+        <div className="board-toolbar-row">
+          <div role="group" aria-label="Estado de los proyectos" className="segmented">
+            {STATUS_OPTIONS.map(opt => (
               <button
-                onClick={() => setMyProjectsOnly(v => !v)}
-                className={`px-3 py-1.5 rounded-full text-sm font-medium border transition ${
-                  myProjectsOnly
-                    ? 'border-brand-400 bg-brand-50 text-brand-700'
-                    : 'border-gray-200 bg-gray-100 text-gray-600 hover:bg-gray-200'
-                }`}
+                key={opt.value}
+                aria-pressed={statusFilter === opt.value}
+                onClick={() => setStatusFilter(opt.value)}
+                {...preloadOnIntent(STATUS_LOADERS[opt.value] ?? noop)}
+                className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${statusFilter === opt.value ? 'bg-brand-100 text-brand-700' : 'text-gray-600 hover:text-brand-700'}`}
               >
-                <ControlLabel icon="user">Mis proyectos</ControlLabel>
+                <ControlLabel icon={opt.icon}>{opt.label}</ControlLabel>
+              </button>
+            ))}
+          </div>
+          <div className="board-toolbar-actions">
+            <div role="group" aria-label="Vista del tablero" className="board-view-modes segmented">
+              {VIEW_MODES.map(vm => (
+                <button
+                  key={vm.value}
+                  aria-pressed={viewMode === vm.value}
+                  onClick={() => setViewMode(vm.value)}
+                  {...preloadOnIntent(VIEW_LOADERS[vm.value] ?? noop)}
+                  title={vm.label}
+                  className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${viewMode === vm.value ? 'bg-brand-100 text-brand-700' : 'text-gray-600 hover:text-brand-700'}`}
+                >
+                  <ControlLabel icon={vm.icon}>{vm.label}</ControlLabel>
+                </button>
+              ))}
+            </div>
+            {canManage && boardType === 'development' && (
+              <button
+                onClick={() => setShowNewModal(true)}
+                {...preloadOnIntent(loadNewProjectModal)}
+                className="ui-button ui-button-primary board-new-project"
+              >
+                <ControlLabel icon="plus">Nuevo proyecto</ControlLabel>
               </button>
             )}
+          </div>
+        </div>
 
-            {hasFilters && (
-              <>
-                <button
-                  onClick={() => { setPriorityFilter('all'); setAreaFilter('all'); setStudioFilter('all'); setUserFilter('all'); setMyProjectsOnly(false); setSearchQuery('') }}
-                  className="ui-button ui-button-secondary"
+        <div className="board-toolbar-row board-toolbar-filters">
+          {statusFilter === 'active' && (
+            <div role="group" aria-label="Filtros del tablero" className="board-filter-group">
+              <label className="toolbar-field">
+                <span>Prioridad</span>
+                <select
+                  value={priorityFilter}
+                  onChange={e => setPriorityFilter(e.target.value)}
+                  className={`ui-input toolbar-select ${priorityFilter !== 'all' ? `prio-filter-${priorityFilter}` : ''}`}
                 >
-                  <ControlLabel icon="close">Limpiar filtros</ControlLabel>
-                </button>
-                <span className="text-sm text-gray-500">
-                  {filteredCount} de {totalCount}
-                </span>
-              </>
-            )}
-          </>
-        )}
+                  {PRIORITY_OPTS.map(opt => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  ))}
+                </select>
+              </label>
 
-        {/* Color personal de tarjeta (usuarios internos; el panel no es accesible para clientes) */}
-        {currentUser && <OwnerColorPicker userId={currentUser.id} userName={currentUser.full_name} />}
-        {/* Nuevo proyecto + View mode toggle (derecha) */}
-        {canManage && boardType === 'development' && (
-          <button
-            onClick={() => setShowNewModal(true)}
-            {...preloadOnIntent(loadNewProjectModal)}
-            className="ml-auto ui-button ui-button-primary"
-          >
-            <ControlLabel icon="plus">Nuevo proyecto</ControlLabel>
-          </button>
-        )}
-        <div className="board-view-modes flex items-center gap-1 bg-gray-100 rounded-lg p-1">
-          {VIEW_MODES.map(vm => (
-            <button
-              key={vm.value}
-              aria-pressed={viewMode === vm.value}
-              onClick={() => setViewMode(vm.value)}
-              {...preloadOnIntent(VIEW_LOADERS[vm.value] ?? noop)}
-              title={vm.label}
-              className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${viewMode === vm.value ? 'bg-brand-100 text-brand-700' : 'text-gray-600 hover:text-brand-700'}`}
-            >
-              <ControlLabel icon={vm.icon}>{vm.label}</ControlLabel>
-            </button>
-          ))}
+              {studios.length > 0 && (
+                <label className="toolbar-field board-filter-studio">
+                  <span>Estudio</span>
+                  <select
+                    value={studioFilter}
+                    onChange={e => setStudioFilter(e.target.value)}
+                    className="ui-input toolbar-select"
+                  >
+                    <option value="all">Todos</option>
+                    {studios.map(st => <option key={st.id} value={st.id}>{st.name}</option>)}
+                  </select>
+                </label>
+              )}
+
+              {canManage ? (
+                <label className="toolbar-field board-filter-owner">
+                  <span>Responsable</span>
+                  <select
+                    value={userFilter}
+                    onChange={e => setUserFilter(e.target.value)}
+                    className="ui-input toolbar-select"
+                  >
+                    <option value="all">Todos</option>
+                    <option value="me">Mis proyectos</option>
+                    <optgroup label="Filtrar por Usuario">
+                      {activeUsers.map(u => (
+                        <option key={u.id} value={u.id}>
+                          {u.full_name} ({u.role})
+                        </option>
+                      ))}
+                    </optgroup>
+                  </select>
+                </label>
+              ) : (
+                <button
+                  aria-pressed={myProjectsOnly}
+                  onClick={() => setMyProjectsOnly(v => !v)}
+                  className={`ui-button board-mine ${myProjectsOnly ? 'is-on' : ''}`}
+                >
+                  <ControlLabel icon="user">Mis proyectos</ControlLabel>
+                </button>
+              )}
+
+              {hasFilters && (
+                <div className="board-filter-reset">
+                  <button
+                    onClick={() => { setPriorityFilter('all'); setStudioFilter('all'); setUserFilter('all'); setMyProjectsOnly(false); setSearchQuery('') }}
+                    className="ui-button ui-button-quiet"
+                  >
+                    <ControlLabel icon="close">Limpiar filtros</ControlLabel>
+                  </button>
+                  <span className="text-sm text-gray-600 tabular-nums" aria-live="polite">{filteredCount} de {totalCount}</span>
+                </div>
+              )}
+            </div>
+          )}
+          {/* Color personal de tarjeta (usuarios internos; el panel no es accesible para clientes) */}
+          {currentUser && <div className="board-toolbar-color"><OwnerColorPicker userId={currentUser.id} userName={currentUser.full_name} /></div>}
         </div>
       </div>
 
@@ -509,7 +470,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
           <Icon name="search" size={40} className="mb-3 text-gray-500" />
           <p className="text-base font-medium text-gray-500">Sin proyectos con los filtros aplicados</p>
           <button
-            onClick={() => { setPriorityFilter('all'); setAreaFilter('all'); setStudioFilter('all'); setMyProjectsOnly(false); setSearchQuery('') }}
+            onClick={() => { setPriorityFilter('all'); setStudioFilter('all'); setMyProjectsOnly(false); setSearchQuery('') }}
             className="mt-3 text-sm text-primary hover:underline"
           >
             Limpiar filtros

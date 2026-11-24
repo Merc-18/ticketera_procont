@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import Icon from '../ui/Icon'
-import { OWNER_COLORS, setOwnerColor, useOwnerColors, useOwnerColorStatus, type OwnerColorId } from '../../lib/card-colors'
+import { OWNER_COLORS, OWNER_PALETTE, OWNER_PALETTE_SIZE, availableColors, isOfferedColor, ownerColorLabel, setOwnerColor, useOwnerColors, useOwnerColorStatus, type OwnerColorId } from '../../lib/card-colors'
 
 /**
  * «Mi color de tarjeta»: el usuario interno elige el color que identifica sus tarjetas asignadas (franja lateral).
@@ -26,7 +26,11 @@ export default function OwnerColorPicker({ userId, userName }: { userId: string;
     try { await setOwnerColor(color) }
     catch (err) { setSaveError(err instanceof Error ? err.message : 'No se pudo guardar el color.') }
   }
-  const label = current ? OWNER_COLORS.find(c => c.id === current)?.label : loading ? 'Cargando…' : 'Sin asignación'
+  const label = current ? ownerColorLabel(current) : loading ? 'Cargando…' : 'Sin asignación'
+  // Paleta de 10: un color retirado se sigue mostrando como actual, pero ya no se ofrece.
+  const retired = !!current && !isOfferedColor(current)
+  const free = availableColors(colors, userId)
+  const full = free.length === 0 && (!current || retired)
 
   return (
     <div className="owner-picker relative" ref={ref}>
@@ -37,9 +41,9 @@ export default function OwnerColorPicker({ userId, userName }: { userId: string;
       {open && (
         <div id="owner-color-panel" role="dialog" aria-label="Mi color de tarjeta" className="owner-panel">
           <fieldset>
-            <legend>Color de tus tarjetas asignadas</legend>
+            <legend>Color de tus tarjetas asignadas <span className="owner-count">({OWNER_PALETTE_SIZE} colores, uno por persona)</span></legend>
             <div className="owner-options" aria-busy={loading}>
-              {OWNER_COLORS.map(c => {
+              {OWNER_PALETTE.map(id => OWNER_COLORS.find(c => c.id === id)!).map(c => {
                 const assignedTo = Object.entries(colors).find(([id, color]) => color === c.id && id !== userId)?.[0]
                 return (
                 <label key={c.id} className="owner-option">
@@ -55,6 +59,8 @@ export default function OwnerColorPicker({ userId, userName }: { userId: string;
             <b>Tarjeta de ejemplo</b>
             <span className="owner-preview-meta"><Icon name="user" size={14} />{userName.split(' ')[0]} · {label}</span>
           </div>
+          {retired && !full && <p className="owner-note owner-retired">Tu color actual ({label}) ya no forma parte de la paleta de {OWNER_PALETTE_SIZE}. Se mantiene hasta que elijas otro.</p>}
+          {full && <p role="status" className="owner-note owner-retired">Los {OWNER_PALETTE_SIZE} colores ya están asignados a otros miembros. No se repiten colores: pide a un administrador liberar uno.</p>}
           {loading && <p role="status" className="owner-note">Sincronizando la preferencia del equipo…</p>}
           {(saveError || loadError) && <p role="alert" className="owner-error">{saveError || loadError}</p>}
           <p className="owner-note">El equipo comparte tu color de responsable. Prioridad y estado mantienen sus propios colores.</p>

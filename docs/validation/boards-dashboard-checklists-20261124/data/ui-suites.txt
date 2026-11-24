@@ -1,0 +1,35 @@
+== boards-dashboard-checklists
+✖ [light] Mi color: 10 opciones, asignación actual conservada, ocupados no elegibles; Kanban y Tabla coherentes (1585.975268ms)
+✖ [dark] Mi color: 10 opciones, asignación actual conservada, ocupados no elegibles; Kanban y Tabla coherentes (796.527332ms)
+ℹ tests 12
+ℹ pass 10
+ℹ fail 2
+ℹ skipped 0
+✖ failing tests:
+✖ [light] Mi color: 10 opciones, asignación actual conservada, ocupados no elegibles; Kanban y Tabla coherentes (1585.975268ms)
+  AssertionError [ERR_ASSERTION]: conserva su color (azul)
+    actual: false,
+    expected: true,
+✖ [dark] Mi color: 10 opciones, asignación actual conservada, ocupados no elegibles; Kanban y Tabla coherentes (796.527332ms)
+  AssertionError [ERR_ASSERTION]: conserva su color (azul)
+    actual: false,
+== dashboard-boards
+ℹ tests 9
+ℹ pass 9
+ℹ fail 0
+ℹ skipped 0
+== kanban-attachments
+ℹ tests 17
+ℹ pass 17
+ℹ fail 0
+ℹ skipped 0
+== theme
+ℹ tests 8
+ℹ pass 8
+ℹ fail 0
+ℹ skipped 0
+== ux-four-areas
+ℹ tests 37
+ℹ pass 31
+ℹ fail 0
+ℹ skipped 6

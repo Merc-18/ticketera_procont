@@ -3,22 +3,10 @@
 import { useEffect, useSyncExternalStore } from 'react'
 import { supabase } from './supabase'
 
-export const OWNER_COLORS = [
-  { id: 'azul', label: 'Azul Procont' }, { id: 'azul-claro', label: 'Azul claro' },
-  { id: 'azul-oscuro', label: 'Azul profundo' }, { id: 'azul-acero', label: 'Azul acero' },
-  { id: 'celeste', label: 'Celeste' }, { id: 'celeste-claro', label: 'Celeste claro' },
-  { id: 'celeste-oscuro', label: 'Celeste intenso' }, { id: 'celeste-acero', label: 'Celeste acero' },
-  { id: 'dorado', label: 'Dorado' }, { id: 'dorado-claro', label: 'Dorado claro' },
-  { id: 'dorado-oscuro', label: 'Dorado tostado' }, { id: 'dorado-ocre', label: 'Dorado ocre' },
-  { id: 'ambar', label: 'Ámbar' }, { id: 'ambar-claro', label: 'Ámbar claro' },
-  { id: 'ambar-oscuro', label: 'Ámbar profundo' }, { id: 'ambar-bronce', label: 'Ámbar bronce' },
-  { id: 'grafito', label: 'Grafito' }, { id: 'grafito-claro', label: 'Grafito claro' },
-  { id: 'grafito-oscuro', label: 'Grafito oscuro' }, { id: 'grafito-humo', label: 'Grafito humo' },
-  { id: 'pizarra', label: 'Pizarra' }, { id: 'pizarra-claro', label: 'Pizarra claro' },
-  { id: 'pizarra-oscuro', label: 'Pizarra oscuro' }, { id: 'pizarra-acero', label: 'Pizarra acero' },
-] as const
-export type OwnerColorId = typeof OWNER_COLORS[number]['id']
+import { OWNER_COLORS, OWNER_PALETTE, type OwnerColorId } from './card-palette.ts'
+export * from './card-palette.ts'
 const VALID = new Set<string>(OWNER_COLORS.map(c => c.id))
+const OFFERED = new Set<string>(OWNER_PALETTE)
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 type State = { assignments: Record<string, OwnerColorId>; loading: boolean; error: string | null }
@@ -49,7 +37,7 @@ export async function refreshOwnerColors(): Promise<Record<string, OwnerColorId>
 }
 
 export async function setOwnerColor(color: OwnerColorId): Promise<Record<string, OwnerColorId>> {
-  if (!VALID.has(color)) throw new Error('El color seleccionado no está disponible.')
+  if (!VALID.has(color) || !OFFERED.has(color)) throw new Error('El color seleccionado no está disponible.')
   publish({ ...state, loading: true, error: null })
   const { error } = await supabase.rpc('set_my_internal_card_color', { p_color_id: color })
   if (error) {

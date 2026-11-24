@@ -9,6 +9,7 @@ import { errorMessage } from '../../lib/supabase-errors'
 import { toast } from '../../lib/toast'
 import { phasesFor } from '../../lib/board'
 import Icon from '../ui/Icon'
+import { missingTemplateTasks } from '../../lib/checklist-templates'
 
 interface Props {
   flow: ProjectFlow
@@ -20,7 +21,7 @@ export default function ChecklistSection({ flow, onChanged }: Props) {
   const { user } = useAuth()
   const editable = canEdit(user)
   const busy = useRef(false)
-  const { items, loading, error, toggleItem, addItem, deleteItem, reorderItems } = useChecklist(flow.id)
+  const { items, loading, error, toggleItem, addItem, addMany, editItem, deleteItem, reorderItems } = useChecklist(flow.id)
 
   const handleDragEnd = async (result: DropResult) => {
     const { source, destination } = result
@@ -58,6 +59,26 @@ export default function ChecklistSection({ flow, onChanged }: Props) {
     busy.current = true
     setSaving(phase)
     try { await addItem(phase, text); setNewItemText(prev => ({ ...prev, [phase]: '' })); onChanged?.() }
+    catch (err) { toast.error(errorMessage(err)) }
+    finally { busy.current = false; setSaving(null) }
+  }
+
+  const [editing, setEditing] = useState<{ id: string; text: string } | null>(null)
+  const handleEdit = async () => {
+    const text = editing?.text.trim()
+    if (!editing || !text || !editable || busy.current) return
+    busy.current = true
+    setSaving(editing.id)
+    try { await editItem(editing.id, text); setEditing(null); onChanged?.() }
+    catch (err) { toast.error(errorMessage(err)) }
+    finally { busy.current = false; setSaving(null) }
+  }
+  /** Tarjetas existentes: agrega la plantilla de una fase vacía por acción explícita (sin duplicar texto). */
+  const handleSuggested = async (phase: string, tasks: string[]) => {
+    if (!tasks.length || !editable || busy.current) return
+    busy.current = true
+    setSaving(phase)
+    try { await addMany(phase, tasks); toast.success(`Se agregaron ${tasks.length} tareas sugeridas.`); onChanged?.() }
     catch (err) { toast.error(errorMessage(err)) }
     finally { busy.current = false; setSaving(null) }
   }
@@ -136,11 +157,21 @@ export default function ChecklistSection({ flow, onChanged }: Props) {
 
             {isExpanded && (
               <div className="p-3 space-y-1.5 bg-surface">
-                {phaseItems.length === 0 && (
-                  <p className="text-xs text-gray-400 italic mb-2">
-                    Sin items. Agrega uno a continuación.
-                  </p>
-                )}
+                {phaseItems.length === 0 && (() => {
+                  const suggested = missingTemplateTasks(flow.flow_type, phase, phaseItems)
+                  return suggested.length ? (
+                    <div className="checklist-suggested" aria-label={`Tareas sugeridas para ${PHASE_LABELS[phase]}`}>
+                      <p className="checklist-suggested-title">Tareas sugeridas para {PHASE_LABELS[phase]}</p>
+                      <ul>{suggested.map(t => <li key={t}>{t}</li>)}</ul>
+                      {editable && (
+                        <button type="button" className="ui-button ui-button-secondary" disabled={!!saving}
+                          onClick={() => { void handleSuggested(phase, suggested) }}>
+                          <Icon name="plus" size={16} />{saving === phase ? 'Agregando…' : `Agregar tareas sugeridas (${suggested.length})`}
+                        </button>
+                      )}
+                    </div>
+                  ) : <p className="text-sm text-gray-600 mb-2">Sin tareas. Agrega una a continuación.</p>
+                })()}
 
                 <Droppable droppableId={phase}>
                   {(provided) => (
@@ -169,14 +200,35 @@ export default function ChecklistSection({ flow, onChanged }: Props) {
                                 onChange={() => handleToggle(item.id, !item.completed)}
                                 className="mt-0.5 w-4 h-4 text-brand-600 border-gray-300 rounded cursor-pointer flex-shrink-0"
                               />
+                              {editing?.id === item.id ? (
+                                <span className="checklist-edit">
+                                  <input aria-label="Editar tarea" autoFocus value={editing.text} maxLength={2000}
+                                    onChange={e => setEditing({ id: item.id, text: e.target.value })}
+                                    onKeyDown={e => { if (e.key === 'Enter') void handleEdit(); if (e.key === 'Escape') setEditing(null) }}
+                                    className="ui-input" />
+                                  <button type="button" onClick={() => { void handleEdit() }} disabled={!editing.text.trim() || !!saving} className="ui-button ui-button-primary">Guardar</button>
+                                  <button type="button" onClick={() => setEditing(null)} className="ui-button ui-button-quiet">Cancelar</button>
+                                </span>
+                              ) : (
                               <span
                                 className={`text-sm leading-snug flex-1 ${
-                                  item.completed ? 'line-through text-gray-400' : 'text-gray-700'
+                                  item.completed ? 'line-through text-gray-500' : 'text-gray-700'
                                 }`}
                               >
                                 {item.description}
                               </span>
+                              )}
+                              {editable && editing?.id !== item.id && (
+                                <button
+                                  disabled={!!saving} onClick={() => setEditing({ id: item.id, text: item.description })}
+                                  aria-label={`Editar tarea: ${item.description}`} title="Editar tarea"
+                                  className="opacity-0 group-hover:opacity-100 focus-visible:opacity-100 [@media(hover:none)]:opacity-100 text-gray-500 hover:text-brand-700 transition flex-shrink-0 inline-grid place-items-center min-w-[32px] min-h-[32px] rounded"
+                                >
+                                  <Icon name="edit" size={14} />
+                                </button>
+                              )}
                               <button
+                                aria-label={`Eliminar tarea: ${item.description}`}
                                 disabled={!editable || !!saving} onClick={() => { void handleDelete(item.id) }}
                                 className="opacity-0 group-hover:opacity-100 focus-visible:opacity-100 [@media(hover:none)]:opacity-100 text-gray-500 hover:text-red-700 transition ml-1 flex-shrink-0 inline-grid place-items-center min-w-[32px] min-h-[32px] rounded"
                                 title="Eliminar item"

@@ -20,6 +20,8 @@ import { getAvatarColor, getInitials, AREA_COLORS, PHASE_LABELS, PRIORITY_COLORS
 import { GENERAL_STATUS, isGeneralStatus } from '../../lib/request-status'
 import { actionKey, needsPendingConfirmation, pct, phasesFor, type BoardFlow, type BoardTicket, type Phase, type Priority } from '../../lib/board'
 import { areasApply } from '../../lib/studio-rules'
+import { supabase } from '../../lib/supabase'
+import { seedPhaseOnArrival, type ChecklistClient } from '../../lib/checklist-templates'
 
 interface Props {
   project: Project & { requests?: { requester_area: string; requester_name: string; request_type: string; studio_code_id?: string | null; area_id?: string | null } | null }
@@ -91,7 +93,15 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
   const requestMove = (flow: BoardFlow, target: Phase) => {
     if (!ticket || target === flow.phase) return
     if (needsPendingConfirmation(ticket, flow.id, target)) { setDialog({ kind: 'done', flowId: flow.id, target, key: actionKey() }); return }
-    void run(() => board.movePhase(project.id, target, actionKey(), { flowId: flow.id }), `Fase: ${PHASE_LABELS[target] ?? target}`)
+    void run(async () => {
+      const next = await board.movePhase(project.id, target, actionKey(), { flowId: flow.id })
+      // Tareas sugeridas de la nueva fase si está vacía; un fallo no deshace el cambio de fase.
+      try {
+        const added = await seedPhaseOnArrival(supabase as unknown as ChecklistClient, flow.id, flow.flow_type, target)
+        if (added) toast.info(`Se agregaron ${added} tareas sugeridas para ${PHASE_LABELS[target] ?? target}.`)
+      } catch (err) { toast.error(errorMessage(err)) }
+      return next
+    }, `Fase: ${PHASE_LABELS[target] ?? target}`)
   }
 
   const handleSaveEdit = async () => {
@@ -312,7 +322,7 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
                     Progreso del checklist (servidor): {flow.checklist_total === 0 ? 'sin tareas' : pct(flow.checklist_progress_percent)}.
                     {blocked && ' El checklist se puede actualizar aunque el ticket esté bloqueado.'}
                   </p>
-                  <ChecklistSection flow={{ id: flow.id, flow_type: flow.flow_type, current_phase: flow.phase } as ProjectFlow}
+                  <ChecklistSection key={`${flow.id}-${flow.phase}`} flow={{ id: flow.id, flow_type: flow.flow_type, current_phase: flow.phase } as ProjectFlow}
                     onChanged={() => { void reloadTicket(); setHistory(h => h + 1); onUpdate?.() }} />
                 </div>
               ))}

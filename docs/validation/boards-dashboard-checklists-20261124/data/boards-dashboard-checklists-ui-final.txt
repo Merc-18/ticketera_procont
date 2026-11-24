@@ -1,0 +1,23 @@
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✔ [light] Mi color: 10 opciones, asignación actual conservada, ocupados no elegibles; Kanban y Tabla coherentes (1847.907588ms)
+✔ [dark] Mi color: 10 opciones, asignación actual conservada, ocupados no elegibles; Kanban y Tabla coherentes (1009.85131ms)
+✔ Mi color: un color retirado se conserva y se informa; con los 10 ocupados no se repite ninguno (1500.377151ms)
+✔ [light] Barra de Boards: sin Área, filtros vigentes y dos filas compactas (961.245903ms)
+✔ [dark] Barra de Boards: sin Área, filtros vigentes y dos filas compactas (908.45838ms)
+✔ Barra de Boards responsive: 1920, 1440, 768, 390, 360 y 320 sin desbordar y con objetivos de 44 px (4898.517562ms)
+✔ [light] Dashboard: «Tickets por estudio» sustituye a Áreas; conteo paginado exacto, periodo y sin estudio (794.495326ms)
+✔ [dark] Dashboard: «Tickets por estudio» sustituye a Áreas; conteo paginado exacto, periodo y sin estudio (784.099222ms)
+✔ [light] Checklist: tarjeta existente en Analysis sin tareas → sugerencias y alta explícita sin tocar lo completado (1320.259726ms)
+✔ [dark] Checklist: tarjeta existente en Analysis sin tareas → sugerencias y alta explícita sin tocar lo completado (1332.58836ms)
+✔ Checklist: edición manual, eliminación y alta conservan el resto de tareas (1340.478543ms)
+✔ Checklist: al cambiar de fase se agregan las tareas de la nueva fase solo si está vacía; sin duplicar ni desmarcar (1877.187357ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 18954.023187

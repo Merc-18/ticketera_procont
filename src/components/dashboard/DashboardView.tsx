@@ -14,6 +14,7 @@ import UrgencyStatsPanel from '../metrics/UrgencyStatsPanel'
 import { buildCompletedExport, ExportError, type ExportClient } from '../../lib/ticket-export'
 import Icon, { type IconName } from '../ui/Icon'
 import { PRIORITY_LABEL, PRIORITY_BAR } from '../../lib/constants'
+import { ticketsByStudioRows } from '../../lib/tickets-by-studio'
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -134,6 +135,38 @@ function HBarChart({ title, note, items, empty }: {
   )
 }
 
+/**
+ * Tickets por estudio: barras horizontales proporcionales al estudio con más tickets, total general y
+ * «Sin estudio asignado» aparte. Compacta (Taste: un bloque, sin tarjeta gigante); más de 8 estudios → lista
+ * con desplazamiento propio, sin ocultar ninguno ni alterar el total.
+ */
+function TicketsByStudioPanel({ rows, total, error, period, studioName, areaActive }: {
+  rows: { id: string; label: string; value: number }[]; total: number; error: string | null; period: number | null; studioName: string | null; areaActive: boolean
+}) {
+  const max = Math.max(...rows.map(r => r.value), 1)
+  return (
+    <section className="metric-chart studio-tickets" aria-labelledby="dash-studio-tickets">
+      <div className="studio-tickets-head">
+        <h2 id="dash-studio-tickets">Tickets por estudio</h2>
+        {!error && <p className="studio-tickets-total"><span className="tabular-nums">{total}</span> <span>en total</span></p>}
+      </div>
+      <p className="metric-note">Solicitudes registradas {period ? `en los últimos ${period} días` : 'en todo el periodo'}{studioName ? ` · ${studioName}` : ''}, por su estudio.{areaActive ? ' El filtro de área no se aplica a este bloque.' : ''}</p>
+      {error ? <p role="alert" className="metric-note field-error">{error}</p>
+        : total === 0 ? <p className="metric-note metric-empty">No hay solicitudes en el periodo elegido.</p> : (
+        <ol className="studio-tickets-list" aria-label="Tickets por estudio, de mayor a menor">
+          {rows.map(r => (
+            <li key={r.id} className={r.id === 'none' ? 'is-none' : undefined}>
+              <span className="studio-tickets-name" title={r.label}>{r.label}</span>
+              <span className="studio-tickets-bar" aria-hidden="true"><span style={{ transform: `scaleX(${r.value / max})` }} /></span>
+              <span className="studio-tickets-value tabular-nums">{r.value}<span className="sr-only"> tickets</span></span>
+            </li>
+          ))}
+        </ol>
+      )}
+    </section>
+  )
+}
+
 const PERIOD_OPTIONS = [
   { value: 30,   label: 'Últimos 30d' },
   { value: 90,   label: 'Últimos 90d' },
@@ -184,9 +217,7 @@ export default function DashboardView() {
   const workloadItems = (stats?.workload ?? []).slice(0, 6).map(w => ({
     label: users.find(u => u.id === w.userId)?.full_name ?? 'Usuario no disponible', value: w.count, color: 'bg-brand-600',
   }))
-  const areaItems = stats ? Object.entries(stats.areas.byAreaId).sort((a, b) => b[1] - a[1]).map(([id, value]) => ({
-    label: areas.find(a => a.id === id)?.name ?? 'Área no disponible', value, color: 'bg-brand-600',
-  })) : []
+  const studioRows = stats?.ticketsByStudio ? ticketsByStudioRows(stats.ticketsByStudio, id => studios.find(s => s.id === id)?.name) : []
 
   return (
     <div className="dashboard space-y-6">
@@ -289,16 +320,8 @@ export default function DashboardView() {
         <div className={`grid grid-cols-1 ${canSeeUrgency ? 'lg:grid-cols-2' : ''} gap-4`}>
           {/* Urgencias por solicitante y estudio: solo usuarios internos autorizados */}
           {canSeeUrgency && <UrgencyStatsPanel studios={studios} studioId={studioFilter} />}
-          {!stats.areas.applies ? (
-            <section className="metric-chart" aria-label="Áreas">
-              <h2>Áreas</h2>
-              <p className="metric-note metric-empty">{canonicalProcontCodeId ? 'No aplica: las áreas solo se usan con el código interno PROCONT.' : 'El catálogo de códigos internos aún no está disponible.'}</p>
-            </section>
-          ) : (
-            <HBarChart title={studioFilter ? 'Áreas · código PROCONT' : 'Áreas · código PROCONT'}
-              note={`Trabajo en ejecución clasificado con el código interno exacto PROCONT${stats.areas.withoutArea ? ` · ${stats.areas.withoutArea} sin área registrada` : ''}.`}
-              items={areaItems} empty="Sin trabajo en ejecución con área registrada." />
-          )}
+          <TicketsByStudioPanel rows={studioRows} total={stats.ticketsByStudio?.total ?? 0} error={stats.ticketsError}
+            period={period} studioName={studioName} areaActive={areaApplies && !!areaFilter} />
         </div>
       </>)}
     </div>

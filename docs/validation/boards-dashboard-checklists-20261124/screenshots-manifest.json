@@ -1,0 +1,686 @@
+{
+  "captures": [
+    {
+      "stage": "antes",
+      "file": "antes-barra-boards-light-1920.png",
+      "theme": "light",
+      "view": "boards-toolbar",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "sha256": "db0292726b1bcd071925a0ea97f76653ea7c84210bcf33f4b097135d053bbb38"
+    },
+    {
+      "stage": "antes",
+      "file": "antes-barra-boards-light-1440.png",
+      "theme": "light",
+      "view": "boards-toolbar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "0ed0e17373620b6b253c948047c2e2d6f86375e467aba2da3c81d0fc20262cdb"
+    },
+    {
+      "stage": "antes",
+      "file": "antes-boards-light-1440.png",
+      "theme": "light",
+      "view": "boards-page",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "365f20f73630927122c06e4cf945a9c3a08209386f85d682e9d46ae20f9a8ce2"
+    },
+    {
+      "stage": "antes",
+      "file": "antes-mi-color-light.png",
+      "theme": "light",
+      "view": "owner-picker",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "3de2c31beb6107e542d900a383882c49480a70df56ef4a198fc094d27e08403a"
+    },
+    {
+      "stage": "antes",
+      "file": "antes-checklist-analysis-light.png",
+      "theme": "light",
+      "view": "checklist",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "6a387f68d1161a4c3b891c05eabdb8b0a2326939a4ebba9d288da7760cd4101a"
+    },
+    {
+      "stage": "antes",
+      "file": "antes-barra-boards-light-768.png",
+      "theme": "light",
+      "view": "boards-toolbar",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "sha256": "36a68dc8aadcf999d3da4ca63cf06ae7cd8cf1e45bffb564dcddded4a6ae9281"
+    },
+    {
+      "stage": "antes",
+      "file": "antes-barra-boards-light-390.png",
+      "theme": "light",
+      "view": "boards-toolbar",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "e1a79dc2f2210101fe4bbda5c61cf706c798e6b921b7d005a2ef51f621efea76"
+    },
+    {
+      "stage": "antes",
+      "file": "antes-barra-boards-light-360.png",
+      "theme": "light",
+      "view": "boards-toolbar",
+      "viewport": {
+        "width": 360,
+        "height": 780
+      },
+      "sha256": "4c3ffda1e9ae70db4247ddba5853acea813ad54c952fe7f4cd4acac203ba10ca"
+    },
+    {
+      "stage": "antes",
+      "file": "antes-barra-boards-light-320.png",
+      "theme": "light",
+      "view": "boards-toolbar",
+      "viewport": {
+        "width": 320,
+        "height": 700
+      },
+      "sha256": "1e5081f701e8864299fd4ba56d85718e5dc2fd464f4ad06b3b75d4d41f8f061c"
+    },
+    {
+      "stage": "antes",
+      "file": "antes-dashboard-bloque-light-1440.png",
+      "theme": "light",
+      "view": "dashboard-block",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "3391a0aff1a3a90f05c6b6508bab34a25a65a002ff81df07584861a0ae2673ce"
+    },
+    {
+      "stage": "antes",
+      "file": "antes-dashboard-light-1440-completo.png",
+      "theme": "light",
+      "view": "dashboard-page",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "51f1a6547d27b324312f42bc16ca9464f8f71d9941df2a7d0e071a72a0656e70"
+    },
+    {
+      "stage": "antes",
+      "file": "antes-dashboard-bloque-light-390.png",
+      "theme": "light",
+      "view": "dashboard-block",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "fc133139b8a00f74feda20c251c8c98bb75b746b343b627a633b1e4980ba26e9"
+    },
+    {
+      "stage": "antes",
+      "file": "antes-barra-boards-dark-1920.png",
+      "theme": "dark",
+      "view": "boards-toolbar",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "sha256": "cb6c92787efc7d08368eb0b1103decd197004d23ad32c0eff2c06e818c62c82c"
+    },
+    {
+      "stage": "antes",
+      "file": "antes-barra-boards-dark-1440.png",
+      "theme": "dark",
+      "view": "boards-toolbar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "80af19878805660752bd8b1a47c6918eccca5673b45d0c287c37c1a292f32cdb"
+    },
+    {
+      "stage": "antes",
+      "file": "antes-boards-dark-1440.png",
+      "theme": "dark",
+      "view": "boards-page",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "f6ffb5e11ee8098052ed0ff8f9f8a4e2855102594e497598697ee460938f1763"
+    },
+    {
+      "stage": "antes",
+      "file": "antes-mi-color-dark.png",
+      "theme": "dark",
+      "view": "owner-picker",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "eee66ef0cce462f9452ec287c38fd15bb7d6dd3c0c2fe3761121d4c08e3d51a3"
+    },
+    {
+      "stage": "antes",
+      "file": "antes-checklist-analysis-dark.png",
+      "theme": "dark",
+      "view": "checklist",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "caa0c63cc55b2a45df3f979a16d50cef6f3de23d6980a04a12b83ca7a26f3123"
+    },
+    {
+      "stage": "antes",
+      "file": "antes-barra-boards-dark-768.png",
+      "theme": "dark",
+      "view": "boards-toolbar",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "sha256": "1140c1bf64deacd4987b593473613c70cccd7ac21db9f127c3f56dd114a9c70d"
+    },
+    {
+      "stage": "antes",
+      "file": "antes-barra-boards-dark-390.png",
+      "theme": "dark",
+      "view": "boards-toolbar",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "3c3cb449900fdcde21a321da0fbca6654ebaa6917e5740f38a09646280018d50"
+    },
+    {
+      "stage": "antes",
+      "file": "antes-barra-boards-dark-360.png",
+      "theme": "dark",
+      "view": "boards-toolbar",
+      "viewport": {
+        "width": 360,
+        "height": 780
+      },
+      "sha256": "80ca244f6f4daf3c6caff3667bc8ff1cda14d9e2508b9f27d1f57bf0175242ad"
+    },
+    {
+      "stage": "antes",
+      "file": "antes-barra-boards-dark-320.png",
+      "theme": "dark",
+      "view": "boards-toolbar",
+      "viewport": {
+        "width": 320,
+        "height": 700
+      },
+      "sha256": "c533793fb6c7be71999efd6a99952e3d45455126fd0cb8b00101709a1d1f6606"
+    },
+    {
+      "stage": "antes",
+      "file": "antes-dashboard-bloque-dark-1440.png",
+      "theme": "dark",
+      "view": "dashboard-block",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "65c327678522289eaa5edfc6362c0bdb706da93a2b6bbd188828db31a683ca81"
+    },
+    {
+      "stage": "antes",
+      "file": "antes-dashboard-dark-1440-completo.png",
+      "theme": "dark",
+      "view": "dashboard-page",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "a3e7d36ed452a35abf3e12829cfeed1cfdb9b2944b4c493835c703338768e642"
+    },
+    {
+      "stage": "antes",
+      "file": "antes-dashboard-bloque-dark-390.png",
+      "theme": "dark",
+      "view": "dashboard-block",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "63d47738645b08a37f204b80fe02e3d02f1680eef83188d8a3c9ee24f8e2c7a0"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-barra-boards-light-1920.png",
+      "theme": "light",
+      "view": "boards-toolbar",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "sha256": "cfe745717745c9c5cc4807c5129576586ae8cae15e98c40411a24fe7830affda"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-barra-boards-light-1440.png",
+      "theme": "light",
+      "view": "boards-toolbar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "3e036afb69a06392b6f24bf43e8ed76fa656f48bf9ef4de7a67ad5c4c6ee66ec"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-boards-light-1440.png",
+      "theme": "light",
+      "view": "boards-page",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "24189059744e4882de81d4c6df0b19ad104dc117047992ae7eff5be56a04225b"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-mi-color-light.png",
+      "theme": "light",
+      "view": "owner-picker",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "113402c881cb1a047f4711c8e54390d067d8a01d29c91250e1405f9f6422b97c"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-checklist-analysis-light.png",
+      "theme": "light",
+      "view": "checklist",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "12d656b3fa168d231ca6398ceaeacd381a30d0265aa1c2e914b8dfb4c3e5f333"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-barra-boards-light-768.png",
+      "theme": "light",
+      "view": "boards-toolbar",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "sha256": "ce93b8bfbcc7d28aef1ff63ab40c4f536c5df0db099bac7f791378cb5996c02a"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-barra-boards-light-390.png",
+      "theme": "light",
+      "view": "boards-toolbar",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "971f351b663a89da69f2ac0aaf9cdcc02cd3bb35d5f12254d9c543bc168f3fd8"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-barra-boards-light-360.png",
+      "theme": "light",
+      "view": "boards-toolbar",
+      "viewport": {
+        "width": 360,
+        "height": 780
+      },
+      "sha256": "8bcb519bf8b3ddd156bac534a142dae5401a0a4513d681925260c919031e1748"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-barra-boards-light-320.png",
+      "theme": "light",
+      "view": "boards-toolbar",
+      "viewport": {
+        "width": 320,
+        "height": 700
+      },
+      "sha256": "eb88f466b99c59197e13c1faafc5d706b6a620b706d108b9e01608d330438819"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-dashboard-bloque-light-1440.png",
+      "theme": "light",
+      "view": "dashboard-block",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "88edff25ebc8e1150f1e9fd7c1d9b1ba1082f2248f395da1a0c8aa6263388e50"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-dashboard-light-1440-completo.png",
+      "theme": "light",
+      "view": "dashboard-page",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "ac13848e822b77ee1b96d13cc385a87bef07f2d17490b69c408402ad3f49f000"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-dashboard-bloque-light-390.png",
+      "theme": "light",
+      "view": "dashboard-block",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "d777b6f2a85054598dc38a169a28a10a9635de8718820ecddf0bbc36cc9de027"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-barra-boards-dark-1920.png",
+      "theme": "dark",
+      "view": "boards-toolbar",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "sha256": "89eb646ea534b79d4ee68f27f529828e0c7e90224805161eed26222c7ebe5759"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-barra-boards-dark-1440.png",
+      "theme": "dark",
+      "view": "boards-toolbar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "963aaf548e61c54b1183826c262f8f753f8d44bd7b23340d551e48a241ce3401"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-boards-dark-1440.png",
+      "theme": "dark",
+      "view": "boards-page",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "226f78a6f5a0a11834ca2001805219127764bddd1e8aab8b00a3e01c6d84b239"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-mi-color-dark.png",
+      "theme": "dark",
+      "view": "owner-picker",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "ff0bbb207145eb0a0aa06a4cc888f68f9315f256fb5cc0c8613cc5a4a3b89d7e"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-checklist-analysis-dark.png",
+      "theme": "dark",
+      "view": "checklist",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "0764ac7cb51c67a1bd1928614fb47cd769a1b25971107f0acb622dfbf680ae9c"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-barra-boards-dark-768.png",
+      "theme": "dark",
+      "view": "boards-toolbar",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "sha256": "3ead38a8da7273a6c69fc73bb93e34da54b09e81d672ce870628b5e957394860"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-barra-boards-dark-390.png",
+      "theme": "dark",
+      "view": "boards-toolbar",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "d0e566fa7ec568ccd9c8c84b4cc086e6d743d39edabb1de90767ea403226d354"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-barra-boards-dark-360.png",
+      "theme": "dark",
+      "view": "boards-toolbar",
+      "viewport": {
+        "width": 360,
+        "height": 780
+      },
+      "sha256": "c4c4f5605ec8e6513cba35a7b9c7bcaea33174327af901a58d209297fb235f1c"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-barra-boards-dark-320.png",
+      "theme": "dark",
+      "view": "boards-toolbar",
+      "viewport": {
+        "width": 320,
+        "height": 700
+      },
+      "sha256": "8d6c2834663f2c1e0142f9ed4f4fe6846eaddec11e98fc39e05451ab5de70693"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-dashboard-bloque-dark-1440.png",
+      "theme": "dark",
+      "view": "dashboard-block",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "05ff5149b4801d54b3ce9ccc7ea9de9124b682a67df04c6e5ab6b393202065f0"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-dashboard-dark-1440-completo.png",
+      "theme": "dark",
+      "view": "dashboard-page",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "743f90a7fafd1a0db65765cc253d436fc94800b5bf1f5609c5e2708e76ad1326"
+    },
+    {
+      "stage": "despues",
+      "file": "despues-dashboard-bloque-dark-390.png",
+      "theme": "dark",
+      "view": "dashboard-block",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "443561213623ba4e65e7a8bddf4e066d6867d769939fbd1ebeb079f19cdd658d"
+    },
+    {
+      "file": "estado-mi-color-10-light.png",
+      "stage": "estado",
+      "theme": "light",
+      "view": "owner-picker",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "bc0f9a41fed06a5632890d0651097f36a8c053162067a4f7476e93f8cabc90ab"
+    },
+    {
+      "file": "estado-mi-color-10-dark.png",
+      "stage": "estado",
+      "theme": "dark",
+      "view": "owner-picker",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "703256b5f4f1b1c70e1529868eb5267979f1624b29e097359304cfc82cdf8bc5"
+    },
+    {
+      "file": "estado-boards-barra-dark-1440.png",
+      "stage": "estado",
+      "theme": "dark",
+      "view": "boards-toolbar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "963aaf548e61c54b1183826c262f8f753f8d44bd7b23340d551e48a241ce3401"
+    },
+    {
+      "file": "estado-boards-barra-light-1920.png",
+      "stage": "estado",
+      "theme": "light",
+      "view": "boards-toolbar-responsive",
+      "viewport": {
+        "width": 1920,
+        "height": 900
+      },
+      "sha256": "cfe745717745c9c5cc4807c5129576586ae8cae15e98c40411a24fe7830affda"
+    },
+    {
+      "file": "estado-boards-barra-light-1440.png",
+      "stage": "estado",
+      "theme": "light",
+      "view": "boards-toolbar-responsive",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "3e036afb69a06392b6f24bf43e8ed76fa656f48bf9ef4de7a67ad5c4c6ee66ec"
+    },
+    {
+      "file": "estado-boards-barra-light-390.png",
+      "stage": "estado",
+      "theme": "light",
+      "view": "boards-toolbar-responsive",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "971f351b663a89da69f2ac0aaf9cdcc02cd3bb35d5f12254d9c543bc168f3fd8"
+    },
+    {
+      "file": "estado-boards-barra-light-320.png",
+      "stage": "estado",
+      "theme": "light",
+      "view": "boards-toolbar-responsive",
+      "viewport": {
+        "width": 320,
+        "height": 844
+      },
+      "sha256": "eb88f466b99c59197e13c1faafc5d706b6a620b706d108b9e01608d330438819"
+    },
+    {
+      "file": "estado-dashboard-tickets-estudio-light-1440.png",
+      "stage": "estado",
+      "theme": "light",
+      "view": "dashboard-studio",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "aafaa3b5078c1f69861b40dee70ee9b7a6ed909c45f28190e26c25e0628c0db8"
+    },
+    {
+      "file": "estado-dashboard-tickets-estudio-dark-1440.png",
+      "stage": "estado",
+      "theme": "dark",
+      "view": "dashboard-studio",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "8098edd3d3666a4af31c7d3bf4740f40a3524327c1354c0e586add09cc7b0b32"
+    },
+    {
+      "file": "estado-checklist-sugerido-light.png",
+      "stage": "estado",
+      "theme": "light",
+      "view": "checklist-suggested",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "47b97c9609234bea7f74762f458b7b2240a2d9cfb3b7c4c535ab571757384518"
+    },
+    {
+      "file": "estado-checklist-agregado-light.png",
+      "stage": "estado",
+      "theme": "light",
+      "view": "checklist-added",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "49006da0dcf3f17d740b5a2654be46f0129f7f87911ada0c4ffbef7e9ef71358"
+    },
+    {
+      "file": "estado-checklist-sugerido-dark.png",
+      "stage": "estado",
+      "theme": "dark",
+      "view": "checklist-suggested",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "b265edae36feec0570e040db1864a933fc7651a6e08982784bcd3edd667e0acb"
+    },
+    {
+      "file": "estado-checklist-agregado-dark.png",
+      "stage": "estado",
+      "theme": "dark",
+      "view": "checklist-added",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "452a29b3034c147b028514c0359f6523bdcde140cd8602af359aa5b4c91f3309"
+    },
+    {
+      "file": "estado-checklist-cambio-fase.png",
+      "stage": "estado",
+      "theme": "light",
+      "view": "checklist-phase-change",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "6356c87d5a94ec2fc29ab2a746cd008a932b726c6ff0ac42fdc657dac7103e47"
+    }
+  ]
+}

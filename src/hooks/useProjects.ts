@@ -6,6 +6,8 @@ import { actionKey, type Phase, type Priority } from '../lib/board'
 import { errorMessage, requireData } from '../lib/supabase-errors'
 import type { InternalProjectInput } from '../lib/operations'
 import type { RpcAttempt } from '../lib/rpc-attempt'
+import { seedPhaseOnArrival, type ChecklistClient } from '../lib/checklist-templates'
+import { toast } from '../lib/toast'
 
 type StatusFilter = 'active' | 'completed' | 'archived'
 
@@ -93,7 +95,19 @@ export function useProjects() {
 
   /** Cambio de fase (arrastre o selector). El cierre con pendientes exige confirmación explícita. */
   const moveFlow = async (projectId: string, flowId: string, phase: Phase, options: { confirmPending?: boolean; pendingFingerprint?: string } = {}, key: string = actionKey()) => {
-    try { return await board.movePhase(projectId, phase, key, { flowId, ...options }) }
+    try {
+      const ticket = await board.movePhase(projectId, phase, key, { flowId, ...options })
+      // Checklist sugerido de la nueva fase, solo si está vacía (lib/checklist-templates.ts). Un fallo aquí no
+      // deshace el cambio de fase ya confirmado por el servidor: se informa y la sugerencia queda manual.
+      const flowType = ticket.flows.find(f => f.id === flowId)?.flow_type
+      if (flowType) {
+        try {
+          const added = await seedPhaseOnArrival(supabase as unknown as ChecklistClient, flowId, flowType, phase)
+          if (added) toast.info(`Se agregaron ${added} tareas sugeridas para la nueva fase.`)
+        } catch (err) { toast.error(errorMessage(err)) }
+      }
+      return ticket
+    }
     finally { await loadProjects() }
   }
 

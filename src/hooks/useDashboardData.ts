@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
+import { countTicketsByStudio, type TicketsByStudio, type TicketsClient } from '../lib/tickets-by-studio'
 
 /**
  * Datos del Dashboard (reestructuración D-045). Solo lecturas que el panel interno ya tenía permitidas por RLS
@@ -10,7 +11,8 @@ import { supabase } from '../lib/supabase'
  * - Trabajo: estado actual de los proyectos (en ejecución, bloqueados, vencidos) y totales completados/archivados.
  * - Prioridad: solo trabajo en ejecución.
  * - Carga: tickets en ejecución por responsable (flujos con assigned_to).
- * - Áreas: solo solicitudes/proyectos cuyo código interno canónico es exactamente PROCONT.
+ * - Tickets por estudio (24/11/2026, sustituye al bloque de áreas): solicitudes del periodo por `studio_id`,
+ *   paginadas y verificadas con count=exact (lib/tickets-by-studio.ts). El área no interviene.
  * La clasificación por tipo (development / administrative / dual) ya no forma parte del Dashboard.
  */
 export interface DashboardStats {
@@ -19,7 +21,9 @@ export interface DashboardStats {
   priorityActive: { urgent: number; high: number; medium: number; low: number }
   workload: { userId: string; count: number }[]
   unassignedActive: number
-  areas: { applies: boolean; byAreaId: Record<string, number>; withoutArea: number }
+  /** null si el conteo no se pudo verificar (el error va en ticketsError, sin bloquear el resto). */
+  ticketsByStudio: TicketsByStudio | null
+  ticketsError: string | null
 }
 
 interface Filters { periodDays: number | null; studioId: string | null; areaId: string | null; procontStudioId: string | null; procontCodeId: string | null }
@@ -81,17 +85,6 @@ export function useDashboardData({ periodDays, studioId, areaId, procontStudioId
       overdue: active.filter(p => p.due_date && p.due_date < today).length,
     }
 
-    // ── Áreas (solo PROCONT) ────────────────────────────────────────────────────
-    const byAreaId: Record<string, number> = {}
-    let withoutArea = 0
-    if (procontCodeId && (!studioId || areaApplies)) {
-      for (const p of active) {
-        if (p.requests?.studio_code_id !== procontCodeId) continue
-        const aid = p.requests?.area_id
-        if (aid) byAreaId[aid] = (byAreaId[aid] ?? 0) + 1; else withoutArea++
-      }
-    }
-
     // ── Carga del equipo (tickets en ejecución por responsable) ────────────────
     const perUser = new Map<string, Set<string>>()
     const withOwner = new Set<string>()
@@ -102,10 +95,17 @@ export function useDashboardData({ periodDays, studioId, areaId, procontStudioId
     }
     const workload = [...perUser].map(([userId, set]) => ({ userId, count: set.size })).sort((a, b) => b.count - a.count)
 
+    // ── Tickets por estudio (periodo + estudio; nunca área) ────────────────────
+    let ticketsByStudio: TicketsByStudio | null = null, ticketsError: string | null = null
+    try {
+      ticketsByStudio = await countTicketsByStudio(supabase as unknown as TicketsClient,
+        { since: since ? new Date(since).toISOString() : null, studioId })
+    } catch (err) { ticketsError = err instanceof Error ? err.message : 'No se pudieron contar los tickets por estudio.' }
+
     setStats({
       requests: requestsStats, work, priorityActive, workload,
       unassignedActive: active.filter(p => !withOwner.has(p.id)).length,
-      areas: { applies: !!procontCodeId && (!studioId || areaApplies), byAreaId, withoutArea },
+      ticketsByStudio, ticketsError,
     })
     setLoading(false)
   }, [periodDays, studioId, areaId, procontStudioId, procontCodeId])
