@@ -65,7 +65,7 @@ export default function EvidenceSection({ projectId, requestId, editable, onChan
       </div>
       {editable && (
         <div className="border-t pt-4 space-y-3">
-          <AttachmentPicker onChange={setPrepared} resetKey={resetKey} />
+          <AttachmentPicker onChange={setPrepared} resetKey={resetKey} sending={busy} />
           <button onClick={() => { void upload() }} disabled={busy || !prepared?.ok || prepared.items.length === 0}
             className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-brand-700 disabled:opacity-50">
             {busy ? 'Subiendo…' : deliveredKeys.size ? 'Reintentar evidencias pendientes' : 'Subir evidencias'}

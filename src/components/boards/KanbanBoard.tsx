@@ -478,6 +478,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
           procontCodeId={canonicalProcontCodeId}
           onProjectClick={setSelectedProject}
           loading={loading}
+          users={activeUsers}
         />
       )}
 

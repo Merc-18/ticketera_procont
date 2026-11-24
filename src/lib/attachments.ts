@@ -5,7 +5,8 @@ export type { DeliveryItem, DeliveryResult } from './attachment-delivery.ts'
 
 /** Evidencias de solicitudes: bucket privado `request-attachments`, carpeta = id de la solicitud. */
 export const ATTACHMENT_BUCKET = 'request-attachments'
-export const ATTACHMENT_ACCEPT = '.png,.jpg,.jpeg,.webp,.gif,.pdf,.txt,.csv,.xlsx,.xls,.docx,.doc'
+// Extensiones y MIME del contrato: attachment-intake.ts (mismo filtro para explorador, arrastre y portapapeles).
+export { ATTACHMENT_ACCEPT } from './attachment-intake.ts'
 // Límites y compresión: attachment-prep.ts (máx. 4 archivos, total ≤ 2.500.000 bytes), iguales al contrato de Codex.
 
 /** Nombre visible: quita el prefijo que asigna el servidor (`<uuid>-`) o el antiguo (`<n>-`). */

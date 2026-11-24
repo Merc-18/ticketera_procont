@@ -2,6 +2,7 @@ import ControlLabel from '../ui/ControlLabel'
 import type { IconName } from '../ui/Icon'
 import { Droppable, Draggable } from '@hello-pangea/dnd'
 import ProjectCard from './ProjectCard'
+import { stageTone } from '../../lib/board-stages'
 import type { Project, ProjectFlow, User } from '../../types/database.types'
 
 interface Props {
@@ -21,19 +22,27 @@ interface Props {
   procontCodeId?: string | null
 }
 
+/**
+ * Columna del Kanban. La ETAPA tiene identidad propia (data-stage → fondo teñido sutil, acento superior,
+ * icono y contador en su tono); las tarjetas quedan neutras para que prioridad y responsable se lean aparte.
+ */
 export default function BoardColumn({ phase, projects, onProjectClick, users = [], onAssign, canManage, selectedIds, onSelect, procontCodeId }: Props) {
+  const blocked = projects.filter(p => p.project.is_blocked).length
   return (
-    <div className="board-column flex-shrink-0 w-72">
+    <section className="board-column flex-shrink-0 w-72" data-stage={stageTone(phase.id)} aria-label={`${phase.title}: ${projects.length} tickets`}>
       {/* Column Header */}
       <div className="board-column-header">
-        <div className="flex items-center justify-between">
-          <h2 className="font-medium text-gray-800 text-base">
-            <ControlLabel icon={phase.icon}>{phase.title}</ControlLabel>
-          </h2>
-          <span className="bg-gray-200 text-gray-800 text-[13px] font-medium px-2 py-0.5 rounded-md tabular-nums" aria-label={`${projects.length} tickets`}>
-            {projects.length}
-          </span>
-        </div>
+        <h2 className="board-column-title">
+          <ControlLabel icon={phase.icon}>{phase.title}</ControlLabel>
+        </h2>
+        <span className="stage-meta">
+          {blocked > 0 && (
+            <span className="stage-blocked" title={`${blocked} bloqueado${blocked === 1 ? '' : 's'}`}>
+              <span aria-hidden="true" className="stage-blocked-dot" />{blocked}<span className="sr-only"> bloqueado{blocked === 1 ? '' : 's'}</span>
+            </span>
+          )}
+          <span className="stage-count" aria-label={`${projects.length} tickets`}>{projects.length}</span>
+        </span>
       </div>
 
       {/* Droppable Area */}
@@ -42,9 +51,7 @@ export default function BoardColumn({ phase, projects, onProjectClick, users = [
           <div
             ref={provided.innerRef}
             {...provided.droppableProps}
-            className={`board-column-body ${
-              snapshot.isDraggingOver ? 'bg-brand-50 ring-2 ring-primary' : ''
-            }`}
+            className={`board-column-body ${snapshot.isDraggingOver ? 'is-over' : ''}`}
           >
             {projects.map((item, index) => (
               <Draggable
@@ -58,7 +65,7 @@ export default function BoardColumn({ phase, projects, onProjectClick, users = [
                     ref={provided.innerRef}
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
-                    className={snapshot.isDragging ? 'opacity-75' : ''}
+                    className={snapshot.isDragging ? 'is-dragging' : ''}
                   >
                     <ProjectCard
                       project={item.project}
@@ -78,13 +85,11 @@ export default function BoardColumn({ phase, projects, onProjectClick, users = [
 
             {/* Empty state */}
             {projects.length === 0 && (
-              <div className="text-center text-gray-400 text-sm py-8">
-                Sin tickets
-              </div>
+              <div className="stage-empty">Sin tickets</div>
             )}
           </div>
         )}
       </Droppable>
-    </div>
+    </section>
   )
 }

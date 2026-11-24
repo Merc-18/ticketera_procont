@@ -117,7 +117,8 @@ for (const theme of ['light', 'dark']) {
     assert.equal(new Set([medium, high, low]).size, 3, 'tres prioridades distintas')
     assert.equal(high, 'rgb(238, 187, 49)', 'Alto = dorado Procont')
     const topWidth = p => page.locator(`.project-card[data-priority="${p}"]`).first().evaluate(el => getComputedStyle(el).borderTopWidth)
-    assert.equal(await topWidth('medium'), '3px'); assert.equal(await topWidth('high'), '3px'); assert.equal(await topWidth('low'), '1px')
+    // 24/11/2026: sin barra superior por prioridad (era la barra azul universal); el color vive en la insignia.
+    assert.equal(await topWidth('medium'), '1px'); assert.equal(await topWidth('high'), '1px'); assert.equal(await topWidth('low'), '1px')
     // Prioridad ≠ estado: el azul de «Medio» (relleno) no es el tinte de «Trabajo en proceso».
     assert.notEqual(medium, theme === 'light' ? 'rgb(219, 234, 254)' : 'rgb(23, 43, 92)')
     await page.locator('label').filter({ hasText: 'Prioridad' }).locator('select').first().selectOption('high')
@@ -145,7 +146,7 @@ for (const theme of ['light', 'dark']) {
     const card = page.locator('.project-card.has-owner').first()
     await card.waitFor()
     assert.match(await card.evaluate(el => getComputedStyle(el).boxShadow), /inset/, 'franja lateral')
-    assert.equal(await card.evaluate(el => getComputedStyle(el).borderTopWidth), '3px', 'la prioridad conserva su acento')
+    assert.equal(await card.locator('.card-priority').count(), 1, 'la prioridad conserva su insignia propia')
     assert.equal(await page.evaluate(() => localStorage.getItem('ticketera-owner-colors')), null, 'Supabase es la fuente de verdad; no se persiste en localStorage')
     assert.ok(fixture.log.some(item => item.path.endsWith('/rpc/set_my_internal_card_color') && JSON.parse(item.body).p_color_id === 'ambar'), 'la preferencia se guardó mediante la RPC autenticada')
     await page.keyboard.press('Escape')

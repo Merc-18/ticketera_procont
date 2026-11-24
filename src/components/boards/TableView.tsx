@@ -1,8 +1,9 @@
 import ControlLabel from '../ui/ControlLabel'
 import ScrollHint from '../ui/ScrollHint'
 import { useState } from 'react'
-import type { Project, ProjectFlow } from '../../types/database.types'
-import { PRIORITY_COLORS, PHASE_LABELS, PRIORITY_LABEL } from '../../lib/constants'
+import type { Project, ProjectFlow, User } from '../../types/database.types'
+import { PRIORITY_COLORS, PHASE_LABELS, PRIORITY_LABEL, getAvatarColor, getInitials } from '../../lib/constants'
+import { stageTone } from '../../lib/board-stages'
 import Icon from '../ui/Icon'
 import { checklistCount, phasePosition } from '../../lib/board'
 import { ownerClass, useOwnerColors } from '../../lib/card-colors'
@@ -19,6 +20,8 @@ interface Props {
   procontCodeId?: string | null
   onProjectClick: (item: { project: ProjectWithRelations; flow: ProjectFlow }) => void
   loading?: boolean
+  /** Usuarios activos para mostrar al responsable (mismo anillo de color personal que el Kanban). */
+  users?: User[]
 }
 
 type SortKey = 'title' | 'priority' | 'area' | 'phase' | 'progress' | 'due_date' | 'created_at'
@@ -52,7 +55,7 @@ function exportTableCSV(sorted: Array<{ project: ProjectWithRelations; flow: Pro
   URL.revokeObjectURL(url)
 }
 
-export default function TableView({ projects, boardType, onProjectClick, loading, procontCodeId }: Props) {
+export default function TableView({ projects, boardType, onProjectClick, loading, procontCodeId, users = [] }: Props) {
   const ownerColors = useOwnerColors()
   const [sortKey, setSortKey] = useState<SortKey>('created_at')
   const [sortDir, setSortDir] = useState<SortDir>('desc')
@@ -142,6 +145,7 @@ export default function TableView({ projects, boardType, onProjectClick, loading
             <tr>
               <SortHeader k="title"      label="Título" />
               <SortHeader k="priority"   label="Prioridad" />
+              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 whitespace-nowrap">Responsable</th>
               <SortHeader k="area"       label="Área" />
               <SortHeader k="phase"      label="Fase" />
               <SortHeader k="progress"   label="Checklist" />
@@ -153,6 +157,7 @@ export default function TableView({ projects, boardType, onProjectClick, loading
             {sorted.map(({ project, flow }) => {
               const area = project.requests?.studio_code_id === procontCodeId && procontCodeId ? project.requests?.requester_area : null
               const owner = ownerClass(ownerColors, flow?.assigned_to)
+              const assignee = flow?.assigned_to ? users.find(u => u.id === flow.assigned_to) : undefined
               const isOverdue = project.due_date && project.due_date < today && project.status === 'active'
               return (
                 <tr
@@ -175,6 +180,15 @@ export default function TableView({ projects, boardType, onProjectClick, loading
                     </span>
                   </td>
 
+                  {/* Responsable (anillo = color personal persistido en Supabase, igual que en el Kanban) */}
+                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
+                    {assignee ? (
+                      <span className="table-owner" title={assignee.full_name}>
+                        <span className={`card-avatar ${getAvatarColor(assignee.full_name)} ${ownerColors[assignee.id] ? `owner-ring owner-${ownerColors[assignee.id]}` : ''}`} aria-hidden="true">{getInitials(assignee.full_name)}</span>
+                        {assignee.full_name.split(' ')[0]}
+                      </span>
+                    ) : <span className="text-gray-500">Sin responsable</span>}
+                  </td>
                   {/* Área */}
                   <td className="px-4 py-3 whitespace-nowrap text-gray-600 text-xs">
                     {area ?? <span className="text-gray-500">—</span>}
@@ -182,9 +196,12 @@ export default function TableView({ projects, boardType, onProjectClick, loading
 
                   {/* Fase */}
                   <td className="px-4 py-3 whitespace-nowrap text-xs text-gray-700 font-medium">
-                    {PHASE_LABELS[flow.current_phase] ?? flow.current_phase}
-                    <span className="ml-1 text-gray-400 font-normal">({phasePosition(flow.flow_type, flow.current_phase).label})</span>
-                    {project.is_blocked && <span className="ml-1.5 inline-flex items-center gap-1 text-red-700 font-medium" title={project.blocked_reason ?? ''}><Icon name="block" size={14} />Bloqueado</span>}
+                    <span className="stage-cell" data-stage={stageTone(flow.current_phase)}>
+                      <span className="stage-dot" aria-hidden="true" />
+                      {PHASE_LABELS[flow.current_phase] ?? flow.current_phase}
+                      <span className="ml-1 text-gray-500 font-normal">({phasePosition(flow.flow_type, flow.current_phase).label})</span>
+                    </span>
+                    {project.is_blocked && <span className="status-badge is-blocked ml-2" title={project.blocked_reason ?? ''}><Icon name="block" size={12} />Bloqueado</span>}
                   </td>
 
                   {/* Checklist (conteo; el % oficial está en el detalle) */}

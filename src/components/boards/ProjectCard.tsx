@@ -68,91 +68,98 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
     .filter((x): x is { user: NonNullable<typeof x.user>; flowType: string } => Boolean(x.user))
     .filter((x, i, arr) => arr.findIndex(y => y.user.id === x.user.id) === i)
 
+  const owners = assignedUsers.length
   return (
     <div
       onClick={onClick}
       data-priority={project.priority}
-      className={`project-card relative border mb-3 cursor-pointer group/card prio-${project.priority} ${owner ? `has-owner ${owner}` : ''} ${
-        project.is_blocked ? 'bg-red-50' : 'bg-elevated'
-      } ${selected ? 'border-brand-400 ring-1 ring-brand-200' : project.is_blocked ? 'border-red-300' : 'border-gray-200'}`}
+      data-blocked={project.is_blocked ? 'true' : undefined}
+      className={`project-card relative cursor-pointer group/card prio-${project.priority} ${owner ? `has-owner ${owner}` : ''} ${
+        project.is_blocked ? 'is-blocked' : ''} ${selected ? 'is-selected' : ''}`}
     >
       {onSelect && (
         <div
-          className={`card-select absolute top-2 right-2 z-10 transition-opacity ${selected ? 'opacity-100' : 'opacity-0 group-hover/card:opacity-100'}`}
+          className={`card-select absolute z-10 transition-opacity ${selected ? 'opacity-100' : 'opacity-0 group-hover/card:opacity-100'}`}
           onClick={e => { e.stopPropagation(); onSelect(project.id) }}
         >
           <input aria-label={`Seleccionar ${project.title}`} type="checkbox" checked={selected ?? false} readOnly className="w-4 h-4 cursor-pointer accent-brand-600" />
         </div>
       )}
-      {/* Título + blocked */}
-      <div className="flex items-start justify-between mb-2">
-        <h3 className="font-medium text-gray-900 text-base flex-1 leading-snug line-clamp-2">
-          {project.title}
-        </h3>
-      </div>
+
+      {/* Metadatos: número REQ y solicitante (lectura rápida, sin insignias) */}
+      <p className="card-meta">
+        {requestNumber
+          ? <span className="card-number">{requestNumber}</span>
+          : <span className="card-internal">Interno</span>}
+        {showRequester && (
+          <span className="card-requester" title={`Solicitante: ${requesterName}`}>
+            <Icon name="user" size={13} aria-hidden="true" /><span className="sr-only">Solicitante: </span><span className="truncate">{requesterName}</span>
+          </span>
+        )}
+      </p>
+
+      {/* Título */}
+      <h3 className="card-title line-clamp-2">{project.title}</h3>
+
+      {/* Estado crítico: indicador semántico propio, independiente de prioridad y responsable */}
       {project.is_blocked && (
-        <p className="text-sm font-medium text-red-700 mb-2 line-clamp-2" title={project.blocked_reason || 'Bloqueado'}>
-          <Icon name="block" size={14} className="inline-block mr-1 -mt-0.5" />Bloqueado{project.blocked_reason ? `: ${project.blocked_reason}` : ''}
+        <p className="card-blocked line-clamp-2" title={project.blocked_reason || 'Bloqueado'}>
+          <Icon name="block" size={14} className="shrink-0" aria-hidden="true" /><span><strong>Bloqueado</strong>{project.blocked_reason ? `: ${project.blocked_reason}` : ''}</span>
         </p>
       )}
 
-      {/* Badges */}
-      <div className="flex flex-wrap gap-1 mb-2.5">
-        <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium border ${PRIORITY_COLORS[project.priority]}`} title="Prioridad definitiva asignada por el personal">
+      {/* Insignias: la prioridad es la única con relleno de color */}
+      <div className="card-badges">
+        <span className={`card-badge card-priority border ${PRIORITY_COLORS[project.priority]}`} title="Prioridad definitiva asignada por el personal">
           <Icon name="flag" size={12} /><span className="sr-only">Prioridad definitiva: </span>{PRIORITY_LABEL[project.priority] ?? project.priority}
         </span>
         {area && (
-          <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${areaColorClass}`}>
+          <span className={`card-badge card-area ${areaColorClass}`}>
             {area}
           </span>
         )}
-        {showRequester && (
-          <span className="px-1.5 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200">
-            <Icon name="user" size={14} className="inline-block mr-1" />{requesterName}
-          </span>
-        )}
         {project.project_type === 'dual' && (
-          <span className="px-1.5 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700 border border-gray-300" title="Proyecto histórico con dos flujos">
+          <span className="card-badge bg-gray-100 text-gray-700 border border-gray-300" title="Proyecto histórico con dos flujos">
             Dual (histórico)
           </span>
         )}
         {dueBadge && (
-          <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium ${dueBadge.cls}`}>
+          <span className={`card-badge ${dueBadge.cls}`}>
             <Icon name={dueBadge.icon} size={12} />{dueBadge.label}
           </span>
         )}
       </div>
 
-      {/* Footer */}
-      <div className="project-card-footer flex flex-col gap-3 text-sm text-gray-600">
-        <span className="flex items-center gap-2">
-          {requestNumber
-            ? <span className="font-mono text-gray-600 whitespace-nowrap">{requestNumber}</span>
-            : <span className="px-1.5 py-0.5 rounded bg-gray-100 text-gray-600 text-xs font-medium">Interno</span>
-          }
-          {checkTotal > 0 && (
-            <span className={`flex items-center gap-1 text-xs font-medium ${checkDone === checkTotal ? 'text-green-700' : 'text-gray-600'}`} aria-label={`Checklist ${checkDone} de ${checkTotal}`}>
-              <Icon name="check" size={12} />{checkDone}/{checkTotal}
+      {/* Pie: progreso del checklist y responsable */}
+      <div className="project-card-footer">
+        {checkTotal > 0 ? (
+          <span className={`card-progress ${checkDone === checkTotal ? 'is-complete' : ''}`} aria-label={`Checklist ${checkDone} de ${checkTotal}`}>
+            <span className="card-progress-track" aria-hidden="true">
+              <span className="card-progress-fill" style={{ transform: `scaleX(${checkDone / checkTotal})` }} />
             </span>
-          )}
-        </span>
+            <span aria-hidden="true" className="card-progress-label"><Icon name="check" size={12} />{checkDone}/{checkTotal}</span>
+          </span>
+        ) : <span />}
 
-        <div className="flex items-center gap-1.5">
-          {/* Assigned users display */}
-          {assignedUsers.length > 0 ? (
-            <div className="flex items-center gap-1">
-              {assignedUsers.map(({ user, flowType }) => (
-                <div key={user.id} className="flex items-center gap-1" title={`${user.full_name} (${flowType === 'development' ? 'Development' : 'Administrative'})`}>
-                  <div className={`w-7 h-7 rounded-full ${getAvatarColor(user.full_name)} ${ownerColors[user.id] ? `owner-ring owner-${ownerColors[user.id]}` : ''} flex items-center justify-center text-white text-[13px] font-medium`}>
+        <div className="card-owner">
+          {/* Responsables asignados (anillo = color personal persistido en Supabase) */}
+          {owners > 0 ? (
+            <div className="flex items-center gap-1.5 min-w-0">
+              <div className="card-avatars">
+                {assignedUsers.map(({ user, flowType }) => (
+                  <div key={user.id} title={`${user.full_name} (${flowType === 'development' ? 'Development' : 'Administrative'})`}
+                    className={`card-avatar ${getAvatarColor(user.full_name)} ${ownerColors[user.id] ? `owner-ring owner-${ownerColors[user.id]}` : ''}`}>
                     {getInitials(user.full_name)}
                   </div>
-                </div>
-              ))}
-              {assignedUsers.length === 1 && (
-                <span className="text-gray-600 truncate max-w-[96px]">{assignedUsers[0].user.full_name.split(' ')[0]}</span>
+                ))}
+              </div>
+              {owners === 1 && (
+                <span className="card-owner-name">{assignedUsers[0].user.full_name.split(' ')[0]}</span>
               )}
             </div>
-          ) : null}
+          ) : (
+            <span className="card-unassigned"><span className="card-avatar-empty" aria-hidden="true" />Sin responsable</span>
+          )}
 
           {/* Quick assign button */}
           {onAssign && users.length > 0 && (
@@ -161,9 +168,9 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
                 onClick={e => { e.stopPropagation(); setShowAssign(v => !v) }}
                 title="Asignar responsable"
                 aria-label="Asignar responsable" aria-expanded={showAssign}
-                className="assign-toggle rounded-full bg-gray-100 hover:bg-brand-100 text-gray-600 hover:text-brand-700 flex items-center justify-center transition"
+                className="assign-toggle"
               >
-                <Icon name={assignedUsers.length > 0 ? 'edit' : 'plus'} size={14} />
+                <Icon name={owners > 0 ? 'edit' : 'plus'} size={14} />
               </button>
 
               {showAssign && (
@@ -182,7 +189,7 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
                         flow.assigned_to === u.id ? 'bg-brand-50 text-brand-700 font-medium' : ''
                       }`}
                     >
-                      <div className={`w-7 h-7 rounded-full ${getAvatarColor(u.full_name)} flex items-center justify-center text-white text-[13px] font-medium shrink-0`}>
+                      <div className={`w-7 h-7 rounded-full ${getAvatarColor(u.full_name)} ${ownerColors[u.id] ? `owner-ring owner-${ownerColors[u.id]}` : ''} flex items-center justify-center text-white text-[13px] font-medium shrink-0`}>
                         {getInitials(u.full_name)}
                       </div>
                       {u.full_name.split(' ').slice(0, 2).join(' ')}

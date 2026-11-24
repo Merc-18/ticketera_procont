@@ -78,6 +78,7 @@ export default function PublicRequestForm({ client }: { client: ClientFormConfig
   // con las mismas claves de subida mientras la autorización del ticket siga vigente.
   const [pendingDelivery, setPendingDelivery] = useState<DeliveryItem[]>([])
   const [deliveryError, setDeliveryError] = useState<string | null>(null)
+  const [deliveredCount, setDeliveredCount] = useState(0)
   const [retrying, setRetrying] = useState(false)
 
   // Taste (Forms): errores al enviar, cada uno bajo su campo; el primero recibe el foco.
@@ -141,6 +142,7 @@ export default function PublicRequestForm({ client }: { client: ClientFormConfig
     if (items.length === 0) { setPendingDelivery([]); setDeliveryError(null); return }
     const outcome = await client.deliver(target.id, target.tracking_token, items)
     const remaining = items.filter(i => outcome.failed.includes(i.file.name))
+    setDeliveredCount(n => n + outcome.uploaded.length)
     setPendingDelivery(remaining)
     setDeliveryError(outcome.error)
   }
@@ -162,6 +164,11 @@ export default function PublicRequestForm({ client }: { client: ClientFormConfig
             <p className="text-sm text-gray-600 mb-2">Número de seguimiento:</p>
             <p className="text-3xl font-mono text-primary">{receipt.request_number}</p>
           </div>
+          {deliveredCount > 0 && pendingDelivery.length === 0 && (
+            <p role="status" className="text-sm text-green-800 bg-green-50 border border-green-200 rounded-lg px-3 py-2 mb-4 inline-flex items-center gap-2">
+              <Icon name="check" size={16} />{deliveredCount === 1 ? 'Se adjuntó 1 archivo a la solicitud.' : `Se adjuntaron ${deliveredCount} archivos a la solicitud.`}
+            </p>
+          )}
           {pendingDelivery.length > 0 && (
             <div className="text-sm text-yellow-800 bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4 text-left space-y-2">
               <p>La solicitud quedó registrada, pero no se pudieron adjuntar: <strong>{pendingDelivery.map(i => i.file.name).join(', ')}</strong>.</p>
@@ -175,7 +182,7 @@ export default function PublicRequestForm({ client }: { client: ClientFormConfig
           )}
           <p className="text-sm text-gray-500 mb-6">Puedes seguir su avance en «Mis tickets».</p>
           <div className="space-y-3">
-            <button onClick={() => { attempt.current = createRpcAttempt(); setReceipt(null); setPendingDelivery([]); setDeliveryError(null) }}
+            <button onClick={() => { attempt.current = createRpcAttempt(); setReceipt(null); setPendingDelivery([]); setDeliveryError(null); setDeliveredCount(0) }}
               className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-brand-700 transition">
               Crear otro ticket
             </button>
@@ -291,7 +298,7 @@ export default function PublicRequestForm({ client }: { client: ClientFormConfig
                 </div>
                 <div>
                   <p className="block text-sm font-medium text-gray-700 mb-2">Adjuntar capturas o documentos</p>
-                  <AttachmentPicker onChange={setPrepared} resetKey={pickerKey} />
+                  <AttachmentPicker onChange={setPrepared} resetKey={pickerKey} sending={loading} />
                 </div>
                 <div>
                   {label('ticket-priority', 'Prioridad solicitada')}
