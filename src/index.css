@@ -894,6 +894,9 @@ html:not([data-input=keyboard]) .dashboard-export-menu { transition: opacity 150
 .workload-detail td { background: var(--p-alt); }
 .workload-detail ul, .portfolio-tickets { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
 .workload-detail li, .portfolio-tickets li { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 14px; }
+.workload-mobile-tickets { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); display: grid; gap: 10px; }
+.workload-mobile-tickets li { padding-top: 10px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
+.workload-mobile-tickets .portfolio-ticket-title { flex-basis: 100%; overflow-wrap: anywhere; }
 .portfolio-ticket-title { flex: 1 1 200px; min-width: 0; color: var(--p-ink); }
 .portfolio-ticket-status { font-size: 13px; color: var(--p-muted); }
 .portfolio-count { margin-left: 8px; font-size: 13px; font-weight: 400; color: var(--p-muted); font-variant-numeric: tabular-nums; }

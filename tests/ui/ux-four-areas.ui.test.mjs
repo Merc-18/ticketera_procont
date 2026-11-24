@@ -88,7 +88,15 @@ async function open(viewport, observe) {
 async function capture(page, name) {
   await page.evaluate(() => document.fonts.ready)
   await page.waitForTimeout(80)
-  const overflow = await page.evaluate(() => ({ width: innerWidth, content: document.documentElement.scrollWidth }))
+  const overflow = await page.evaluate(targetWidth => {
+    const width = innerWidth, content = document.documentElement.scrollWidth
+    if (width <= targetWidth + 1 && content <= targetWidth + 1) return { width, content }
+    return { width, content, visual: visualViewport?.width, viewport: document.querySelector('meta[name="viewport"]')?.content,
+      tableChain: (() => { let e = document.querySelector('.workload-table'), a = []; while (e && a.length < 8) { const r = e.getBoundingClientRect(); a.push({ tag: e.tagName, cls: typeof e.className === 'string' ? e.className : '', width: Math.round(r.width), minWidth: getComputedStyle(e).minWidth, overflowX: getComputedStyle(e).overflowX }); e = e.parentElement } return a })(),
+      wide: [...document.querySelectorAll('body *')].map(el => ({ tag: el.tagName, cls: typeof el.className === 'string' ? el.className : '',
+        left: Math.round(el.getBoundingClientRect().left), right: Math.round(el.getBoundingClientRect().right), width: Math.round(el.getBoundingClientRect().width) }))
+        .filter(el => el.right > width + 1).slice(0, 8) }
+  }, page.viewportSize().width)
   assert.ok(overflow.content <= page.viewportSize().width + 1 && overflow.width <= page.viewportSize().width + 1, `${name}: overflow ${JSON.stringify(overflow)}`)
   const unnamed = await page.locator('button:visible').evaluateAll(nodes => nodes.filter(el => ![el.textContent, el.getAttribute('aria-label'), el.getAttribute('title')].some(v => v?.trim())).length)
   assert.equal(unnamed, 0, `${name}: botones identificados`)
@@ -125,6 +133,70 @@ async function staff(page) {
   await page.locator('nav[aria-label="Secciones"]').waitFor()
   await page.getByText('Cycle Time promedio', { exact: true }).waitFor()
 }
+
+test('Equipo: carga completa por responsable incluye vencidos y archivados, sin tratar fallos como ceros', async () => {
+  for (const [size, viewport] of [['desktop', SIZES.desktop], ['movil', SIZES.movil]]) {
+    const page = await open(viewport)
+    await staff(page)
+    const developer = STAFF['developer@simulado.invalid'].id
+    const projects = [
+      { id: '00000000-0000-4000-8000-000000009701', title: 'QA-FICTICIO vencido', priority: 'high', status: 'active', is_blocked: true, project_number: 'REQ26-9701', due_date: '2000-01-01' },
+      { id: '00000000-0000-4000-8000-000000009702', title: 'QA-FICTICIO pendiente', priority: 'medium', status: 'active', is_blocked: false, project_number: 'REQ26-9702', due_date: '2099-01-01' },
+      { id: '00000000-0000-4000-8000-000000009703', title: 'QA-FICTICIO completado', priority: 'low', status: 'completed', is_blocked: false, project_number: 'REQ26-9703', due_date: null },
+      { id: '00000000-0000-4000-8000-000000009704', title: 'QA-FICTICIO archivado', priority: 'urgent', status: 'archived', is_blocked: false, project_number: 'REQ26-9704', due_date: null },
+    ]
+    const rows = projects.map((project, i) => ({ id: `00000000-0000-4000-8000-00000000971${i}`, assigned_to: developer,
+      flow_type: 'development', current_phase: i === 1 ? 'backlog' : 'dev', project_id: project.id, projects: { id: project.id, ...project } }))
+    let requests = 0
+    await page.route(`${fixture.url}/rest/v1/project_flows?**`, route => {
+      requests++
+      return route.fulfill({ status: 200, contentType: 'application/json', headers: { 'Access-Control-Allow-Origin': '*',
+        'Access-Control-Expose-Headers': 'Content-Range', 'Content-Range': `0-${rows.length - 1}/${rows.length}` }, body: JSON.stringify(rows) })
+    })
+    await page.getByRole('button', { name: 'Equipo', exact: true }).click()
+    await page.getByRole('tab', { name: 'Carga de trabajo', exact: true }).click()
+    await page.getByRole('heading', { name: 'Carga de trabajo del equipo', exact: true }).waitFor()
+    if (size === 'desktop') {
+      const member = page.getByRole('row', { name: /Developer Simulado/ }).first()
+      const cells = await member.getByRole('cell').allInnerTexts()
+      assert.deepEqual(cells.slice(0, 9).map(v => v.trim()), ['Azul profundo', '4', '2', '1', '1', '1', '1', '1', '1'])
+      assert.equal(cells[9].trim(), 'Ver tickets')
+    } else {
+      const member = page.getByRole('article', { name: 'Carga de Developer Simulado' })
+      const metrics = await member.locator('dl').evaluate(dl => Object.fromEntries([...dl.querySelectorAll('div')]
+        .map(item => [item.querySelector('dt')?.textContent?.trim(), item.querySelector('dd')?.textContent?.trim()])))
+      assert.deepEqual(metrics, { Asignados: '4', Activos: '2', 'En curso': '1', Pendientes: '1', Bloqueados: '1', Vencidos: '1', Completados: '1', Archivados: '1' })
+      await member.getByRole('button', { name: 'Ver tickets asignados' }).click()
+      await member.getByRole('list', { name: /Tickets asignados/ }).getByText('QA-FICTICIO vencido').waitFor()
+    }
+    assert.ok(requests >= 1)
+    assert.deepEqual(page.errors, [])
+    if (SHOTS) await capture(page, `followup-equipo-carga-${size}`)
+    await page.context().close()
+  }
+})
+
+test('Equipo: si falla la consulta de flujos, oculta métricas y ofrece reintento', async () => {
+  const page = await open(SIZES.desktop)
+  await staff(page)
+  let requests = 0
+  await page.route(`${fixture.url}/rest/v1/project_flows?**`, route => {
+    requests++
+    return route.fulfill({ status: 500, contentType: 'application/json', body: JSON.stringify({ message: 'fallo ficticio' }) })
+  })
+  await page.getByRole('button', { name: 'Equipo', exact: true }).click()
+  await page.getByRole('tab', { name: 'Carga de trabajo', exact: true }).click()
+  await page.getByRole('alert').getByText('No se muestran conteos incompletos.').waitFor()
+  assert.equal(await page.locator('.workload-table').count(), 0)
+  assert.equal(await page.locator('.workload-kpis').count(), 0)
+  const beforeRetry = requests
+  await page.getByRole('button', { name: 'Actualizar' }).click()
+  await page.waitForFunction(() => document.querySelector('[role="alert"]')?.textContent?.includes('No se muestran conteos incompletos.'))
+  assert.equal(requests, beforeRetry + 1)
+  assert.deepEqual(page.errors, [])
+  await page.context().close()
+})
+
 for (const [size, viewport] of Object.entries(SIZES)) {
   test(`[UX ${size}] carga de ambos ingresos sin cambiar su comportamiento`, { skip: !BUILD_DIR }, async () => {
     for (const provider of ['quipu', 'quipufac']) {
