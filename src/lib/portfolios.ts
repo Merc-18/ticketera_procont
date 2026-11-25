@@ -1,7 +1,7 @@
 // Portafolio (M19, fase 1): nivel superior de organización del trabajo («Gestión») con iniciativas de largo alcance
-// («Beneficiarios finales») a las que se asocian los tickets del tablero. Catálogo leído una sola vez y compartido
+// («Beneficiarios finales») a las que se asocian los tickets del tablero. Catálogo compartido con revalidación periódica mientras hay consumidores
 // (useSyncExternalStore); la escritura pasa por las RPC de M19, que validan rol y auditan en activity_logs.
-import { useEffect, useSyncExternalStore } from 'react'
+import { useSyncExternalStore } from 'react'
 import { supabase } from './supabase'
 import { errorMessage } from './supabase-errors'
 
@@ -13,7 +13,28 @@ let state: State = { portfolios: [], initiatives: [], loaded: false, error: null
 let inFlight: Promise<void> | null = null
 const listeners = new Set<() => void>()
 const publish = (next: State) => { state = next; listeners.forEach(l => l()) }
-const subscribe = (l: () => void) => { listeners.add(l); return () => listeners.delete(l) }
+// Un único intervalo para todo el catálogo, no uno por tarjeta. No consulta con la pestaña oculta.
+const REFRESH_MS = 30_000
+let refreshTimer: number | undefined
+const refreshVisible = () => { if (document.visibilityState !== 'hidden') void refreshPortfolios() }
+function subscribe(listener: () => void) {
+  listeners.add(listener)
+  if (listeners.size === 1 && typeof window !== 'undefined') {
+    void refreshPortfolios()
+    window.addEventListener('focus', refreshVisible)
+    document.addEventListener('visibilitychange', refreshVisible)
+    refreshTimer = window.setInterval(refreshVisible, REFRESH_MS)
+  }
+  return () => {
+    listeners.delete(listener)
+    if (listeners.size === 0 && typeof window !== 'undefined') {
+      if (refreshTimer !== undefined) window.clearInterval(refreshTimer)
+      refreshTimer = undefined
+      window.removeEventListener('focus', refreshVisible)
+      document.removeEventListener('visibilitychange', refreshVisible)
+    }
+  }
+}
 
 export function refreshPortfolios(): Promise<void> {
   if (inFlight) return inFlight
@@ -23,15 +44,17 @@ export function refreshPortfolios(): Promise<void> {
       supabase.from('portfolio_initiatives').select('id,portfolio_id,name,description,is_active,sort_order').order('sort_order').order('name'),
     ])
     if (p.error || i.error) { publish({ ...state, loaded: true, error: errorMessage(p.error ?? i.error) }); return }
-    publish({ portfolios: (p.data ?? []) as Portfolio[], initiatives: (i.data ?? []) as Initiative[], loaded: true, error: null })
-  })().finally(() => { inFlight = null })
+    const next: State = { portfolios: (p.data ?? []) as Portfolio[], initiatives: (i.data ?? []) as Initiative[], loaded: true, error: null }
+    if (!state.loaded || state.error || JSON.stringify(state.portfolios) !== JSON.stringify(next.portfolios)
+        || JSON.stringify(state.initiatives) !== JSON.stringify(next.initiatives)) publish(next)
+  })().catch(error => {
+    publish({ ...state, loaded: true, error: errorMessage(error) })
+  }).finally(() => { inFlight = null })
   return inFlight
 }
 
 export function usePortfolios() {
-  const snapshot = useSyncExternalStore(subscribe, () => state, () => state)
-  useEffect(() => { if (!state.loaded) void refreshPortfolios() }, [])
-  return snapshot
+  return useSyncExternalStore(subscribe, () => state, () => state)
 }
 
 async function rpc<T>(name: string, args: Record<string, unknown>): Promise<T> {
