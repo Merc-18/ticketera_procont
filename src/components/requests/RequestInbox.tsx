@@ -52,9 +52,9 @@ export default function RequestInbox() {
   /** Línea secundaria de la lista: estudio y área por separado (el área solo si existe). */
   const meta = (r: Request) => (
     <p className="text-sm text-gray-600 flex flex-wrap gap-x-3">
-      {r.studio_id && <span className="inline-flex items-center gap-1"><Icon name="building" size={14} /><span className="sr-only">Estudio: </span>{nameOf(catalogs.studios, r.studio_id) ?? '—'}</span>}
-      {r.system_id && <span className="inline-flex items-center gap-1"><Icon name="package" size={14} /><span className="sr-only">Producto: </span>{nameOf(catalogs.systems, r.system_id) ?? '—'}</span>}
-      {areasApply(r.studio_code_id, catalogs.codes) && r.requester_area && <span className="inline-flex items-center gap-1"><Icon name="pin" size={14} /><span className="sr-only">Área: </span>{r.requester_area}</span>}
+      {r.studio_id && <span className="inline-flex items-start gap-1 min-w-0"><Icon name="building" size={14} className="shrink-0 mt-[3px]" /><span className="sr-only">Estudio: </span>{nameOf(catalogs.studios, r.studio_id) ?? '—'}</span>}
+      {r.system_id && <span className="inline-flex items-start gap-1 min-w-0"><Icon name="package" size={14} className="shrink-0 mt-[3px]" /><span className="sr-only">Producto: </span>{nameOf(catalogs.systems, r.system_id) ?? '—'}</span>}
+      {areasApply(r.studio_code_id, catalogs.codes) && r.requester_area && <span className="inline-flex items-start gap-1 min-w-0"><Icon name="pin" size={14} className="shrink-0 mt-[3px]" /><span className="sr-only">Área: </span>{r.requester_area}</span>}
     </p>
   )
   const { assignableUsers } = useUsers()

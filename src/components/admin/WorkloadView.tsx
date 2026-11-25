@@ -115,7 +115,7 @@ export default function WorkloadView() {
         <p className="text-sm text-gray-600 -mt-3">Promedios calculados por el servidor sobre los mismos {sample} trabajos terminados.</p>
       )}
 
-      <div className="hidden md:block data-view overflow-hidden">
+      <div className="hidden lg:block data-view overflow-hidden">
         <div role="region" aria-label="Distribución del trabajo por miembro" tabIndex={0} className="overflow-x-auto">
           <table className="w-full text-sm workload-table">
             <thead>
@@ -174,7 +174,7 @@ export default function WorkloadView() {
         </div>
       </div>
 
-      <div className="md:hidden workload-mobile space-y-3" aria-label="Carga de trabajo por miembro">
+      <div className="lg:hidden workload-mobile space-y-3" aria-label="Carga de trabajo por miembro">
         {members.length === 0 && <p className="data-view p-4 text-sm text-gray-600">No hay miembros internos activos.</p>}
         {members.map(user => {
           const l = loadOf(user.id)

@@ -57,6 +57,27 @@ export default function PortfolioPanel({ canManage }: { canManage: boolean }) {
   const count = (pred: (t: TicketRow) => boolean) => (tickets ?? []).filter(pred)
   const independent = count(t => !t.portfolio_id)
 
+  // Lista de tickets asociados; se reutiliza para proyectos, portafolio sin proyecto e independientes.
+  const ticketList = (rows: TicketRow[], label: string) => rows.length ? (
+    <ul className="portfolio-tickets" aria-label={label}>
+      {rows.map(t => (
+        <li key={t.id}>
+          <span className="card-number">{t.project_number ?? '—'}</span>
+          <span className="portfolio-ticket-title">{t.title}</span>
+          <span className={`prio-chip ${PRIORITY_COLORS[t.priority] ?? ''}`}>{PRIORITY_LABEL[t.priority] ?? t.priority}</span>
+          <span className="portfolio-ticket-status">{STATUS_ES[t.status] ?? t.status}</span>
+        </li>
+      ))}
+    </ul>
+  ) : <p className="portfolio-description">Aún no hay tickets en este proyecto.</p>
+  const toggleRow = (key: string, text: string, rows: TicketRow[]) => (
+    <button type="button" className="initiative-toggle" aria-expanded={open === key} onClick={() => setOpen(open === key ? null : key)}>
+      <Icon name="arrow" size={14} className={`transition-transform ${open === key ? 'rotate-90' : ''}`} aria-hidden="true" />
+      <span>{text}</span>
+      <span className="portfolio-count">{rows.length} ticket{rows.length === 1 ? '' : 's'}</span>
+    </button>
+  )
+
   const editor = editing && (
     <form className="portfolio-editor" onSubmit={e => { e.preventDefault(); void save() }} aria-label={editing.kind === 'portfolio' ? 'Datos del portafolio' : 'Datos del proyecto'}>
       <label className="nt-field" htmlFor="pf-name"><span>{editing.kind === 'portfolio' ? 'Nombre del portafolio' : 'Nombre del proyecto / iniciativa'} *</span>
@@ -130,23 +151,21 @@ export default function PortfolioPanel({ canManage }: { canManage: boolean }) {
                         )}
                       </div>
                       {editing?.kind === 'initiative' && editing.id === i.id && editor}
-                      {expanded && (
-                        iTickets.length ? (
-                          <ul className="portfolio-tickets" aria-label={`Tickets de ${i.name}`}>
-                            {iTickets.map(t => (
-                              <li key={t.id}>
-                                <span className="card-number">{t.project_number ?? '—'}</span>
-                                <span className="portfolio-ticket-title">{t.title}</span>
-                                <span className={`prio-chip ${PRIORITY_COLORS[t.priority] ?? ''}`}>{PRIORITY_LABEL[t.priority] ?? t.priority}</span>
-                                <span className="portfolio-ticket-status">{STATUS_ES[t.status] ?? t.status}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        ) : <p className="portfolio-description">Aún no hay tickets en este proyecto.</p>
-                      )}
+                      {expanded && ticketList(iTickets, `Tickets de ${i.name}`)}
                     </li>
                   )
                 })}
+                {(() => {
+                  // Tickets del portafolio sin proyecto específico: antes solo sumaban al total y no se podían consultar.
+                  const direct = count(t => t.portfolio_id === p.id && !t.initiative_id)
+                  if (!direct.length) return null
+                  return (
+                    <li>
+                      <div className="portfolio-row">{toggleRow(`direct-${p.id}`, 'Sin proyecto específico', direct)}</div>
+                      {open === `direct-${p.id}` && ticketList(direct, `Tickets de ${p.name} sin proyecto específico`)}
+                    </li>
+                  )
+                })()}
               </ul>
               {canManage && p.is_active && !(editing?.kind === 'initiative' && !editing.id && editing.portfolio_id === p.id) && (
                 <button type="button" className="ui-button ui-button-secondary portfolio-add" onClick={() => setEditing({ kind: 'initiative', portfolio_id: p.id, name: '', description: '' })}>
@@ -158,7 +177,12 @@ export default function PortfolioPanel({ canManage }: { canManage: boolean }) {
           )
         })}
       </ul>
-      {tickets !== null && <p className="portfolio-description">Tickets independientes (sin portafolio): <strong>{independent.length}</strong>.</p>}
+      {tickets !== null && (
+        <section className="portfolio-independent" aria-label="Tickets independientes">
+          <div className="portfolio-row">{toggleRow('independent', 'Tickets independientes (sin portafolio)', independent)}</div>
+          {open === 'independent' && ticketList(independent, 'Tickets independientes')}
+        </section>
+      )}
     </div>
   )
 }

@@ -805,10 +805,10 @@ main p.attachment-error, .attachment-error { font-size: 14px; color: var(--dange
 
 /* ─── Equipo, jerarquía de tarjetas, prioridad y progreso (24/11/2026) ─────────────────────────────────────── */
 /* Tarjeta: Portafolio → Proyecto como primeras etiquetas; REQ al pie como metadato secundario. */
-.card-hierarchy { display: flex; align-items: center; gap: 4px; min-width: 0; padding-right: 28px; font-size: 12px; line-height: 18px; }
+.card-hierarchy { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; min-width: 0; padding-right: 28px; font-size: 12px; line-height: 18px; }
 .card-tag { display: inline-flex; align-items: center; gap: 4px; min-width: 0; max-width: 100%; padding: 1px 6px; border-radius: 4px; font-weight: 500; border: 1px solid transparent; }
 .card-tag .truncate { min-width: 0; }
-.card-tag-portfolio { color: var(--p-action); background: var(--p-tint-weak); border-color: color-mix(in srgb, var(--p-action) 22%, transparent); flex-shrink: 0; max-width: 45%; }
+.card-tag-portfolio { color: var(--p-action); background: var(--p-tint-weak); border-color: color-mix(in srgb, var(--p-action) 22%, transparent); }
 .card-tag-portfolio svg { flex-shrink: 0; }
 .card-tag-project { color: var(--p-ink-2); background: var(--p-alt); border-color: var(--line); }
 .card-tag-none { color: var(--p-muted); background: transparent; border: 1px dashed var(--field-line); }
@@ -914,3 +914,55 @@ html:not([data-input=keyboard]) .dashboard-export-menu { transition: opacity 150
   .team-tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
   .portfolio-row { flex-wrap: wrap; }
 }
+
+/* QA integral 25/11/2026 — Tabla con la misma jerarquía que la tarjeta; el título deja de truncarse a 220 px. */
+.table-title-cell { min-width: 240px; max-width: 320px; }
+.table-hierarchy { padding-right: 0; }
+.table-number { display: block; margin-top: 4px; font-size: 12px; }
+
+/* QA integral 25/11/2026 — 320–420 px: sin desbordes en KPIs, bandeja y usuarios. */
+.request-card > div:first-child > div:first-child { min-width: 0; }
+@media (max-width: 420px) {
+  .request-card { padding: 16px; }
+  .request-card > div:first-child { gap: 8px; }
+  .dashboard .stat-card { flex-direction: column; align-items: flex-start; gap: 10px; min-width: 0; }
+  .dashboard .stat-card > div { min-width: 0; }
+}
+@media (max-width: 1023px) {
+  .user-table thead { display: none; }
+  .user-table, .user-table tbody { display: block; }
+  .user-table tr { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; padding: 14px 16px; }
+  .user-table td { display: block; padding: 0; }
+  .user-table td[data-label] { display: grid; grid-template-columns: 72px minmax(0, 1fr); align-items: center; gap: 8px; }
+  .user-table td[data-label]::before { content: attr(data-label); font-size: 12px; font-weight: 600; color: var(--p-muted); }
+  .user-table .user-email { overflow-wrap: anywhere; }
+  .user-table .user-actions > div { justify-content: flex-start; }
+}
+.portfolio-independent { border: 1px solid var(--line); border-radius: var(--r-md); padding: 12px 16px; background: var(--p-surface); }
+/* El separador viaja con el proyecto: al envolver, la flecha nunca queda colgando al final de la línea. */
+.card-tag-group { display: inline-flex; align-items: center; gap: 4px; min-width: 0; max-width: 100%; }
+.user-table td[data-label] > * { justify-self: start; }
+
+/* QA integral 25/11/2026 — Dashboard: el periodo y su nota forman un bloque propio. El envoltorio
+   .dashboard-period-control no tenía estilos y dejaba sin efecto los selectores móviles `> .dashboard-segment`
+   (nota encajonada en ~170 px a 320 px y «Actualizar» sola en otra línea en escritorio). */
+.dashboard-period-control { display: grid; gap: 6px; flex: 1 1 320px; min-width: 0; }
+.dashboard-period-control .dashboard-segment { justify-self: start; }
+.dashboard-filter-note { font-size: 13px; line-height: 1.4; color: var(--p-muted); max-width: 62ch; }
+@media (max-width: 767px) {
+  .dashboard-period-control { grid-column: 1 / -1; }
+  .dashboard-period-control .dashboard-segment { justify-self: stretch; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .dashboard-period-control .dashboard-segment button { padding-inline: 4px; font-size: 13px; }
+}
+/* QA integral 25/11/2026 — Bandeja ≤420 px: el chip de estado sube sobre los datos para que estudio/producto
+   usen todo el ancho de la tarjeta (antes quedaban en ~150 px junto al chip). */
+@media (max-width: 420px) {
+  .request-card > div:first-child { flex-direction: column-reverse; align-items: flex-start; }
+}
+/* QA integral 25/11/2026 — La regla móvil de .board-view-modes (≈ línea 291) perdía ante `.segmented { display:inline-flex }`,
+   declarada después con la misma especificidad: los cuatro modos quedaban apilados a la izquierda. */
+@media (max-width: 767px) {
+  .board-toolbar-actions .board-view-modes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); width: 100%; }
+}
+/* Contador «N tickets» del portafolio: nunca partido en dos líneas. */
+.portfolio-count { white-space: nowrap; }

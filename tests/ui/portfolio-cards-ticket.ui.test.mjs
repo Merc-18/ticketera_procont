@@ -159,10 +159,12 @@ test('Portafolio: chip en la tarjeta, filtro por portafolio/iniciativa, columna 
   await page.getByRole('button', { name: /Tabla/ }).click()
   await page.locator('.data-view table').waitFor()   // la vista Tabla se carga en diferido
   const headers = (await page.locator('.data-view thead th').allInnerTexts()).map(t => t.replace(/[↑↓↕]/g, '').trim())
-  assert.ok(headers.includes('Portafolio'))
+  // 25/11/2026: la Tabla usa la misma jerarquía que la tarjeta en la primera columna (Portafolio → Proyecto → Título).
+  assert.ok(headers.includes('Portafolio → Proyecto → Título'))
   const row = page.locator('.data-view tbody tr').filter({ hasText: kanbanProjects[5].title })
-  await row.getByText('Gestión', { exact: true }).waitFor()
-  await row.getByText('Beneficiarios finales', { exact: true }).waitFor()
+  const cell = row.locator('td').first()
+  assert.equal(await cell.locator('.card-tag-portfolio').textContent(), 'Portafolio: Gestión', 'nivel con nombre accesible')
+  assert.equal(await cell.locator('.card-tag-project').textContent(), 'Proyecto: Beneficiarios finales')
   assert.deepEqual(page.errors, [])
   await page.context().close()
 })

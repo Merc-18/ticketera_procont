@@ -145,7 +145,7 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
             {urgent && <p className="inline-flex items-center gap-1.5 px-3 py-1 bg-red-50 text-red-700 border border-red-200 rounded-full text-sm font-medium"><Icon name="alert" size={14} />Atención urgente solicitada</p>}
             <RequestedPriority value={r.requested_priority} internal />
             {canManage && <RequesterUrgencySummary requestId={r.id} createdAt={r.created_at} />}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-gray-50 border rounded-lg p-3">
+            <div className="grid grid-cols-1 min-[420px]:grid-cols-2 sm:grid-cols-3 gap-3 bg-gray-50 border rounded-lg p-3">
               {info('Solicitante', r.requester_name)}
               {info('Estudio', name(catalogs.studios, r.studio_id))}
               {info('Proyecto / Sistema', name(catalogs.systems, r.system_id))}

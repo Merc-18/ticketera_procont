@@ -92,7 +92,7 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
       <p className="card-hierarchy" aria-label={portfolioName ? `Portafolio ${portfolioName}${initiativeName ? `, proyecto ${initiativeName}` : ''}` : 'Sin portafolio'}>
         {portfolioName ? (<>
           <span className="card-tag card-tag-portfolio" title={`Portafolio: ${portfolioName}`}><Icon name="layers" size={12} aria-hidden="true" /><span className="truncate">{portfolioName}</span></span>
-          {initiativeName && <><Icon name="arrow" size={12} className="card-tag-sep" aria-hidden="true" /><span className="card-tag card-tag-project" title={`Proyecto: ${initiativeName}`}><span className="truncate">{initiativeName}</span></span></>}
+          {initiativeName && <span className="card-tag-group"><Icon name="arrow" size={12} className="card-tag-sep" aria-hidden="true" /><span className="card-tag card-tag-project" title={`Proyecto: ${initiativeName}`}><span className="truncate">{initiativeName}</span></span></span>}
         </>) : <span className="card-tag card-tag-none">Sin portafolio</span>}
       </p>
 
