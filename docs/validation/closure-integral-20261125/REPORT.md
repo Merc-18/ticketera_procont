@@ -47,7 +47,7 @@ Por ello no existen todavía una URL de Vercel QA ni credenciales de QA. La apli
 | Checklist persistente tras recarga | PASS LOCAL | Chromium cambió una tarea existente mediante la interfaz, recargó la aplicación, comprobó el estado consultado de PostgreSQL y restauró el valor original. PostgreSQL 17 local vía PostgREST; Auth interna simulada. No equivale a Supabase alojado. |
 | Selector y persistencia de subproyecto | PASS LOCAL | Chromium seleccionó QuipuFac, verificó opciones dependientes, cambió a Quipu (limpió selección anterior), volvió a QuipuFac, creó una solicitud QA local mediante `client_submit_request` y verificó en PostgreSQL `system_id`, `requested_subsystem_id` y REQ. Autenticación de proveedor simulada. Se conservó una solicitud sintética `QA-FICTICIO` local. |
 | Realtime | NO VERIFICADO | No disponible en el gateway local. |
-| Preview/Production Vercel del commit de esta rama | NO VERIFICADO | Vercel CLI confirma estado logged out; la rama no se publicó. |
+| Producción Vercel — smoke público posterior al push | PASS | Chromium en el dominio oficial: Portal, Quipu, QuipuFac e ingreso interno. Versión visible uniforme `202611251439`; bundle inicial HTTP 200, 382.766 bytes y contiene esa versión; 0 errores JS y 0 respuestas first-party fallidas. No se inició sesión ni se escribieron datos. El estado/ID de deployment en el panel Vercel no pudo consultarse porque el CLI está logged out. |
 
 Los seis SKIP de UI corresponden a cuatro pruebas existentes de carga de ambos proveedores por viewport y dos de presupuesto/carga diferida. Permanecen omitidos; no cuentan como PASS.
 
@@ -95,7 +95,7 @@ Evidencia:
 1. No existe un proyecto Supabase QA separado. Auth local es simulada; por tanto expiración, revocación y logout no se verifican contra Auth alojado.
 2. Supabase Storage binario alojado y Realtime no se verificaron; el gateway local no los implementa. No se escribió en Storage de producción.
 3. Quipu/QuipuFac con proveedores reales desde un backend QA no se verificaron; la autenticación local usa identidades reservadas ficticias.
-4. Vercel CLI está logged out en este entorno. El estado de producción puede comprobarse por el deployment automático de GitHub y el dominio público; no existe Preview QA protegido con credenciales ficticias.
+4. No hay Preview QA protegido con credenciales ficticias. Vercel CLI sigue logged out, por lo que no se pudo leer el ID ni el campo de estado del deployment en su panel. La comprobación del dominio oficial y el bundle es evidencia directa del artefacto público.
 
 ## Estado de aceptación
 
@@ -109,4 +109,14 @@ Chromium contra PostgreSQL 17 local pasó el cambio de checklist, recarga, compr
 
 Auditoría independiente de Claude: **APROBADO CON OBSERVACIONES**, sin hallazgos mayores que severidad Baja. Ejecutó `tsc --noEmit` (PASS), `qa-integral.ui` (11/11 PASS) y checksums (2/2 PASS). Las observaciones se corrigieron en esta rama: texto/reloj viewer, precisión de permisos, validación de subproyectos por producto y rechazo de redirecciones en el script QA.
 
-Chromium smoke adicional contra el gateway/PostgreSQL local: Dashboard, Boards (25 tarjetas), Tabla, Requests y Equipo; cero errores JavaScript y cero respuestas API fallidas. En las pruebas UI completas se registraron seis SKIP preexistentes, no contabilizados como aprobados; Node 209/209 y `npm run build` pasan. GitHub y Vercel se comprobarán antes y después del push autorizado.
+Chromium smoke adicional contra el gateway/PostgreSQL local: Dashboard, Boards (25 tarjetas), Tabla, Requests y Equipo; cero errores JS y cero respuestas API fallidas. En las pruebas UI completas se registraron seis SKIP preexistentes, no contabilizados como aprobados; Node 209/209 y `npm run build` pasan.
+
+
+### Publicación y smoke de producción — 25/11/2026
+
+- `origin/main` quedó en `76ddfc2d6ab73e953e9f9c0d1984aec8a0a24a87` después de un fast-forward desde `ec022c768461aa8b4de143e3db94975853a5d34c`; push normal exitoso. `git ls-remote --heads origin` mostró únicamente `main`.
+- El dominio `https://ticketera-procont.vercel.app` sirvió una nueva compilación después del push. La versión visible y uniforme en `/portal`, `/cliente` y `/login` fue `202611251439` en America/Lima.
+- Chromium confirmó Portal (Nueva Solicitud y Rastrear Solicitud), selección/login Quipu (RUC, usuario, contraseña), QuipuFac (RUC y contraseña) y Acceso del equipo de TI. No se enviaron credenciales ni solicitudes. Las cuatro pantallas dieron 0 errores JavaScript y 0 respuestas first-party fallidas.
+- El bundle inicial publicado `/assets/index-BpBZJfyk.js` respondió HTTP 200, mide 382.766 bytes y contiene el identificador visible de compilación. La verificación pública confirma el artefacto servido; el ID/estado detallado del Deployment en Vercel no se consultó porque el CLI estaba logged out.
+- Capturas de producción y checksums: [`screenshots/production-verification/`](screenshots/production-verification/); portal, formulario Quipu, formulario QuipuFac e ingreso interno son imágenes de solo lectura del dominio oficial. Manifiesto: [`screenshots-manifest.json`](screenshots/production-verification/screenshots-manifest.json).
+- No se ejecutaron consultas ni escrituras remotas de Supabase; M1–M21 permanecen sin cambios en esta entrega.

@@ -1,0 +1,34 @@
+[
+  {
+    "file": "internal-login.png",
+    "width": 1440,
+    "height": 900,
+    "bytes": 37208,
+    "sha256": "f061cb1a6b14164cc70cd727e49a47cb0f4ae2e33672dbbe73986a3c005d0b59",
+    "evidence": "Official Vercel domain, read-only browser test, no login or writes"
+  },
+  {
+    "file": "login-quipu.png",
+    "width": 1440,
+    "height": 1200,
+    "bytes": 90353,
+    "sha256": "3953d92942326f9449248a60fbbb2c575e51a824015ce6998b0eefd9dd73b6f8",
+    "evidence": "Official Vercel domain, read-only browser test, no login or writes"
+  },
+  {
+    "file": "login-quipufac.png",
+    "width": 1440,
+    "height": 1108,
+    "bytes": 89045,
+    "sha256": "ca597126eda1c31f34ae36a7eb79dd35a43515a342a01254965d0002fc9d8b91",
+    "evidence": "Official Vercel domain, read-only browser test, no login or writes"
+  },
+  {
+    "file": "portal.png",
+    "width": 1440,
+    "height": 901,
+    "bytes": 82442,
+    "sha256": "3b0761615bb6fb432693cb198a58aa176e27c3a8b3f58b51bb9d9ebeb1e92d06",
+    "evidence": "Official Vercel domain, read-only browser test, no login or writes"
+  }
+]
