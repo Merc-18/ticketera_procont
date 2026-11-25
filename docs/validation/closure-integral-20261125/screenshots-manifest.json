@@ -1,0 +1,18 @@
+{
+  "environment": "QA-FICTICIO local; Chromium + PostgREST + PostgreSQL 17 local; Auth simulada",
+  "production": false,
+  "screenshots": [
+    {
+      "path": "screenshots/viewer-team-readonly.png",
+      "viewport": "1440x900; fullPage capture 1440x1146",
+      "scenario": "viewer authenticated; Equipo > Carga de trabajo",
+      "sha256": "e6adae3fc4897ac960c17d0d5093f2ba677b8da9829302e30c7da7d6e315eb1b"
+    },
+    {
+      "path": "screenshots/viewer-portfolios-readonly.png",
+      "viewport": "1440x900",
+      "scenario": "viewer authenticated; Equipo > Portafolios y proyectos, solo lectura",
+      "sha256": "a1ad41c245dfa25e8ec9fad3dff787013c5f99e6746c4d7f20e26ff086adce9a"
+    }
+  ]
+}
