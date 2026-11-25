@@ -33,14 +33,19 @@ Por ello no existen todavía una URL de Vercel QA ni credenciales de QA. La apli
 | UI completa | 145 PASS, 0 FAIL, 6 SKIP | Chromium con servicios simulados. Los SKIP no se cuentan como aprobados. |
 | TypeScript + build | PASS | `npm run build` (`tsc && vite build`). |
 | Viewer: lectura real | PASS | PostgREST hacia PostgreSQL 17 local: 7 perfiles, 27 proyectos y 27 flujos visibles bajo el rol viewer. Auth local simulada. |
-| Viewer: escritura | PASS | `PATCH` a `users.role` respondió 403; una lectura posterior confirmó que el rol siguió siendo viewer. PostgreSQL local; no se alteró el registro. |
-| Subproyectos | PASS | RPC `client_subprojects` en PostgreSQL 17 local devolvió 1 subproyecto Quipu con `id`, `system_id` coincidente y `name`. La apertura de sesión usa el gateway de QA local. |
+| Viewer: lectura y modificación | PASS CON ALCANCE | El viewer consultó perfiles internos autorizados, proyectos y flujos. `PATCH users.role` devolvió 403 por privilegio de columna; `PATCH projects` no modificó filas por RLS (HTTP 200 con arreglo vacío; lectura posterior confirmó título intacto). El permiso existente permite al usuario editar su propio `full_name` únicamente; está documentado en `PERMISSIONS_SPEC.md` y no es permiso de gestión de Equipo. Auth local simulada, PostgreSQL 17 real. |
+| Subproyectos | PASS | `client_subprojects` se consultó para los siete productos permitidos; todos los elementos retornados conservaron el `system_id` solicitado. Quipu devolvió Escritorio. La sesión inválida fue rechazada con HTTP 401. Auth local simulada; PostgreSQL 17 real. |
 | Chromium contra PostgreSQL local | PASS | Ingreso viewer, Carga de trabajo, Portafolios en solo lectura, 0 errores JavaScript y 0 respuestas API fallidas. Capturas en `screenshots/`. |
+| Smoke Chromium adicional | PASS | Dashboard, 25 tarjetas en Boards, Tabla, Requests y Equipo con gateway/PostgreSQL local; cero errores JS y cero respuestas API fallidas. Capturas conservadas en [`screenshots/continuation/`](screenshots/continuation/). |
+| Suites Node | PASS | 209/209 en la revisión de cierre; sin cambios en código cubierto por esas pruebas. |
+| Suites Chromium UI | PASS CON SKIP DOCUMENTADOS | `npm run test:ui`: 145 PASS, 0 FAIL, 6 SKIP. En la repetición focalizada tras aplicar observaciones: 42/42 PASS, 0 SKIP. |
+| TypeScript y build | PASS | `npm run build` ejecutó `tsc && vite build`; build Vite finalizó correctamente. Claude verificó adicionalmente `tsc --noEmit`. |
 | M20 y flujos integrados | Evidencia previa PASS | La prueba anterior creó y confirmó dos solicitudes ficticias en PostgreSQL local, no remoto; ver el informe QA enlazado arriba. No se repitió. |
 | Auth/expiración/logout en Supabase alojado | NO VERIFICADO | No hay proyecto QA separado. En las pruebas locales, Supabase Auth y la validación de proveedores se simulan; las RPC/sesiones de clientes usan PostgreSQL local real. |
 | Quipu/QuipuFac con proveedores reales desde QA | NO VERIFICADO | No se hizo login externo en esta etapa. |
 | Supabase Storage binario (subir/descargar/eliminar y políticas reales) | NO VERIFICADO | El harness anterior usa stub de Storage. Escribir en Storage de producción está expresamente fuera de autorización. |
-| Checklist persistente tras recarga contra QA alojado | NO VERIFICADO | Los tests UI cubren presentación/progreso con fixtures. Una verificación local posterior no pudo ejecutarse porque los servicios persistentes dejaron de escuchar; no se reiniciaron ni se presenta como PASS. |
+| Checklist persistente tras recarga | PASS LOCAL | Chromium cambió una tarea existente mediante la interfaz, recargó la aplicación, comprobó el estado consultado de PostgreSQL y restauró el valor original. PostgreSQL 17 local vía PostgREST; Auth interna simulada. No equivale a Supabase alojado. |
+| Selector y persistencia de subproyecto | PASS LOCAL | Chromium seleccionó QuipuFac, verificó opciones dependientes, cambió a Quipu (limpió selección anterior), volvió a QuipuFac, creó una solicitud QA local mediante `client_submit_request` y verificó en PostgreSQL `system_id`, `requested_subsystem_id` y REQ. Autenticación de proveedor simulada. Se conservó una solicitud sintética `QA-FICTICIO` local. |
 | Realtime | NO VERIFICADO | No disponible en el gateway local. |
 | Preview/Production Vercel del commit de esta rama | NO VERIFICADO | Vercel CLI confirma estado logged out; la rama no se publicó. |
 
@@ -49,10 +54,12 @@ Los seis SKIP de UI corresponden a cuatro pruebas existentes de carga de ambos p
 ## Seguridad y alcance de los cambios
 
 - `src/App.tsx`: agrega viewer a `canSeeEquipo`. No agrega pestañas de Usuarios, Papelera o Catálogos para ese rol. `PortfolioPanel` conserva `canManage=false` para viewer.
-- Las políticas SQL existentes permiten lectura interna a `viewer` y restringen las escrituras de perfiles/operaciones. La prueba PostgreSQL local confirmó la lectura y el rechazo de escritura indicados arriba.
+- Las políticas SQL existentes permiten lectura interna autorizada a `viewer`. El permiso de columna solo permite actualizar `full_name` propio (M2 y `PERMISSIONS_SPEC.md:68`); `role` e `is_active` no son editables por viewer. La prueba PostgREST comprobó que el viewer no modificó proyectos ni su rol. No se amplió RLS ni se modificó SQL.
 - `tests/ui/portal-navigation.ui.test.mjs`: actualiza las expectativas viewer para escritorio/móvil y usa una consulta de nombre exacta para evitar ambigüedad con la entrada de Dashboard.
-- `tests/ui/qa-fixtures.mjs` y `tests/ui/qa-integral.ui.test.mjs`: incluyen y verifican los ocho subproyectos del snapshot.
+- `tests/ui/qa-fixtures.mjs` y `tests/ui/qa-integral.ui.test.mjs`: incluyen y verifican el catálogo por `system_id` con consultas filtradas por producto.
 - `scripts/qa-local/verify-viewer-subprojects.mjs`: verificación reproducible limitada a loopback, exige `production:false` y PostgreSQL local; no permite apuntar a producción.
+- `scripts/qa-local/verify-checklist-persistence-browser.mjs`: persistencia real de checklist por UI y recarga, restaura la fixture al valor previo.
+- `scripts/qa-local/verify-client-subproject-ui-persistence.mjs`: selector dependiente y creación sintética contra M13 local; verifica relaciones persistidas y hace logout.
 - No se modificaron SQL, RPC, RLS, Edge Functions, modelos de datos ni contratos API.
 
 ## Capturas
@@ -61,6 +68,8 @@ Los seis SKIP de UI corresponden a cuatro pruebas existentes de carga de ambos p
 - [Equipo — viewer, portafolios en solo lectura](screenshots/viewer-portfolios-readonly.png)
 
 Ambas capturas son de Chromium local con datos QA ficticios. No son capturas de Vercel.
+
+Galería adicional capturada con el build y la fixture local de esta continuación (PostgreSQL real, Auth simulada): [Dashboard](screenshots/continuation/dashboard.png), [Boards](screenshots/continuation/boards.png), [Tabla](screenshots/continuation/tabla.png), [Requests](screenshots/continuation/requests.png), [Equipo](screenshots/continuation/equipo-carga-de-trabajo.png), [Checklist antes](screenshots/continuation/before.png), [Checklist después de recargar](screenshots/continuation/after-reload.png), [formulario con subproyecto](screenshots/continuation/form-selected.png) y [constancia de solicitud local](screenshots/continuation/receipt.png). Dimensiones, contexto y hashes: [screenshots-manifest.json](screenshots/continuation/screenshots-manifest.json), [SHA256SUMS](screenshots/continuation/SHA256SUMS).
 
 ## Archivos cambiados
 
@@ -71,21 +80,33 @@ Aplicación/test:
 - `tests/ui/qa-fixtures.mjs`
 - `tests/ui/qa-integral.ui.test.mjs`
 - `scripts/qa-local/verify-viewer-subprojects.mjs`
+- `scripts/qa-local/verify-checklist-persistence-browser.mjs`
+- `scripts/qa-local/verify-client-subproject-ui-persistence.mjs`
 
 Evidencia:
 
 - `docs/validation/closure-integral-20261125/REPORT.md`
 - `docs/validation/closure-integral-20261125/HANDOFF_CLAUDE_READ_ONLY.md`
-- `docs/validation/closure-integral-20261125/screenshots/*`
+- `docs/validation/closure-integral-20261125/screenshots/*`, incluida la galería de continuidad con nueve imágenes y manifiesto SHA-256.
 - `docs/validation/closure-integral-20261125/SHA256SUMS`
 
 ## Bloqueos restantes
 
-1. Se necesita un proyecto Supabase QA separado de `xsxdpaiivklqeudgqoqf`, con Auth, Storage y migraciones M1–M21. La organización actual no muestra ese proyecto.
-2. Vercel CLI necesita una sesión autenticada y un proyecto/deployment QA con protección configurada. Esta ejecución no tiene una sesión Vercel disponible.
-3. Solo cuando exista QA podrán completarse los logins de prueba, expiración/logout contra Auth alojado, Storage binario real, E2E Chromium contra backend real, persistencia de checklist con reload y credenciales ficticias utilizables desde el Preview.
-4. La auditoría solo lectura de Claude fue solicitada por Orca, pero no llegó a iniciar. La creación del worktree falló porque el repositorio que Orca seleccionó no tenía la referencia local `codex/closure-real-qa-20261125` (`fatal: invalid reference`). Orca confirmó que el worker nunca empezó y cerró el intento. No se reintentó automáticamente; se requiere una instrucción posterior para reabrir el mismo Task tras corregir la referencia/repositorio.
+1. No existe un proyecto Supabase QA separado. Auth local es simulada; por tanto expiración, revocación y logout no se verifican contra Auth alojado.
+2. Supabase Storage binario alojado y Realtime no se verificaron; el gateway local no los implementa. No se escribió en Storage de producción.
+3. Quipu/QuipuFac con proveedores reales desde un backend QA no se verificaron; la autenticación local usa identidades reservadas ficticias.
+4. Vercel CLI está logged out en este entorno. El estado de producción puede comprobarse por el deployment automático de GitHub y el dominio público; no existe Preview QA protegido con credenciales ficticias.
 
 ## Estado de aceptación
 
-**PARCIAL — cambios locales probados, publicación y QA alojado bloqueados por infraestructura.** No se declara cerrada la etapa ni listo el deployment.
+**PARCIAL — la revisión funcional local sigue completándose.** Las pruebas contra servicios alojados (Auth real, Storage y proveedores reales) permanecen NO VERIFICADAS; no se sustituirán por mocks.
+
+### Continuación y revisión independiente — 25/11/2026
+
+El worktree de QA persistente se recuperó. `scripts/qa-local/verify-viewer-subprojects.mjs` pasó con siete productos, siete perfiles internos, 27 proyectos y 27 flujos; el intento de cambiar `users.role` recibió 403 por privilegio de columna y el intento de editar un proyecto no alteró la fila (RLS, HTTP 200 sin fila afectada). El permiso existente permite editar el propio `full_name`, conforme a `PERMISSIONS_SPEC.md`; no concede gestión de Equipo.
+
+Chromium contra PostgreSQL 17 local pasó el cambio de checklist, recarga, comprobación del dato persistido y restauración al valor original. La prueba del portal cliente cargó las opciones reales de subproyecto por producto, limpió la selección al cambiar de producto y creó una solicitud sintética mediante M13; el registro local guardó el producto, subproyecto y REQ coincidentes. Se conservó únicamente en el cluster local QA con prefijo `QA-FICTICIO`, REQ `REQ26-020`.
+
+Auditoría independiente de Claude: **APROBADO CON OBSERVACIONES**, sin hallazgos mayores que severidad Baja. Ejecutó `tsc --noEmit` (PASS), `qa-integral.ui` (11/11 PASS) y checksums (2/2 PASS). Las observaciones se corrigieron en esta rama: texto/reloj viewer, precisión de permisos, validación de subproyectos por producto y rechazo de redirecciones en el script QA.
+
+Chromium smoke adicional contra el gateway/PostgreSQL local: Dashboard, Boards (25 tarjetas), Tabla, Requests y Equipo; cero errores JavaScript y cero respuestas API fallidas. En las pruebas UI completas se registraron seis SKIP preexistentes, no contabilizados como aprobados; Node 209/209 y `npm run build` pasan. GitHub y Vercel se comprobarán antes y después del push autorizado.

@@ -10,10 +10,11 @@ if (!['127.0.0.1', 'localhost', '[::1]'].includes(base.hostname)) throw new Erro
 const api = async (path, { method = 'GET', token, body } = {}) => {
   const response = await fetch(new URL(path, base), {
     method,
+    redirect: 'error',
     headers: {
       ...(body === undefined ? {} : { 'content-type': 'application/json' }),
       ...(token ? { authorization: `Bearer ${token}` } : {}),
-      ...(method === 'PATCH' ? { prefer: 'return=minimal' } : {}),
+      ...(method === 'PATCH' ? { prefer: 'return=representation' } : {}),
     },
     ...(body === undefined ? {} : { body: JSON.stringify(body) }),
   })
@@ -49,12 +50,21 @@ try {
   assert.ok(Array.isArray(projects.data) && Array.isArray(flows.data))
 
   const deniedWrite = await api(`/rest/v1/users?id=eq.${viewer.id}`, {
-    method: 'PATCH', token: staffToken, body: { role: 'viewer' },
+    method: 'PATCH', token: staffToken, body: { role: 'admin' },
   })
   assert.equal(deniedWrite.status, 403, 'viewer no puede escribir el rol')
   const unchanged = await api(`/rest/v1/users?id=eq.${viewer.id}&select=role`, { token: staffToken })
   assert.equal(unchanged.status, 200)
   assert.equal(unchanged.data?.[0]?.role, 'viewer')
+  const deniedProjectWrite = await api('/rest/v1/projects?id=eq.5670456e-6b33-489e-a0ad-8b000d13b1c5', {
+    method: 'PATCH', token: staffToken, body: { title: 'QA-FICTICIO viewer write attempt' },
+  })
+  assert.ok([200, 204, 403].includes(deniedProjectWrite.status), 'viewer write is denied or filtered by RLS')
+  assert.ok(!Array.isArray(deniedProjectWrite.data) || deniedProjectWrite.data.length === 0,
+    'viewer update returns no modified row')
+  const projectUnchanged = await api('/rest/v1/projects?id=eq.5670456e-6b33-489e-a0ad-8b000d13b1c5&select=title', { token: staffToken })
+  assert.equal(projectUnchanged.status, 200)
+  assert.equal(projectUnchanged.data?.[0]?.title, 'QA-FICTICIO M20 aprobada', 'proyecto/ticket remains unchanged')
 
   const clientLogin = await api('/functions/v1/client-login', { method: 'POST', body: {
     action: 'login', provider: 'quipu', ruc: '20999999901', username: 'qaficticio', password: 'clave-simulada',
@@ -70,21 +80,32 @@ try {
   assert.ok(Array.isArray(productList))
   const quipu = productList.find(product => product.name === 'Quipu')
   assert.ok(quipu)
-  const subprojects = await api('/rest/v1/rpc/client_subprojects', {
-    method: 'POST', body: { p_session_token: clientToken, p_system_id: quipu.id },
+  let quipuSubprojects = []
+  for (const product of productList) {
+    const subprojects = await api('/rest/v1/rpc/client_subprojects', {
+      method: 'POST', body: { p_session_token: clientToken, p_system_id: product.id },
+    })
+    assert.equal(subprojects.status, 200, `subproyectos autorizados para ${product.name}`)
+    const items = subprojects.data?.subprojects ?? subprojects.data
+    assert.ok(Array.isArray(items))
+    assert.ok(items.every(item => item.id && item.system_id === product.id && item.name),
+      `cada subproyecto pertenece al producto solicitado: ${product.name}`)
+    if (product.id === quipu.id) quipuSubprojects = items
+  }
+  assert.ok(quipuSubprojects.length > 0)
+  const invalidSession = await api('/rest/v1/rpc/client_subprojects', {
+    method: 'POST', body: { p_session_token: 'invalid-qa-session', p_system_id: quipu.id },
   })
-  assert.equal(subprojects.status, 200)
-  const items = subprojects.data?.subprojects ?? subprojects.data
-  assert.ok(Array.isArray(items))
-  assert.ok(items.length > 0)
-  assert.ok(items.every(item => item.id && item.system_id === quipu.id && item.name))
+  assert.equal(invalidSession.status, 401, 'la consulta de subproyectos exige sesión vigente')
 
   console.log(JSON.stringify({
     result: 'PASS', environment: 'QA-FICTICIO local',
     backend: 'PostgreSQL 17 via PostgREST; internal Auth/client-login simulated',
     viewer: { visibleProfiles: users.data.length, visibleProjects: projects.data.length,
-      visibleFlows: flows.data.length, writeDeniedHttp: deniedWrite.status, roleUnchanged: true },
-    clientSubprojects: { product: 'Quipu', count: items.length, responseShape: 'id/system_id/name' },
+      visibleFlows: flows.data.length, roleWriteDeniedHttp: deniedWrite.status,
+      projectWriteDeniedHttp: deniedProjectWrite.status, roleUnchanged: true, projectUnchanged: true },
+    clientSubprojects: { authorizedProducts: productList.length, quipuCount: quipuSubprojects.length,
+      relationshipChecked: true, invalidSessionHttp: invalidSession.status, responseShape: 'id/system_id/name' },
   }))
 } finally {
   if (clientToken) await api('/functions/v1/client-login', { method: 'POST', body: { action: 'logout', session_token: clientToken } })

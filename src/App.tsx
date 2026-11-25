@@ -80,7 +80,7 @@ function Dashboard() {
 
             <div className="flex items-center gap-3 sm:gap-4">
               {/* Reloj + Campana */}
-              {canSeeEquipo && <AdminClock />}
+              {isAdminOrSuperAdmin && <AdminClock />}
               <ThemeToggle onBand />
               <NotificationBell
                 buttonClassName="text-white/80 hover:text-accent-300 hover:bg-white/10"
@@ -182,7 +182,9 @@ function Dashboard() {
             <div className="mb-6">
               <h1 className="view-title"><ControlLabel icon="team">Equipo</ControlLabel></h1>
               <p className="text-gray-600 text-sm mt-1">
-                Gestión de usuarios y carga de trabajo del equipo
+                {user?.role === 'viewer'
+                  ? 'Carga de trabajo y portafolios del equipo'
+                  : 'Gestión de usuarios y carga de trabajo del equipo'}
               </p>
             </div>
 

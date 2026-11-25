@@ -105,7 +105,7 @@ test('Equipo: carga por responsable con los 5 responsables del contrato y conteo
   await page.context().close()
 })
 
-test('Catálogo QA de subproyectos conserva IDs y relación con el producto seleccionado', async () => {
+test('Catálogo QA de subproyectos conserva IDs y relación con cada producto', async () => {
   const page = await open()
   const response = await page.evaluate(async url => {
     const result = await fetch(`${url}/rest/v1/catalog_subsystems?select=id,system_id,name,is_active&order=name`)
@@ -116,6 +116,15 @@ test('Catálogo QA de subproyectos conserva IDs y relación con el producto sele
   assert.ok(response.rows.length > 0)
   assert.ok(response.rows.every(row => row.id && row.system_id && row.name && row.is_active))
   assert.ok(response.rows.every(row => QA.catalog_systems.some(system => system.id === row.system_id)))
+  for (const system of QA.catalog_systems) {
+    const selected = await page.evaluate(async ({ url, id }) => {
+      const result = await fetch(`${url}/rest/v1/catalog_subsystems?select=id,system_id,name,is_active&system_id=eq.${encodeURIComponent(id)}&order=name`)
+      return { status: result.status, rows: await result.json() }
+    }, { url: fixture.url, id: system.id })
+    assert.equal(selected.status, 200)
+    assert.ok(selected.rows.every(row => row.system_id === system.id), `${system.name}: filtrado server-side por el producto seleccionado`)
+    assert.deepEqual(selected.rows, response.rows.filter(row => row.system_id === system.id), `${system.name}: opciones filtradas coinciden con el catálogo`)
+  }
   assert.deepEqual(page.errors, [])
   await page.context().close()
 })
@@ -146,7 +155,11 @@ test('Equipo › Portafolios: Gestión → Beneficiarios finales, tickets sin pr
 test('Permisos: developer y viewer consultan Equipo; viewer no ve pestañas ni acciones de escritura', async () => {
   const viewer = await open({ role: 'viewer' })
   await nav(viewer, 'Dashboard').waitFor()
+  assert.equal(await viewer.getByText('Lima GMT-5').count(), 0, 'viewer no longer sees the admin clock')
   await nav(viewer, 'Equipo').click()
+  await viewer.getByText('Carga de trabajo y portafolios del equipo', { exact: true }).waitFor()
+  assert.equal(await viewer.getByText('Gestión de usuarios y carga de trabajo del equipo', { exact: true }).count(), 0,
+    'viewer sees the read-only Equipo description')
   const viewerTabs = (await viewer.getByRole('tab').allInnerTexts()).map(t => t.trim())
   assert.deepEqual(viewerTabs, ['Carga de trabajo', 'Portafolios y proyectos'], `viewer: solo secciones de lectura (${viewerTabs})`)
   await viewer.getByRole('tab', { name: 'Portafolios y proyectos' }).click()

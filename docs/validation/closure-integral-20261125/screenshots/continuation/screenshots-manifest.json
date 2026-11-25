@@ -1,0 +1,74 @@
+[
+  {
+    "file": "after-reload.png",
+    "width": 1440,
+    "height": 2024,
+    "bytes": 311215,
+    "sha256": "86a1bb22a79a8e69bcd871649aac06b2a89910956a4a3036539e750482a5121b",
+    "evidence": "Chromium local; PostgreSQL 17/PostgREST QA; Auth is simulated"
+  },
+  {
+    "file": "before.png",
+    "width": 1440,
+    "height": 2024,
+    "bytes": 311519,
+    "sha256": "b99fd80ccf1209deeac1ce050daa647206251fedde89b3601723975734bedc5d",
+    "evidence": "Chromium local; PostgreSQL 17/PostgREST QA; Auth is simulated"
+  },
+  {
+    "file": "boards.png",
+    "width": 1440,
+    "height": 2024,
+    "bytes": 355539,
+    "sha256": "11a36c94335d76b1a33fce4297a5b733532806dcb27a0c7f3b2abc920f4c750b",
+    "evidence": "Chromium local; PostgreSQL 17/PostgREST QA; Auth is simulated"
+  },
+  {
+    "file": "dashboard.png",
+    "width": 1440,
+    "height": 1791,
+    "bytes": 187967,
+    "sha256": "5ed9fa6cc65ddadea64b2b18f09aa117f9021f8d0b417a3591969f43e85c1e04",
+    "evidence": "Chromium local; PostgreSQL 17/PostgREST QA; Auth is simulated"
+  },
+  {
+    "file": "equipo-carga-de-trabajo.png",
+    "width": 1440,
+    "height": 1146,
+    "bytes": 122128,
+    "sha256": "a45dc1df942bac69c358a79d28bd4c903ae4fe3336aeda43e66098720d5034ca",
+    "evidence": "Chromium local; PostgreSQL 17/PostgREST QA; Auth is simulated"
+  },
+  {
+    "file": "form-selected.png",
+    "width": 1440,
+    "height": 1529,
+    "bytes": 122437,
+    "sha256": "a7cee7a18d8a8947b916f51332b60c30c15c4a061f81c188743c03b26ba3588e",
+    "evidence": "Chromium local; PostgreSQL 17/PostgREST QA; Auth is simulated"
+  },
+  {
+    "file": "receipt.png",
+    "width": 1440,
+    "height": 900,
+    "bytes": 51349,
+    "sha256": "aa4a4c3ebd6c96fc125b25c5189496aa2c04ea0cb351f1063a8da4eaacede225",
+    "evidence": "Chromium local; PostgreSQL 17/PostgREST QA; Auth is simulated"
+  },
+  {
+    "file": "requests.png",
+    "width": 1440,
+    "height": 1302,
+    "bytes": 107557,
+    "sha256": "196ebb369c2ed4806395a8a901040f519902f33e5b755aa3a47873decee3c901",
+    "evidence": "Chromium local; PostgreSQL 17/PostgREST QA; Auth is simulated"
+  },
+  {
+    "file": "tabla.png",
+    "width": 1440,
+    "height": 3696,
+    "bytes": 539055,
+    "sha256": "4b2b96cc80afe29aa002921a33f59e6b04394f6f69c5f096e7242482eb3e41d9",
+    "evidence": "Chromium local; PostgreSQL 17/PostgREST QA; Auth is simulated"
+  }
+]

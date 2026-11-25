@@ -31,3 +31,16 @@ El informe afirma que RLS existente concede lectura interna a viewer y niega esc
 Devuelve hallazgos concretos con archivo/línea, severidad, evidencia y recomendación. Clasifica el resultado como APROBADO, APROBADO CON OBSERVACIONES o BLOQUEADO. No modifiques el árbol.
 
 Las limitaciones de infraestructura ya registradas (sin proyecto Supabase QA separado y Vercel CLI logged out) son reales; no intentes publicar ni sustituirlas con producción.
+
+## Resultado recibido y seguimiento (25/11/2026)
+
+Claude concluyó la auditoría en worktree aislado sobre `de640de`: **APROBADO CON OBSERVACIONES**; no halló severidad superior a Baja. Ejecutó `tsc --noEmit`, `node --test tests/ui/qa-integral.ui.test.mjs` (11/11) y validación de checksums (2/2).
+
+Hallazgos y resolución:
+
+1. **Precisión de permisos viewer:** el 403 de `users.role` procede del privilegio de columna, no de RLS. La política `own_profile` permite editar solo el `full_name` propio según `PERMISSIONS_SPEC.md`. El informe se corrigió, y la prueba ahora también intenta editar un proyecto ficticio, verifica que RLS no cambie ninguna fila y vuelve a leer su título.
+2. **Reloj/subtítulo:** el reloj se restringió a admin/superadmin y el viewer recibe el subtítulo «Carga de trabajo y portafolios del equipo». Se añadieron aserciones UI.
+3. **Subproyectos:** la verificación local consulta `client_subprojects` para cada producto autorizado y valida `system_id`, además de rechazo de sesión inválida. La UI E2E local selecciona productos distintos y verifica que cambiar producto limpie la selección anterior.
+4. **Redirecciones:** el fetch de la prueba local utiliza `redirect: 'error'`.
+
+La auditoría completa con evidencia está reflejada en `REPORT.md`; el gateway usa PostgreSQL 17 local real y Auth/proveedor simulados. No se accedió para escritura a Supabase remoto ni a Vercel.
