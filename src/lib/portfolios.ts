@@ -7,9 +7,9 @@ import { errorMessage } from './supabase-errors'
 
 import type { Portfolio, Initiative } from './portfolio-model.ts'
 export * from './portfolio-model.ts'
-type State = { portfolios: Portfolio[]; initiatives: Initiative[]; loaded: boolean; error: string | null }
+type State = { portfolios: Portfolio[]; initiatives: Initiative[]; loaded: boolean; stale: boolean; error: string | null }
 
-let state: State = { portfolios: [], initiatives: [], loaded: false, error: null }
+let state: State = { portfolios: [], initiatives: [], loaded: false, stale: false, error: null }
 let inFlight: Promise<void> | null = null
 const listeners = new Set<() => void>()
 const publish = (next: State) => { state = next; listeners.forEach(l => l()) }
@@ -28,6 +28,9 @@ function subscribe(listener: () => void) {
   return () => {
     listeners.delete(listener)
     if (listeners.size === 0 && typeof window !== 'undefined') {
+      // The module cache survives route unmounts (including logout). Mark it stale before
+      // the next render so persisted filters are not cleared before the revalidation starts.
+      if (state.loaded && !state.stale) publish({ ...state, stale: true })
       if (refreshTimer !== undefined) window.clearInterval(refreshTimer)
       refreshTimer = undefined
       window.removeEventListener('focus', refreshVisible)
@@ -44,8 +47,8 @@ export function refreshPortfolios(): Promise<void> {
       supabase.from('portfolio_initiatives').select('id,portfolio_id,name,description,is_active,sort_order').order('sort_order').order('name'),
     ])
     if (p.error || i.error) { publish({ ...state, loaded: true, error: errorMessage(p.error ?? i.error) }); return }
-    const next: State = { portfolios: (p.data ?? []) as Portfolio[], initiatives: (i.data ?? []) as Initiative[], loaded: true, error: null }
-    if (!state.loaded || state.error || JSON.stringify(state.portfolios) !== JSON.stringify(next.portfolios)
+    const next: State = { portfolios: (p.data ?? []) as Portfolio[], initiatives: (i.data ?? []) as Initiative[], loaded: true, stale: false, error: null }
+    if (!state.loaded || state.stale || state.error || JSON.stringify(state.portfolios) !== JSON.stringify(next.portfolios)
         || JSON.stringify(state.initiatives) !== JSON.stringify(next.initiatives)) publish(next)
   })().catch(error => {
     publish({ ...state, loaded: true, error: errorMessage(error) })

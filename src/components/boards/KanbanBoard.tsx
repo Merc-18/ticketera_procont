@@ -125,7 +125,8 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
   useEffect(() => { localStorage.setItem('kanban_portfolioFilter', portfolioFilter) }, [portfolioFilter])
   // Un filtro guardado que apunta a un portafolio o iniciativa que ya no existe no debe ocultar tarjetas.
   useEffect(() => {
-    if (!portfolioCatalog.loaded || portfolioFilter === 'all' || portfolioFilter === '') return
+    // No descartar un filtro válido mientras se revalida el catálogo compartido ni ante un error temporal.
+    if (!portfolioCatalog.loaded || portfolioCatalog.stale || portfolioCatalog.error || portfolioFilter === 'all' || portfolioFilter === '') return
     const id = portfolioFilter.slice(2)
     const exists = portfolioFilter.startsWith('p:') ? portfolioCatalog.portfolios.some(p => p.id === id) : portfolioCatalog.initiatives.some(i => i.id === id)
     if (!exists) setPortfolioFilter('all')
