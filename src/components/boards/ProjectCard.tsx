@@ -37,8 +37,8 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
   const area = project.requests?.studio_code_id === procontCodeId && procontCodeId ? project.requests?.requester_area : null
   const ownerColors = useOwnerColors()
   const catalog = usePortfolios()
-  const portfolioName = catalog.portfolios.find(p => p.id === project.portfolio_id)?.name ?? null
-  const initiativeName = catalog.initiatives.find(i => i.id === project.initiative_id)?.name ?? null
+  const portfolioName = catalog.portfolios.find(p => p.id === project.portfolio_id)?.name ?? (project.portfolio_id ? 'Portafolio no disponible' : null)
+  const initiativeName = catalog.initiatives.find(i => i.id === project.initiative_id)?.name ?? (project.initiative_id ? 'Proyecto no disponible' : null)
   const owner = ownerClass(ownerColors, flow.assigned_to)
   const requestNumber = project.requests?.request_number ?? project.project_number
   const areaColorClass = area ? (AREA_COLORS[area] ?? 'bg-gray-100 text-gray-600') : ''
