@@ -196,12 +196,12 @@ for (const [label, viewport] of Object.entries(VIEWPORTS)) {
 }
 
 const TABS = {
-  viewer: ['Dashboard', 'Boards', 'Requests'],
+  viewer: ['Dashboard', 'Boards', 'Requests', 'Equipo'],
   developer: ['Dashboard', 'Boards', 'Requests', 'Equipo'],
   admin: ['Dashboard', 'Boards', 'Requests', 'Equipo'],
   superadmin: ['Dashboard', 'Boards', 'Requests', 'Equipo'],
 }
-const EQUIPO = { developer: ['Carga de trabajo', 'Portafolios y proyectos'], admin: ['Usuarios', 'Carga de trabajo', 'Portafolios y proyectos', 'Papelera'],
+const EQUIPO = { viewer: ['Carga de trabajo', 'Portafolios y proyectos'], developer: ['Carga de trabajo', 'Portafolios y proyectos'], admin: ['Usuarios', 'Carga de trabajo', 'Portafolios y proyectos', 'Papelera'],
   superadmin: ['Usuarios', 'Carga de trabajo', 'Portafolios y proyectos', 'Papelera', 'Catálogos'] }
 async function staffLogin(page, role) {
   await page.getByRole('button', { name: /Acceso del equipo de TI/ }).click()
@@ -220,7 +220,7 @@ for (const [label, viewport] of Object.entries(VIEWPORTS)) {
       const tabs = await page.$$eval('nav[aria-label="Secciones"] button', b => b.map(x => x.textContent.trim().replace(/\d+$/, '').trim()))
       assert.deepEqual(tabs, TABS[role], role)
       if (EQUIPO[role]) {
-        await page.getByRole('button', { name: 'Equipo' }).click()
+        await page.getByRole('button', { name: 'Equipo', exact: true }).click()
         const subtabs = await page.locator('[aria-label="Secciones de Equipo"] [role="tab"]').allTextContents()
         assert.deepEqual(subtabs.map(s => s.replace(/^[^\p{L}]+/u, '').trim()), EQUIPO[role], `${role} secciones de Equipo`)
       }

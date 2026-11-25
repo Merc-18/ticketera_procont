@@ -64,7 +64,9 @@ function Dashboard() {
   const [openProjectId, setOpenProjectId] = useState<string | null>(null)
   const isAdminOrSuperAdmin = user?.role === 'admin' || user?.role === 'superadmin'
   const isSuperAdmin = user?.role === 'superadmin'
-  const canSeeEquipo = isAdminOrSuperAdmin || user?.role === 'developer'
+  // Viewer tiene acceso de solo lectura a los datos que RLS ya autoriza.
+  // Las pestañas y acciones de administración siguen reservadas a sus roles actuales.
+  const canSeeEquipo = isAdminOrSuperAdmin || user?.role === 'developer' || user?.role === 'viewer'
   const pendingCount = usePendingCount(isAdminOrSuperAdmin)
 
   return (

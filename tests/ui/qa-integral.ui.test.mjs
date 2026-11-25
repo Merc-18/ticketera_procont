@@ -105,6 +105,21 @@ test('Equipo: carga por responsable con los 5 responsables del contrato y conteo
   await page.context().close()
 })
 
+test('Catálogo QA de subproyectos conserva IDs y relación con el producto seleccionado', async () => {
+  const page = await open()
+  const response = await page.evaluate(async url => {
+    const result = await fetch(`${url}/rest/v1/catalog_subsystems?select=id,system_id,name,is_active&order=name`)
+    return { status: result.status, rows: await result.json() }
+  }, fixture.url)
+  assert.equal(response.status, 200)
+  assert.equal(response.rows.length, QA.catalog_subsystems.length)
+  assert.ok(response.rows.length > 0)
+  assert.ok(response.rows.every(row => row.id && row.system_id && row.name && row.is_active))
+  assert.ok(response.rows.every(row => QA.catalog_systems.some(system => system.id === row.system_id)))
+  assert.deepEqual(page.errors, [])
+  await page.context().close()
+})
+
 test('Equipo › Portafolios: Gestión → Beneficiarios finales, tickets sin proyecto e independientes consultables', async () => {
   const page = await open()
   await nav(page, 'Equipo').click()
@@ -128,11 +143,16 @@ test('Equipo › Portafolios: Gestión → Beneficiarios finales, tickets sin pr
   await page.context().close()
 })
 
-test('Permisos: developer consulta Equipo sin Usuarios ni acciones de catálogo; viewer no ve Equipo', async () => {
+test('Permisos: developer y viewer consultan Equipo; viewer no ve pestañas ni acciones de escritura', async () => {
   const viewer = await open({ role: 'viewer' })
   await nav(viewer, 'Dashboard').waitFor()
-  assert.equal(await nav(viewer, 'Equipo').count(), 0, 'viewer: sin sección Equipo (regla vigente canSeeEquipo)')
-  assert.equal(await viewer.locator('.dashboard-team-entry').count(), 0, 'viewer: sin acceso desde Dashboard')
+  await nav(viewer, 'Equipo').click()
+  const viewerTabs = (await viewer.getByRole('tab').allInnerTexts()).map(t => t.trim())
+  assert.deepEqual(viewerTabs, ['Carga de trabajo', 'Portafolios y proyectos'], `viewer: solo secciones de lectura (${viewerTabs})`)
+  await viewer.getByRole('tab', { name: 'Portafolios y proyectos' }).click()
+  await viewer.getByText('Solo lectura para tu rol.').waitFor()
+  assert.equal(await viewer.getByRole('button', { name: /Nuevo portafolio|Editar|Desactivar|Nuevo proyecto/ }).count(), 0, 'viewer: sin gestión')
+  assert.deepEqual(viewer.errors, [])
   await viewer.context().close()
   for (const role of ['developer']) {
     const page = await open({ role })

@@ -40,10 +40,9 @@ export async function installQaFixtures(page_, fixtureUrl) {
   const log = []
   const ds = structuredClone(QA)
   const table = name => async route => { const url = new URL(route.request().url()); return page(route, url, filter(ds[name] ?? [], url)) }
-  for (const name of ['projects', 'requests', 'studios', 'studio_codes', 'areas', 'catalog_systems', 'request_types', 'portfolios', 'portfolio_initiatives', 'checklist_items']) {
+  for (const name of ['projects', 'requests', 'studios', 'studio_codes', 'areas', 'catalog_systems', 'catalog_subsystems', 'request_types', 'portfolios', 'portfolio_initiatives', 'checklist_items']) {
     await page_.route(`${fixtureUrl}/rest/v1/${name}?**`, table(name))
   }
-  await page_.route(`${fixtureUrl}/rest/v1/catalog_subsystems?**`, route => reply(route, []))
   await page_.route(`${fixtureUrl}/rest/v1/request_events?**`, async route => { const url = new URL(route.request().url()); return reply(route, filter(ds.request_events ?? [], url)) })
   await page_.route(`${fixtureUrl}/rest/v1/users?**`, async route => {
     const url = new URL(route.request().url()); return page(route, url, filter(ds.users, url))
