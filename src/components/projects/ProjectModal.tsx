@@ -83,8 +83,8 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
   useEffect(() => { setPortfolioDraft(choiceFromProject(project)) }, [currentKey]) // eslint-disable-line react-hooks/exhaustive-deps
   const draftKey = `${portfolioDraft.mode === 'portfolio' ? portfolioDraft.portfolio_id ?? '' : ''}|${portfolioDraft.mode === 'portfolio' ? portfolioDraft.initiative_id ?? '' : ''}`
   const portfolioError = validateChoice(portfolioDraft, portfolioCatalog.initiatives)
-  const portfolioName = portfolioCatalog.portfolios.find(p => p.id === project.portfolio_id)?.name ?? null
-  const initiativeName = portfolioCatalog.initiatives.find(i => i.id === project.initiative_id)?.name ?? null
+  const portfolioName = portfolioCatalog.portfolios.find(p => p.id === project.portfolio_id)?.name ?? (project.portfolio_id ? 'Portafolio no disponible' : null)
+  const initiativeName = portfolioCatalog.initiatives.find(i => i.id === project.initiative_id)?.name ?? (project.initiative_id ? 'Proyecto no disponible' : null)
   const [savingPortfolio, setSavingPortfolio] = useState(false)
   const savePortfolioLink = async () => {
     if (portfolioError) { toast.error(portfolioError); return }
