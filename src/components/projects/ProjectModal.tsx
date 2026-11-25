@@ -360,9 +360,9 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
               {(ticket?.flows ?? []).map(flow => (
                 <div key={flow.id}>
                   <h3 className="font-medium text-gray-900 mb-1"><ControlLabel icon={flow.flow_type === 'development' ? 'code' : 'tickets'}>{flow.flow_type === 'development' ? 'Development' : 'Administrative (histórico)'}</ControlLabel></h3>
-                  <p className="text-sm text-gray-600 mb-1">
-                    {progressLabel(progressFor(flow.id))}.{blocked && ' El checklist se puede actualizar aunque el ticket esté bloqueado.'}
-                  </p>
+                  {/* El resumen lo muestra ChecklistSection con las filas recién leídas; repetirlo aquí duplicaba el texto
+                      y podía mostrar una cifra desfasada mientras se recarga el ticket. */}
+                  {blocked && <p className="text-sm text-gray-600 mb-1">El checklist se puede actualizar aunque el ticket esté bloqueado.</p>}
                   <ChecklistSection key={`${flow.id}-${flow.phase}`} flow={{ id: flow.id, flow_type: flow.flow_type, current_phase: flow.phase } as ProjectFlow}
                     onChanged={() => { void reloadTicket(); setHistory(h => h + 1); onUpdate?.() }} />
                 </div>

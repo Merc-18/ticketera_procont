@@ -147,11 +147,9 @@ export default function TableView({ projects, boardType, onProjectClick, loading
         <table className="w-full text-sm">
           <thead className="bg-gray-50 border-b">
             <tr>
-              <SortHeader k="title"      label="Título" />
+              <SortHeader k="title"      label="Portafolio → Proyecto → Título" />
               <SortHeader k="priority"   label="Prioridad" />
               <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 whitespace-nowrap">Responsable</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 whitespace-nowrap">Portafolio</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 whitespace-nowrap">Proyecto</th>
               <SortHeader k="area"       label="Área" />
               <SortHeader k="phase"      label="Fase" />
               <SortHeader k="progress"   label="Checklist" />
@@ -165,6 +163,8 @@ export default function TableView({ projects, boardType, onProjectClick, loading
               const owner = ownerClass(ownerColors, flow?.assigned_to)
               const assignee = flow?.assigned_to ? users.find(u => u.id === flow.assigned_to) : undefined
               const isOverdue = project.due_date && project.due_date < today && project.status === 'active'
+              const portfolioName = portfolios.portfolios.find(x => x.id === project.portfolio_id)?.name
+              const initiativeName = portfolios.initiatives.find(x => x.id === project.initiative_id)?.name
               return (
                 <tr
                   key={project.id}
@@ -172,11 +172,19 @@ export default function TableView({ projects, boardType, onProjectClick, loading
                   className="hover:bg-brand-50 cursor-pointer transition-colors"
                 >
                   {/* Título (franja del color personal del responsable, si lo eligió) */}
-                  <td className={`px-4 py-3 max-w-[220px] ${owner ? `has-owner ${owner}` : ''}`}>
-                    <div className="flex items-start gap-2">
-                      {project.is_blocked && <Icon name="block" size={14} className="text-red-700 shrink-0" aria-label="Bloqueado" />}
-                      <span className="font-medium text-gray-900 line-clamp-2">{project.title}</span>
+                  {/* Misma jerarquía que la tarjeta Kanban: Portafolio → Proyecto → Título, y el número como metadato. */}
+                  <td className={`table-title-cell px-4 py-3 ${owner ? `has-owner ${owner}` : ''}`}>
+                    <p className="card-hierarchy table-hierarchy">
+                      {portfolioName ? (<>
+                        <span className="card-tag card-tag-portfolio"><Icon name="layers" size={12} aria-hidden="true" /><span className="sr-only">Portafolio: </span>{portfolioName}</span>
+                        {initiativeName && <span className="card-tag-group"><Icon name="arrow" size={12} className="card-tag-sep" aria-hidden="true" /><span className="card-tag card-tag-project"><span className="sr-only">Proyecto: </span>{initiativeName}</span></span>}
+                      </>) : <span className="card-tag card-tag-none">Sin portafolio</span>}
+                    </p>
+                    <div className="flex items-start gap-2 mt-1">
+                      {project.is_blocked && <Icon name="block" size={14} className="text-red-700 shrink-0 mt-0.5" aria-label="Bloqueado" />}
+                      <span className="font-medium text-gray-900 line-clamp-2" title={project.title}>{project.title}</span>
                     </div>
+                    <span className="card-number table-number">{project.project_number ?? 'Interno'}</span>
                   </td>
 
                   {/* Prioridad */}
@@ -191,16 +199,9 @@ export default function TableView({ projects, boardType, onProjectClick, loading
                     {assignee ? (
                       <span className="table-owner" title={assignee.full_name}>
                         <span className={`card-avatar ${avatarClass(ownerColors, assignee.id, assignee.full_name)}`} aria-hidden="true">{getInitials(assignee.full_name)}</span>
-                        {assignee.full_name.split(' ')[0]}
+                        {assignee.full_name}
                       </span>
                     ) : <span className="text-gray-500">Sin responsable</span>}
-                  </td>
-                  {/* Portafolio · iniciativa (M19) */}
-                  <td className="px-4 py-3 text-sm text-gray-700 max-w-[200px]">
-                    {portfolios.portfolios.find(x => x.id === project.portfolio_id)?.name ?? <span className="text-gray-500">Sin portafolio</span>}
-                  </td>
-                  <td className="px-4 py-3 text-sm text-gray-700 max-w-[220px]">
-                    {portfolios.initiatives.find(x => x.id === project.initiative_id)?.name ?? <span className="text-gray-500">—</span>}
                   </td>
                   {/* Área */}
                   <td className="px-4 py-3 whitespace-nowrap text-gray-600 text-xs">

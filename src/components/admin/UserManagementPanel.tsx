@@ -145,9 +145,9 @@ export default function UserManagementPanel() {
           { label: 'Viewers',       value: stats.viewer,     color: 'border-gray-400',    icon: 'eye' as IconName, show: true },
           { label: 'Inactivos',     value: stats.inactive,   color: 'border-gray-400',  icon: 'lock' as IconName, show: true },
         ].filter(s => s.show).map(s => (
-          <div key={s.label} className={`bg-surface rounded-xl border-l-4 ${s.color} p-4 shadow-sm flex items-center gap-3`}>
+          <div key={s.label} className={`bg-surface rounded-xl border-l-4 ${s.color} p-4 shadow-sm flex flex-col items-start gap-2 min-[420px]:flex-row min-[420px]:items-center min-[420px]:gap-3 min-w-0`}>
             <Icon name={s.icon} size={24} className="text-gray-600 shrink-0" />
-            <div>
+            <div className="min-w-0">
               <p className="text-2xl font-bold text-gray-900">{s.value}</p>
               <p className="text-sm text-gray-600">{s.label}</p>
             </div>
@@ -173,13 +173,13 @@ export default function UserManagementPanel() {
           ))}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
           <input
             type="text"
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Buscar nombre o email..."
-            className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary w-52"
+            className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary flex-1 min-w-0 sm:flex-none sm:w-52"
           />
           <button
             onClick={() => { setEditing(null); setShowModal(true) }}
@@ -198,7 +198,7 @@ export default function UserManagementPanel() {
             <p className="font-medium">No se encontraron usuarios</p>
           </div>
         ) : (
-          <table className="w-full">
+          <table className="w-full user-table">
             <thead>
               <tr className="bg-gray-50 border-b text-xs font-semibold text-gray-500">
                 <th className="text-left px-4 py-3">Usuario</th>
@@ -225,15 +225,15 @@ export default function UserManagementPanel() {
                       </div>
                     </td>
                     {/* Email */}
-                    <td className="px-4 py-3 text-sm text-gray-600">{u.email}</td>
+                    <td data-label="Email" className="px-4 py-3 text-sm text-gray-600 user-email">{u.email}</td>
                     {/* Rol */}
-                    <td className="px-4 py-3">
+                    <td data-label="Rol" className="px-4 py-3">
                       <span className={`px-2.5 py-1 rounded-full text-xs font-semibold border ${ROLE_BADGE[u.role] ?? 'bg-gray-100 text-gray-600'}`}>
                         {ROLE_LABEL[u.role] ?? u.role}
                       </span>
                     </td>
                     {/* Estado */}
-                    <td className="px-4 py-3">
+                    <td data-label="Estado" className="px-4 py-3">
                       {u.is_active !== false ? (
                         <span className="flex items-center gap-1.5 text-xs text-green-700 font-medium">
                           <span className="w-2 h-2 rounded-full bg-green-700 inline-block" />
@@ -247,13 +247,13 @@ export default function UserManagementPanel() {
                       )}
                     </td>
                     {/* Creado */}
-                    <td className="px-4 py-3 text-xs text-gray-500">
+                    <td data-label="Creado" className="px-4 py-3 text-xs text-gray-500">
                       {new Date(u.created_at).toLocaleDateString('es-PE')}
                     </td>
                     {/* Acciones */}
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 user-actions">
                       {canEdit ? (
-                        <div className="flex items-center justify-end gap-2">
+                        <div className="flex flex-wrap items-center justify-end gap-2">
                           <button
                             onClick={() => { setEditing(u); setShowModal(true) }}
                             className="px-3 py-1 bg-brand-50 text-brand-700 rounded-lg text-xs font-medium hover:bg-brand-100 transition"
