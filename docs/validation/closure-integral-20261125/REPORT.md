@@ -84,7 +84,7 @@ Evidencia:
 1. Se necesita un proyecto Supabase QA separado de `xsxdpaiivklqeudgqoqf`, con Auth, Storage y migraciones M1–M21. La organización actual no muestra ese proyecto.
 2. Vercel CLI necesita una sesión autenticada y un proyecto/deployment QA con protección configurada. Esta ejecución no tiene una sesión Vercel disponible.
 3. Solo cuando exista QA podrán completarse los logins de prueba, expiración/logout contra Auth alojado, Storage binario real, E2E Chromium contra backend real, persistencia de checklist con reload y credenciales ficticias utilizables desde el Preview.
-4. La auditoría solo lectura de Claude sigue pendiente y debe hacerse en un worktree aislado desde el commit de esta rama.
+4. La auditoría solo lectura de Claude fue solicitada por Orca, pero no llegó a iniciar. La creación del worktree falló porque el repositorio que Orca seleccionó no tenía la referencia local `codex/closure-real-qa-20261125` (`fatal: invalid reference`). Orca confirmó que el worker nunca empezó y cerró el intento. No se reintentó automáticamente; se requiere una instrucción posterior para reabrir el mismo Task tras corregir la referencia/repositorio.
 
 ## Estado de aceptación
 
