@@ -11,9 +11,14 @@ import { installVisualFixtures } from './ux-fixtures.mjs'
 import { installQaFixtures, QA } from './qa-fixtures.mjs'
 
 const ROOT = fileURLToPath(new URL('../..', import.meta.url))
-// IDs estables del contrato (sección «Catálogos y relaciones estables»).
-const GESTION = '9bc5cbdd-b9dc-47cd-85fc-07f648e8bdea', OPERACIONES = '7da3d9f3-22ee-4aa8-b7bf-36301ad46ff6'
-const BENEF = '2909c4ad-8d55-4175-af8f-ba8416db63ad', CIERRE = '04e586c4-5e35-408c-b2ee-25ff00dd1469'
+// Los IDs relacionales los genera el PostgreSQL desechable y se obtienen del snapshot de esa instancia.
+const GESTION = QA.portfolios.find(p => p.name === 'Gestión')?.id
+const OPERACIONES = QA.portfolios.find(p => p.name === 'QA-FICTICIO Operaciones')?.id
+const BENEF = QA.portfolio_initiatives.find(p => p.name === 'Beneficiarios finales')?.id
+const CIERRE = QA.portfolio_initiatives.find(p => p.name === 'QA-FICTICIO Cierre mensual')?.id
+const PENDING_FIRST = QA.requests.find(r => r.status === 'pending')
+const PENDING_SECOND = QA.requests.find(r => r.status === 'pending' && r.id !== PENDING_FIRST?.id)
+assert.ok(GESTION && OPERACIONES && BENEF && CIERRE && PENDING_FIRST && PENDING_SECOND, 'snapshot QA con catálogo y dos solicitudes pendientes requeridos')
 const DEVELOPER = '00000000-0000-4000-8000-0000000000c3'
 let fixture, vite, browser, base
 const external = []
@@ -68,7 +73,7 @@ test('Dashboard: sin filtros de Estudio/Área, Tickets por estudio global, Equip
   const labels = await page.locator('main label').allInnerTexts()
   assert.ok(!labels.some(l => /^\s*(Estudio|Área)\s*$/.test(l)), `sin filtros: ${labels}`)
   const studios = page.getByRole('region', { name: 'Tickets por estudio' }).or(page.locator('section', { hasText: 'Tickets por estudio' })).first()
-  await studios.getByText(String(QA.requests.length), { exact: true }).waitFor()   // 25 en total: todas las solicitudes del contrato
+  await studios.getByText(String(QA.requests.length), { exact: true }).waitFor()   // total dinámico de solicitudes del snapshot
   await page.getByRole('button', { name: /Exportar/ }).click()
   const menu = page.getByRole('menu', { name: 'Exportar' })
   assert.deepEqual((await menu.getByRole('menuitem').allInnerTexts()).map(t => t.split('\n')[0].trim()), ['Activos CSV', 'Completados CSV'])
@@ -222,7 +227,7 @@ test('Progreso: casos de checklist del contrato; sugerencias no cuentan y la fas
 test('Confirmación: Portafolio → Proyecto dependiente, validación y RPC atómica; también ticket independiente', async () => {
   const page = await open()
   await nav(page, 'Requests').click()
-  const pending = page.locator('.request-card').filter({ hasText: 'QA-FICTICIO Quipu recibida sin revisar' })
+  const pending = page.locator('.request-card').filter({ hasText: PENDING_FIRST.title })
   await pending.getByRole('button', { name: /Aprobar/ }).click()
   const dialog = page.getByRole('dialog')
   await dialog.locator('#validation-code').waitFor()
@@ -249,7 +254,7 @@ test('Confirmación: Portafolio → Proyecto dependiente, validación y RPC ató
   // Ticket independiente: no envía portafolio ni proyecto.
   await page.keyboard.press('Escape').catch(() => {})
   await page.waitForTimeout(300)
-  const other = page.locator('.request-card').filter({ hasText: 'QA-FICTICIO QuipuFac recibida sin revisar' })
+  const other = page.locator('.request-card').filter({ hasText: PENDING_SECOND.title })
   await other.getByRole('button', { name: /Aprobar/ }).click()
   await dialog.locator('#validation-code').waitFor()
   await dialog.locator('#validation-code').selectOption({ index: 1 })

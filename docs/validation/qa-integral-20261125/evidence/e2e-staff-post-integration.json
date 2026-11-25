@@ -1,0 +1,31 @@
+{
+  "environment": "QA-FICTICIO local",
+  "api": "PostgREST → PostgreSQL 17",
+  "actions": [
+    "health: isolated local gateway",
+    "auth: simulated local Auth, active profile loaded from PostgreSQL",
+    "dashboard: live data; metrics=true; studyBreakdown=true",
+    "Boards: 24 rendered cards from live database",
+    "Table: rendered from live database",
+    "Requests: opened and captured",
+    "Equipo: opened and captured",
+    "QA-FICTICIO label visible=true"
+  ],
+  "unsupported": [
+    "Supabase Realtime WebSocket is not provided by the local gateway; REST/RPC reads are live."
+  ],
+  "errors": [],
+  "failedApiResponses": [],
+  "dashboardHasMetrics": true,
+  "dashboardHasStudyBreakdown": true,
+  "dashboardHasTeamEntry": true,
+  "projectCardsOnBoard": 24,
+  "qaLabelVisible": true,
+  "teamTabs": [
+    "Usuarios",
+    "Carga de trabajo",
+    "Portafolios y proyectos",
+    "Papelera",
+    "Catálogos"
+  ]
+}

@@ -7,12 +7,15 @@ const browser = await chromium.launch({ headless: true, executablePath: process.
 const context = await browser.newContext({ viewport: { width: 1440, height: 900 } })
 const page = await context.newPage()
 const fixture = JSON.parse(readFileSync('tests/ui/qa-dataset.json', 'utf8'))
+const ticketTitle = process.env.QA_REQUEST_TITLE ?? 'QA-FICTICIO Quipu recibida sin revisar'
 const portfolio = fixture.portfolios.find(p => p.name === 'Gestión' && p.is_active)
 const initiative = fixture.portfolio_initiatives.find(p => p.name === 'Beneficiarios finales' && p.portfolio_id === portfolio?.id && p.is_active)
 const code = fixture.studio_codes.find(c => c.code === 'PROCONT' && c.is_active)
 const area = fixture.areas.find(a => a.code === 'QAC' && a.studio_id === code?.studio_id && a.is_active && !a.parent_id)
-let result = { environment: 'QA-FICTICIO local', database: 'PostgreSQL 17 through PostgREST', ticketTitle: 'QA-FICTICIO Quipu recibida sin revisar', ticketWrites: 0 }
+let result = { environment: 'QA-FICTICIO local', database: 'PostgreSQL 17 through PostgREST', ticketTitle, ticketWrites: 0 }
 try {
+  if (!ticketTitle.startsWith('QA-FICTICIO ') || !fixture.requests.some(r => r.title === ticketTitle))
+    throw new Error('Target must exactly match an existing QA-FICTICIO request in the current local snapshot')
   if (!portfolio || !initiative || !code || !area) throw new Error('Snapshot QA lacks the confirmed portfolio/project or PROCONT/area fixture; refusing to guess UUIDs')
   const health = await (await fetch('http://127.0.0.1:54321/qa/health')).json()
   if (health.production !== false || health.environment !== 'QA-FICTICIO') throw new Error('Refusing to write outside local QA')
@@ -22,6 +25,8 @@ try {
   await page.getByRole('button', { name: 'Iniciar Sesión' }).click()
   const nav = page.locator('nav[aria-label="Secciones"]'); await nav.waitFor()
   await nav.getByRole('button', { name: /Requests/i }).click()
+  // Espera la respuesta real del inbox antes de decidir si el objetivo está pendiente o ya aprobado.
+  await page.locator('.request-card').first().waitFor({ timeout: 15000 })
   let card = page.locator('.request-card').filter({ hasText: result.ticketTitle }).first()
   if (await card.count()) {
     const pending = await card.getByText('Pendiente', { exact: true }).count()

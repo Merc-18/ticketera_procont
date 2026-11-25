@@ -1278,6 +1278,49 @@
    "project_number": "REQ26-003",
    "sla_target_date": null,
    "workflow_version": 2
+  },
+  {
+   "id": "a37a433d-4c22-46de-9c29-87603b1a7d81",
+   "title": "QA-FICTICIO Quipu en revisión",
+   "status": "active",
+   "due_date": null,
+   "priority": "medium",
+   "requests": {
+    "area_id": "7f7cebe7-090a-4aec-b259-a7222fb365cb",
+    "studio_id": "ac92b732-cb91-48c0-8b9b-017c1e33b887",
+    "request_type": "Otros",
+    "request_number": "REQ26-004",
+    "requester_area": "QA-FICTICIO Área 20",
+    "requester_name": "QA-FICTICIO Cliente quipu",
+    "studio_code_id": "7b696bc0-333c-4531-848d-36b0af029e69"
+   },
+   "created_at": "2026-11-25T10:35:22.288791-05:00",
+   "is_blocked": false,
+   "request_id": "77824342-1e63-4fe3-8890-79b54d3cbacf",
+   "start_date": null,
+   "updated_at": "2026-11-25T10:35:22.298019-05:00",
+   "description": "QA-FICTICIO: datos ficticios para validar el flujo.",
+   "portfolio_id": "ef5e795e-8d70-4384-b9ff-2da3624dc65e",
+   "project_type": "development",
+   "blocked_since": null,
+   "initiative_id": "5f2fc580-63c7-4e41-931e-48dcbe598460",
+   "project_flows": [
+    {
+     "id": "5666e6b2-4860-4547-b189-ce2fc2f3bc82",
+     "progress": 0,
+     "flow_type": "development",
+     "created_at": "2026-11-25T10:35:22.288791-05:00",
+     "project_id": "a37a433d-4c22-46de-9c29-87603b1a7d81",
+     "updated_at": "2026-11-25T10:35:22.288791-05:00",
+     "assigned_to": "00000000-0000-4000-8000-0000000000c3",
+     "current_phase": "backlog",
+     "checklist_items": []
+    }
+   ],
+   "blocked_reason": null,
+   "project_number": "REQ26-004",
+   "sla_target_date": null,
+   "workflow_version": 2
   }
  ],
  "checklist_items": [
@@ -1714,29 +1757,31 @@
    "id": "77824342-1e63-4fe3-8890-79b54d3cbacf",
    "title": "QA-FICTICIO Quipu en revisión",
    "origin": "Interno",
-   "status": "pending",
-   "area_id": null,
-   "projects": null,
+   "status": "approved",
+   "area_id": "7f7cebe7-090a-4aec-b259-a7222fb365cb",
+   "projects": {
+    "status": "active"
+   },
    "studio_id": "ac92b732-cb91-48c0-8b9b-017c1e33b887",
    "system_id": "a460da71-64a9-48cb-af3d-621d9fa66fa7",
    "created_at": "2026-11-25T09:30:26.377733-05:00",
    "needs_code": false,
-   "project_id": null,
+   "project_id": "a37a433d-4c22-46de-9c29-87603b1a7d81",
    "subarea_id": null,
-   "updated_at": "2026-11-25T09:30:26.377733-05:00",
+   "updated_at": "2026-11-25T10:35:22.295051-05:00",
    "description": "QA-FICTICIO: datos ficticios para validar el flujo.",
    "observations": null,
    "request_date": "2026-11-25",
    "request_type": "Otros",
    "subsystem_id": "dd4ff323-b15d-4653-b07c-b7a4ce0070d1",
-   "classified_at": null,
-   "classified_by": null,
+   "classified_at": "2026-11-25T10:35:22.279285-05:00",
+   "classified_by": "00000000-0000-4000-8000-0000000000c1",
    "number_series": "REQ",
    "request_number": "REQ26-004",
    "requested_date": null,
-   "requester_area": null,
+   "requester_area": "QA-FICTICIO Área 20",
    "requester_name": "QA-FICTICIO Cliente quipu",
-   "studio_code_id": null,
+   "studio_code_id": "7b696bc0-333c-4531-848d-36b0af029e69",
    "request_type_id": "3e0d4694-0021-4438-bde7-6bdf2689b6b5",
    "requester_email": null,
    "rejection_reason": null,
@@ -4138,6 +4183,31 @@
    "action": "status_changed",
    "created_at": "2026-11-25T10:12:57.457544-05:00",
    "request_id": "f59841a8-4623-4cca-8a94-1f3761fce1ca"
+  },
+  {
+   "action": "classified",
+   "created_at": "2026-11-25T10:35:22.279285-05:00",
+   "request_id": "77824342-1e63-4fe3-8890-79b54d3cbacf"
+  },
+  {
+   "action": "priority_changed",
+   "created_at": "2026-11-25T10:35:22.292206-05:00",
+   "request_id": "77824342-1e63-4fe3-8890-79b54d3cbacf"
+  },
+  {
+   "action": "assigned",
+   "created_at": "2026-11-25T10:35:22.293447-05:00",
+   "request_id": "77824342-1e63-4fe3-8890-79b54d3cbacf"
+  },
+  {
+   "action": "approved",
+   "created_at": "2026-11-25T10:35:22.288791-05:00",
+   "request_id": "77824342-1e63-4fe3-8890-79b54d3cbacf"
+  },
+  {
+   "action": "status_changed",
+   "created_at": "2026-11-25T10:35:22.296079-05:00",
+   "request_id": "77824342-1e63-4fe3-8890-79b54d3cbacf"
   }
  ],
  "users": [
@@ -4719,6 +4789,7 @@
   "8c1357e4-14a0-4747-a996-30b63b42b0d1": "in_progress",
   "91970b68-4c6e-42e6-a711-b9d17de593fd": "in_progress",
   "98709c4b-3d6b-491e-b7ac-d4c796f81ad5": "in_progress",
+  "a37a433d-4c22-46de-9c29-87603b1a7d81": "approved_backlog",
   "bf372473-fcd5-4769-9a8b-d72d0d5b4734": "approved_backlog",
   "c728a231-1a1f-45b0-9ea7-911daf6a22e9": "blocked",
   "d6434b80-fb8e-4cdf-80ec-daa081dbc5ba": "in_progress",

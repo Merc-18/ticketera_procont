@@ -8,9 +8,11 @@ import { createServer as createViteServer } from 'vite'
 import { chromium } from 'playwright-core'
 import { startFixtureServer, SIMULATED_PASSWORD } from './fixture-server.mjs'
 import { installVisualFixtures } from './ux-fixtures.mjs'
-import { installQaFixtures } from './qa-fixtures.mjs'
+import { installQaFixtures, QA } from './qa-fixtures.mjs'
 
 const ROOT = fileURLToPath(new URL('../..', import.meta.url))
+const PENDING_FIRST = QA.requests.find(r => r.status === 'pending')
+const QA_STUDIO = QA.studios.find(s => s.id === PENDING_FIRST?.studio_id)?.name
 let fixture, vite, browser, base
 before(async () => {
   fixture = await startFixtureServer()
@@ -70,20 +72,32 @@ for (const [width, theme] of [[320, 'light'], [390, 'dark']]) {
 
     // Bandeja: el chip de estado queda sobre los datos y estos usan el ancho de la tarjeta (≤420 px).
     await page.getByRole('button', { name: /^Requests/ }).click()
-    const card = page.locator('.request-card').filter({ hasText: 'QA-FICTICIO Quipu recibida sin revisar' }).first()
+    const card = page.locator('.request-card').filter({ hasText: PENDING_FIRST.title }).first()
     await card.waitFor()
     const header = card.locator('> div').first()
-    const info = await box(header.locator('> div').first())
+    const infoLocator = header.locator('> div').first()
+    const info = await box(infoLocator)
+    const infoMetrics = await infoLocator.evaluate(el => {
+      const clone = el.cloneNode(true)
+      Object.assign(clone.style, { position: 'fixed', visibility: 'hidden', width: 'max-content', maxWidth: 'none', whiteSpace: 'nowrap', inset: 'auto' })
+      document.body.append(clone)
+      const maxContent = clone.getBoundingClientRect().width
+      clone.remove()
+      const card = el.closest('.request-card')
+      const style = getComputedStyle(card)
+      return { maxContent, available: card.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight) }
+    })
     const chip = await box(header.locator('> span').first())
     const cardBox = await box(card)
     assert.ok(chip.y + chip.height <= info.y + 1, 'chip «Pendiente» encima de los datos')
-    assert.ok(info.width >= cardBox.width * 0.75, `datos ${info.width}px de ${cardBox.width}px`)
+    assert.ok(info.width + 1 >= Math.min(infoMetrics.maxContent, infoMetrics.available),
+      `datos sin encajonamiento: ${info.width}px; max-content ${infoMetrics.maxContent}px; disponible ${infoMetrics.available}px (tarjeta ${cardBox.width}px)`)
 
-    // Modal de validación: la ficha pasa a una columna; «BUSINESS ACCOMPANYING SAC» no se parte a mitad de palabra.
+    // Modal de validación: catálogo sanitizado y ficha en una columna.
     await card.getByRole('button', { name: /Aprobar/ }).click()
     const dialog = page.getByRole('dialog')
     await dialog.waitFor()
-    const studio = dialog.getByText('BUSINESS ACCOMPANYING SAC', { exact: true }).first()
+    const studio = dialog.getByText(QA_STUDIO, { exact: true }).first()
     const cols = await studio.evaluate(el => getComputedStyle(el.closest('.grid')).gridTemplateColumns.split(' ').length)
     assert.equal(cols, 1, 'ficha del solicitante en una columna')
     await page.keyboard.press('Escape')

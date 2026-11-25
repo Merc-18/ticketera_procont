@@ -1,0 +1,24 @@
+{
+  "environment": "QA-FICTICIO local",
+  "database": "PostgREST → PostgreSQL 17",
+  "ticketWrites": 0,
+  "clientSessionsOpened": 2,
+  "providers": {
+    "quipu": {
+      "errors": [],
+      "login": "session opened by client-login QA gateway and client_open_session PostgreSQL RPC",
+      "listVisible": true,
+      "ticketCountVisible": 9,
+      "ownDetailOpened": true,
+      "noBrowserErrors": true
+    },
+    "quipufac": {
+      "errors": [],
+      "login": "session opened by client-login QA gateway and client_open_session PostgreSQL RPC",
+      "listVisible": true,
+      "ticketCountVisible": 7,
+      "ownDetailOpened": true,
+      "noBrowserErrors": true
+    }
+  }
+}
