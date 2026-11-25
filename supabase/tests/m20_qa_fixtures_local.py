@@ -18,13 +18,23 @@ OFFERED = ['azul','celeste','dorado','ambar','grafito','pizarra','dorado-claro',
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--pg-bin', type=Path, required=True)
 parser.add_argument('--runtime-lib', type=Path, required=True)
+parser.add_argument('--persistent-dir', type=Path, help='Keep the disposable QA PostgreSQL cluster and dataset here for browser review; refuses to overwrite an existing directory.')
+parser.add_argument('--export-existing', action='store_true', help='Export a fresh sanitized UI snapshot from an already-seeded persistent QA cluster without re-running migrations or inserting rows.')
 args = parser.parse_args()
-work = Path(tempfile.mkdtemp(prefix='procont-m20-', dir='/tmp'))
-cluster, socket = work/'cluster', work/'socket'
-socket.mkdir(mode=0o700)
+PERSISTENT = args.persistent_dir is not None
+if PERSISTENT:
+    work = args.persistent_dir.expanduser().resolve()
+    if work.exists() and any(work.iterdir()) and not args.export_existing:
+        raise SystemExit(f'QA directory already contains data; refusing to overwrite: {work}')
+    work.mkdir(parents=True, exist_ok=True)
+else:
+    work = Path(tempfile.mkdtemp(prefix='procont-m20-', dir='/tmp'))
+cluster = work/'cluster'
+socket = Path(os.environ.get('QA_PG_SOCKET', str(work/'socket'))).expanduser().resolve()
+socket.mkdir(mode=0o700, parents=True, exist_ok=True)
 env = {k: v for k, v in os.environ.items() if not k.startswith('PG')}
 env.update(LD_LIBRARY_PATH=str(args.runtime_lib), PGPASSFILE=str(work/'no-password'), PGSERVICEFILE=str(work/'no-service'))
-PORT = '55520'
+PORT = os.environ.get('QA_PG_PORT', '55520')
 base = [str(args.pg_bin/'psql'), '-X', '--no-password', '-v', 'ON_ERROR_STOP=1', '-v', 'VERBOSITY=verbose', '-Atq',
         '-h', str(socket), '-p', PORT, '-U', getpass.getuser(), '-d', 'postgres']
 owner = 'procont_m20_owner'
@@ -69,6 +79,20 @@ def fails(text, code, role=owner, actor=None):
 def passed(name):
     checks.append(name)
     print('PASS '+name, flush=True)
+
+
+def sanitize_catalog_names():
+    # Migration seed catalogs may contain real company/area labels. In QA, keep UUIDs and
+    # relationships but replace visible labels before exporting or opening the UI.
+    q("""WITH ranked AS (
+          SELECT id,row_number() OVER (ORDER BY id) AS n FROM public.studios
+        ) UPDATE public.studios s SET name='QA-FICTICIO Estudio '||lpad(r.n::text,2,'0')
+          FROM ranked r WHERE r.id=s.id""")
+    q("""WITH ranked AS (
+          SELECT id,row_number() OVER (ORDER BY code,id) AS n FROM public.areas
+        ) UPDATE public.areas a SET name='QA-FICTICIO Área '||lpad(r.n::text,2,'0')
+          FROM ranked r WHERE r.id=a.id""")
+    passed('QA: etiquetas de estudios y áreas anonimizadas; UUID, códigos y relaciones preservados')
 
 
 def table_md5(sql):
@@ -190,7 +214,7 @@ def m20_checks(c, tokens):
 
 
 def seed(c, tokens, other_portfolio):
-    """Conjunto QA-FICTICIO reproducible: 23 tickets por las RPC reales."""
+    """Conjunto QA-FICTICIO persistente: 23 solicitudes cliente/TI por RPC más seis tarjetas internas."""
     cierre = j('SELECT public.save_portfolio_initiative('+data({'portfolio_id': other_portfolio, 'name': 'QA-FICTICIO Cierre mensual'})+')', 'authenticated', users['admin'])['id']
     extra = []
     for n, name in enumerate(['QA-FICTICIO Analista Uno', 'QA-FICTICIO Analista Dos']):
@@ -281,6 +305,13 @@ def seed(c, tokens, other_portfolio):
           SELECT {lit(flow)},t.phase,t.description,t.order_index,f.created_at FROM public.checklist_templates t, public.project_flows f
           WHERE f.id={lit(flow)} AND t.flow_type='development' AND t.phase IN ('backlog','design','dev','testing','deploy','done')""", None)
     q(f"UPDATE public.checklist_items SET completed=true WHERE project_flow_id={lit(flow)} AND phase='backlog'", None)
+    # Seis tarjetas adicionales elevan el dataset visible a más de 24 proyectos sin crear datos remotos.
+    internal('Panel de conciliación QA', 'internal', 'low', owners[0], 'backlog', None)
+    internal('Reporte operativo QA', 'internal', 'medium', owners[1], 'analysis', G, BF)
+    internal('Auditoría de cambios QA', 'internal', 'high', owners[2], 'design', None)
+    internal('Sincronización de catálogos QA', 'internal', 'urgent', owners[3], 'dev', OP, CI)
+    internal('Regresión de permisos QA', 'internal', 'medium', owners[4], 'code_review', None)
+    internal('Consulta de saldos QA', 'internal', 'low', owners[0], 'testing', G, BF)
     # Adjuntos reservados por el cliente (solo metadatos; Storage es un stub local).
     rq = q(f"SELECT id FROM public.requests WHERE title='{QA} Quipu recibida sin revisar'", None)   # pendiente: el contrato solo reserva así
     j(f"SELECT public.client_reserve_attachments({lit(tokens['quipu'])},{lit(rq)},"+data([{'upload_key': '00000000-0000-4000-8000-000000030001', 'file_name': 'qa-ficticio-captura.png', 'size_bytes': 2048, 'mime_type': 'image/png'}])+')', 'anon')
@@ -338,24 +369,39 @@ def export(c, area, extra):
     ds['card_colors'] = j("SELECT coalesce(jsonb_object_agg(user_id,color_id),'{}'::jsonb) FROM public.internal_card_preferences", None)
     ds['portfolios'] = j("SELECT jsonb_agg(to_jsonb(p) ORDER BY sort_order,name) FROM public.portfolios p", None)
     ds['portfolio_initiatives'] = j("SELECT jsonb_agg(to_jsonb(i) ORDER BY sort_order,name) FROM public.portfolio_initiatives i", None)
-    ds['studios'] = j("SELECT jsonb_agg(jsonb_build_object('id',id,'name',name,'is_active',is_active) ORDER BY name) FROM public.studios", None)
+    # La base de migraciones contiene nombres de catálogo ajenos a este dataset. Nunca los exportamos
+    # al bundle visible del navegador: se sustituyen por nombres sintéticos manteniendo UUID/FK.
+    ds['studios'] = j("SELECT jsonb_agg(jsonb_build_object('id',id,'name','QA-FICTICIO Estudio '||n,'is_active',is_active) ORDER BY id) FROM (SELECT id,is_active,row_number() OVER (ORDER BY id) n FROM public.studios) s", None)
     ds['studio_codes'] = j("SELECT jsonb_agg(jsonb_build_object('id',id,'studio_id',studio_id,'code',code,'is_active',is_active) ORDER BY code) FROM public.studio_codes", None)
-    ds['areas'] = j("SELECT jsonb_agg(jsonb_build_object('id',id,'name',name,'code',code,'is_active',is_active,'parent_id',parent_id,'studio_id',studio_id) ORDER BY name) FROM public.areas", None)
+    ds['areas'] = j("SELECT jsonb_agg(jsonb_build_object('id',id,'name',CASE WHEN code='QAC' THEN name ELSE 'QA-FICTICIO Área '||code END,'code',code,'is_active',is_active,'parent_id',parent_id,'studio_id',studio_id) ORDER BY code) FROM public.areas", None)
     ds['catalog_systems'] = j("SELECT jsonb_agg(jsonb_build_object('id',id,'name',name,'requires_subproject',requires_subproject,'sort_order',sort_order,'is_active',is_active) ORDER BY sort_order) FROM public.catalog_systems", None)
+    ds['catalog_subsystems'] = j("SELECT jsonb_agg(jsonb_build_object('id',id,'system_id',system_id,'name',name,'is_active',is_active) ORDER BY system_id,name) FROM public.catalog_subsystems", None)
     ds['request_types'] = j("SELECT jsonb_agg(jsonb_build_object('id',id,'name',name,'sort_order',sort_order,'is_active',is_active) ORDER BY sort_order) FROM public.request_types", None)
     ds['tickets'] = j("SELECT jsonb_object_agg(p.id, app_private.request_general_status(p.request_id)) FROM public.projects p", None)
     out = ROOT/'tests/ui/qa-dataset.json'
-    out.write_text(json.dumps({'_aviso': 'QA-FICTICIO: datos 100 % ficticios generados por supabase/tests/m20_qa_fixtures_local.py en PostgreSQL desechable. No son datos reales.', **ds}, indent=1, ensure_ascii=False, default=str)+'\n')
+    out.write_text(json.dumps({'_aviso': 'QA-FICTICIO: fixtures sintéticos generados en PostgreSQL local desechable. Nombres de estudios/áreas sanitizados; no son datos reales.', **ds}, indent=1, ensure_ascii=False, default=str)+'\n')
     passed(f'QA: conjunto exportado a tests/ui/qa-dataset.json ({len(ds["projects"])} proyectos, {len(ds["requests"])} solicitudes, {len(ds["users"])} usuarios)')
+
+
+if args.export_existing:
+    version = q('SHOW server_version', None)
+    assert version.startswith('17.'), version
+    export(catalog(), None, [])
+    raise SystemExit(0)
 
 
 try:
     subprocess.run([str(args.pg_bin/'initdb'), '-D', str(cluster), '-A', 'trust', '--locale=C.UTF-8', '-E', 'UTF8'],
                    env=env, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
-    with (work/'server.log').open('w') as log:
-        server = subprocess.Popen([str(args.pg_bin/'postgres'), '-D', str(cluster), '-c', 'listen_addresses=',
-                                   '-c', f'unix_socket_directories={socket}', '-c', 'wal_level=logical', '-p', PORT],
-                                  env=env, stdout=log, stderr=log)
+    if PERSISTENT:
+        subprocess.run([str(args.pg_bin/'pg_ctl'), '-D', str(cluster), '-l', str(work/'server.log'),
+                        '-o', f'-c listen_addresses= -c unix_socket_directories={socket} -c wal_level=logical -p {PORT}',
+                        'start', '-w', '-t', '30'], env=env, check=True, stdout=subprocess.DEVNULL)
+    else:
+        with (work/'server.log').open('w') as log:
+            server = subprocess.Popen([str(args.pg_bin/'postgres'), '-D', str(cluster), '-c', 'listen_addresses=',
+                                       '-c', f'unix_socket_directories={socket}', '-c', 'wal_level=logical', '-p', PORT],
+                                      env=env, stdin=subprocess.DEVNULL, stdout=log, stderr=log)
     for _ in range(100):
         try:
             q('SELECT 1', None); break
@@ -383,6 +429,7 @@ try:
     assert len(paths) == 21 and paths[-1].name == M20 and len({p.name[:14] for p in paths}) == 21
     for path in paths[:-1]:
         q(path.read_text())
+    sanitize_catalog_names()
     staff()
     passed('Base: M1-M19 (20 migraciones) aplicadas en orden')
     apply_with_rollback_test(paths[-1])
@@ -393,16 +440,18 @@ try:
     qa_checks(c, area)
     export(c, area, extra)
 finally:
-    if server and server.poll() is None:
+    if server and server.poll() is None and not PERSISTENT:
         subprocess.run([str(args.pg_bin/'pg_ctl'), '-D', str(cluster), 'stop', '-m', 'fast', '-w', '-t', '20'],
                        env=env, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         server.wait(timeout=5)
-    shutil.rmtree(work)
+    if not PERSISTENT:
+        shutil.rmtree(work)
 
-out = ROOT/'docs/validation/dashboard-team-portfolio-progress-20261124/data'
+out = Path(os.environ.get('QA_M20_EVIDENCE_DIR', str(ROOT/'docs/validation/dashboard-team-portfolio-progress-20261124/data')))
 out.mkdir(parents=True, exist_ok=True)
 evidence = {'at_utc': datetime.now(timezone.utc).isoformat(), 'postgresql': version, 'passed': len(checks), 'checks': checks,
             'migration_sha256': {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in paths},
-            'socket_only': True, 'server_stopped': True, 'cluster_removed': True, 'auth_storage_stubs': True, 'remote_operations': False}
+            'socket_only': True, 'server_stopped': not PERSISTENT, 'cluster_removed': not PERSISTENT,
+            'persistent_dir': str(work) if PERSISTENT else None, 'auth_storage_stubs': True, 'remote_operations': False}
 (out/'m20-qa.json').write_text(json.dumps(evidence, indent=2, ensure_ascii=False)+'\n')
-print(f'{len(checks)} comprobaciones M20/QA superadas; servidor detenido y clúster eliminado.')
+print(f'{len(checks)} comprobaciones M20/QA superadas; ' + ('PostgreSQL permanece activo en entorno QA local persistente.' if PERSISTENT else 'servidor detenido y clúster eliminado.'))

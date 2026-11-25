@@ -8,7 +8,8 @@ Este contrato es la fuente compartida para backend y UI. Los datos solo se gener
 
 - Prefijo visible obligatorio en títulos/solicitantes/descriciones ficticias: `QA-FICTICIO`.
 - Los UUID creados por RPC en una semilla PostgreSQL son identificadores de esa instancia, se obtienen del dataset exportado y no deben codificarse como IDs permanentes entre reinstalaciones. Para localizar filas se usa además su título QA exacto.
-- Los IDs de actores, portafolios y proyecto aprobado son fijos para que las pruebas UI y PG representen los mismos roles/relaciones.
+- Los UUID de actores internos son fijos. Los UUID de portafolios/proyectos los genera el seed de este PostgreSQL; para esta instancia se pueden usar los de la tabla siguiente o `tests/ui/qa-dataset.json`. Después de recrear la base, obtener todos los IDs relacionales del nuevo snapshot, no reutilizar estos.
+- Los nombres visibles de estudios y áreas en el clúster persistente se sustituyen por etiquetas `QA-FICTICIO`; se preservan UUID, códigos y relaciones.
 - Todas las cuentas usan dominio reservado `.invalid`; no enviar correo. No se utiliza RUC ni dato personal real.
 
 ## Actores internos
@@ -41,10 +42,10 @@ Ambos RUC son valores ficticios de QA y están aislados del catálogo/producció
 
 | Alias | UUID | Nombre |
 |---|---|---|
-| `portfolio.gestion` | `9bc5cbdd-b9dc-47cd-85fc-07f648e8bdea` | Gestión (registro existente del fixture, solo recreado en DB desechable) |
-| `portfolio.qa_operations` | `7da3d9f3-22ee-4aa8-b7bf-36301ad46ff6` | QA-FICTICIO Operaciones |
-| `initiative.beneficiarios` | `2909c4ad-8d55-4175-af8f-ba8416db63ad` | Beneficiarios finales, pertenece a Gestión |
-| `initiative.qa_cierre` | `04e586c4-5e35-408c-b2ee-25ff00dd1469` | QA-FICTICIO Cierre mensual, pertenece a QA-FICTICIO Operaciones |
+| `portfolio.gestion` | `ef5e795e-8d70-4384-b9ff-2da3624dc65e` | Gestión (solo esta instancia QA) |
+| `portfolio.qa_operations` | `992204bd-dc88-450b-984a-8b51aef71247` | QA-FICTICIO Operaciones (solo esta instancia QA) |
+| `initiative.beneficiarios` | `5f2fc580-63c7-4e41-931e-48dcbe598460` | Beneficiarios finales, pertenece a Gestión (solo esta instancia QA) |
+| `initiative.qa_cierre` | `1ee4dd50-5b99-42ed-91d5-30aad0905c9f` | QA-FICTICIO Cierre mensual, pertenece a QA-FICTICIO Operaciones (solo esta instancia QA) |
 
 Códigos internos cubiertos: `PROCONT` con área sintética; `ARAPA`, `DISFARMADENT`, `PROCONT_CUZ` y `PROCONT_OLICH` sin área. Catálogo real de sistemas, tipos y subproyectos se lee de las migraciones aplicadas al clúster local; no se inventan opciones. Estudios adicionales vienen de fixtures/catalog seed, no de datos personales.
 
@@ -58,9 +59,9 @@ Códigos internos cubiertos: `PROCONT` con área sintética; `ARAPA`, `DISFARMAD
 
 ## Dataset funcional previsto
 
-La semilla M20 crea 23 solicitudes por RPC reales (8 Quipu, 6 QuipuFac, 9 TI), más 2 solicitudes de las pruebas transaccionales M20: 25 solicitudes totales; el snapshot exportado contiene 19 proyectos/tableros porque las solicitudes pendientes/rechazadas no son tarjetas. Por tanto, esta semilla no cubre por sí sola el requisito de >1.000 registros; ese caso se prueba con generador de carga/escenario específico y se reporta separado, sin alterar el dataset de navegación.
+La semilla M20 crea 23 solicitudes QA por RPC reales, las comprobaciones transaccionales añaden 2, y el conjunto contiene **31 solicitudes** (9 Quipu, 7 QuipuFac y 15 TI). La aprobación visual E2E de `REQ26-003` guarda un proyecto con M20; el snapshot final contiene **26 proyectos**, de los que **24** aparecen en Boards con filtro Activos. La base incluye 7 perfiles de control. Para restablecer el estado semilla, recrear un clúster desechable; no intentar revertir la aprobación sobre una solicitud ya confirmada.
 
-Los títulos estables de los 23 casos están definidos en el script y comienzan con `QA-FICTICIO`: solicitudes recibidas/en revisión/rechazadas de ambos proveedores; cuatro códigos con y sin área; tickets en ocho fases; prioridad en los cuatro valores; aprobados con Gestión → Beneficiarios finales, con el segundo portafolio, y tickets independientes; tickets internos y originados por cliente. Un título explícito representa cada caso de checklist:
+Los títulos de solicitud de clientes definidos por el script comienzan con `QA-FICTICIO`. Las filas internas creadas por `create_internal_ticket` guardan el título en el proyecto relacionado; la solicitud asociada puede tener `title = null`. El snapshot incluye solicitudes recibidas/en revisión/rechazadas de ambos proveedores; cuatro códigos con y sin área; tickets en ocho fases; prioridad en los cuatro valores; aprobados con Gestión → Beneficiarios finales, con el segundo portafolio, y tickets independientes; y tickets internos/originados por cliente. Una solicitud ficticia se seleccionó en el portal interno para validar M20 y su estado resultó aprobado:
 
 - `Quipu consulta de beneficiarios`: cero tareas persistidas; sugerencias visibles no cuentan.
 - `Quipu validación de RUC con guion`: sugerencias aceptadas (3 tareas persistidas).
@@ -70,7 +71,7 @@ Los títulos estables de los 23 casos están definidos en el script y comienzan 
 - `Histórico con checklist previo`: filas antiguas preservadas; su procedencia ambigua no se infiere ni reclasifica.
 - Solicitudes pendientes y rechazadas: no tienen proyecto/tarjeta; no inventar relación.
 
-La semilla crea 5 asignaciones internas de trabajo (developer, admin, superadmin, analista1, analista2), más viewer/inactivo/external para permisos. El fixture UI reducido de `fixture-server.mjs` es únicamente demostrativo de render y contiene cuatro perfiles internos; no sustituye este dataset de backend.
+La semilla crea 5 asignaciones internas de trabajo (developer, admin, superadmin, analista1, analista2), más viewer/inactivo/external para permisos. El fixture UI reducido de `fixture-server.mjs` es únicamente demostrativo de render y contiene cuatro perfiles internos; no sustituye este dataset de backend. El gateway local simula Auth y el login de proveedores; `client_open_session`, listados, detalle, tablas y RLS se ejecutan sobre PostgreSQL local real.
 
 ## Adjuntos
 
@@ -78,8 +79,8 @@ La semilla PG reserva metadatos ficticios para `qa-ficticio-captura.png` (2 KiB)
 
 ## Contrato de uso para Claude
 
-1. Consumir `tests/ui/qa-dataset.json` como snapshot generado por la semilla PG, o los nombres/IDs estables de este contrato para componentes independientes.
+1. Consumir `tests/ui/qa-dataset.json` como snapshot generado por la semilla PG; UUID de portafolios, proyectos, solicitudes y áreas se obtienen de ese archivo para esa instancia. Los nombres/IDs estables de actores aplican a pruebas independientes. En el browser conectado al gateway local, el catálogo viene de PostgreSQL y sus nombres de estudio/área también están anonimizados.
 2. No crear un dataset divergente ni cambiar títulos, roles, fases, prioridades o asociaciones aquí definidos sin actualizar este archivo y comunicarlo.
-3. Las credenciales de navegador son únicamente `@simulado.invalid` / `clave-simulada` contra `fixture-server.mjs`. No usar proveedores Quipu/QuipuFac reales.
+3. Para capturas de UI simuladas se usan `@simulado.invalid` / `clave-simulada` contra `fixture-server.mjs`. Para la UI conectada al gateway QA persistente también se usan RUC sintéticos de este contrato y la misma clave de prueba; el proveedor se simula, pero `client_open_session`, listados, detalle, tablas y RLS pasan por PostgreSQL real. No usar proveedores ni cuentas reales.
 4. No mostrar secretos ni datos reales en capturas. Rotular/identificar las vistas con `QA-FICTICIO`.
 5. Al informar evidencia, separar PostgreSQL real local, harness Auth/Storage simulado y UI con REST simulado.

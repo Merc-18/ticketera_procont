@@ -1,0 +1,96 @@
+{
+  "dataset": "QA-FICTICIO",
+  "screenshots": [
+    {
+      "file": "postgres-boards.png",
+      "bytes": 336986,
+      "sha256": "37c8a3a3c926047b700ab0bfe4aab5792bbe2f9758f1b188632f9aa71977367d",
+      "build": "202611250959",
+      "source": "Vite + Chromium; PostgreSQL 17 local QA; Auth/proveedor simulado"
+    },
+    {
+      "file": "postgres-dashboard.png",
+      "bytes": 224373,
+      "sha256": "88a983cbca0ffc6dfc0737bc337a9df66318b81652f8612b16bade47701b2a12",
+      "build": "202611250959",
+      "source": "Vite + Chromium; PostgreSQL 17 local QA; Auth/proveedor simulado"
+    },
+    {
+      "file": "postgres-m20-board-card.png",
+      "bytes": 336779,
+      "sha256": "7c9221c9c72277aa290f261154c97ab2d606616a830d2ab7d493e90af1b48b3a",
+      "build": "202611250959",
+      "source": "Vite + Chromium; PostgreSQL 17 local QA; Auth/proveedor simulado"
+    },
+    {
+      "file": "postgres-m20-validation.png",
+      "bytes": 270549,
+      "sha256": "ec970b77e79b68c441496e60355b9bafa1b135465e6f4be1b941e648cc9c2730",
+      "build": "202611250959",
+      "source": "Vite + Chromium; PostgreSQL 17 local QA; Auth/proveedor simulado"
+    },
+    {
+      "file": "postgres-quipu-my-tickets-mobile.png",
+      "bytes": 201676,
+      "sha256": "0921233b0b6ab47b71f7bf16d758861c423b119f2ec811defe9e64aed1182ead",
+      "build": "202611250959",
+      "source": "Vite + Chromium; PostgreSQL 17 local QA; Auth/proveedor simulado"
+    },
+    {
+      "file": "postgres-quipu-ticket-detail-mobile.png",
+      "bytes": 63080,
+      "sha256": "85a4a4872a9528497a59a104522898cd78f0e6c74131aa1c57d9c113d8993280",
+      "build": "202611250959",
+      "source": "Vite + Chromium; PostgreSQL 17 local QA; Auth/proveedor simulado"
+    },
+    {
+      "file": "postgres-quipufac-my-tickets-mobile.png",
+      "bytes": 207976,
+      "sha256": "aca5bba385eb79dc61a33abf6eb2d403dbcc8fa64e88d2c2aac9e321fe454114",
+      "build": "202611250959",
+      "source": "Vite + Chromium; PostgreSQL 17 local QA; Auth/proveedor simulado"
+    },
+    {
+      "file": "postgres-quipufac-ticket-detail-mobile.png",
+      "bytes": 64789,
+      "sha256": "0086ff6383a71ac95b6a6c620fda799c2dc2377ac9eaebfe995b41049bd1b3c2",
+      "build": "202611250959",
+      "source": "Vite + Chromium; PostgreSQL 17 local QA; Auth/proveedor simulado"
+    },
+    {
+      "file": "postgres-request-inbox.png",
+      "bytes": 154996,
+      "sha256": "1cedc32b7dadd20d861c223abdf13d0f5faa2676074f1f639af5bca551651af7",
+      "build": "202611250959",
+      "source": "Vite + Chromium; PostgreSQL 17 local QA; Auth/proveedor simulado"
+    },
+    {
+      "file": "postgres-table.png",
+      "bytes": 453812,
+      "sha256": "18e1ca5f11751077887390b5f401b6e0c726631253103f17410247e719400808",
+      "build": "202611250959",
+      "source": "Vite + Chromium; PostgreSQL 17 local QA; Auth/proveedor simulado"
+    },
+    {
+      "file": "postgres-team-portfolios.png",
+      "bytes": 107284,
+      "sha256": "0885cd41fb1671d2281ecdde648a98acf3b12f33c2093998d2f51e7edd6a4ed7",
+      "build": "202611250959",
+      "source": "Vite + Chromium; PostgreSQL 17 local QA; Auth/proveedor simulado"
+    },
+    {
+      "file": "postgres-team-users.png",
+      "bytes": 176925,
+      "sha256": "c01ab385af1807dfd1592048a84876dadc3b8460467cf8801cbbdb88304bb757",
+      "build": "202611250959",
+      "source": "Vite + Chromium; PostgreSQL 17 local QA; Auth/proveedor simulado"
+    },
+    {
+      "file": "postgres-team-workload.png",
+      "bytes": 145076,
+      "sha256": "304b06da2a816b524bc8cda762f7962261bb7fec874d638418c9a9c2096e7c9a",
+      "build": "202611250959",
+      "source": "Vite + Chromium; PostgreSQL 17 local QA; Auth/proveedor simulado"
+    }
+  ]
+}
