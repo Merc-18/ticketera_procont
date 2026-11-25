@@ -163,8 +163,8 @@ export default function TableView({ projects, boardType, onProjectClick, loading
               const owner = ownerClass(ownerColors, flow?.assigned_to)
               const assignee = flow?.assigned_to ? users.find(u => u.id === flow.assigned_to) : undefined
               const isOverdue = project.due_date && project.due_date < today && project.status === 'active'
-              const portfolioName = portfolios.portfolios.find(x => x.id === project.portfolio_id)?.name
-              const initiativeName = portfolios.initiatives.find(x => x.id === project.initiative_id)?.name
+              const portfolioName = portfolios.portfolios.find(x => x.id === project.portfolio_id)?.name ?? (project.portfolio_id ? 'Portafolio no disponible' : null)
+              const initiativeName = portfolios.initiatives.find(x => x.id === project.initiative_id)?.name ?? (project.initiative_id ? 'Proyecto no disponible' : null)
               return (
                 <tr
                   key={project.id}
@@ -246,7 +246,7 @@ export default function TableView({ projects, boardType, onProjectClick, loading
       <div className="px-4 py-2 bg-gray-50 border-t text-xs text-gray-500 flex items-center justify-between">
         <span>{sorted.length} proyecto{sorted.length !== 1 ? 's' : ''}</span>
         <button
-          onClick={() => exportTableCSV(sorted, procontCodeId, { portfolio: id => portfolios.portfolios.find(x => x.id === id)?.name ?? 'Sin portafolio', project: id => portfolios.initiatives.find(x => x.id === id)?.name ?? '' })}
+          onClick={() => exportTableCSV(sorted, procontCodeId, { portfolio: id => portfolios.portfolios.find(x => x.id === id)?.name ?? (id ? 'Portafolio no disponible' : 'Sin portafolio'), project: id => portfolios.initiatives.find(x => x.id === id)?.name ?? (id ? 'Proyecto no disponible' : '') })}
           className="ui-button ui-button-secondary"
         >
           <ControlLabel icon="download">Exportar CSV</ControlLabel>
