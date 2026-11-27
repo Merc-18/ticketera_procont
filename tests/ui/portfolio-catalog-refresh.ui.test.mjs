@@ -100,13 +100,13 @@ test('shared portfolio catalog refreshes, recovers, preserves filters and cleans
     await page.goto(base + '/portal')
     await enterBoards()
     await waitCounts({ portfolios: 1, initiatives: 1 })
-    const label = page.locator('.card-tag-portfolio').filter({ hasText: 'Gestión' }).first()
+    const label = page.locator('.card-project-line').filter({ hasText: 'Beneficiarios finales' }).first()
     await label.waitFor()
 
     // One pair of REST reads is shared by the Board and its many ProjectCard subscribers.
     catalogs.portfolios = [{ ...catalogs.portfolios[0], name: 'Gestión renovada' }]
     await page.clock.fastForward(30_000)
-    await page.getByText('Gestión renovada', { exact: true }).first().waitFor()
+    await page.locator('.board-toolbar option').filter({ hasText: 'Gestión renovada' }).first().waitFor({ state: 'attached' })
     assert.deepEqual(counts, { portfolios: 2, initiatives: 2 }, '30-second refresh is a single shared pair of queries')
 
     // Hidden tabs pause interval polling; focus + visibility wakeup coalesce into one pair.
@@ -122,18 +122,18 @@ test('shared portfolio catalog refreshes, recovers, preserves filters and cleans
       window.dispatchEvent(new Event('focus'))
       document.dispatchEvent(new Event('visibilitychange'))
     })
-    await page.getByText('Gestión al volver', { exact: true }).first().waitFor()
+    await page.locator('.board-toolbar option').filter({ hasText: 'Gestión al volver' }).first().waitFor({ state: 'attached' })
     assert.deepEqual(counts, { portfolios: 3, initiatives: 3 }, 'focus and visibilitychange do not duplicate the shared read')
 
     // A transient network failure preserves the last good catalog; the next focus recovers.
     failures.portfolios = true
     await forceRefresh()
     await waitCounts({ portfolios: 4, initiatives: 4 })
-    await page.getByText('Gestión al volver', { exact: true }).first().waitFor()
+    await page.locator('.board-toolbar option').filter({ hasText: 'Gestión al volver' }).first().waitFor({ state: 'attached' })
     failures.portfolios = false
     catalogs.portfolios = [{ ...catalogs.portfolios[0], name: 'Gestión recuperada' }]
     await forceRefresh()
-    await page.getByText('Gestión recuperada', { exact: true }).first().waitFor()
+    await page.locator('.board-toolbar option').filter({ hasText: 'Gestión recuperada' }).first().waitFor({ state: 'attached' })
     assert.deepEqual(counts, { portfolios: 5, initiatives: 5 }, 'recovery performs one pair of reads and updates labels')
 
     await page.getByRole('button', { name: 'Cerrar Sesión' }).click()

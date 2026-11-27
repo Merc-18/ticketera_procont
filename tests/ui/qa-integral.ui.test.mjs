@@ -181,10 +181,11 @@ test('Permisos: developer y viewer consultan Equipo; viewer no ve pestañas ni a
   }
 })
 
-test('Tarjetas: título principal, cuatro niveles, REQ y responsable separados; Kanban y Tabla coinciden', async () => {
+test('Tarjetas compactas: proyecto y responsables; metadatos completos conservados en Tabla', async () => {
   const page = await open()
   await toBoards(page)
   const cards = await page.locator('.project-card').evaluateAll(els => els.map(el => ({
+    id: el.dataset.ticketId,
     order: [...el.querySelectorAll('.card-hierarchy, .card-title')].map(n => n.className.includes('card-title') ? 'title' : 'hierarchy'),
     portfolio: el.querySelector('.card-tag-portfolio')?.textContent?.trim() ?? null,
     project: el.querySelector('.card-tag-project')?.textContent?.trim() ?? null,
@@ -197,12 +198,11 @@ test('Tarjetas: título principal, cuatro niveles, REQ y responsable separados; 
   assert.equal(cards.length, active.length)
   for (const c of cards) {
     assert.deepEqual(c.order, ['title', 'hierarchy'], `${c.title}: título principal antes de la jerarquía`)
-    const p = active.find(x => (x.project_number ?? 'Interno') === c.number && x.title === c.title)
+    const p = active.find(x => x.id === c.id)
     assert.ok(p, `tarjeta conocida ${c.title}`)
-    const pf = QA.portfolios.find(x => x.id === p.portfolio_id)?.name ?? 'Sin portafolio'
     const ini = QA.portfolio_initiatives.find(x => x.id === p.initiative_id)?.name ?? 'Sin proyecto específico'
-    assert.equal(c.portfolio, pf); assert.equal(c.project, ini); assert.equal(c.none, !p.portfolio_id)
-    assert.equal(c.number, p.project_number ?? 'Interno')
+    assert.equal(c.portfolio, null); assert.equal(c.project, ini); assert.equal(c.none, false)
+    assert.equal(c.number, undefined)
     assert.equal(await page.locator('.project-card .card-requester').count(), 0, 'no añadir un campo de solicitante a las tarjetas')
     for (const f of p.project_flows ?? []) { const u = QA.users.find(u => u.id === f.assigned_to); if (u) assert.ok(c.text.includes(u.full_name), `${c.title}: responsable visible`) }
   }
@@ -217,8 +217,12 @@ test('Tarjetas: título principal, cuatro niveles, REQ y responsable separados; 
     number: tr.querySelector('.card-number')?.textContent?.trim(), title: tr.querySelector('[title]')?.getAttribute('title') })))
   assert.equal(rows.length, cards.length)
   for (const r of rows) {
-    const c = cards.find(x => x.title === r.title && x.number === r.number)
-    assert.deepEqual([r.portfolio, r.project, r.number], [c.portfolio, c.project, c.number], `${r.title}: Kanban = Tabla`)
+    const p = active.find(x => x.title === r.title && (x.project_number ?? 'Interno') === r.number)
+    const c = cards.find(x => x.id === p.id)
+    const pf = QA.portfolios.find(x => x.id === p.portfolio_id)?.name ?? 'Sin portafolio'
+    assert.equal(r.project, c.project, `${r.title}: mismo proyecto en Kanban/Tabla`)
+    assert.equal(r.portfolio, pf, 'Tabla conserva portafolio')
+    assert.equal(r.number, p.project_number ?? 'Interno', 'Tabla conserva identificador')
   }
   assert.deepEqual(page.errors, [])
   await page.context().close()

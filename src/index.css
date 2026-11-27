@@ -804,7 +804,7 @@ main p.attachment-error, .attachment-error { font-size: 14px; color: var(--dange
 }
 
 /* ─── Equipo, jerarquía de tarjetas, prioridad y progreso (24/11/2026) ─────────────────────────────────────── */
-/* Tarjeta: Portafolio → Proyecto como primeras etiquetas; REQ al pie como metadato secundario. */
+/* Jerarquía completa para detalle y vistas administrativas. */
 .card-hierarchy { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; min-width: 0; padding-right: 28px; font-size: 12px; line-height: 18px; }
 .card-tag { display: inline-flex; align-items: center; gap: 4px; min-width: 0; max-width: 100%; padding: 1px 6px; border-radius: 4px; font-weight: 500; border: 1px solid transparent; }
 .card-tag .truncate { min-width: 0; }
@@ -967,26 +967,19 @@ html:not([data-input=keyboard]) .dashboard-export-menu { transition: opacity 150
 /* Contador «N tickets» del portafolio: nunca partido en dos líneas. */
 .portfolio-count { white-space: nowrap; }
 
-/* Tickets: full relationship names and independent rows prevent footer collisions at any width. */
+/* Detalle: nombres completos. Las tarjetas usan la presentación compacta definida al final. */
 .project-card { min-width: 0; }
-.project-card .card-number-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 28px; }
-.project-card .card-select { position: static; display: flex; padding: 2px; }
-.project-card .card-title { font-size: 16px; line-height: 1.45; font-weight: 650; overflow-wrap: anywhere; }
 .ticket-hierarchy.card-hierarchy { display: grid; grid-template-columns: minmax(0, 1fr); gap: 5px; padding: 0; margin: 2px 0; }
 .ticket-hierarchy .hierarchy-item { display: grid; grid-template-columns: 74px minmax(0, 1fr); align-items: start; gap: 6px; min-width: 0; }
 .ticket-hierarchy dt { color: var(--p-muted); font-size: 12px; line-height: 20px; padding-top: 2px; }
 .ticket-hierarchy dd.card-tag { display: block; white-space: normal; overflow: visible; overflow-wrap: anywhere; font-size: 13px; line-height: 1.5; min-width: 0; max-width: 100%; }
 .card-tag-product, .card-tag-subproduct { color: var(--p-ink-2); background: var(--p-alt); }
-.project-card-footer { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; padding-top: 10px; }
 .ticket-age { color: var(--p-muted); font-size: 13px; line-height: 1.5; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
-.project-card .card-progress { display: flex; width: 100%; min-width: 0; gap: 8px; }
 .card-progress-caption { flex-shrink: 0; font-size: 12px; }
-.project-card .card-progress-track { flex: 1 1 44px; min-width: 20px; width: auto; }
 .project-card .card-progress-label { flex-shrink: 0; min-width: 32px; justify-content: flex-end; }
 .project-card .card-owner { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px; justify-content: normal; }
 .project-card .card-avatars { display: grid; gap: 6px; min-width: 0; }
 .card-assignee { display: flex; align-items: center; gap: 8px; min-width: 0; }
-.project-card .card-owner-name { font-size: 13px; line-height: 1.4; max-width: none; min-width: 0; white-space: normal; overflow: visible; overflow-wrap: anywhere; }
 .project-card .assign-toggle { margin: 0; }
 .project-card .assign-menu { min-width: min(220px, 65vw); max-width: min(240px, 70vw); }
 .project-card .assign-menu button { white-space: normal; overflow-wrap: anywhere; }
@@ -999,3 +992,33 @@ html:not([data-input=keyboard]) .dashboard-export-menu { transition: opacity 150
 .board-filter-group { flex: 1 1 900px; max-width: 100%; }
 .board-filter-group > .toolbar-field { min-width: 0; flex: 1 1 140px; }
 .board-filter-group .toolbar-select { width: 100%; min-width: 0; max-width: 100%; }
+
+/* Tarjeta compacta: Producto · Subproducto / Proyecto. Portafolio permanece en el detalle. */
+.project-card { padding: 10px 12px; gap: 5px; min-height: 0; }
+.project-card.has-owner, :root[data-theme="dark"] .board-column .project-card.has-owner { padding-left: 14px; }
+.project-card .card-title-row { display: flex; align-items: flex-start; gap: 4px; min-width: 0; }
+.project-card .card-title { display: flex; align-items: flex-start; gap: 5px; flex: 1; min-width: 0; font-size: 15px; line-height: 21px; font-weight: 650; }
+.project-card .card-title-text { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; }
+.project-card .card-select { position: static; flex: 0 0 44px; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; cursor: pointer; }
+.project-card .card-blocked { display: inline-flex; flex-shrink: 0; padding: 2px 0; margin: 0; background: none; }
+.project-card .card-blocked svg { margin: 0; }
+.card-hierarchy.card-hierarchy-compact { display: grid; gap: 2px; padding: 0; margin: 0; min-width: 0; }
+.card-hierarchy-compact .card-product-line, .card-hierarchy-compact .card-project-line { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; line-height: 20px; color: var(--p-ink-2); }
+.card-hierarchy-compact .card-product-line { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 3px; }
+.card-hierarchy-compact .card-tag-product, .card-hierarchy-compact .card-tag-subproduct { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.card-hierarchy-compact .card-tag-product, .card-hierarchy-compact .card-tag-subproduct, .card-hierarchy-compact .card-tag-project { background: none; border: 0; padding: 0; }
+.project-card .card-status-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; min-width: 0; }
+.project-card .card-status-row .ticket-age { font-size: 12px; white-space: nowrap; }
+.project-card .card-priority { font-size: 12px; line-height: 20px; padding: 0 5px; flex-shrink: 0; }
+.project-card .project-card-footer { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; min-height: 44px; margin: 0; padding-top: 4px; }
+.project-card .card-progress { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; flex: 0 0 60px; gap: 5px; width: auto; min-width: 0; }
+.project-card .card-progress-track { width: 100%; min-width: 0; height: 4px; }
+.project-card .card-progress-label { min-width: 0; font-size: 12px; }
+.project-card .card-owner { flex: 1 1 150px; gap: 4px; }
+.project-card .card-assignee { gap: 5px; }
+.project-card .card-owner-name { max-width: none; min-width: 0; font-size: 13px; line-height: 20px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.project-card .card-avatars { gap: 2px; }
+.project-card .card-unassigned { min-width: 0; gap: 5px; }
+.project-card .card-unassigned > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.project-card .card-avatar-empty { flex-shrink: 0; }
+.project-card .assign-toggle { flex-shrink: 0; width: 44px; height: 44px; min-height: 44px; margin: 0; }

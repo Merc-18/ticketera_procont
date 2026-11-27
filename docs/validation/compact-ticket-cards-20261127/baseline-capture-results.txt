@@ -1,0 +1,19 @@
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✔ before compact cards light 320px: active, completed, archived (1895.829056ms)
+✔ before compact cards light 390px: active, completed, archived (990.670551ms)
+✔ before compact cards light 834px: active, completed, archived (889.855603ms)
+✔ before compact cards light 1440px: active, completed, archived (916.610665ms)
+✔ before compact cards dark 320px: active, completed, archived (784.19611ms)
+✔ before compact cards dark 390px: active, completed, archived (814.183408ms)
+✔ before compact cards dark 834px: active, completed, archived (818.078345ms)
+✔ before compact cards dark 1440px: active, completed, archived (871.157596ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8370.227088

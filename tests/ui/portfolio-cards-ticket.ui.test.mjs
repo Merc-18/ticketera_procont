@@ -112,7 +112,7 @@ for (const theme of ['light', 'dark']) {
       if (!await card.count()) continue
       const bg = await css(card, 'background-color'); tints.push(bg)
       assert.notEqual(bg, neutral, `${color}: tinte distinto del neutro`)
-      for (const sel of ['.card-title', '.card-number', '.card-tag-portfolio', '.card-tag-project']) {
+      for (const sel of ['.card-title', '.card-product-line', '.card-project-line', '.card-owner-name']) {
         if (!await card.locator(sel).count()) continue
         const r = await contrast(page, await css(card.locator(sel).first(), 'color'), bg)
         assert.ok(r >= 4.5, `${theme} ${color} ${sel}: ${r.toFixed(2)}:1`)
@@ -140,11 +140,12 @@ for (const theme of ['light', 'dark']) {
 }
 
 // ─────────────────────────────── PORTAFOLIO ───────────────────────────────
-test('Portafolio: chip en la tarjeta, filtro por portafolio/iniciativa, columna en Tabla y búsqueda', async () => {
+test('Portafolio: ausente en tarjeta, filtros administrativos, Tabla y búsqueda conservados', async () => {
   const page = await open()
   const cards = await page.locator('.project-card').evaluateAll(els => els.map(el => ({ portfolio: el.querySelector('.card-tag-portfolio')?.textContent?.trim() ?? null, project: el.querySelector('.card-tag-project')?.textContent?.trim() ?? null })))
-  assert.ok(cards.some(x => x.portfolio === 'Gestión' && x.project === 'Beneficiarios finales'))
-  assert.ok(cards.some(x => x.portfolio === 'Operaciones' && x.project === 'Sin proyecto específico'))
+  assert.ok(cards.every(x => x.portfolio === null), 'el portafolio no se renderiza en tarjetas')
+  assert.ok(cards.some(x => x.project === 'Beneficiarios finales'))
+  assert.ok(cards.some(x => x.project === 'Sin proyecto específico'))
   const filter = page.locator('.board-toolbar label').filter({ hasText: /^Portafolio/ }).locator('select')
   await filter.selectOption(`i:${BENEF}`)
   assert.equal(await page.locator('.project-card').count(), 2)

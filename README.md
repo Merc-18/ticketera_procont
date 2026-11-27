@@ -2,7 +2,7 @@
 
 Mesa de solicitudes de Procont Business: recepción autenticada de clientes Quipu/QuipuFac, validación interna, trabajo Development de ocho fases, historial, evidencias y métricas basadas en eventos.
 
-Los tickets no vencen: su antigüedad se calcula desde la creación en tablero con días civiles de Lima. La jerarquía visible es Producto → Subproducto → Portafolio → Proyecto → Ticket → Checklist, con relaciones reales y datos por ticket. [Corrección funcional y evidencia](docs/validation/ticket-age-hierarchy-20261127/REPORT.md).
+Los tickets no vencen: su antigüedad se calcula desde la creación en tablero con días civiles de Lima. Las tarjetas compactas muestran Producto → Subproducto → Proyecto; portafolio y otros metadatos siguen disponibles en el detalle y la administración, con relaciones reales y datos independientes por ticket. [Simplificación y evidencia](docs/validation/compact-ticket-cards-20261127/REPORT.md).
 
 Revisión: **27/11/2026** · Base funcional: **`406a46351411fdf845a73a811cb798b7964617b1`** · **22 migraciones** confirmadas · Vercel **SUCCESS** para ese commit.
 
