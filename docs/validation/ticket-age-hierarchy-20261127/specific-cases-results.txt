@@ -1,0 +1,19 @@
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✔ after light desktop: hierarchy, checklist, ownership and neutral age (1972.029976ms)
+✔ after light tablet: hierarchy, checklist, ownership and neutral age (1041.848139ms)
+✔ after light mobile: hierarchy, checklist, ownership and neutral age (979.530951ms)
+✔ after dark desktop: hierarchy, checklist, ownership and neutral age (1001.710625ms)
+✔ after dark tablet: hierarchy, checklist, ownership and neutral age (1002.403274ms)
+✔ after dark mobile: hierarchy, checklist, ownership and neutral age (913.276874ms)
+✔ Cross-view hierarchy, real creation age and deadline-free export/form (2446.504832ms)
+✔ Completed and archived cards preserve full hierarchy, owner and own checklist (877.336928ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10623.580645

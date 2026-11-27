@@ -1,3 +1,5 @@
+import TicketHierarchy from '../boards/TicketHierarchy'
+import TicketAge from '../boards/TicketAge'
 import ControlLabel from '../ui/ControlLabel'
 import Icon, { type IconName } from '../ui/Icon'
 import ModalFocus from '../ui/ModalFocus'
@@ -27,12 +29,12 @@ import PrioritySelect from '../ui/PrioritySelect'
 import { choiceFromProject, choiceIds, setProjectPortfolio, usePortfolios, validateChoice, type PortfolioChoice } from '../../lib/portfolios'
 
 interface Props {
-  project: Project & { requests?: { requester_area: string; requester_name: string; request_type: string; studio_code_id?: string | null; area_id?: string | null } | null }
+  project: Project & { requests?: { requester_area: string; requester_name: string; request_type: string; system_id?: string | null; subsystem_id?: string | null; requested_subsystem_id?: string | null; studio_code_id?: string | null; area_id?: string | null } | null }
   flows: ProjectFlow[]
   onClose: () => void
   /** Recarga la lista del tablero tras una operación. */
   onUpdate?: () => void
-  updateProject: (id: string, updates: Pick<Partial<Project>, 'title' | 'description' | 'start_date' | 'due_date'>) => Promise<void>
+  updateProject: (id: string, updates: Pick<Partial<Project>, 'title' | 'description'>) => Promise<void>
 }
 
 type Tab = 'details' | 'checklist' | 'comments' | 'evidence' | 'history'
@@ -111,7 +113,7 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
   const [editMode, setEditMode] = useState(false)
   const [assignDraft, setAssignDraft] = useState<Record<string, string>>({})
   const blank = () => ({
-    title: project.title, description: project.description, start_date: project.start_date ?? '', due_date: project.due_date ?? '',
+    title: project.title, description: project.description,
     requester_area: project.requests?.requester_area ?? '', requester_name: project.requests?.requester_name ?? '',
   })
   const [editData, setEditData] = useState(blank)
@@ -149,8 +151,7 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
   const handleSaveEdit = async () => {
     setBusy(true)
     try {
-      await updateProject(project.id, { title: editData.title.trim(), description: editData.description,
-        start_date: editData.start_date || null, due_date: editData.due_date || null })
+      await updateProject(project.id, { title: editData.title.trim(), description: editData.description })
       const areaChanged = editData.requester_area !== (project.requests?.requester_area ?? '')
       const nameChanged = editData.requester_name !== (project.requests?.requester_name ?? '')
       if ((areaChanged || nameChanged) && project.request_id) {
@@ -253,22 +254,11 @@ export default function ProjectModal({ project, onClose, onUpdate, updateProject
                 ) : <p className="text-gray-700 whitespace-pre-wrap break-words">{project.description}</p>}
               </div>
 
-              {editMode ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {(['start_date', 'due_date'] as const).map(k => (
-                    <label key={k} className="text-sm">
-                      <span className="block font-semibold text-gray-900 mb-1">{k === 'start_date' ? 'Fecha de inicio' : 'Fecha objetivo (opcional)'}</span>
-                      <input type="date" value={editData[k]} onChange={e => setEditData(p => ({ ...p, [k]: e.target.value }))}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary" />
-                    </label>
-                  ))}
-                </div>
-              ) : (project.start_date || project.due_date) ? (
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  {project.start_date && <div><p className="text-gray-600">Inicio</p><p className="font-medium text-gray-900">{new Date(project.start_date + 'T00:00:00').toLocaleDateString('es-PE')}</p></div>}
-                  {project.due_date && <div><p className="text-gray-600">Fecha objetivo</p><p className="font-medium text-gray-900">{new Date(project.due_date + 'T00:00:00').toLocaleDateString('es-PE')}</p></div>}
-                </div>
-              ) : null}
+              <div><p className="text-sm text-gray-600">Creado en el tablero (Lima)</p>
+                <p className="text-gray-900">{new Date(project.created_at).toLocaleString('es-PE', { timeZone: 'America/Lima' })}</p>
+                <TicketAge createdAt={project.created_at} />
+              </div>
+              <TicketHierarchy ticket={project} products={catalogs} className="detail-hierarchy" />
 
               {/* Portafolio → Proyecto/Iniciativa: selección dependiente; set_project_portfolio la valida y la audita. */}
               <div>

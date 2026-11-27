@@ -8,7 +8,9 @@ import { averageLabel, type MetricResult, type TimeAverages } from '../../lib/me
 import Icon from '../ui/Icon'
 import ControlLabel from '../ui/ControlLabel'
 import { readVerifiedPages } from '../../lib/verified-pagination'
-import { isOverdueDate, limaToday } from '../../lib/workload-dates'
+import { averageTicketAge } from '../../lib/ticket-age'
+import { useLimaDay } from '../../hooks/useLimaDay'
+import TicketAge from '../boards/TicketAge'
 
 interface FlowRow {
   id: string
@@ -16,18 +18,19 @@ interface FlowRow {
   flow_type: 'development' | 'administrative'
   current_phase: string
   project_id: string
-  projects: { id: string; title: string; priority: 'low' | 'medium' | 'high' | 'urgent'; status: string; is_blocked: boolean; project_number: string | null; due_date: string | null } | null
+  projects: { id: string; title: string; priority: 'low' | 'medium' | 'high' | 'urgent'; status: string; is_blocked: boolean; project_number: string | null; created_at: string } | null
 }
 interface Ticket { project: NonNullable<FlowRow['projects']>; phases: string[] }
-interface Load { assigned: Ticket[]; active: Ticket[]; inProgress: number; pending: number; blocked: number; overdue: number; completed: number; archived: number }
+interface Load { assigned: Ticket[]; active: Ticket[]; inProgress: number; pending: number; blocked: number; averageAgeDays: number | null; completed: number; archived: number }
 
 /**
  * Equipo › Carga de trabajo (24/11/2026). Datos reales de los flujos con responsable principal: cada ticket cuenta
  * una vez por persona. En curso = activos fuera de Backlog; Pendientes = activos en Backlog;
- * Vencidos = activos con fecha objetivo anterior al día actual de Lima. Sin métricas inventadas; los tiempos medios vienen del
+ * Antigüedad = días civiles de Lima desde la creación de cada ticket en el tablero. Sin métricas inventadas; los tiempos medios vienen del
  * servidor (metrics_time_averages). Solicitantes de clientes no aparecen: solo usuarios internos.
  */
 export default function WorkloadView() {
+  const today = useLimaDay()
   const { users, loading: usersLoading, error: usersError, reload: reloadUsers } = useUsers()
   const ownerColors = useOwnerColors()
   const [flows, setFlows] = useState<FlowRow[]>([])
@@ -40,7 +43,7 @@ export default function WorkloadView() {
     setFlowsLoading(true); setFlows([]); setError(null)
     try {
       const data = await readVerifiedPages((from, to) => supabase.from('project_flows')
-        .select('id, assigned_to, flow_type, current_phase, project_id, projects!inner ( id, title, priority, status, is_blocked, project_number, due_date )', { count: 'exact' })
+        .select('id, assigned_to, flow_type, current_phase, project_id, projects!inner ( id, title, priority, status, is_blocked, project_number, created_at )', { count: 'exact' })
         .in('projects.status', ['active', 'completed', 'archived']).order('id', { ascending: true }).range(from, to))
       setFlows(data as unknown as FlowRow[])
     } catch { setError('No se pudo cargar la carga de trabajo.') }
@@ -80,14 +83,13 @@ export default function WorkloadView() {
     tickets.set(f.project_id, t)
     byUser.set(f.assigned_to, tickets)
   }
-  const today = limaToday()
   const loadOf = (userId: string): Load => {
     const assigned = [...(byUser.get(userId)?.values() ?? [])]
     const active = assigned.filter(t => t.project.status === 'active')
     return { assigned, active, inProgress: active.filter(t => t.phases.some(p => p !== 'backlog')).length,
       pending: active.filter(t => t.phases.every(p => p === 'backlog')).length,
       blocked: active.filter(t => t.project.is_blocked).length,
-      overdue: active.filter(t => isOverdueDate(t.project.due_date, today)).length,
+      averageAgeDays: averageTicketAge(active.map(t => t.project), today),
       completed: assigned.filter(t => t.project.status === 'completed').length,
       archived: assigned.filter(t => t.project.status === 'archived').length }
   }
@@ -122,7 +124,7 @@ export default function WorkloadView() {
               <tr>
                 <th scope="col">Miembro</th><th scope="col">Color personal</th>
                 <th scope="col" className="num">Asignados</th><th scope="col" className="num">Activos</th><th scope="col" className="num">En curso</th>
-                <th scope="col" className="num">Pendientes</th><th scope="col" className="num">Bloqueados</th><th scope="col" className="num">Vencidos</th>
+                <th scope="col" className="num">Pendientes</th><th scope="col" className="num">Bloqueados</th><th scope="col" className="num">Antigüedad media</th>
                 <th scope="col" className="num">Completados</th><th scope="col" className="num">Archivados</th>
                 <th scope="col"><span className="sr-only">Detalle</span></th>
               </tr>
@@ -142,7 +144,7 @@ export default function WorkloadView() {
                     </th>
                     <td>{color ? <span className="workload-color"><span className={`owner-swatch owner-${color}`} aria-hidden="true" />{ownerColorLabel(color)}</span> : <span className="text-gray-500">Sin color</span>}</td>
                     <td className="num">{l.assigned.length}</td><td className="num">{l.active.length}</td><td className="num">{l.inProgress}</td><td className="num">{l.pending}</td>
-                    <td className={`num ${l.blocked ? 'is-alert' : ''}`}>{l.blocked}</td><td className={`num ${l.overdue ? 'is-alert' : ''}`}>{l.overdue}</td>
+                    <td className={`num ${l.blocked ? 'is-alert' : ''}`}>{l.blocked}</td><td className="num">{l.averageAgeDays === null ? '—' : `${l.averageAgeDays} días`}</td>
                     <td className="num">{l.completed}</td><td className="num">{l.archived}</td>
                     <td>{l.assigned.length > 0 && (
                       <button type="button" className="ui-button ui-button-quiet" aria-expanded={isOpen} onClick={() => setExpanded(isOpen ? null : user.id)}>
@@ -159,7 +161,7 @@ export default function WorkloadView() {
                             <span className={`prio-chip ${PRIORITY_COLORS[p.priority] ?? ''}`}>{PRIORITY_LABEL[p.priority] ?? p.priority}</span>
                             <span className="text-gray-600">{phases.map(ph => PHASE_LABELS[ph] ?? ph).join(' · ')}</span>
                             {p.is_blocked && <span className="status-badge is-blocked"><Icon name="block" size={12} />Bloqueado</span>}
-                            {p.status === 'active' && isOverdueDate(p.due_date, today) && <span className="status-badge is-overdue"><Icon name="alert" size={12} />Vencido</span>}
+                            <TicketAge createdAt={p.created_at} />
                             {p.status !== 'active' && <span className="text-xs text-gray-600">{p.status === 'completed' ? 'Completado' : 'Archivado'}</span>}
                           </li>
                         ))}
@@ -182,7 +184,7 @@ export default function WorkloadView() {
           const isOpen = expanded === user.id
           const metrics = [
             ['Asignados', l.assigned.length], ['Activos', l.active.length], ['En curso', l.inProgress], ['Pendientes', l.pending],
-            ['Bloqueados', l.blocked], ['Vencidos', l.overdue], ['Completados', l.completed], ['Archivados', l.archived],
+            ['Bloqueados', l.blocked], ['Antigüedad media', l.averageAgeDays === null ? '—' : `${l.averageAgeDays} días`], ['Completados', l.completed], ['Archivados', l.archived],
           ] as const
           return <article key={user.id} className="data-view p-4 space-y-3" aria-label={`Carga de ${user.full_name}`}>
             <div className="flex items-center justify-between gap-3">
@@ -196,7 +198,7 @@ export default function WorkloadView() {
             <dl className="grid grid-cols-2 gap-2">
               {metrics.map(([label, value]) => <div key={label} className="rounded-lg border bg-surface px-3 py-2">
                 <dt className="text-xs text-gray-600">{label}</dt>
-                <dd className={`mt-0.5 font-mono text-base tabular-nums ${(['Bloqueados', 'Vencidos'].includes(label) && value > 0) ? 'text-red-700' : 'text-gray-900'}`}>{value}</dd>
+                <dd className={`mt-0.5 font-mono text-base tabular-nums ${(label === 'Bloqueados' && typeof value === 'number' && value > 0) ? 'text-red-700' : 'text-gray-900'}`}>{value}</dd>
               </div>)}
             </dl>
             {l.assigned.length > 0 && <button type="button" className="ui-button ui-button-quiet w-full" aria-expanded={isOpen}
@@ -208,7 +210,7 @@ export default function WorkloadView() {
                 <span className={`prio-chip ${PRIORITY_COLORS[p.priority] ?? ''}`}>{PRIORITY_LABEL[p.priority] ?? p.priority}</span>
                 <span className="text-xs text-gray-600">{phases.map(ph => PHASE_LABELS[ph] ?? ph).join(' · ')}</span>
                 {p.is_blocked && <span className="status-badge is-blocked"><Icon name="block" size={12} />Bloqueado</span>}
-                {p.status === 'active' && isOverdueDate(p.due_date, today) && <span className="status-badge is-overdue"><Icon name="alert" size={12} />Vencido</span>}
+                <TicketAge createdAt={p.created_at} />
                 {p.status !== 'active' && <span className="text-xs text-gray-600">{p.status === 'completed' ? 'Completado' : 'Archivado'}</span>}
               </li>)}
             </ul>}

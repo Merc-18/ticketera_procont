@@ -68,7 +68,8 @@ export function useNotifications() {
     } catch (err) { setError(errorMessage(err)); throw err }
   }
 
-  const unreadCount = notifications.filter(n => !n.read).length
+  const visible = notifications.filter(n => n.type !== 'sla_warning')
+  const unreadCount = visible.filter(n => !n.read).length
 
-  return { error, notifications, loading, unreadCount, markAsRead, markAllAsRead }
+  return { error, notifications: visible, loading, unreadCount, markAsRead, markAllAsRead }
 }

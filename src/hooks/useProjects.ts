@@ -76,15 +76,15 @@ export function useProjects() {
   }
 
   /**
-   * Edición de datos descriptivos (título, descripción, fechas). Fase, responsable, prioridad,
+   * Edición de datos descriptivos (título y descripción). Fase, responsable, prioridad,
    * estado y bloqueo NO se escriben aquí: usan las RPC del tablero (lib/board.ts), que auditan
    * en el servidor. El navegador no inserta activity_logs ni notificaciones de estas operaciones.
    */
-  const updateProject = async (projectId: string, updates: Pick<Partial<Project>, 'title' | 'description' | 'start_date' | 'due_date'>) => {
+  const updateProject = async (projectId: string, updates: Pick<Partial<Project>, 'title' | 'description'>) => {
     try {
-      const { title, description, start_date, due_date } = updates
+      const { title, description } = updates
       requireData(await supabase.from('projects')
-        .update({ title, description, start_date, due_date, updated_at: new Date().toISOString() })
+        .update({ title, description, updated_at: new Date().toISOString() })
         .eq('id', projectId).select('id').single(), 'Proyecto')
     } finally {
       await loadProjects()

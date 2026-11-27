@@ -181,7 +181,7 @@ test('Permisos: developer y viewer consultan Equipo; viewer no ve pestañas ni a
   }
 })
 
-test('Tarjetas: Portafolio → Proyecto → título, REQ como metadato, sin solicitante ni nombres; Kanban y Tabla coinciden', async () => {
+test('Tarjetas: título principal, cuatro niveles, REQ y responsable separados; Kanban y Tabla coinciden', async () => {
   const page = await open()
   await toBoards(page)
   const cards = await page.locator('.project-card').evaluateAll(els => els.map(el => ({
@@ -196,15 +196,15 @@ test('Tarjetas: Portafolio → Proyecto → título, REQ como metadato, sin soli
   const active = QA.projects.filter(p => p.status === 'active')
   assert.equal(cards.length, active.length)
   for (const c of cards) {
-    assert.deepEqual(c.order, ['hierarchy', 'title'], `${c.title}: jerarquía antes del título`)
+    assert.deepEqual(c.order, ['title', 'hierarchy'], `${c.title}: título principal antes de la jerarquía`)
     const p = active.find(x => (x.project_number ?? 'Interno') === c.number && x.title === c.title)
     assert.ok(p, `tarjeta conocida ${c.title}`)
-    const pf = QA.portfolios.find(x => x.id === p.portfolio_id)?.name ?? null
-    const ini = QA.portfolio_initiatives.find(x => x.id === p.initiative_id)?.name ?? null
-    assert.equal(c.portfolio, pf); assert.equal(c.project, ini); assert.equal(c.none, !pf)
+    const pf = QA.portfolios.find(x => x.id === p.portfolio_id)?.name ?? 'Sin portafolio'
+    const ini = QA.portfolio_initiatives.find(x => x.id === p.initiative_id)?.name ?? 'Sin proyecto específico'
+    assert.equal(c.portfolio, pf); assert.equal(c.project, ini); assert.equal(c.none, !p.portfolio_id)
     assert.equal(c.number, p.project_number ?? 'Interno')
-    assert.ok(!c.text.includes(p.requests?.requester_name ?? '¬'), `${c.title}: sin solicitante`)
-    for (const u of QA.users) assert.ok(!c.text.includes(u.full_name), `${c.title}: sin nombre de persona`)
+    assert.equal(await page.locator('.project-card .card-requester').count(), 0, 'no añadir un campo de solicitante a las tarjetas')
+    for (const f of p.project_flows ?? []) { const u = QA.users.find(u => u.id === f.assigned_to); if (u) assert.ok(c.text.includes(u.full_name), `${c.title}: responsable visible`) }
   }
   // Etiquetas completas, sin recorte: «Beneficiarios finales» no se trunca dentro de la columna.
   const clipped = await page.locator('.card-tag .truncate').evaluateAll(els => els.filter(e => e.scrollWidth > e.clientWidth + 1).map(e => e.textContent))
@@ -233,7 +233,7 @@ test('Progreso: casos de checklist del contrato; sugerencias no cuentan y la fas
     const c = card(page, title)
     const text = await c.innerText()
     if (expected) assert.match(text.replace(/\s+/g, ''), new RegExp(expected.replace('/', '\\/')), `${title}: ${expected}`)
-    else assert.doesNotMatch(text, /\d+\/\d+|%/, `${title}: sin contador ni porcentaje`)
+    else { assert.match(text, /0\/0/, `${title}: contador vacío explícito`); assert.doesNotMatch(text, /%/, `${title}: sin porcentaje inventado`) }
   }
   await card(page, 'Quipu consulta de beneficiarios').click()
   const dialog = page.getByRole('dialog', { name: 'Detalle del ticket' })

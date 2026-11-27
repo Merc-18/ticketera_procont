@@ -83,7 +83,7 @@ export default function CatalogsPanel() {
     return (
       <div className="space-y-4">
         <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 text-sm text-yellow-800">
-          Los catálogos de estudios y proyectos requieren la migración <code>20261118000300_ticket_catalogs</code> y <code>20261118000400_request_intake</code>, pendientes de aplicar.
+          Los catálogos de estudios y productos requieren la migración <code>20261118000300_ticket_catalogs</code> y <code>20261118000400_request_intake</code>, pendientes de aplicar.
         </div>
         <AreasPanel />
       </div>
@@ -95,7 +95,7 @@ export default function CatalogsPanel() {
   return (
     <div className="space-y-5 max-w-4xl">
       <div className="flex gap-1 bg-gray-100 p-1 rounded-lg w-fit">
-        {([['studios', 'Estudios'], ['systems', 'Proyectos'], ['areas', 'Áreas'], ['types', 'Tipos de solicitud']] as [Section, string][]).map(([k, l]) => (
+        {([['studios', 'Estudios'], ['systems', 'Productos'], ['areas', 'Áreas'], ['types', 'Tipos de solicitud']] as [Section, string][]).map(([k, l]) => (
           <button key={k} onClick={() => setSection(k)}
             className={`px-4 py-2 rounded-md text-sm font-medium transition ${section === k ? 'bg-surface text-primary shadow-sm' : 'text-gray-600 hover:text-gray-900'}`}>{l}</button>
         ))}
@@ -122,7 +122,7 @@ export default function CatalogsPanel() {
 
       {section === 'systems' && (
         <>
-          <AddForm placeholder="Nombre del nuevo proyecto" onAdd={async name => {
+          <AddForm placeholder="Nombre del nuevo producto" onAdd={async name => {
             await saveCatalogRow('catalog_systems', { name, sort_order: cat.systems.length + 1 }); await reload()
           }} />
           {cat.systems.map(sys => (
@@ -133,13 +133,13 @@ export default function CatalogsPanel() {
                     <input type="checkbox" checked={sys.requires_subproject} className="accent-primary" onChange={e => {
                       saveCatalogRow('catalog_systems', { requires_subproject: e.target.checked }, sys.id).then(reload)
                         .catch(err => toast.error(errorMessage(err)))
-                    }} /> Subproyecto obligatorio
+                    }} /> Subproducto obligatorio
                   </label>
                 } />
               {cat.subsystems.filter(x => x.system_id === sys.id).map(x => (
                 <Row key={x.id} table="catalog_subsystems" id={x.id} name={x.name} active={x.is_active} onSaved={reload} indent />
               ))}
-              <AddForm small placeholder="Nuevo subproyecto" onAdd={async name => {
+              <AddForm small placeholder="Nuevo subproducto" onAdd={async name => {
                 await saveCatalogRow('catalog_subsystems', { system_id: sys.id, name }); await reload()
               }} />
             </div>

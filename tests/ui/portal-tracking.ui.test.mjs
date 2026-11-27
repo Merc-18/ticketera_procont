@@ -168,7 +168,7 @@ test('Mis tickets autenticado (fixtures) conserva el detalle completo; el seguim
   await page.waitForURL('**/cliente/nuevo')
   await page.getByRole('link', { name: /Mis tickets/ }).first().click()
   await page.locator('main a:visible', { hasText: 'REQ26-9001' }).first().click()
-  for (const label of ['Producto', 'Solicitante', 'Subproyecto solicitado', 'Prioridad solicitada', 'Descripción'])
+  for (const label of ['Producto', 'Solicitante', 'Subproducto solicitado', 'Prioridad solicitada', 'Descripción'])
     await page.getByText(label, { exact: true }).first().waitFor()
   await page.context().close()
 })

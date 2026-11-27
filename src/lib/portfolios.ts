@@ -75,3 +75,10 @@ export const setProjectPortfolio = (projectId: string, portfolioId: string | nul
   rpc<{ portfolio_id: string | null; initiative_id: string | null }>('set_project_portfolio',
     { p_project_id: projectId, p_portfolio_id: portfolioId, p_initiative_id: initiativeId })
 
+
+/** Export-only snapshot: no hidden mounted subscriber and no duplicate reads on Dashboard → Boards. */
+export async function portfolioCatalogForExport(): Promise<{ portfolios: Portfolio[]; initiatives: Initiative[] }> {
+  await refreshPortfolios()
+  if (state.error) throw new Error('No se pudo cargar la jerarquía completa para exportar.')
+  return { portfolios: state.portfolios, initiatives: state.initiatives }
+}

@@ -1,3 +1,4 @@
+import type { ProductCatalog } from '../../lib/ticket-hierarchy'
 import ControlLabel from '../ui/ControlLabel'
 import type { IconName } from '../ui/Icon'
 import { Droppable, Draggable } from '@hello-pangea/dnd'
@@ -6,6 +7,7 @@ import { stageTone } from '../../lib/board-stages'
 import type { Project, ProjectFlow, User } from '../../types/database.types'
 
 interface Props {
+  products?: ProductCatalog
   phase: {
     id: string
     title: string
@@ -26,7 +28,7 @@ interface Props {
  * Columna del Kanban. La ETAPA tiene identidad propia (data-stage → fondo teñido sutil, acento superior,
  * icono y contador en su tono); las tarjetas quedan neutras para que prioridad y responsable se lean aparte.
  */
-export default function BoardColumn({ phase, projects, onProjectClick, users = [], onAssign, canManage, selectedIds, onSelect, procontCodeId }: Props) {
+export default function BoardColumn({ phase, projects, onProjectClick, users = [], onAssign, canManage, selectedIds, onSelect, procontCodeId, products }: Props) {
   const blocked = projects.filter(p => p.project.is_blocked).length
   return (
     <section className="board-column flex-shrink-0 w-72" data-stage={stageTone(phase.id)} aria-label={`${phase.title}: ${projects.length} tickets`}>
@@ -68,6 +70,7 @@ export default function BoardColumn({ phase, projects, onProjectClick, users = [
                     className={snapshot.isDragging ? 'is-dragging' : ''}
                   >
                     <ProjectCard
+                      products={products}
                       project={item.project}
                       flow={item.flow}
                       onClick={() => onProjectClick(item)}

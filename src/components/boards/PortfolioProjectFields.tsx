@@ -28,7 +28,7 @@ export default function PortfolioProjectFields({ idPrefix, value, onChange, disa
           ))}
         </select>
       </label>
-      <label className="nt-field" htmlFor={`${idPrefix}-project`}><span>Proyecto / Iniciativa</span>
+      <label className="nt-field" htmlFor={`${idPrefix}-project`}><span>Proyecto</span>
         <select id={`${idPrefix}-project`} className="ui-input" value={value.initiative_id ?? ''} disabled={disabled || value.mode !== 'portfolio'}
           onChange={e => onChange({ ...value, initiative_id: e.target.value || null })}>
           <option value="">{value.mode === 'portfolio' ? (projects.length ? 'Sin proyecto específico' : 'Este portafolio no tiene proyectos') : value.mode === 'independent' ? 'No aplica (ticket independiente)' : 'Elige primero el portafolio'}</option>

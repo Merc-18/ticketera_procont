@@ -1,3 +1,4 @@
+import { ticketHierarchy } from '../../lib/ticket-hierarchy'
 import ControlLabel from '../ui/ControlLabel'
 import Icon, { type IconName } from '../ui/Icon'
 import ScrollHint from '../ui/ScrollHint'
@@ -18,7 +19,7 @@ import { DoneConfirmDialog } from '../projects/BoardDialogs'
 import { procontCodeId } from '../../lib/studio-rules'
 import PortfolioSelect from './PortfolioSelect'
 import PrioritySelect from '../ui/PrioritySelect'
-import { portfolioLabel, usePortfolios } from '../../lib/portfolios'
+import { usePortfolios } from '../../lib/portfolios'
 import OwnerColorPicker from './OwnerColorPicker'
 
 // Vistas y modales secundarios del tablero en carga diferida (Taste perf.md: JS por vista). Se piden por
@@ -91,7 +92,7 @@ const VIEW_MODES: { value: ViewMode; label: string; icon: IconName }[] = [
 
 export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }: Props) {
   const { projects, loading, error, hasMore, loadMore, statusFilter, setStatusFilter, moveFlow, assignFlow, updateProject, createTicket, reload, bulkUpdate } = useProjects()
-  const { activeUsers } = useUsers()
+  const { users, activeUsers } = useUsers()
   const { user: currentUser } = useAuth()
   const role = currentUser?.role ?? 'viewer'
   const canEdit    = role === 'superadmin' || role === 'admin' || role === 'developer'
@@ -107,7 +108,10 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
   // Portafolio: 'all' | '' (sin portafolio) | 'p:<id>' | 'i:<id>' (M19).
   const [portfolioFilter, setPortfolioFilter] = useState(() => localStorage.getItem('kanban_portfolioFilter') ?? 'all')
   const portfolioCatalog = usePortfolios()
-  const { studios, codes } = useCatalogs('member')
+  const catalogs = useCatalogs('member')
+  const { studios, codes, systems, subsystems } = catalogs
+  const [productFilter, setProductFilter] = useState('all')
+  const [subproductFilter, setSubproductFilter] = useState('all')
   // El área solo se muestra (tarjeta, tabla, búsqueda) en solicitudes del código interno exacto PROCONT.
   const canonicalProcontCodeId = procontCodeId(codes)
   const [userFilter, setUserFilter]         = useState(() => localStorage.getItem('kanban_userFilter') || 'all')
@@ -159,6 +163,9 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
 
   const phases = PHASES[boardType]
   const filteredProjects = projects.filter(project => {
+    const hierarchyRequest = (project as any).requests
+    if (productFilter !== 'all' && hierarchyRequest?.system_id !== productFilter) return false
+    if (subproductFilter !== 'all' && (hierarchyRequest?.subsystem_id ?? hierarchyRequest?.requested_subsystem_id) !== subproductFilter) return false
     if (priorityFilter !== 'all' && project.priority !== priorityFilter) return false
     const req = (project as any).requests
     // Solo se presenta/filtra el área de solicitudes clasificadas con el código exacto PROCONT.
@@ -191,7 +198,8 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
       const titleMatch = project.title?.toLowerCase().includes(q)
       const numMatch   = (project as any).project_number?.toLowerCase().includes(q)
       const areaMatch  = area?.toLowerCase().includes(q)
-      const portfolioMatch = portfolioLabel(portfolioCatalog, project.portfolio_id, project.initiative_id)?.toLowerCase().includes(q)
+      const names = ticketHierarchy(project as any, catalogs, portfolioCatalog)
+      const portfolioMatch = Object.values(names).join(' ').toLowerCase().includes(q)
       if (!titleMatch && !numMatch && !areaMatch && !portfolioMatch) return false
     }
     return true
@@ -244,7 +252,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
     } finally { setClosing(false) }
   }
 
-  const hasFilters = priorityFilter !== 'all' || portfolioFilter !== 'all' || studioFilter !== 'all' || (canManage ? userFilter !== 'all' : myProjectsOnly) || searchQuery.trim() !== ''
+  const hasFilters = productFilter !== 'all' || subproductFilter !== 'all' || priorityFilter !== 'all' || portfolioFilter !== 'all' || studioFilter !== 'all' || (canManage ? userFilter !== 'all' : myProjectsOnly) || searchQuery.trim() !== ''
   const filteredCount = filteredProjects.length
   const totalCount = projects.length
 
@@ -312,7 +320,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
           <span>Buscar</span>
           <input
             type="search"
-            placeholder="Título, número o área"
+            placeholder="Título, número o jerarquía"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             className="ui-input"
@@ -324,7 +332,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
           Sin filtro de área: el área solo existe para el código interno exacto PROCONT y se clasifica en sus formularios. */}
       <div className="board-toolbar mb-4">
         <div className="board-toolbar-row">
-          <div role="group" aria-label="Estado de los proyectos" className="segmented">
+          <div role="group" aria-label="Estado de los tickets" className="segmented">
             {STATUS_OPTIONS.map(opt => (
               <button
                 key={opt.value}
@@ -386,6 +394,13 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
                 </label>
               )}
 
+              <label className="toolbar-field"><span>Producto</span><select className="ui-input toolbar-select" value={productFilter} onChange={e => { setProductFilter(e.target.value); setSubproductFilter('all') }}>
+                <option value="all">Todos</option>{systems.map(p => <option value={p.id} key={p.id}>{p.name}</option>)}
+              </select></label>
+              <label className="toolbar-field"><span>Subproducto</span><select className="ui-input toolbar-select" value={subproductFilter} onChange={e => setSubproductFilter(e.target.value)} disabled={productFilter === 'all'}>
+                <option value="all">Todos</option>{subsystems.filter(s => s.system_id === productFilter).map(s => <option value={s.id} key={s.id}>{s.name}</option>)}
+              </select></label>
+
               {portfolioCatalog.portfolios.length > 0 && (
                 <label className="toolbar-field board-filter-portfolio">
                   <span>Portafolio</span>
@@ -403,7 +418,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
                     className="ui-input toolbar-select"
                   >
                     <option value="all">Todos</option>
-                    <option value="me">Mis proyectos</option>
+                    <option value="me">Mis tickets</option>
                     <optgroup label="Filtrar por Usuario">
                       {activeUsers.map(u => (
                         <option key={u.id} value={u.id}>
@@ -419,14 +434,14 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
                   onClick={() => setMyProjectsOnly(v => !v)}
                   className={`ui-button board-mine ${myProjectsOnly ? 'is-on' : ''}`}
                 >
-                  <ControlLabel icon="user">Mis proyectos</ControlLabel>
+                  <ControlLabel icon="user">Mis tickets</ControlLabel>
                 </button>
               )}
 
               {hasFilters && (
                 <div className="board-filter-reset">
                   <button
-                    onClick={() => { setPriorityFilter('all'); setPortfolioFilter('all'); setStudioFilter('all'); setUserFilter('all'); setMyProjectsOnly(false); setSearchQuery('') }}
+                    onClick={() => { setProductFilter('all'); setSubproductFilter('all'); setPriorityFilter('all'); setPortfolioFilter('all'); setStudioFilter('all'); setUserFilter('all'); setMyProjectsOnly(false); setSearchQuery('') }}
                     className="ui-button ui-button-quiet"
                   >
                     <ControlLabel icon="close">Limpiar filtros</ControlLabel>
@@ -453,9 +468,10 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
           projects={filteredProjects as any}
           boardType={boardType}
           procontCodeId={canonicalProcontCodeId}
+          products={catalogs}
           onProjectClick={setSelectedProject}
           loading={loading}
-          users={activeUsers}
+          users={users}
         />
       )}
 
@@ -465,6 +481,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
           projects={filteredProjects as any}
           boardType={boardType}
           procontCodeId={canonicalProcontCodeId}
+          products={catalogs}
           onProjectClick={setSelectedProject}
           loading={loading}
         />
@@ -475,6 +492,7 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
         <RoadmapView
           projects={filteredProjects as any}
           procontCodeId={canonicalProcontCodeId}
+          products={catalogs}
           onProjectClick={setSelectedProject}
           loading={loading}
         />
@@ -484,9 +502,9 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
       {viewMode === 'kanban' && statusFilter === 'active' && filteredProjects.length === 0 && hasFilters && (
         <div className="flex flex-col items-center justify-center h-64 text-gray-600">
           <Icon name="search" size={40} className="mb-3 text-gray-500" />
-          <p className="text-base font-medium text-gray-500">Sin proyectos con los filtros aplicados</p>
+          <p className="text-base font-medium text-gray-500">Sin tickets con los filtros aplicados</p>
           <button
-            onClick={() => { setPriorityFilter('all'); setPortfolioFilter('all'); setStudioFilter('all'); setMyProjectsOnly(false); setSearchQuery('') }}
+            onClick={() => { setProductFilter('all'); setSubproductFilter('all'); setPriorityFilter('all'); setPortfolioFilter('all'); setStudioFilter('all'); setMyProjectsOnly(false); setSearchQuery('') }}
             className="mt-3 text-sm text-primary hover:underline"
           >
             Limpiar filtros
@@ -505,12 +523,13 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
                 phase={phase}
                 projects={getProjectsByPhase(phase.id)}
                 onProjectClick={setSelectedProject}
-                users={activeUsers}
+                users={users}
                 onAssign={(projectId, flowId, userId) => { void assignFlow(projectId, flowId, userId).then(() => toast.success('Responsable actualizado')).catch(err => toast.error(errorMessage(err))) }}
                 canManage={canManage}
                 selectedIds={canEdit ? selectedIds : []}
                 onSelect={canEdit ? (id => setSelectedIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id])) : undefined}
                 procontCodeId={canonicalProcontCodeId}
+                products={catalogs}
               />
             ))}
           </div>
@@ -524,7 +543,9 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
           boardType={boardType}
           onProjectClick={setSelectedProject}
           status={statusFilter}
+          users={users}
           procontCodeId={canonicalProcontCodeId}
+          products={catalogs}
         />
       )}
 

@@ -146,7 +146,7 @@ test('Equipo: carga completa por responsable incluye vencidos y archivados, sin 
       { id: '00000000-0000-4000-8000-000000009704', title: 'QA-FICTICIO archivado', priority: 'urgent', status: 'archived', is_blocked: false, project_number: 'REQ26-9704', due_date: null },
     ]
     const rows = projects.map((project, i) => ({ id: `00000000-0000-4000-8000-00000000971${i}`, assigned_to: developer,
-      flow_type: 'development', current_phase: i === 1 ? 'backlog' : 'dev', project_id: project.id, projects: { id: project.id, ...project } }))
+      flow_type: 'development', current_phase: i === 1 ? 'backlog' : 'dev', project_id: project.id, projects: { id: project.id, ...project, created_at: new Date().toISOString() } }))
     let requests = 0
     await page.route(`${fixture.url}/rest/v1/project_flows?**`, route => {
       requests++
@@ -159,13 +159,13 @@ test('Equipo: carga completa por responsable incluye vencidos y archivados, sin 
     if (size === 'desktop') {
       const member = page.getByRole('row', { name: /Developer Simulado/ }).first()
       const cells = await member.getByRole('cell').allInnerTexts()
-      assert.deepEqual(cells.slice(0, 9).map(v => v.trim()), ['Azul profundo', '4', '2', '1', '1', '1', '1', '1', '1'])
+      assert.deepEqual(cells.slice(0, 9).map(v => v.trim()), ['Azul profundo', '4', '2', '1', '1', '1', '0 días', '1', '1'])
       assert.equal(cells[9].trim(), 'Ver tickets')
     } else {
       const member = page.getByRole('article', { name: 'Carga de Developer Simulado' })
       const metrics = await member.locator('dl').evaluate(dl => Object.fromEntries([...dl.querySelectorAll('div')]
         .map(item => [item.querySelector('dt')?.textContent?.trim(), item.querySelector('dd')?.textContent?.trim()])))
-      assert.deepEqual(metrics, { Asignados: '4', Activos: '2', 'En curso': '1', Pendientes: '1', Bloqueados: '1', Vencidos: '1', Completados: '1', Archivados: '1' })
+      assert.deepEqual(metrics, { Asignados: '4', Activos: '2', 'En curso': '1', Pendientes: '1', Bloqueados: '1', 'Antigüedad media': '0 días', Completados: '1', Archivados: '1' })
       await member.getByRole('button', { name: 'Ver tickets asignados' }).click()
       await member.getByRole('list', { name: /Tickets asignados/ }).getByText('QA-FICTICIO vencido').waitFor()
     }
@@ -681,7 +681,7 @@ test('M16 subproyectos: cambio limpia, catálogo vacío, error y respuesta tard�
   await product(page, 2)
   assert.equal(await page.inputValue('#ticket-subproject'), '')
   assert.equal(await page.locator('#ticket-subproject').isDisabled(), true)
-  assert.match(await page.locator('#ticket-subproject-help').innerText(), /no tiene subproyectos/)
+  assert.match(await page.locator('#ticket-subproject-help').innerText(), /no tiene subproductos/)
   await capture(page, 'movil-39-sin-subproyectos')
   let release, failed = false
   const pending = new Promise(resolve => { release = resolve })
@@ -699,10 +699,10 @@ test('M16 subproyectos: cambio limpia, catálogo vacío, error y respuesta tard�
   await page.locator('form p[role=status]').filter({ hasText: /Revisa|Espera/ }).waitFor()
   assert.equal(clientRpc(page, 'client_submit_request').length, beforeSubmit)
   await product(page, 1)
-  await page.getByRole('button', { name: 'Reintentar subproyectos', exact: true }).waitFor()
+  await page.getByRole('button', { name: 'Reintentar subproductos', exact: true }).waitFor()
   release()
   await capture(page, 'movil-40-error-subproyectos')
-  await page.getByRole('button', { name: 'Reintentar subproyectos', exact: true }).click()
+  await page.getByRole('button', { name: 'Reintentar subproductos', exact: true }).click()
   await page.locator('#ticket-subproject option[value="00000000-0000-4000-8000-000000008002"]').waitFor({ state: 'attached' })
   assert.deepEqual(await page.locator('#ticket-subproject option').evaluateAll(options => options.map(o => o.value).filter(Boolean)), MOCK_SUBPROJECTS.slice(1).map(p => p.id))
   await page.context().close()

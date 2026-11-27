@@ -100,7 +100,7 @@ export default function PortfolioPanel({ canManage }: { canManage: boolean }) {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h2 className="text-lg font-medium text-gray-900">Portafolios y proyectos</h2>
-          <p className="text-sm text-gray-600">Portafolio → Proyecto / Iniciativa → tickets → checklist. {canManage ? 'Sin borrado: desactiva lo que ya no uses.' : 'Solo lectura para tu rol.'}</p>
+          <p className="text-sm text-gray-600">Portafolio → Proyecto → tickets → checklist. {canManage ? 'Sin borrado: desactiva lo que ya no uses.' : 'Solo lectura para tu rol.'}</p>
         </div>
         {canManage && !editing && (
           <button type="button" className="ui-button ui-button-primary" onClick={() => setEditing({ kind: 'portfolio', name: '', description: '' })}>

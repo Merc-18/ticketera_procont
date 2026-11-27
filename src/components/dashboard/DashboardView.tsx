@@ -1,3 +1,6 @@
+import { ticketAgeLabel, limaDate } from '../../lib/ticket-age'
+import { ticketHierarchy, type ProductCatalog } from '../../lib/ticket-hierarchy'
+import { portfolioCatalogForExport } from '../../lib/portfolios'
 import ControlLabel from '../ui/ControlLabel'
 import { useEffect, useRef, useState } from 'react'
 import { supabase } from '../../lib/supabase'
@@ -35,28 +38,29 @@ function downloadCSV(filename: string, headers: string[], rows: (string | number
   URL.revokeObjectURL(url)
 }
 
-/** Proyectos activos. Sin columnas SLA heredadas: solo la fecha límite ordinaria (due_date). */
-async function exportActiveCSV(canonicalProcontCodeId: string | null) {
+/** Tickets activos: antigüedad desde su creación real en tablero, sin fechas de planificación. */
+async function exportActiveCSV(canonicalProcontCodeId: string | null, products: ProductCatalog, portfolios: Awaited<ReturnType<typeof portfolioCatalogForExport>>) {
   let projects
   try {
     projects = await readVerifiedPages((from, to) => supabase
       .from('projects')
-      .select('id, title, priority, project_type, status, is_blocked, due_date, created_at, requests(requester_area, studio_code_id), project_flows(flow_type, current_phase, assigned_to)', { count: 'exact' })
+      .select('id, title, priority, project_type, status, is_blocked, created_at, portfolio_id, initiative_id, requests(requester_area, studio_code_id, system_id, subsystem_id), project_flows(flow_type, current_phase, assigned_to)', { count: 'exact' })
       .eq('status', 'active')
       .order('created_at', { ascending: false }).order('id', { ascending: true }).range(from, to))
   } catch {
-    toast.error('No se pudo completar la exportación de proyectos activos. No se descargó ningún archivo.')
+    toast.error('No se pudo completar la exportación de tickets activos. No se descargó ningún archivo.')
     return
   }
-  if (!projects.length) { toast.info('No hay proyectos activos para exportar.'); return }
+  if (!projects.length) { toast.info('No hay tickets activos para exportar.'); return }
 
-  const headers = ['Proyecto', 'Área', 'Prioridad', 'Tipo', 'Bloqueado', 'Fase Dev', 'Fase Admin (histórico)', 'Fecha límite', 'Fecha creación']
+  const headers = ['Ticket', 'Producto', 'Subproducto', 'Portafolio', 'Proyecto', 'Área', 'Prioridad', 'Tipo', 'Bloqueado', 'Fase Dev', 'Fase Admin (histórico)', 'Antigüedad', 'Creado en tablero (Lima)']
   const rows = projects.map(p => {
     const flows: any[] = (p as any).project_flows ?? []
     const devFlow  = flows.find((f: any) => f.flow_type === 'development')
     const admFlow  = flows.find((f: any) => f.flow_type === 'administrative')
     return [
       p.title,
+      ...Object.values(ticketHierarchy(p as any, products, portfolios)),
       (p as any).requests?.studio_code_id === canonicalProcontCodeId && canonicalProcontCodeId
         ? (p as any).requests?.requester_area ?? '' : '',
       PRIORITY_ES[p.priority] ?? p.priority,
@@ -64,11 +68,11 @@ async function exportActiveCSV(canonicalProcontCodeId: string | null) {
       p.is_blocked ? 'Sí' : 'No',
       devFlow?.current_phase ?? '',
       admFlow?.current_phase ?? '',
-      p.due_date ?? '',
-      (p.created_at as string)?.slice(0, 10) ?? '',
+      ticketAgeLabel(p.created_at),
+      limaDate(p.created_at) ?? '',
     ]
   })
-  downloadCSV('proyectos-activos', headers, rows)
+  downloadCSV('tickets-activos', headers, rows)
 }
 
 /**
@@ -76,9 +80,9 @@ async function exportActiveCSV(canonicalProcontCodeId: string | null) {
  * general_status=done en el servidor, orden por request_id y paginación completa verificada
  * (ver lib/ticket-export.ts). Si una página falla no se descarga nada.
  */
-async function exportCompletedCSV() {
+async function exportCompletedCSV(products: ProductCatalog, portfolios: Awaited<ReturnType<typeof portfolioCatalogForExport>>) {
   let result
-  try { result = await buildCompletedExport(supabase as unknown as ExportClient) }
+  try { result = await buildCompletedExport(supabase as unknown as ExportClient, { products, portfolios }) }
   catch (err) {
     toast.error(err instanceof ExportError ? err.message : 'No se pudo completar la exportación. No se descargó ningún archivo.')
     return
@@ -185,7 +189,8 @@ const PERIOD_OPTIONS = [
 export default function DashboardView({ onOpenTeam }: { onOpenTeam?: () => void }) {
   const [period, setPeriod] = useState<number | null>(null)
   const studioFilter: string | null = null
-  const { studios, codes } = useCatalogs('member')
+  const catalogs = useCatalogs('member')
+  const { studios, codes } = catalogs
   const { users } = useUsers()
   const procontId = procontStudioId(codes)
   const canonicalProcontCodeId = procontCodeId(codes)
@@ -209,12 +214,14 @@ export default function DashboardView({ onOpenTeam }: { onOpenTeam?: () => void 
 
   const handleExportCompleted = async () => {
     setExporting('completed')
-    try { await exportCompletedCSV() }
+    try { await exportCompletedCSV(catalogs, await portfolioCatalogForExport()) }
+    catch (error) { toast.error(error instanceof Error ? error.message : 'No se pudo exportar.') }
     finally { setExporting(null) }
   }
   const handleExportActive = async () => {
     setExporting('active')
-    try { await exportActiveCSV(canonicalProcontCodeId) }
+    try { await exportActiveCSV(canonicalProcontCodeId, catalogs, await portfolioCatalogForExport()) }
+    catch (error) { toast.error(error instanceof Error ? error.message : 'No se pudo exportar.') }
     finally { setExporting(null) }
   }
 
@@ -305,7 +312,7 @@ export default function DashboardView({ onOpenTeam }: { onOpenTeam?: () => void 
             <StatCard label="En ejecución" value={stats.work.active} icon="circle" tone="brand" />
             <StatCard label="Completados" value={stats.work.completed} icon="check" tone="success" />
             <StatCard label="Bloqueados" value={stats.work.blocked} icon="block" tone="danger" alert />
-            <StatCard label="Vencidos" value={stats.work.overdue} icon="alert" tone="danger" alert />
+            <StatCard label="Antigüedad media" value={stats.work.averageAgeDays === null ? '—' : `${stats.work.averageAgeDays} días`} icon="clock" tone="neutral" />
             <StatCard label="Archivados" value={stats.work.archived} icon="archive" tone="neutral" />
           </div>
         </section>

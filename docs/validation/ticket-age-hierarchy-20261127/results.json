@@ -1,0 +1,45 @@
+{
+  "base_commit": "99a0be897cad2cb21fb6ff8ef2949a248cb425cf",
+  "node": {
+    "tests": 215,
+    "pass": 215,
+    "fail": 0,
+    "skipped": 0
+  },
+  "ui_regression": {
+    "tests": 160,
+    "pass": 154,
+    "fail": 0,
+    "skipped": 6
+  },
+  "specific_cases": {
+    "tests": 8,
+    "pass": 8,
+    "fail": 0,
+    "skipped": 0
+  },
+  "baseline_captures": {
+    "tests": 6,
+    "pass": 6,
+    "fail": 0,
+    "skipped": 0
+  },
+  "typecheck": "PASS (tsc, npm run build)",
+  "build": "PASS (Vite)",
+  "methodology": "React/Vite/Chromium real, loopback Auth/REST fixtures, external requests blocked; unit tests synthetic; not Supabase-hosted E2E",
+  "specific_cases_already_in_full_suite": true,
+  "specific_rerun": "Focused recheck after aligning Gantt month axis to civil dates, no double-counting",
+  "supabase_changes": false,
+  "new_migrations": 0,
+  "existing_data_changed": false,
+  "unchanged_sha256": {
+    "tests/ui/qa-dataset.json": "887dad6090d69f9137ab9c3dfa06849620151057c20fa75ec25c4e470aabe195",
+    "package-lock.json": "dd17abe69176c5d9fea3d159c64f0e030630f9222d0f5e72aa6486ebdf3c2abc"
+  },
+  "verification_constraints": [
+    "No hosted accounts created or changed",
+    "No production SQL, Storage or Auth Admin operations",
+    "Six historical UI SKIP remain unapproved",
+    "Provider login and hosted internal role E2E retain their previous verification limits"
+  ]
+}

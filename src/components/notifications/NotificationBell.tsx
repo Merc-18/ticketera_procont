@@ -7,7 +7,6 @@ import Icon, { type IconName } from '../ui/Icon'
 const TYPE_ICON: Record<string, IconName> = {
   project_assigned: 'user',
   project_blocked:  'block',
-  sla_warning:      'alert',
   mention:          'comments',
 }
 

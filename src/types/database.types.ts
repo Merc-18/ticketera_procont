@@ -31,6 +31,7 @@ export interface Request {
   studio_id?: string | null;
   system_id?: string | null;
   subsystem_id?: string | null;
+  requested_subsystem_id?: string | null;
   area_id?: string | null;
   subarea_id?: string | null;
   studio_code_id?: string | null;
@@ -53,6 +54,7 @@ export interface Project {
   priority: 'low' | 'medium' | 'high' | 'urgent';
   status: 'active' | 'completed' | 'archived' | 'deleted';
   start_date?: string | null;
+  /** Historical storage only. Never display or write as a ticket deadline. */
   due_date?: string | null;
   sla_target_date?: string | null;
   project_number?: string;
