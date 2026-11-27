@@ -1,6 +1,10 @@
 # Estado operativo — Ticketera Procont
 
-## Corrección funcional vigente — 27/11/2026
+## Simplificación vigente de tarjetas — 27/11/2026
+
+Base: main `40f582de2f314be5f2b46bbaa2f39ecfeb5eaa14`. Se compacta la presentación a Producto → Subproducto → Proyecto; título de dos líneas, prioridad/antigüedad juntas y checklist/responsable separados. Portafolio, INT/REQ, área y solicitante permanecen en detalle; filtros, RPC y administración conservados. Sin Supabase, migraciones ni escrituras de datos. [Pruebas y capturas de esta entrega](validation/compact-ticket-cards-20261127/REPORT.md). La copia original protegida permanece intacta.
+
+## Corrección funcional anterior — 27/11/2026
 
 Se implementa sobre main `99a0be8`: tickets sin vencimiento, antigüedad civil de Lima desde creación en tablero, jerarquía de cuatro niveles visible y tarjetas sin superposición. No se modifica Supabase, esquema ni datos ficticios. La publicación de esta corrección y sus regresiones está autorizada por el usuario. [Reglas y evidencia de esta entrega](validation/ticket-age-hierarchy-20261127/REPORT.md). El cierre documental que sigue es el corte anterior, con sus 22 migraciones y 17 PASS SQL externos; esos resultados no sustituyen las pruebas de esta interfaz.
 

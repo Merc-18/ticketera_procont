@@ -1,0 +1,216 @@
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✔ [light] Mi color: 10 opciones, asignación actual conservada, ocupados no elegibles; Kanban y Tabla coherentes (2484.498861ms)
+✔ [dark] Mi color: 10 opciones, asignación actual conservada, ocupados no elegibles; Kanban y Tabla coherentes (1234.281489ms)
+✔ Mi color: un color retirado se conserva y se informa; con los 10 ocupados no se repite ninguno (2040.530719ms)
+✔ [light] Barra de Boards: sin Área, filtros vigentes y dos filas compactas (1520.895476ms)
+✔ [dark] Barra de Boards: sin Área, filtros vigentes y dos filas compactas (1521.65685ms)
+✔ Barra de Boards responsive: 1920, 1440, 768, 390, 360 y 320 sin desbordar y con objetivos de 44 px (6112.783915ms)
+✔ [light] Dashboard: «Tickets por estudio» sustituye a Áreas; conteo paginado exacto, periodo y sin estudio (932.676208ms)
+✔ [dark] Dashboard: «Tickets por estudio» sustituye a Áreas; conteo paginado exacto, periodo y sin estudio (903.457288ms)
+✔ [light] Checklist: tarjeta existente en Analysis sin tareas → sugerencias y alta explícita sin tocar lo completado (1468.9917ms)
+✔ [dark] Checklist: tarjeta existente en Analysis sin tareas → sugerencias y alta explícita sin tocar lo completado (1405.430258ms)
+✔ Checklist: edición manual, eliminación y alta conservan el resto de tareas (1739.329011ms)
+✔ Checklist: cambiar de fase NO materializa tareas; cada fase vacía sugiere 3 y se agregan solo con la acción explícita (2300.117064ms)
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✔ after compact cards light 320px: active, completed, archived (2492.851326ms)
+✔ after compact cards light 390px: active, completed, archived (1325.460573ms)
+✔ after compact cards light 834px: active, completed, archived (1192.478355ms)
+✔ after compact cards light 1440px: active, completed, archived (1253.866421ms)
+✔ after compact cards dark 320px: active, completed, archived (1213.696692ms)
+✔ after compact cards dark 390px: active, completed, archived (1273.754315ms)
+✔ after compact cards dark 834px: active, completed, archived (1284.884575ms)
+✔ after compact cards dark 1440px: active, completed, archived (1151.096152ms)
+✔ Full metadata stays in detail: portfolio, project, INT/REQ, requester, area and administrative controls (851.789045ms)
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✔ Identidad TI: «Acceso del equipo de TI» en el portal, el modal y /login; la autenticación no cambia (2216.141783ms)
+✔ Área solo PROCONT: el modal de validación muestra áreas para PROCONT y no para otro estudio (1389.26ms)
+✔ [light] Boards: prioridades con relleno y acento propios; Bajo en contorno; el filtro marca su color (1372.243719ms)
+✔ [light] Color personal: el responsable elige su color, persiste, aplica a Kanban y Tabla y no tapa prioridad (3236.433941ms)
+✔ [dark] Boards: prioridades con relleno y acento propios; Bajo en contorno; el filtro marca su color (1316.020404ms)
+✔ [dark] Color personal: el responsable elige su color, persiste, aplica a Kanban y Tabla y no tapa prioridad (3079.671833ms)
+✔ Color personal: el espacio del cliente no ofrece el selector (565.11722ms)
+✔ Boards: sin filtro de área (24/11/2026); un filtro de área guardado ya no oculta tarjetas (1044.750614ms)
+✔ Dashboard: sin «Por Tipo»; secciones con datos reales; áreas solo PROCONT; urgencias compactas por prioridad solicitada (1018.007864ms)
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✔ [light] Kanban: cada columna real tiene identidad de etapa propia y legible (2587.332415ms)
+✔ [light] Kanban: sin barra azul universal; prioridad en insignia, responsable en franja y anillo, bloqueo aparte (1036.968171ms)
+✔ [light] Tabla: misma prioridad, responsable, etapa y bloqueo que el Kanban (1118.18516ms)
+✔ [dark] Kanban: cada columna real tiene identidad de etapa propia y legible (1304.00676ms)
+✔ [dark] Kanban: sin barra azul universal; prioridad en insignia, responsable en franja y anillo, bloqueo aparte (1026.737306ms)
+✔ [dark] Tabla: misma prioridad, responsable, etapa y bloqueo que el Kanban (1183.932616ms)
+✔ Kanban responsive: 1920, 1440, 768, 390, 360 y 320 sin desbordar la página; columnas con su desplazamiento (5634.926874ms)
+✔ Adjuntos: instrucción visible, «Seleccionar archivos» y selección por explorador con el filtro común (557.985683ms)
+✔ Adjuntos: arrastrar uno y varios, estado activo, duplicado, formato, tamaño, límite y eliminar (692.88263ms)
+✔ Adjuntos: soltar fuera de la zona no abre el archivo ni altera el formulario (493.800308ms)
+✔ Adjuntos: pegar con Ctrl/Cmd + V — imagen y varios archivos; el texto no se toma como documento (599.914361ms)
+✔ Adjuntos: teclado — Tab llega a la zona, Enter abre el explorador y la zona tiene nombre y ayuda (599.811914ms)
+✔ Adjuntos: envío con el flujo existente — una reserva, una subida por archivo, sin duplicados; éxito visible (751.316146ms)
+✔ [light] Adjuntos: contraste de instrucción, ayuda, botón, mensajes y estado de arrastre (949.28125ms)
+✔ [dark] Adjuntos: contraste de instrucción, ayuda, botón, mensajes y estado de arrastre (876.736351ms)
+✔ Adjuntos responsive: 1440, 768, 390, 360 y 320 — sin desbordes, botón táctil de 44 px y zona usable (2979.727852ms)
+✔ Movimiento reducido: la tarjeta no se desplaza al pasar el puntero (1007.246652ms)
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✔ [escritorio] 1. /portal muestra dos accesos públicos e ingreso del personal (1675.36487ms)
+✔ [escritorio] 2. Nueva Solicitud navega a /cliente (selección Quipu/QuipuFac) (326.118208ms)
+✔ [escritorio] 3. /request no abre el formulario público y redirige al ingreso (206.196306ms)
+✔ [escritorio] 4-5. Quipu pide RUC, usuario y contraseña; QuipuFac solo RUC y contraseña (361.855182ms)
+✔ [escritorio] 6. Login desactivado: estado inequívocamente no operativo (457.585705ms)
+✔ [escritorio] 7. Login válido conduce a /cliente/nuevo con productos de la sesión; Salir cierra (670.037096ms)
+✔ [escritorio] 8-9. Sin sesión no se entra a /cliente/nuevo ni a /cliente/tickets; tras ingresar vuelve al destino (718.580009ms)
+✔ [escritorio] 10. Mis tickets y detalle: solo la identidad autenticada; ajeno no visible (540.15549ms)
+✔ [escritorio] 11. Rastrear Solicitud es público, ocurre en el portal y muestra solo número y estado (348.097555ms)
+✔ [movil] 1. /portal muestra dos accesos públicos e ingreso del personal (233.193792ms)
+✔ [movil] 2. Nueva Solicitud navega a /cliente (selección Quipu/QuipuFac) (271.996044ms)
+✔ [movil] 3. /request no abre el formulario público y redirige al ingreso (191.029121ms)
+✔ [movil] 4-5. Quipu pide RUC, usuario y contraseña; QuipuFac solo RUC y contraseña (355.431681ms)
+✔ [movil] 6. Login desactivado: estado inequívocamente no operativo (340.898677ms)
+✔ [movil] 7. Login válido conduce a /cliente/nuevo con productos de la sesión; Salir cierra (674.962679ms)
+✔ [movil] 8-9. Sin sesión no se entra a /cliente/nuevo ni a /cliente/tickets; tras ingresar vuelve al destino (709.895676ms)
+✔ [movil] 10. Mis tickets y detalle: solo la identidad autenticada; ajeno no visible (539.859105ms)
+✔ [movil] 11. Rastrear Solicitud es público, ocurre en el portal y muestra solo número y estado (382.060966ms)
+✔ [escritorio] 12. Acceso interno independiente: cuatro roles con sus pestañas aprobadas (3029.832237ms)
+✔ [movil] 12. Acceso interno independiente: cuatro roles con sus pestañas aprobadas (2966.47377ms)
+✔ 13. Exportaciones sin métricas SLA ficticias; datos por ticket del servidor y ausencias explícitas (1467.736708ms)
+✔ 14. No se disparan alertas SLA heredadas (sin inserciones de notificaciones al cargar el tablero) (2092.426607ms)
+✔ 13A. Cero terminados (1.500 registros sin terminar): mensaje correcto y sin descarga (1818.621317ms)
+✔ 13C/D. Más de 1.000 registros con terminados fuera de la primera página: no se omiten (1780.712244ms)
+✔ 13E/G/H. 1.200 sin terminar + 2.500 terminados: tres páginas ordenadas, sin duplicados ni pérdidas; null intactos (2227.584582ms)
+✔ 13F. Error en la segunda página: no se descarga un CSV parcial y se informa el error (1750.655562ms)
+✔ [escritorio] integración: formulario crea Quipu y QuipuFac con adjunto simulado y separa Mis tickets (1026.386928ms)
+✔ [movil] integración: formulario crea Quipu y QuipuFac con adjunto simulado y separa Mis tickets (1083.785615ms)
+✔ integración: Planner procesa Excel real y conserva payload/acuse de la RPC interna (1074.405223ms)
+✔ [escritorio] Versión de la compilación visible y estable en todas las pantallas (1670.377462ms)
+✔ [movil] Versión de la compilación visible y estable en todas las pantallas (1745.089233ms)
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✔ [light] portal: dos tarjetas; «Rastrear Solicitud» contiene icono, título, texto, campo y Buscar (1502.284449ms)
+✔ [light] vacío y formato inválido: error bajo el campo, foco y ninguna consulta (759.009882ms)
+✔ [light] encontrado (botón) y sucesiva (Enter): solo número y estado; sin navegar (456.378261ms)
+✔ [light] cargando, error de servicio y reintento (416.887171ms)
+✔ [light] enlace antiguo /tracking → /portal#seguimiento con el foco en el campo (259.55596ms)
+✔ [dark] portal: dos tarjetas; «Rastrear Solicitud» contiene icono, título, texto, campo y Buscar (263.219848ms)
+✔ [dark] vacío y formato inválido: error bajo el campo, foco y ninguna consulta (753.279177ms)
+✔ [dark] encontrado (botón) y sucesiva (Enter): solo número y estado; sin navegar (455.802705ms)
+✔ [dark] cargando, error de servicio y reintento (450.070298ms)
+✔ [dark] enlace antiguo /tracking → /portal#seguimiento con el foco en el campo (243.34714ms)
+✔ /cliente: ya no repite el formulario; enlaza al seguimiento del portal (320.621487ms)
+✔ Mis tickets autenticado (fixtures) conserva el detalle completo; el seguimiento público no lo sustituye (707.869521ms)
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✔ [light] Tarjeta: fondo con tinte sutil del color personal, avatar con ese color y semáforo de prioridad legible (2556.106874ms)
+✔ [dark] Tarjeta: fondo con tinte sutil del color personal, avatar con ese color y semáforo de prioridad legible (1050.71133ms)
+✔ Portafolio: ausente en tarjeta, filtros administrativos, Tabla y búsqueda conservados (1229.401977ms)
+✔ Portafolio: el detalle asocia un ticket a una iniciativa con la RPC auditada; el catálogo se gestiona desde «Portafolios» (1723.349905ms)
+✔ Portafolio: un developer ve el filtro pero no el botón de gestión del catálogo (1055.969086ms)
+✔ [light] Nuevo ticket (originado por cliente): campos obligatorios, área solo con código exacto PROCONT, adjunto y payload completo (2449.54621ms)
+✔ [dark] Nuevo ticket (originado por cliente): campos obligatorios, área solo con código exacto PROCONT, adjunto y payload completo (1933.927916ms)
+✔ Nuevo ticket (interno u operativo): sin datos de cliente; solicitante opcional; payload mínimo correcto (1406.992886ms)
+✔ Responsive: barra con Portafolio y formulario «Nuevo ticket» sin desbordes a 1440, 768, 390 y 320 (4582.550565ms)
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✔ shared portfolio catalog refreshes, recovers, preserves filters and cleans up across logout/login (3173.666034ms)
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✔ Dashboard: sin filtros de Estudio/Área, Tickets por estudio global, Equipo y Exportar secundario (2182.200408ms)
+✔ Equipo: carga por responsable con los 5 responsables del contrato y conteos reales (789.210884ms)
+✔ Catálogo QA de subproyectos conserva IDs y relación con cada producto (770.358977ms)
+✔ Equipo › Portafolios: Gestión → Beneficiarios finales, tickets sin proyecto e independientes consultables (872.643465ms)
+✔ Permisos: developer y viewer consultan Equipo; viewer no ve pestañas ni acciones de escritura (1583.036345ms)
+✔ Tarjetas compactas: proyecto y responsables; metadatos completos conservados en Tabla (1209.960007ms)
+✔ Progreso: casos de checklist del contrato; sugerencias no cuentan y la fase es posición (1718.448201ms)
+✔ Confirmación: Portafolio → Proyecto dependiente, validación y RPC atómica; también ticket independiente (2568.726157ms)
+✔ Nuevo ticket interno: campos agrupados, Portafolio → Proyecto dependiente y payload con IDs del contrato (1913.334703ms)
+✔ [light] Responsive 1920/1440/768/390/360/320: Dashboard, Equipo, Boards, Tabla y Requests sin desborde (13428.69735ms)
+✔ [dark] Responsive 1920/1440/768/390/360/320: Dashboard, Equipo, Boards, Tabla y Requests sin desborde (12579.052711ms)
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✔ [QA 320px light] Dashboard, Boards, bandeja y portafolio sin encajonar texto (2830.664381ms)
+✔ [QA 390px dark] Dashboard, Boards, bandeja y portafolio sin encajonar texto (1586.963159ms)
+✔ [QA 1440px] Dashboard: «Actualizar» queda en la misma fila que Equipo y Exportar (744.722167ms)
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✔ claro por defecto: sin preferencia guardada no se cambia el tema (1443.364454ms)
+✔ selector accesible: grupo con nombre, Lucide Sun/Moon, tooltip, 44 px y foco visible (219.322454ms)
+✔ puntero: un único fundido de página (View Transition); se guarda solo la palabra del tema (627.482989ms)
+✔ teclado: el cambio no se anima (Emil) y es inmediato (253.497288ms)
+✔ movimiento reducido: el fundido se conserva solo como opacidad breve (120 ms) (284.104871ms)
+✔ persistencia sin destello: navegar, recargar y las rutas públicas abren ya en oscuro (981.345991ms)
+✔ sesión del cliente (fixtures): el tema se mantiene al entrar, navegar y salir (931.083552ms)
+✔ panel interno (fixtures): selector en la banda, se mantiene al entrar y al cerrar sesión (1555.463977ms)
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✔ after light desktop: hierarchy, checklist, ownership and neutral age (2274.671505ms)
+✔ after light tablet: hierarchy, checklist, ownership and neutral age (1055.622186ms)
+✔ after light mobile: hierarchy, checklist, ownership and neutral age (986.486522ms)
+✔ after dark desktop: hierarchy, checklist, ownership and neutral age (995.748043ms)
+✔ after dark tablet: hierarchy, checklist, ownership and neutral age (1027.50676ms)
+✔ after dark mobile: hierarchy, checklist, ownership and neutral age (944.235954ms)
+✔ Cross-view hierarchy, real creation age and deadline-free export/form (2479.026457ms)
+✔ Completed and archived cards preserve full hierarchy, owner and own checklist (915.193622ms)
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✔ Equipo: carga completa por responsable incluye vencidos y archivados, sin tratar fallos como ceros (3247.294418ms)
+✔ Equipo: si falla la consulta de flujos, oculta métricas y ofrece reintento (1080.445041ms)
+﹣ [UX desktop] carga de ambos ingresos sin cambiar su comportamiento (0.335647ms) # SKIP
+✔ [UX desktop] portal, proveedores y accesibilidad de ingreso (1335.345339ms)
+✔ [UX desktop] nuevo ticket, adjuntos, lista privada, detalle y seguimiento (1366.444571ms)
+✔ [UX desktop] panel Enterprise, bandeja, ocho fases y las cuatro vistas (2616.28656ms)
+﹣ [UX laptop] carga de ambos ingresos sin cambiar su comportamiento (0.213185ms) # SKIP
+✔ [UX laptop] portal, proveedores y accesibilidad de ingreso (1281.352269ms)
+✔ [UX laptop] nuevo ticket, adjuntos, lista privada, detalle y seguimiento (1267.38467ms)
+✔ [UX laptop] panel Enterprise, bandeja, ocho fases y las cuatro vistas (2579.997547ms)
+﹣ [UX tablet] carga de ambos ingresos sin cambiar su comportamiento (0.208082ms) # SKIP
+✔ [UX tablet] portal, proveedores y accesibilidad de ingreso (1270.780503ms)
+✔ [UX tablet] nuevo ticket, adjuntos, lista privada, detalle y seguimiento (1293.641994ms)
+✔ [UX tablet] panel Enterprise, bandeja, ocho fases y las cuatro vistas (2531.389253ms)
+﹣ [UX movil] carga de ambos ingresos sin cambiar su comportamiento (0.197294ms) # SKIP
+✔ [UX movil] portal, proveedores y accesibilidad de ingreso (1304.615663ms)
+✔ [UX movil] nuevo ticket, adjuntos, lista privada, detalle y seguimiento (1237.875033ms)
+✔ [UX movil] panel Enterprise, bandeja, ocho fases y las cuatro vistas (2414.205189ms)
+✔ UX motion: hover, pulsación, teclado y reduced-motion no alteran el contenido (532.023949ms)
+✔ UX Kanban: arrastre real y cancelación no envían una operación de negocio (1435.026284ms)
+✔ UX métricas: ausencia de registros, contrato no disponible y error son estados distintos (1131.919394ms)
+✔ UX seguimiento: cada respuesta pública muestra exclusivamente su número y estado actual (1389.881264ms)
+﹣ [UX desktop] presupuesto real y carga diferida de vistas internas y Planner (0.228176ms) # SKIP
+﹣ [UX movil] presupuesto real y carga diferida de vistas internas y Planner (0.04988ms) # SKIP
+✔ [UX desktop] M17: áreas solo para el código exacto PROCONT y no para ARAPA del mismo estudio (1278.078215ms)
+✔ [M16 desktop] identidad, urgencia independiente, prioridad, subproyecto y detalle (1967.602212ms)
+✔ [M16 desktop] bandeja y modal distinguen prioridad solicitada y definitiva (1760.186752ms)
+✔ [M16 laptop] identidad, urgencia independiente, prioridad, subproyecto y detalle (2023.053358ms)
+✔ [M16 laptop] bandeja y modal distinguen prioridad solicitada y definitiva (1776.055417ms)
+✔ [M16 tablet] identidad, urgencia independiente, prioridad, subproyecto y detalle (1991.514353ms)
+✔ [M16 tablet] bandeja y modal distinguen prioridad solicitada y definitiva (1790.355062ms)
+✔ [M16 movil] identidad, urgencia independiente, prioridad, subproyecto y detalle (1916.487236ms)
+✔ [M16 movil] bandeja y modal distinguen prioridad solicitada y definitiva (1700.867513ms)
+✔ M16 paginación: 137 tickets empresariales, error recuperable, offset real y fin confirmado (1454.185883ms)
+✔ M16 subproyectos: cambio limpia, catálogo vacío, error y respuesta tardía (841.282485ms)
+✔ M16 identidad: username exacto readonly, otro usuario y ticket ajeno/inexistente (1057.585889ms)
+✔ M16 envío incierto: conserva clave/payload, cancela solo antes de enviar y reinicia tras confirmar (961.623066ms)
+✔ M16 estados: etiqueta ausente, lista vacía/error y PT401 (1041.587253ms)
+✔ M16 QuipuFac: otro RUC no comparte solicitudes de la empresa (592.925012ms)
+ℹ tests 169
+ℹ suites 0
+ℹ pass 163
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 6
+ℹ todo 0
+ℹ duration_ms 93170.297878

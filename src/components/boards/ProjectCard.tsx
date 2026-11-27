@@ -2,7 +2,7 @@ import Icon from '../ui/Icon'
 import { useState, useRef, useEffect } from 'react'
 import { canEdit } from '../../lib/access'
 import type { Project, ProjectFlow, User } from '../../types/database.types'
-import { getInitials, PRIORITY_COLORS, PRIORITY_LABEL, AREA_COLORS } from '../../lib/constants'
+import { getInitials, PRIORITY_COLORS, PRIORITY_LABEL } from '../../lib/constants'
 import { avatarClass, ownerClass, useOwnerColors } from '../../lib/card-colors'
 import TicketHierarchy from './TicketHierarchy'
 import TicketAge from './TicketAge'
@@ -27,12 +27,9 @@ interface Props {
   onSelect?: (projectId: string) => void
 }
 
-export default function ProjectCard({ project, flow, onClick, users = [], onAssign, selected, onSelect, procontCodeId, products, className = '' }: Props) {
-  const area = project.requests?.studio_code_id === procontCodeId && procontCodeId ? project.requests?.requester_area : null
+export default function ProjectCard({ project, flow, onClick, users = [], onAssign, selected, onSelect, products, className = '' }: Props) {
   const ownerColors = useOwnerColors()
   const owner = ownerClass(ownerColors, flow.assigned_to)
-  const requestNumber = project.requests?.request_number ?? project.project_number
-  const areaColorClass = area ? (AREA_COLORS[area] ?? 'bg-gray-100 text-gray-600') : ''
 
   // Solo tareas incorporadas; las sugerencias y las heredadas de la siembra anterior no cuentan (checklist-progress.ts).
   const { done: checkDone, total: checkTotal } = checklistCount(flow as any)
@@ -64,50 +61,33 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
   return (
     <div
       onClick={onClick}
+      data-ticket-id={project.id}
       data-priority={project.priority}
       data-blocked={project.is_blocked ? 'true' : undefined}
       className={`project-card ${className} relative cursor-pointer group/card prio-${project.priority} ${owner ? `has-owner ${owner}` : ''} ${
         project.is_blocked ? 'is-blocked' : ''} ${selected ? 'is-selected' : ''}`}
     >
-      <div className="card-number-row">
-        <span className="card-number">{requestNumber ?? 'Interno'}</span>
+      <div className="card-title-row">
+        <h3 className="card-title" title={project.title}>
+          <span className="card-title-text">{project.title}</span>
+          {project.is_blocked && <span className="card-blocked" title={project.blocked_reason || 'Bloqueado'}>
+            <Icon name="block" size={16} aria-hidden="true" /><span className="sr-only">Bloqueado</span>
+          </span>}
+        </h3>
         {onSelect && <label className="card-select" onClick={e => e.stopPropagation()}>
           <input aria-label={`Seleccionar ${project.title}`} type="checkbox" checked={selected ?? false} onChange={() => onSelect(project.id)} />
         </label>}
       </div>
-      <h3 className="card-title">{project.title}</h3>
-      <TicketHierarchy ticket={project} products={products} />
-
-      {/* Estado crítico: indicador semántico propio, independiente de prioridad y responsable */}
-      {project.is_blocked && (
-        <p className="card-blocked line-clamp-2" title={project.blocked_reason || 'Bloqueado'}>
-          <Icon name="block" size={14} className="shrink-0" aria-hidden="true" /><span><strong>Bloqueado</strong>{project.blocked_reason ? `: ${project.blocked_reason}` : ''}</span>
-        </p>
-      )}
-
-      {/* Insignias: la prioridad es la única con relleno de color */}
-      <div className="card-badges">
+      <TicketHierarchy ticket={project} products={products} compact />
+      <div className="card-status-row">
         <span className={`card-badge card-priority border ${PRIORITY_COLORS[project.priority]}`} title="Prioridad definitiva asignada por el personal">
           <Icon name="flag" size={12} /><span className="sr-only">Prioridad definitiva: </span>{PRIORITY_LABEL[project.priority] ?? project.priority}
         </span>
-        {area && (
-          <span className={`card-badge card-area ${areaColorClass}`}>
-            {area}
-          </span>
-        )}
-        {project.project_type === 'dual' && (
-          <span className="card-badge bg-gray-100 text-gray-700 border border-gray-300" title="Proyecto histórico con dos flujos">
-            Dual (histórico)
-          </span>
-        )}
-
-      </div>
-
-      {/* Pie: antigüedad neutral, progreso REAL del checklist y responsable (avatar con su color) */}
-      <div className="project-card-footer">
         <TicketAge createdAt={project.created_at} />
+      </div>
+      <div className="project-card-footer">
         <div className={`card-progress ${checkTotal > 0 && checkDone === checkTotal ? 'is-complete' : ''}`} aria-label={`Checklist ${checkDone} de ${checkTotal}`}>
-          <span className="card-progress-caption">{checkTotal ? 'Checklist' : 'Sin checklist'}</span>
+          <span className="sr-only">{checkTotal ? 'Checklist' : 'Sin checklist'}</span>
           <span className="card-progress-track" aria-hidden="true"><span className="card-progress-fill" style={{ transform: `scaleX(${checkTotal ? checkDone / checkTotal : 0})` }} /></span>
           <span className="card-progress-label">{checkDone}/{checkTotal}</span>
         </div>
@@ -120,11 +100,11 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
                   <div className="card-assignee" key={user.id}><div role="img" aria-label={`Responsable: ${user.full_name}`} title={`${user.full_name} (${flowType === 'development' ? 'Development' : 'Administrative'})`}
                     className={`card-avatar ${avatarClass(ownerColors, user.id, user.full_name)}`}>
                     {getInitials(user.full_name)}
-                  </div><span className="card-owner-name">{user.full_name}</span></div>
+                  </div><span className="card-owner-name" title={user.full_name}>{user.full_name}</span></div>
                 ))}
               </div>
           ) : (
-            <span className="card-unassigned"><span className="card-avatar-empty" aria-hidden="true" />Sin responsable</span>
+            <span className="card-unassigned" title="Sin responsable"><span className="card-avatar-empty" aria-hidden="true" /><span>Sin responsable</span></span>
           )}
 
           {/* Quick assign button */}

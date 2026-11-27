@@ -1,0 +1,87 @@
+{
+  "node": {
+    "tests": 215,
+    "pass": 215,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "ui_regression": {
+    "tests": 169,
+    "pass": 163,
+    "fail": 0,
+    "skipped": 6,
+    "cancelled": 0
+  },
+  "focused": {
+    "tests": 9,
+    "pass": 9,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "baseline_captures": {
+    "tests": 8,
+    "pass": 8,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "base_commit": "40f582de2f314be5f2b46bbaa2f39ecfeb5eaa14",
+  "methodology": "Codex; real React/Vite/Chromium, loopback Auth/REST fixtures, external requests blocked. Not hosted authenticated E2E. No SQL or hosted mutations.",
+  "typecheck": "PASS: tsc in npm run build",
+  "build": "PASS: Vite",
+  "focused_already_in_regression": true,
+  "dimensions": [
+    320,
+    390,
+    834,
+    1440
+  ],
+  "themes": [
+    "light",
+    "dark"
+  ],
+  "ticket_states": [
+    "active",
+    "completed",
+    "archived"
+  ],
+  "height_comparison": [
+    {
+      "width": 320,
+      "before_mean_height_px": 690.67,
+      "after_mean_height_px": 216,
+      "reduction_percent": 68.7
+    },
+    {
+      "width": 390,
+      "before_mean_height_px": 566.87,
+      "after_mean_height_px": 194,
+      "reduction_percent": 65.8
+    },
+    {
+      "width": 834,
+      "before_mean_height_px": 566.87,
+      "after_mean_height_px": 194,
+      "reduction_percent": 65.8
+    },
+    {
+      "width": 1440,
+      "before_mean_height_px": 566.87,
+      "after_mean_height_px": 194,
+      "reduction_percent": 65.8
+    }
+  ],
+  "supabase_changes": false,
+  "migrations": 0,
+  "existing_data_changed": false,
+  "lockfile_and_qa_snapshot_unchanged": true,
+  "unchanged_source_domains": [
+    "supabase/",
+    "src/lib/",
+    "src/hooks/",
+    "src/types/"
+  ],
+  "pending": "Six historical UI SKIP remain unapproved. Hosted provider login/internal roles/reserved binary transfer/Postgres Realtime E2E retain prior verification limits."
+}
