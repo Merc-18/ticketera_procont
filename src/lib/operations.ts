@@ -22,7 +22,7 @@ export interface InternalClassification {
 }
 /** Proyectos nuevos (M12): solo Development, con responsable principal obligatorio y sin SLA. */
 export type InternalProjectInput = Pick<Project, 'title' | 'description' | 'priority'> & {
-  assigned_dev: string; start_date?: string; due_date?: string; area?: string; requester_name?: string
+  assigned_dev: string; area?: string; requester_name?: string
 }
 /**
  * Alta interna con paridad (M19, create_internal_ticket). `client`: solicitud de un cliente registrada por TI, con los
@@ -31,7 +31,7 @@ export type InternalProjectInput = Pick<Project, 'title' | 'description' | 'prio
 export interface InternalTicketInput {
   mode: 'client' | 'internal'
   title: string; description: string; priority: Project['priority']; assigned_dev: string
-  start_date?: string; due_date?: string; requester_name?: string; requester_email?: string
+  requester_name?: string; requester_email?: string
   portfolio_id?: string | null; initiative_id?: string | null; initial_phase?: string
   studio_id?: string; studio_code_id?: string; system_id?: string; subsystem_id?: string | null; request_type_id?: string
   requested_priority?: Project['priority']; area_id?: string | null; subarea_id?: string | null
@@ -40,7 +40,7 @@ export interface InternalTicketReceipt { project: Project; request_number: strin
 /** Decisión de portafolio al confirmar: independiente (explícito) o portafolio con proyecto opcional. */
 export type PortfolioDecision = { mode: 'independent' } | { mode: 'portfolio'; portfolio_id: string; initiative_id?: string | null }
 export interface ApprovalInput {
-  priority: Project['priority']; assigned_dev: string; title?: string; start_date?: string; due_date?: string
+  priority: Project['priority']; assigned_dev: string; title?: string
 }
 const nullable = (value: string | undefined | null) => value?.trim() || null
 const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -59,7 +59,7 @@ export function createOperations(client: RpcClient) {
         requester_area: data.requester_area?.trim(), request_type: data.request_type,
         origin: data.origin, data_system_involved: data.data_system_involved,
         description: data.description?.trim(), observations: data.observations,
-        request_date: nullable(data.request_date), requested_date: nullable(data.requested_date), needs_code: data.needs_code,
+        request_date: nullable(data.request_date), needs_code: data.needs_code,
       }
       const rpc = classification ? 'submit_classified_request' : 'submit_request'
       const args = classification
@@ -83,8 +83,7 @@ export function createOperations(client: RpcClient) {
     async createInternalProject(data: InternalProjectInput, attempt: RpcAttempt) {
       if (!uuidPattern.test(data.assigned_dev ?? '')) throw new Error('Selecciona el responsable principal.')
       const payload = { title: data.title.trim(), description: data.description.trim(), project_type: 'development',
-        priority: data.priority, start_date: nullable(data.start_date), due_date: nullable(data.due_date),
-        sla_target_date: null, area: nullable(data.area), requester_name: nullable(data.requester_name),
+        priority: data.priority, area: nullable(data.area), requester_name: nullable(data.requester_name),
         assigned_dev: data.assigned_dev }
       return attempt.run('create_internal_project', { p_payload: payload }, async args => {
         const project = await value<Project>('create_internal_project', args)
@@ -96,7 +95,7 @@ export function createOperations(client: RpcClient) {
       if (!uuidPattern.test(data.assigned_dev ?? '')) throw new Error('Selecciona el responsable principal.')
       // Solo se envían las claves con valor: el servidor rechaza datos de cliente en el modo interno.
       const raw: Record<string, unknown> = { mode: data.mode, title: data.title.trim(), description: data.description.trim(),
-        priority: data.priority, assigned_dev: data.assigned_dev, start_date: nullable(data.start_date), due_date: nullable(data.due_date),
+        priority: data.priority, assigned_dev: data.assigned_dev,
         requester_name: nullable(data.requester_name), requester_email: nullable(data.requester_email),
         portfolio_id: data.portfolio_id || null, initiative_id: data.initiative_id || null,
         initial_phase: data.initial_phase && data.initial_phase !== 'backlog' ? data.initial_phase : null }
@@ -121,8 +120,7 @@ export function createOperations(client: RpcClient) {
       if (portfolio.mode === 'portfolio' && !uuidPattern.test(portfolio.portfolio_id ?? '')) throw new Error('Selecciona el portafolio.')
       const payload = { project_type: 'development', priority: data.priority,
         title: data.title?.trim() || request.title || request.request_type,
-        start_date: nullable(data.start_date), due_date: nullable(data.due_date),
-        sla_target_date: null, sla_formal_days: null, assigned_dev: data.assigned_dev, assigned_admin: null }
+        assigned_dev: data.assigned_dev, assigned_admin: null }
       const decision = portfolio.mode === 'independent' ? { mode: 'independent' }
         : { mode: 'portfolio', portfolio_id: portfolio.portfolio_id, initiative_id: portfolio.initiative_id || null }
       return attempt.run('approve_request_with_portfolio', { p_request_id: request.id, p_payload: payload, p_portfolio: decision }, async args => {
@@ -137,8 +135,7 @@ export function createOperations(client: RpcClient) {
       if (!uuidPattern.test(data.assigned_dev ?? '')) throw new Error('Selecciona el responsable principal.')
       const payload = { project_type: 'development', priority: data.priority,
         title: data.title?.trim() || request.title || request.request_type,
-        start_date: nullable(data.start_date), due_date: nullable(data.due_date),
-        sla_target_date: null, sla_formal_days: null, assigned_dev: data.assigned_dev, assigned_admin: null }
+        assigned_dev: data.assigned_dev, assigned_admin: null }
       return attempt.run('approve_request', { p_request_id: request.id, p_payload: payload }, async args => {
         const project = await value<Project>('approve_request', args)
         if (!uuidPattern.test(project.id) || project.request_id !== request.id) throw new Error('No se confirmó la aprobación. Actualiza la bandeja.')

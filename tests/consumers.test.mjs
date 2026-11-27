@@ -35,7 +35,7 @@ test('public submission uses only RPC and excludes protected fields', async () =
   const payload = client.calls[0].args.p_payload
   for (const field of ['status', 'project_id', 'request_number', 'id']) assert.equal(field in payload, false)
   assert.equal(payload.request_date, null)
-  assert.equal(payload.requested_date, null)
+  assert.equal('requested_date' in payload, false)
 })
 
 test('network/permission failure retains the idempotency key on retry', async () => {
@@ -78,7 +78,7 @@ test('manual project delegates numbering, links, flows and checklist in one RPC'
   const payload = client.calls[0].args.p_payload
   assert.equal(payload.title, 'Proyecto ficticio')
   assert.equal(payload.area, null)
-  assert.equal(payload.due_date, null)
+  assert.equal('due_date' in payload, false)
   assert.equal('project_number' in payload, false)
   assert.equal('request_id' in payload, false)
   assert.equal('project_flows' in payload, false)
@@ -93,7 +93,7 @@ test('manual project without principal assignee is rejected before calling the s
   assert.equal(client.calls.length, 0)
 })
 
-test('approval delegates side effects and sends SLA fields with stable retry input', async () => {
+test('approval delegates side effects without deadline fields and keeps stable retry input', async () => {
   const client = rpcClient(() => ({ data: project, error: null }))
   const attempt = createRpcAttempt(() => key)
   const api = createOperations(client)
@@ -103,17 +103,17 @@ test('approval delegates side effects and sends SLA fields with stable retry inp
   assert.equal(client.calls[0].name, 'approve_request')
   assert.equal(client.calls[0].args.p_request_id, requestId)
   // Sin SLA heredado: pendiente de configuración para Procont.
-  assert.equal(client.calls[0].args.p_payload.sla_formal_days, null)
-  assert.equal(client.calls[0].args.p_payload.sla_target_date, null)
+  assert.equal('sla_formal_days' in client.calls[0].args.p_payload, false)
+  assert.equal('sla_target_date' in client.calls[0].args.p_payload, false)
   assert.equal(client.calls[0].args.p_payload.assigned_admin, null)
   assert.equal(client.calls[0].args.p_payload.project_type, 'development')
   assert.equal(client.calls[0].args.p_payload.assigned_dev, assignee)
 })
 
-test('low priority approval sends null SLA target; invalid approval response is rejected', async () => {
+test('low priority approval omits SLA target; invalid approval response is rejected', async () => {
   const client = rpcClient(() => ({ data: project, error: null }))
   await createOperations(client).approveRequest(request, { priority: 'low', assigned_dev: assignee }, createRpcAttempt(() => key))
-  assert.equal(client.calls[0].args.p_payload.sla_target_date, null)
+  assert.equal('sla_target_date' in client.calls[0].args.p_payload, false)
   const invalid = createOperations(rpcClient(() => ({ data: { ...project, request_id: token }, error: null })))
   await assert.rejects(invalid.approveRequest(request, { priority: 'medium', assigned_dev: assignee }, createRpcAttempt(() => key)))
 })

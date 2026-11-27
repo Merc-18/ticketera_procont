@@ -67,7 +67,7 @@ export default function MyTickets() {
           <table className="w-full text-sm">
             <caption className="sr-only">Solicitudes de tu sesión. Abre el número REQ para consultar el detalle.</caption>
             <thead className="bg-brand-50 text-brand-800"><tr>
-              {['Número REQ', 'Producto / subproyecto', 'Título', ...(company ? ['Solicitante (declarado)'] : []), 'Fecha', 'Prioridad solicitada', 'Estado'].map(label => <th key={label} scope="col" className="px-4 py-3">{label}</th>)}
+              {['Número REQ', 'Producto / subproducto', 'Título', ...(company ? ['Solicitante (declarado)'] : []), 'Fecha', 'Prioridad solicitada', 'Estado'].map(label => <th key={label} scope="col" className="px-4 py-3">{label}</th>)}
             </tr></thead>
             <tbody className="divide-y divide-gray-100">{tickets.map(t => <tr key={t.id} className="hover:bg-gray-50">
               <td className="px-4 py-3 whitespace-nowrap"><Link to={`/cliente/tickets/${t.id}`} aria-label={`Ver detalle de ${t.request_number}`} className="text-brand-700 hover:underline">{t.request_number}</Link></td>

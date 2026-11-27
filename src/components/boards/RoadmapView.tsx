@@ -1,3 +1,8 @@
+import TicketHierarchy from './TicketHierarchy'
+import TicketAge from './TicketAge'
+import { limaDate } from '../../lib/ticket-age'
+import { useLimaDay } from '../../hooks/useLimaDay'
+import type { ProductCatalog } from '../../lib/ticket-hierarchy'
 import { useMemo, useState } from 'react'
 import { PRIORITY_COLORS, PRIORITY_DOT, PRIORITY_LABEL } from '../../lib/constants'
 import Icon from '../ui/Icon'
@@ -9,12 +14,15 @@ interface Project {
   project_type: string
   status: string
   is_blocked: boolean
-  due_date: string | null
+  created_at: string
+  portfolio_id?: string | null
+  initiative_id?: string | null
   project_number?: string
-  requests?: { requester_area?: string; studio_code_id?: string | null } | null
+  requests?: { requester_area?: string; system_id?: string | null; subsystem_id?: string | null; studio_code_id?: string | null } | null
 }
 
 interface Props {
+  products?: ProductCatalog
   projects: Project[]
   onProjectClick: (p: { project: Project; flow: any }) => void
   loading?: boolean
@@ -30,9 +38,28 @@ function getQuarters(year: number) {
   ]
 }
 
-export default function RoadmapView({ projects, onProjectClick, loading, procontCodeId }: Props) {
-  const year = new Date().getFullYear()
+export default function RoadmapView({ projects, onProjectClick, loading, procontCodeId, products }: Props) {
+  const today = useLimaDay()
+  const year = Number(today.slice(0, 4))
   const [showYear, setShowYear] = useState(year)
+
+  const quarters = getQuarters(showYear)
+
+  const projectsByQuarter = useMemo(() => {
+    const map: Record<string, Project[]> = {}
+    for (const q of quarters) map[q.label] = []
+
+    const noDate: Project[] = []
+
+    for (const p of projects) {
+      const date = limaDate(p.created_at)
+      if (!date) { noDate.push(p); continue }
+      const matched = quarters.find(q => date >= q.start && date <= q.end)
+      if (matched) map[matched.label].push(p)
+      // If date doesn't match any quarter in showYear, skip (outside year)
+    }
+    return { byQuarter: map, noDate }
+  }, [projects, showYear])
 
   if (loading) {
     return (
@@ -53,25 +80,6 @@ export default function RoadmapView({ projects, onProjectClick, loading, procont
       </div>
     )
   }
-  const quarters = getQuarters(showYear)
-  const today = new Date().toISOString().slice(0, 10)
-
-  const projectsByQuarter = useMemo(() => {
-    const map: Record<string, Project[]> = {}
-    for (const q of quarters) map[q.label] = []
-
-    const noDate: Project[] = []
-
-    for (const p of projects) {
-      const date = p.due_date   // fecha límite ordinaria; sin fechas SLA heredadas
-      if (!date) { noDate.push(p); continue }
-      const matched = quarters.find(q => date >= q.start && date <= q.end)
-      if (matched) map[matched.label].push(p)
-      // If date doesn't match any quarter in showYear, skip (outside year)
-    }
-    return { byQuarter: map, noDate }
-  }, [projects, showYear])
-
   const totalInYear = quarters.reduce((s, q) => s + (projectsByQuarter.byQuarter[q.label]?.length ?? 0), 0)
 
   return (
@@ -91,7 +99,7 @@ export default function RoadmapView({ projects, onProjectClick, loading, procont
         >
           {showYear + 1} →
         </button>
-        <span className="text-sm text-gray-600 ml-2">{totalInYear} proyecto{totalInYear !== 1 ? 's' : ''} con fecha límite en {showYear}</span>
+        <span className="text-sm text-gray-600 ml-2">{totalInYear} ticket{totalInYear !== 1 ? 's' : ''} incorporados al tablero en {showYear}</span>
       </div>
 
       {/* Quarter grid */}
@@ -123,19 +131,17 @@ export default function RoadmapView({ projects, onProjectClick, loading, procont
               </div>
 
               {/* Projects list */}
-              <div className="flex-1 divide-y divide-gray-50 overflow-y-auto max-h-72">
+              <div className="flex-1 divide-y divide-gray-50 overflow-y-auto ">
                 {qProjects.length === 0 ? (
-                  <div className="py-8 text-center text-gray-600 text-sm">Sin proyectos</div>
+                  <div className="py-8 text-center text-gray-600 text-sm">Sin tickets</div>
                 ) : (
                   qProjects
                     .sort((a, b) => {
-                      const dateA = a.due_date || ''
-                      const dateB = b.due_date || ''
+                      const dateA = a.created_at || ''
+                      const dateB = b.created_at || ''
                       return dateA.localeCompare(dateB)
                     })
                     .map(p => {
-                      const date    = p.due_date
-                      const overdue = date && date < today && p.status === 'active'
                       return (
                         <button
                           key={p.id}
@@ -145,19 +151,15 @@ export default function RoadmapView({ projects, onProjectClick, loading, procont
                           <div className="flex items-start gap-2">
                             <span className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${PRIORITY_DOT[p.priority] ?? 'bg-gray-400'}`} />
                             <div className="flex-1 min-w-0">
-                              <p className="text-xs font-medium text-gray-800 truncate leading-snug">{p.title}</p>
+                              <p className="text-sm font-medium text-gray-800 break-words leading-snug">{p.title}</p>
                               <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
                                 {p.is_blocked && <Icon name="block" size={13} className="text-red-700" aria-label="Bloqueado" />}
-                                {overdue      && <span className="inline-flex items-center gap-1 text-[13px] text-red-700"><Icon name="alert" size={13} />Vencido</span>}
-                                {date && (
-                                  <span className={`text-[10px] ${overdue ? 'text-red-700 font-medium' : 'text-gray-600'}`}>
-                                    {new Date(date + 'T12:00:00').toLocaleDateString('es-PE', { day: '2-digit', month: 'short' })}
-                                  </span>
-                                )}
+                                <TicketAge createdAt={p.created_at} />
                                 {p.requests?.studio_code_id === procontCodeId && procontCodeId && p.requests?.requester_area && (
                                   <span className="text-[13px] text-gray-600 truncate">{p.requests.requester_area}</span>
                                 )}
                               </div>
+                              <TicketHierarchy ticket={p} products={products} />
                             </div>
                             <span className={`text-[10px] px-1.5 py-0.5 rounded border shrink-0 ${PRIORITY_COLORS[p.priority] ?? 'bg-gray-100 text-gray-500 border-gray-200'}`}>
                               <span className="sr-only">Prioridad definitiva: </span>{PRIORITY_LABEL[p.priority] ?? p.priority}
@@ -176,7 +178,7 @@ export default function RoadmapView({ projects, onProjectClick, loading, procont
       {/* Sin fecha */}
       {projectsByQuarter.noDate.length > 0 && (
         <div className="bg-surface rounded-xl border shadow-sm p-4">
-          <p className="text-sm font-semibold text-gray-500 mb-3">Sin fecha de vencimiento ({projectsByQuarter.noDate.length})</p>
+          <p className="text-sm font-semibold text-gray-500 mb-3">Creación no disponible ({projectsByQuarter.noDate.length})</p>
           <div className="flex flex-wrap gap-2">
             {projectsByQuarter.noDate.map(p => (
               <button

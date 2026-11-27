@@ -246,15 +246,15 @@ test('13. Exportaciones sin métricas SLA ficticias; datos por ticket del servid
     return readFileSync(await download.path(), 'utf8').replace(/^﻿/, '').split('\n').map(l => JSON.parse(`[${l}]`))
   }
   const completed = await csvOf(/Completados CSV/)
-  assert.deepEqual(completed[0], ['Número', 'Proyecto', 'Área', 'Prioridad', 'Tipo', 'Inicio de trabajo', 'Finalización',
-    'Cycle Time (d)', 'Lead Time (d)', 'Estado de la métrica'])
+  assert.deepEqual(completed[0], ['Número', 'Ticket', 'Área', 'Prioridad', 'Tipo', 'Inicio de trabajo', 'Finalización',
+    'Cycle Time (d)', 'Lead Time (d)', 'Estado de la métrica', 'Producto', 'Subproducto', 'Portafolio', 'Proyecto', 'Antigüedad'])
   assert.equal(completed.length, 3, 'solo los tickets terminados (no el que está en proceso)')
   const byReq = Object.fromEntries(completed.slice(1).map(r => [r[0], r]))
-  assert.deepEqual(byReq['REQ26-9201'].slice(5), ['2026-11-03', '2026-11-06', '3.0', '5.0', 'Completa'])
-  assert.deepEqual(byReq['REQ26-9202'].slice(5), ['', '2026-11-05', '', '4.0', 'Sin inicio de trabajo registrado'],
+  assert.deepEqual(byReq['REQ26-9201'].slice(5, 10), ['2026-11-03', '2026-11-06', '3.0', '5.0', 'Completa'])
+  assert.deepEqual(byReq['REQ26-9202'].slice(5, 10), ['', '2026-11-05', '', '4.0', 'Sin inicio de trabajo registrado'],
     'sin inicio: celda vacía, nunca cero')
   const active = await csvOf(/Activos CSV/)
-  assert.ok(active[0].includes('Fecha límite'))
+  assert.ok(active[0].includes('Antigüedad')); assert.equal(active[0].includes('Fecha límite'), false)
   for (const csv of [completed, active]) assert.equal(csv[0].some(h => /SLA|A Tiempo/i.test(h)), false)
   assert.equal(fixture.log.some(r => r.path === '/rest/v1/activity_logs' && r.query.includes('sla_completed')), false)
   await done(page)
@@ -402,7 +402,7 @@ test('integración: Planner procesa Excel real y conserva payload/acuse de la RP
   await page.getByRole('heading', { name: '1 solicitudes confirmadas' }).waitFor()
   assert.equal(submitted.p_payload.requester_name, 'Operador ficticio')
   assert.equal(Object.hasOwn(submitted.p_payload, 'requester_area'), false)
-  assert.equal(submitted.p_payload.requested_date, '2026-12-01')
+  assert.equal('requested_date' in submitted.p_payload, false, 'no importar el vencimiento histórico del Excel')
   assert.equal(submitted.p_payload.origin, 'Interno')
   assert.match(submitted.p_idempotency_key, /^[0-9a-f-]{36}$/)
   await done(page)

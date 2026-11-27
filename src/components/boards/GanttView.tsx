@@ -1,3 +1,9 @@
+import { usePortfolios } from '../../lib/portfolios'
+import TicketHierarchy from './TicketHierarchy'
+import TicketAge from './TicketAge'
+import { ticketHierarchy, EMPTY_PRODUCTS, type ProductCatalog } from '../../lib/ticket-hierarchy'
+import { limaDate, ticketAgeLabel } from '../../lib/ticket-age'
+import { useLimaDay } from '../../hooks/useLimaDay'
 import ControlLabel from '../ui/ControlLabel'
 import ScrollHint from '../ui/ScrollHint'
 import type { Project, ProjectFlow } from '../../types/database.types'
@@ -6,10 +12,11 @@ import Icon from '../ui/Icon'
 
 interface ProjectWithRelations extends Project {
   project_flows?: ProjectFlow[]
-  requests?: { requester_area: string; requester_name: string; request_type: string; studio_code_id?: string | null } | null
+  requests?: { requester_area: string; requester_name: string; request_type: string; system_id?: string | null; subsystem_id?: string | null; studio_code_id?: string | null } | null
 }
 
 interface Props {
+  products?: ProductCatalog
   projects: ProjectWithRelations[]
   boardType: 'development' | 'administrative'
   onProjectClick: (item: { project: ProjectWithRelations; flow: ProjectFlow }) => void
@@ -20,29 +27,30 @@ interface Props {
 
 function addMonths(date: Date, months: number): Date {
   const d = new Date(date)
-  d.setMonth(d.getMonth() + months)
+  d.setUTCMonth(d.getUTCMonth() + months)
   return d
 }
 
 function startOfMonth(date: Date): Date {
-  return new Date(date.getFullYear(), date.getMonth(), 1)
+  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1))
 }
 
 function monthsBetween(start: Date, end: Date): number {
-  return (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth()) + 1
+  return Math.max(1, (end.getUTCFullYear() - start.getUTCFullYear()) * 12 + end.getUTCMonth() - start.getUTCMonth())
 }
 
 const MONTH_NAMES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
 
-function exportGanttCSV(items: Array<{ project: ProjectWithRelations; flow: ProjectFlow }>, procontCodeId?: string | null) {
+function exportGanttCSV(items: Array<{ project: ProjectWithRelations; flow: ProjectFlow }>, procontCodeId: string | null | undefined, names: (p: ProjectWithRelations) => ReturnType<typeof ticketHierarchy>) {
   const PRIORITY_ES: Record<string, string> = { urgent: 'Urgente', high: 'Alta', medium: 'Media', low: 'Baja' }
-  const headers = ['Título', 'Prioridad', 'Área', 'Inicio', 'Fecha objetivo', 'Fase']
+  const headers = ['Ticket', 'Producto', 'Subproducto', 'Portafolio', 'Proyecto', 'Prioridad', 'Área', 'Creado en tablero (Lima)', 'Antigüedad', 'Fase']
   const rows = items.map(({ project, flow }) => [
     project.title,
+    ...Object.values(names(project)),
     PRIORITY_ES[project.priority] ?? project.priority,
     project.requests?.studio_code_id === procontCodeId && procontCodeId ? project.requests?.requester_area ?? '' : '',
-    project.start_date ?? project.created_at?.slice(0, 10) ?? '',
-    project.due_date ?? '',
+    limaDate(project.created_at) ?? '',
+    ticketAgeLabel(project.created_at),
     PHASE_LABELS[flow.current_phase] ?? flow.current_phase,
   ])
   const csv = [headers, ...rows]
@@ -52,13 +60,15 @@ function exportGanttCSV(items: Array<{ project: ProjectWithRelations; flow: Proj
   const url  = URL.createObjectURL(blob)
   const a    = document.createElement('a')
   a.href = url
-  a.download = `proyectos-gantt-${new Date().toISOString().slice(0, 10)}.csv`
+  a.download = `tickets-gantt-${new Date().toISOString().slice(0, 10)}.csv`
   a.click()
   URL.revokeObjectURL(url)
 }
 
-export default function GanttView({ projects, boardType, onProjectClick, loading, procontCodeId }: Props) {
-  const today = new Date()
+export default function GanttView({ projects, boardType, onProjectClick, loading, procontCodeId, products = EMPTY_PRODUCTS }: Props) {
+  const portfolios = usePortfolios()
+  const todayDay = useLimaDay()
+  const today = new Date(`${todayDay}T12:00:00Z`)
 
   if (loading) {
     return (
@@ -71,7 +81,7 @@ export default function GanttView({ projects, boardType, onProjectClick, loading
           </div>
         </div>
         {[...Array(6)].map((_, i) => (
-          <div key={i} className="flex items-center border-b px-4 gap-6" style={{ height: 44 }}>
+          <div key={i} className="flex items-center border-b px-4 gap-6" style={{ minHeight: 180 }}>
             <div className="w-48 h-3 bg-gray-200 rounded shrink-0" />
             <div className="flex-1 relative h-6">
               <div
@@ -96,14 +106,14 @@ export default function GanttView({ projects, boardType, onProjectClick, loading
     return (
       <div className="flex flex-col items-center justify-center h-64 text-gray-600">
         <Icon name="calendar" size={40} className="mb-3 text-gray-500" />
-        <p className="text-lg font-medium">No hay proyectos para mostrar</p>
+        <p className="text-lg font-medium">No hay tickets para mostrar</p>
       </div>
     )
   }
 
   // Calcular rango de tiempo
-  const starts = items.map(({ project }) => new Date(project.start_date ?? project.created_at))
-  const ends   = items.map(({ project }) => project.due_date ? new Date(project.due_date + 'T00:00:00') : today)
+  const starts = items.map(({ project }) => new Date(`${limaDate(project.created_at) ?? todayDay}T12:00:00Z`))
+  const ends   = items.map(() => today)
 
   const rangeStart = startOfMonth(new Date(Math.min(...starts.map(d => d.getTime()))))
   const rawRangeEnd = new Date(Math.max(...ends.map(d => d.getTime()), today.getTime()))
@@ -116,7 +126,7 @@ export default function GanttView({ projects, boardType, onProjectClick, loading
   const monthHeaders: { label: string; date: Date }[] = []
   for (let i = 0; i < totalMonths; i++) {
     const d = addMonths(rangeStart, i)
-    monthHeaders.push({ label: `${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()}`, date: d })
+    monthHeaders.push({ label: `${MONTH_NAMES[d.getUTCMonth()]} ${d.getUTCFullYear()}`, date: d })
   }
 
   // Today marker position
@@ -125,11 +135,11 @@ export default function GanttView({ projects, boardType, onProjectClick, loading
     Math.max(0, (today.getTime() - rangeStart.getTime()) / totalMs * 100)
   )
 
-  const LEFT_W = 220
+  const LEFT_W = 320
 
   return (
     <div className="data-view overflow-hidden">
-      <ScrollHint>Desliza horizontalmente para recorrer el timeline completo.</ScrollHint>
+      <ScrollHint>Desliza horizontalmente para recorrer el tiempo transcurrido desde la creación, sin planificación de entrega.</ScrollHint>
       {/* Legend */}
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 border-b bg-gray-50 text-sm text-gray-600">
         <span className="font-medium">Prioridad definitiva:</span>
@@ -149,13 +159,14 @@ export default function GanttView({ projects, boardType, onProjectClick, loading
           {/* Month headers */}
           <div className="flex border-b bg-gray-50">
             <div style={{ width: LEFT_W, minWidth: LEFT_W }} className="shrink-0 px-4 py-2 text-xs font-semibold text-gray-500 border-r">
-              Proyecto
+              Ticket · tiempo observado en tablero
             </div>
             <div className="flex flex-1 relative">
               {monthHeaders.map((m, i) => (
                 <div
                   key={i}
-                  style={{ width: `${100 / totalMonths}%` }}
+                  data-month={m.date.toISOString().slice(0, 7)}
+                  style={{ width: `${(addMonths(m.date, 1).getTime() - m.date.getTime()) / totalMs * 100}%` }}
                   className="text-center text-xs text-gray-500 py-2 border-r border-gray-200 shrink-0"
                 >
                   {m.label}
@@ -167,42 +178,45 @@ export default function GanttView({ projects, boardType, onProjectClick, loading
           {/* Rows */}
           <div className="divide-y divide-gray-100">
             {items.map(({ project, flow }) => {
-              const start = new Date(project.start_date ?? project.created_at)
-              const end   = project.due_date ? new Date(project.due_date + 'T00:00:00') : today
+              const start = new Date(`${limaDate(project.created_at) ?? todayDay}T12:00:00Z`)
+              const end   = today
 
               const leftPct  = Math.max(0, (start.getTime() - rangeStart.getTime()) / totalMs * 100)
               const widthPct = Math.max(0.5, Math.min(100 - leftPct, (end.getTime() - start.getTime()) / totalMs * 100))
 
               const barColor = PRIORITY_BAR[project.priority]
-              const isOverdue = project.due_date && project.due_date < today.toISOString().slice(0, 10) && project.status === 'active'
 
               return (
                 <div
                   key={project.id}
                   onClick={() => onProjectClick({ project, flow })}
                   className="flex items-center hover:bg-brand-50 cursor-pointer transition-colors group"
-                  style={{ height: 44 }}
+                  style={{ minHeight: 180 }}
                 >
                   {/* Project name */}
                   <div
                     style={{ width: LEFT_W, minWidth: LEFT_W }}
                     className="shrink-0 px-4 flex items-center gap-2 border-r"
                   >
+                    <div className="gantt-ticket">
                     {project.is_blocked && <Icon name="block" size={14} className="text-red-700 shrink-0" aria-label="Bloqueado" />}
                     <span aria-hidden="true" className={`inline-block w-2.5 h-2.5 rounded-full shrink-0 ${PRIORITY_DOT[project.priority] ?? 'bg-gray-400'}`} />
-                    <span className="text-sm font-medium text-gray-800 truncate group-hover:text-brand-700">
+                    <span className="text-sm font-medium text-gray-800 break-words group-hover:text-brand-700">
                       <span className="sr-only">Prioridad {PRIORITY_LABEL[project.priority]}: </span>{project.title}
                     </span>
+                    <TicketAge createdAt={project.created_at} />
+                    <TicketHierarchy ticket={project} products={products} />
+                    </div>
                   </div>
 
                   {/* Timeline bar area */}
                   <div className="flex-1 relative h-full flex items-center">
                     {/* Month grid lines */}
-                    {monthHeaders.map((_, i) => (
+                    {monthHeaders.map((m, i) => (
                       <div
                         key={i}
                         className="absolute top-0 bottom-0 border-r border-gray-100"
-                        style={{ left: `${(i + 1) / totalMonths * 100}%` }}
+                        style={{ left: `${(addMonths(m.date, 1).getTime() - rangeStart.getTime()) / totalMs * 100}%` }}
                       />
                     ))}
 
@@ -214,9 +228,9 @@ export default function GanttView({ projects, boardType, onProjectClick, loading
 
                     {/* Project bar */}
                     <div
-                      className={`absolute h-6 rounded-md ${barColor} ${isOverdue ? 'ring-2 ring-red-400 ring-offset-1' : ''} opacity-80 hover:opacity-100 transition-opacity flex items-center px-2 overflow-hidden`}
+                      className={`absolute h-6 rounded-md ${barColor} opacity-80 hover:opacity-100 transition-opacity flex items-center px-2 overflow-hidden`}
                       style={{ left: `${leftPct}%`, width: `${widthPct}%`, minWidth: 8 }}
-                      title={`${project.title}\nInicio: ${start.toLocaleDateString('es-PE')}\nFin: ${end.toLocaleDateString('es-PE')}\nFase: ${PHASE_LABELS[flow.current_phase] ?? flow.current_phase}`}
+                      title={`${project.title}\nCreado en tablero: ${limaDate(project.created_at)}\n${ticketAgeLabel(project.created_at, todayDay)}\nFase: ${PHASE_LABELS[flow.current_phase] ?? flow.current_phase}`}
                     >
                       <span className={`${project.priority === 'high' ? 'text-on-accent' : 'text-white'} text-xs font-medium truncate hidden sm:block`}>
                         {PHASE_LABELS[flow.current_phase] ?? flow.current_phase}
@@ -231,9 +245,9 @@ export default function GanttView({ projects, boardType, onProjectClick, loading
       </div>
 
       <div className="px-4 py-3 bg-gray-50 border-t text-xs text-gray-600 flex flex-wrap gap-3 items-center justify-between">
-        <span>{items.length} proyecto{items.length !== 1 ? 's' : ''} · Arrastra horizontalmente para ver el timeline completo</span>
+        <span>{items.length} ticket{items.length !== 1 ? 's' : ''} · Arrastra horizontalmente para ver el timeline completo</span>
         <button
-          onClick={() => exportGanttCSV(items, procontCodeId)}
+          onClick={() => exportGanttCSV(items, procontCodeId, p => ticketHierarchy(p, products, portfolios))}
           className="px-3 py-1 bg-surface border border-gray-200 text-gray-600 rounded text-xs hover:bg-gray-100 transition"
         >
           <ControlLabel icon="download">Exportar CSV</ControlLabel>

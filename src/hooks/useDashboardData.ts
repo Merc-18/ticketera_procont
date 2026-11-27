@@ -1,3 +1,5 @@
+import { averageTicketAge } from '../lib/ticket-age'
+import { useLimaDay } from './useLimaDay'
 import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { countTicketsByStudio, type TicketsByStudio, type TicketsClient } from '../lib/tickets-by-studio'
@@ -9,7 +11,7 @@ import { readVerifiedPages } from '../lib/verified-pagination'
  *
  * - Solicitudes: estado actual de la bandeja (recibidas / en revisión) y resultado de las recibidas en el periodo.
  *   «En revisión» = pendiente con evento `review_started` o `classified` (misma regla que el seguimiento público).
- * - Trabajo: estado actual de los proyectos (en ejecución, bloqueados, vencidos) y totales completados/archivados.
+ * - Trabajo: estado actual de los proyectos (en ejecución, bloqueados y antigüedad real) y totales completados/archivados.
  * - Prioridad: solo trabajo en ejecución.
  * - Carga: tickets en ejecución por responsable (flujos con assigned_to).
  * - Tickets por estudio (24/11/2026, sustituye al bloque de áreas): solicitudes del periodo por `studio_id`,
@@ -18,7 +20,7 @@ import { readVerifiedPages } from '../lib/verified-pagination'
  */
 export interface DashboardStats {
   requests: { received: number; inReview: number; approved: number; rejected: number; inPeriod: number }
-  work: { active: number; completed: number; archived: number; blocked: number; overdue: number }
+  work: { active: number; completed: number; archived: number; blocked: number; averageAgeDays: number | null }
   priorityActive: { urgent: number; high: number; medium: number; low: number }
   workload: { userId: string; count: number }[]
   unassignedActive: number
@@ -30,11 +32,12 @@ export interface DashboardStats {
 interface Filters { periodDays: number | null; studioId: string | null; areaId: string | null; procontStudioId: string | null; procontCodeId: string | null }
 
 type ReqRow = { id: string; status: 'pending' | 'approved' | 'rejected'; created_at: string; studio_id: string | null; studio_code_id: string | null; area_id: string | null }
-type ProjRow = { id: string; status: string; priority: keyof DashboardStats['priorityActive']; is_blocked: boolean; due_date: string | null; requests: { studio_id: string | null; studio_code_id: string | null; area_id: string | null }[] | null; project_flows: { assigned_to: string | null }[] | null }
+type ProjRow = { id: string; status: string; priority: keyof DashboardStats['priorityActive']; is_blocked: boolean; created_at: string; requests: { studio_id: string | null; studio_code_id: string | null; area_id: string | null }[] | null; project_flows: { assigned_to: string | null }[] | null }
 
 const chunk = <T,>(list: T[], size: number) => Array.from({ length: Math.ceil(list.length / size) }, (_, i) => list.slice(i * size, i * size + size))
 
 export function useDashboardData({ periodDays, studioId, areaId, procontStudioId, procontCodeId }: Filters) {
+  const today = useLimaDay()
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -45,7 +48,7 @@ export function useDashboardData({ periodDays, studioId, areaId, procontStudioId
     try {
       ;[projectsData, requestsData] = await Promise.all([
         readVerifiedPages((from, to) => supabase.from('projects').select(
-          'id, status, priority, is_blocked, due_date, requests(studio_id, studio_code_id, area_id), project_flows(assigned_to)', { count: 'exact' })
+          'id, status, priority, is_blocked, created_at, requests(studio_id, studio_code_id, area_id), project_flows(assigned_to)', { count: 'exact' })
           .neq('status', 'deleted').order('id', { ascending: true }).range(from, to)),
         readVerifiedPages((from, to) => supabase.from('requests').select(
           'id, status, created_at, studio_id, studio_code_id, area_id', { count: 'exact' })
@@ -86,7 +89,6 @@ export function useDashboardData({ periodDays, studioId, areaId, procontStudioId
       const request = p.requests?.[0]
       return inScope(request?.studio_id, request?.studio_code_id, request?.area_id)
     })
-    const today = new Date().toISOString().slice(0, 10)
     const active = projs.filter(p => p.status === 'active')
     const priorityActive = { urgent: 0, high: 0, medium: 0, low: 0 }
     for (const p of active) if (p.priority in priorityActive) priorityActive[p.priority]++
@@ -95,7 +97,7 @@ export function useDashboardData({ periodDays, studioId, areaId, procontStudioId
       completed: projs.filter(p => p.status === 'completed').length,
       archived: projs.filter(p => p.status === 'archived').length,
       blocked: active.filter(p => p.is_blocked).length,
-      overdue: active.filter(p => p.due_date && p.due_date < today).length,
+      averageAgeDays: averageTicketAge(active, today),
     }
 
     // ── Carga del equipo (tickets en ejecución por responsable) ────────────────
@@ -121,7 +123,7 @@ export function useDashboardData({ periodDays, studioId, areaId, procontStudioId
       ticketsByStudio, ticketsError,
     })
     setLoading(false)
-  }, [periodDays, studioId, areaId, procontStudioId, procontCodeId])
+  }, [periodDays, studioId, areaId, procontStudioId, procontCodeId, today])
 
   useEffect(() => { void load() }, [load])
 

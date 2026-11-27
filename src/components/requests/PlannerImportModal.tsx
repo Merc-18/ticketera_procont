@@ -14,7 +14,6 @@ interface PlannerRow {
   'Assigned To'?: string
   'Created By'?: string
   'Start date'?: string
-  'Due date'?: string
   'Progress'?: string | number
   'Completed Date'?: string
   'Labels'?: string
@@ -29,7 +28,6 @@ interface ParsedRow {
   bucket: string
   assigned_to: string
   start_date: string
-  due_date: string
   description: string
   labels: string
   progress: number
@@ -107,7 +105,6 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
               bucket:         String(r['Bucket Name'] ?? '').trim(),
               assigned_to:    assignedTo,
               start_date:     parseExcelDate(r['Start date']),
-              due_date:       parseExcelDate(r['Due date']),
               description:    String(r['Description'] ?? '').trim() || taskName,
               labels:         String(r['Labels'] ?? '').trim(),
               progress:       parseProgress(r['Progress']),
@@ -168,7 +165,6 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
           description:          row.description,
           observations:         buildObservations(row),
           request_date:         attempt.startedAt.toISOString().slice(0, 10),
-          requested_date:       row.due_date || undefined,
           needs_code:           false,
         }, attempt)
         count++
@@ -288,7 +284,6 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
                     <th className="text-left px-4 py-3">Solicitante</th>
                     <th className="text-left px-4 py-3">Bucket</th>
                     <th className="text-left px-4 py-3">Inicio</th>
-                    <th className="text-left px-4 py-3">Vence</th>
                     <th className="text-left px-4 py-3">Estado</th>
                   </tr>
                 </thead>
@@ -321,7 +316,6 @@ export default function PlannerImportModal({ onClose }: { onClose: () => void })
                         )}
                       </td>
                       <td className="px-4 py-2.5 text-gray-500 text-xs whitespace-nowrap">{row.start_date || '—'}</td>
-                      <td className="px-4 py-2.5 text-gray-500 text-xs whitespace-nowrap">{row.due_date || '—'}</td>
                       <td className="px-4 py-2.5">
                         {row.completed ? (
                           <span className="px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-xs">Completado</span>

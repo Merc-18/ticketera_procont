@@ -39,6 +39,11 @@ function page(route, url, rows) {
 export async function installQaFixtures(page_, fixtureUrl) {
   const log = []
   const ds = structuredClone(QA)
+  // Match requests(*) in the app query using existing snapshot foreign keys, without mutating QA data.
+  for (const project of ds.projects) {
+    const request = ds.requests.find(r => r.id === project.request_id)
+    if (request) project.requests = { ...(project.requests ?? {}), ...request }
+  }
   const table = name => async route => { const url = new URL(route.request().url()); return page(route, url, filter(ds[name] ?? [], url)) }
   for (const name of ['projects', 'requests', 'studios', 'studio_codes', 'areas', 'catalog_systems', 'catalog_subsystems', 'request_types', 'portfolios', 'portfolio_initiatives', 'checklist_items']) {
     await page_.route(`${fixtureUrl}/rest/v1/${name}?**`, table(name))
@@ -52,7 +57,7 @@ export async function installQaFixtures(page_, fixtureUrl) {
     const statuses = url.searchParams.get('projects.status')
     const allowed = statuses?.startsWith('in.(') ? new Set(statuses.slice(4, -1).split(',')) : statuses?.startsWith('eq.') ? new Set([statuses.slice(3)]) : null
     const rows = ds.projects.flatMap(p => (p.project_flows ?? []).map(f => ({ ...f, checklist_items: undefined,
-      projects: { id: p.id, title: p.title, priority: p.priority, status: p.status, is_blocked: p.is_blocked, project_number: p.project_number } })))
+      projects: { id: p.id, title: p.title, priority: p.priority, status: p.status, is_blocked: p.is_blocked, project_number: p.project_number, created_at: p.created_at } })))
     return reply(route, rows.filter(r => !allowed || allowed.has(r.projects.status)))
   })
   await page_.route(`${fixtureUrl}/rest/v1/rpc/internal_card_colors`, route => reply(route, { user_id: null, assignments: ds.card_colors, colors: [] }))

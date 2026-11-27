@@ -1,3 +1,4 @@
+import { productPairError } from '../../lib/ticket-hierarchy'
 import RequestedPriority from './RequestedPriority'
 import ModalFocus from '../ui/ModalFocus'
 import { useEffect, useRef, useState } from 'react'
@@ -38,7 +39,7 @@ interface Props {
 
 /**
  * Vista del validador: datos originales del cliente (inmutables), evidencias y urgencia
- * solicitada; clasificación interna (código, subproyecto, área/subárea) y decisión.
+ * solicitada; clasificación interna (código, subproducto, área/subárea) y decisión.
  * SLA: interno y pendiente de configuración para Procont (no se calcula ni se inventa).
  */
 export default function RequestValidationModal({ request: r, initialMode, canManage, catalogs, users, onApprove, onReject, onClose }: Props) {
@@ -83,13 +84,14 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
   const requiresSub = !!system?.requires_subproject && subs.length > 0
   const urgent = r.urgent_requested || !!r.observations?.startsWith('🔴 URGENTE')
 
-  // Requisitos de la decisión. La clasificación (código, área, subproyecto) solo aplica a solicitudes
+  // Requisitos de la decisión. La clasificación (código, área, subproducto) solo aplica a solicitudes
   // con estudio; el responsable al aceptar y el motivo público al rechazar se exigen SIEMPRE, también
   // en solicitudes históricas sin estudio (antes se omitían y solo el servidor las rechazaba).
   const missing = (() => {
     if (classified && !code) return 'Selecciona el código interno del estudio.'
     if (mode === 'approve' && classified && areaApplies && studioAreas.length > 0 && !area) return 'Selecciona el área (obligatoria para el código PROCONT).'
-    if (mode === 'approve' && classified && requiresSub && !subsystem) return 'Selecciona el subproyecto.'
+    if (mode === 'approve' && classified && requiresSub && !subsystem) return 'Selecciona el subproducto.'
+    if (mode === 'approve') { const error = productPairError(r.system_id, subsystem, catalogs); if (error) return error }
     if (mode === 'approve' && !responsible) return 'Selecciona el responsable.'
     if (mode === 'approve') { const e = validateChoice(portfolioChoice, portfolioCatalog.initiatives); if (e) return e }
     if (mode === 'reject' && !reason.trim()) return 'Indica el motivo del rechazo para el solicitante.'
@@ -148,7 +150,7 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
             <div className="grid grid-cols-1 min-[420px]:grid-cols-2 sm:grid-cols-3 gap-3 bg-gray-50 border rounded-lg p-3">
               {info('Solicitante', r.requester_name)}
               {info('Estudio', name(catalogs.studios, r.studio_id))}
-              {info('Proyecto / Sistema', name(catalogs.systems, r.system_id))}
+              {info('Producto', name(catalogs.systems, r.system_id))}
               {info('Tipo de solicitud', r.request_type)}
               {info('Recibida', new Date(r.created_at).toLocaleString('es-PE'))}
               {r.requester_email && info('Correo', r.requester_email)}
@@ -177,7 +179,7 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
               {decided || !canManage ? (
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-gray-50 border rounded-lg p-3">
                   <div><p className="text-xs text-gray-500">Código interno</p><p className="text-sm font-mono font-medium">{catalogs.codes.find(c => c.id === r.studio_code_id)?.code ?? '—'}</p></div>
-                  {info('Subproyecto', name(catalogs.subsystems, r.subsystem_id))}
+                  {info('Subproducto', name(catalogs.subsystems, r.subsystem_id))}
                   {areasApply(r.studio_code_id, catalogs.codes) && info('Área', name(catalogs.areas, r.area_id))}
                   {areasApply(r.studio_code_id, catalogs.codes) && info('Subárea', name(catalogs.areas, r.subarea_id))}
                 </div>
@@ -192,9 +194,9 @@ export default function RequestValidationModal({ request: r, initialMode, canMan
                   </div>
                   {subs.length > 0 && (
                     <div>
-                      <label htmlFor="validation-subsystem" className="block text-sm font-medium text-gray-700 mb-1">Subproyecto {requiresSub && mode === 'approve' ? '*' : ''}</label>
+                      <label htmlFor="validation-subsystem" className="block text-sm font-medium text-gray-700 mb-1">Subproducto {requiresSub && mode === 'approve' ? '*' : ''}</label>
                       <select id="validation-subsystem" value={subsystem} onChange={e => setSubsystem(e.target.value)} className={input}>
-                        <option value="">Sin subproyecto</option>
+                        <option value="">Sin subproducto</option>
                         {subs.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                       </select>
                     </div>

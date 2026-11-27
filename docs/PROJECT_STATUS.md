@@ -1,5 +1,9 @@
 # Estado operativo — Ticketera Procont
 
+## Corrección funcional vigente — 27/11/2026
+
+Se implementa sobre main `99a0be8`: tickets sin vencimiento, antigüedad civil de Lima desde creación en tablero, jerarquía de cuatro niveles visible y tarjetas sin superposición. No se modifica Supabase, esquema ni datos ficticios. La publicación de esta corrección y sus regresiones está autorizada por el usuario. [Reglas y evidencia de esta entrega](validation/ticket-age-hierarchy-20261127/REPORT.md). El cierre documental que sigue es el corte anterior, con sus 22 migraciones y 17 PASS SQL externos; esos resultados no sustituyen las pruebas de esta interfaz.
+
 Revisión: **27/11/2026**. Base funcional: **`406a46351411fdf845a73a811cb798b7964617b1`**. [Cierre técnico y evidencias](validation/technical-close-20261127/REPORT.md).
 
 | Área | Estado y procedencia |

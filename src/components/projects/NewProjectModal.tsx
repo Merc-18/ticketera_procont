@@ -1,3 +1,4 @@
+import { productPairError } from '../../lib/ticket-hierarchy'
 import ControlLabel from '../ui/ControlLabel'
 import ModalFocus from '../ui/ModalFocus'
 import { useMemo, useRef, useState } from 'react'
@@ -19,11 +20,11 @@ import { toast } from '../../lib/toast'
 
 /**
  * Alta interna de tickets desde TI (M19) con paridad frente al portal del cliente.
- *  · «Originado por cliente»: los mismos datos que pide el portal (estudio, producto, subproyecto, tipo, prioridad
+ *  · «Originado por cliente»: los mismos datos que pide el portal (estudio, producto, subproducto, tipo, prioridad
  *    solicitada, solicitante) más la clasificación del validador (código interno y, solo con el código exacto
  *    PROCONT, área/subárea). El servidor la registra, la clasifica y la aprueba en una sola transacción.
  *  · «Interno u operativo»: trabajo del propio equipo, sin datos de cliente.
- * Ambos: prioridad asignada, responsable, fase inicial, fechas, Portafolio y adjuntos (seleccionar, arrastrar, pegar).
+ * Ambos: prioridad asignada, responsable, fase inicial, Portafolio y adjuntos (seleccionar, arrastrar, pegar).
  */
 type Mode = InternalTicketInput['mode']
 type Priority = InternalTicketInput['priority']
@@ -40,7 +41,7 @@ export default function NewProjectModal({ onClose, onCreate }: Props) {
   const attempt = useRef(createRpcAttempt())
   const [mode, setMode] = useState<Mode>('client')
   const [f, setF] = useState({ title: '', description: '', priority: 'medium' as Priority, assigned_dev: '', initial_phase: 'backlog',
-    start_date: '', due_date: '', requester_name: '', requester_email: '', studio_id: '', studio_code_id: '',
+    requester_name: '', requester_email: '', studio_id: '', studio_code_id: '',
     system_id: '', subsystem_id: '', request_type_id: '', requested_priority: 'medium' as Priority, area_id: '', subarea_id: '' })
   const set = (patch: Partial<typeof f>) => setF(prev => ({ ...prev, ...patch }))
   const [portfolioChoice, setPortfolioChoice] = useState<PortfolioChoice>(EMPTY_CHOICE)
@@ -68,12 +69,12 @@ export default function NewProjectModal({ onClose, onCreate }: Props) {
       if (!f.studio_id) m.push('Estudio')
       if (!f.studio_code_id) m.push('Código interno')
       if (!f.system_id) m.push('Producto')
-      if (needsSub && !f.subsystem_id) m.push('Subproyecto')
+      if (needsSub && !f.subsystem_id) m.push('Subproducto')
       if (!f.request_type_id) m.push('Tipo de solicitud')
       if (areaRequired && !f.area_id) m.push('Área')
     }
     if (validateChoice(portfolioChoice, portfolios.initiatives)) m.push('Portafolio (o «Ticket independiente»)')
-    if (f.start_date && f.due_date && f.due_date < f.start_date) m.push('Fecha objetivo posterior al inicio')
+    if (mode === 'client') { const error = productPairError(f.system_id, f.subsystem_id, catalogs); if (error) m.push(error) }
     return m
   }, [f, mode, needsSub, areaRequired, portfolioChoice, portfolios.initiatives])
 
@@ -87,7 +88,7 @@ export default function NewProjectModal({ onClose, onCreate }: Props) {
       const target = choiceIds(portfolioChoice)
       const receipt = await onCreate({
         mode, title: f.title, description: f.description, priority: f.priority, assigned_dev: f.assigned_dev,
-        start_date: f.start_date || undefined, due_date: f.due_date || undefined, initial_phase: f.initial_phase,
+        initial_phase: f.initial_phase,
         requester_name: f.requester_name || undefined, requester_email: mode === 'client' ? f.requester_email || undefined : undefined,
         portfolio_id: target.portfolio_id, initiative_id: target.initiative_id,
         ...(mode === 'client' ? { studio_id: f.studio_id, studio_code_id: f.studio_code_id, system_id: f.system_id,
@@ -188,9 +189,9 @@ export default function NewProjectModal({ onClose, onCreate }: Props) {
                   {catalogs.systems.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                 </select>
               </label>
-              <label className="nt-field" htmlFor="nt-subsystem"><span>Subproyecto{needsSub ? req : <small> (opcional)</small>}</span>
+              <label className="nt-field" htmlFor="nt-subsystem"><span>Subproducto{needsSub ? req : <small> (opcional)</small>}</span>
                 <select id="nt-subsystem" className="ui-input" value={f.subsystem_id} disabled={!subs.length} onChange={e => set({ subsystem_id: e.target.value })} {...invalid(needsSub && !f.subsystem_id)}>
-                  <option value="">{subs.length ? 'Selecciona…' : 'Este producto no tiene subproyectos'}</option>
+                  <option value="">{subs.length ? 'Selecciona…' : 'Este producto no tiene subproductos'}</option>
                   {subs.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                 </select>
               </label>
@@ -228,12 +229,7 @@ export default function NewProjectModal({ onClose, onCreate }: Props) {
               </select>
             </label>
             <div className="nt-wide"><PortfolioProjectFields idPrefix="nt" value={portfolioChoice} onChange={setPortfolioChoice} invalid={touched} /></div>
-            <label className="nt-field" htmlFor="nt-start"><span>Fecha de inicio <small>(opcional)</small></span>
-              <input id="nt-start" type="date" className="ui-input" value={f.start_date} onChange={e => set({ start_date: e.target.value })} />
-            </label>
-            <label className="nt-field" htmlFor="nt-due"><span>Fecha objetivo <small>(opcional)</small></span>
-              <input id="nt-due" type="date" className="ui-input" value={f.due_date} onChange={e => set({ due_date: e.target.value })} {...invalid(!!f.start_date && !!f.due_date && f.due_date < f.start_date)} />
-            </label>
+            <p className="nt-note nt-wide">La antigüedad comienza al crear el ticket en el tablero y se conserva al cambiar de fase o responsable.</p>
           </section>
 
           <section className="new-ticket-section" aria-labelledby="nt-files">

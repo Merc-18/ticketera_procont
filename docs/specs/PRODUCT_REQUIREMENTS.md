@@ -1,14 +1,33 @@
 # Requisitos del producto — Ticketera Procont
 
-Revisión: **23/11/2026** · Código de referencia: **`2f9ab74aff3d612951596986490b5641a27f3932`** (tag `ticketera-production-20261123`, [release](../validation/production-release-20261123/REPORT.md)). Revisión anterior: 20/11/2026 sobre `c857a72`.
+Revisión funcional vigente: **27/11/2026**; base de implementación `99a0be8`. Las referencias de código que siguen pertenecen al corte histórico: **`2f9ab74aff3d612951596986490b5641a27f3932`** (tag `ticketera-production-20261123`, [release](../validation/production-release-20261123/REPORT.md)). Revisión anterior: 20/11/2026 sobre `c857a72`.
 
 Fuente oficial de requisitos: [PRODUCT_REQUIREMENTS.md](PRODUCT_REQUIREMENTS.md).
+
+## Decisión vigente: tickets sin vencimiento y jerarquía completa
+
+Esta decisión del usuario del 27/11/2026 prevalece sobre las enmiendas anteriores. No modifica contratos de expiración de sesiones/reservas ni autoriza cambios remotos de datos o esquema.
+
+| Requisito | Regla y aceptación |
+|---|---|
+| AGE-001 | No existe vencimiento de tickets en Kanban, Dashboard, Equipo, detalle, Gantt, Roadmap, formularios, importación, filtros, exportaciones ni alertas. No mostrar «Vencido», «vence hoy/pronto» ni fechas objetivo/límite derivadas de columnas históricas. |
+| AGE-002 | Antigüedad = diferencia de días civiles America/Lima entre hoy y projects.created_at. Mostrar «Hoy», «1 día en tablero» o «N días en tablero». Cambio de fecha de Lima, no UTC ni redondeo de periodos de 24 horas. Fase, responsable, edición y fecha de solicitud no reinician el contador. Fechas desconocidas se indican, nunca se inventan. |
+| AGE-003 | Edad neutra: no colorear por antigüedad ni crear alertas. Colores personales, prioridad, checklist completado y bloqueo conservan sus significados. Promedios de antigüedad son descriptivos y no sustituyen Cycle/Lead Time. |
+| HIER-001 | Producto → Subproducto → Portafolio → Proyecto → Ticket → Checklist. Producto/subproducto usan request.system_id y subsystem_id con catalog_systems/catalog_subsystems; proyecto usa ticket.initiative_id con portfolio_initiatives dentro de ticket.portfolio_id. No confundir el subproducto de catálogo con el proyecto operativo ni con la tabla projects de tickets. |
+| HIER-002 | Cuatro niveles visibles con nombres completos obtenidos por IDs reales. Validar pertenencia subproducto→producto y proyecto→portafolio en selección/creación/aprobación/edición. Filtros y búsquedas incluyen esas dimensiones. No inventar relaciones entre subproducto y portafolio: el esquema actual no tiene esa FK. Los internos/históricos sin clasificación muestran «Sin producto/subproducto», sin forzar o fabricar enlaces. |
+| HIER-003 | Dos tickets pueden compartir proyecto operativo y tener responsables, fases, prioridades y checklist distintos. Cada contador pertenece a su flujo/ticket, no a la iniciativa compartida. Sin portafolio/proyecto se expresa el estado ausente. |
+| CARD-001 | Título del ticket principal, nombres completos de cuatro niveles, número en su propia fila, checklist separado y avatar con nombre completo del responsable. Mostrar 0/0 y «Sin checklist», además de «Sin responsable» cuando corresponda. Barra, contador, avatar y asignación no se pisan. |
+| CARD-002 | Validar nombres largos, bloqueo, 0/0, 3/3 y 3/18; dos responsables de un proyecto; tickets antiguos sin alertas; claro/oscuro; escritorio/tablet/móvil. Sin desbordamiento del documento ni solapamiento de elementos. Conservar marca Procont. |
+| DATA-001 | No eliminar columnas/eventos/registros históricos ni escribir NULL sobre fechas existentes al editar. No se requieren migraciones. La expiración de sesiones y reservas de archivos mantiene íntegros sus controles de autorización. |
+| TIME-001 | Gantt representa tiempo observado desde creación hasta hoy, sin entrega planificada. Roadmap agrupa tickets por su trimestre de creación en Lima, no por due_date. Los CSV incluyen creación/antigüedad y distinguen producto/subproducto de proyecto operativo. |
+
+Implementación: `ticket-age.ts`, `ticket-hierarchy.ts`, vistas y formularios. Evidencia: [corrección del 27/11](../validation/ticket-age-hierarchy-20261127/REPORT.md). Las pruebas de UI usan React/Chromium y servicios sintéticos locales; no convierten en aprobaciones alojadas las validaciones pendientes del cierre anterior.
 
 ## Autoridad, alcance y estados
 
 Este documento es la **única fuente oficial de requisitos funcionales aprobados**. Las demás especificaciones explican su implementación y evidencias; los documentos anteriores son antecedentes, no otra lista normativa. Una nueva decisión debe actualizar aquí el requisito y su trazabilidad; no cambiar SQL aplicado ni reinterpretar una captura antigua como estado actual.
 
-Ticketera centraliza solicitudes de clientes y trabajo interno de Procont Business: recepción, validación, priorización, responsable, ejecución, evidencia y seguimiento. Una solicitud (`requests`) no es un proyecto operativo (`projects`); una cuenta cliente no es un usuario interno de Supabase Auth. `catalog_systems` identifica productos, no proyectos de tablero.
+Ticketera centraliza solicitudes de clientes y trabajo interno de Procont Business: recepción, validación, priorización, responsable, ejecución, evidencia y seguimiento. Una solicitud (`requests`) no es un ticket en tablero (`projects`); un proyecto operativo se representa en `portfolio_initiatives`, dentro de `portfolios`; una cuenta cliente no es un usuario interno de Supabase Auth. `catalog_systems` identifica productos, no proyectos de tablero.
 
 **Usuarios:** cliente individual Quipu; cuenta empresarial QuipuFac; personal interno activo superadmin/admin/developer/viewer; visitante que consulta un REQ; operador SQL/infraestructura autorizado, fuera de los roles de aplicación. Responsabilidades concretas en [PERMISSIONS_SPEC.md](PERMISSIONS_SPEC.md).
 
@@ -966,14 +985,14 @@ Cada entrada contiene nombre, descripción/regla, comportamiento esperado, acept
 
 ### METRIC-007
 
-**Sin política SLA automática**
+**Tickets sin vencimiento; SLA histórico conservado**
 
 | Campo | Especificación |
 |---|---|
 | Descripción | Sin política SLA automática. |
 | Regla exacta | No adoptar plazos heredados ni alertas automáticas SLA; conservar campos/eventos históricos sin convertirlos en métricas oficiales. |
-| Comportamiento esperado | Nuevas RPC rechazan SLA no nulo; Roadmap usa due_date y el hook useSlaWarnings no existe. |
-| Criterio de aceptación | Nuevas RPC rechazan SLA no nulo; Roadmap usa due_date y el hook useSlaWarnings no existe. |
+| Comportamiento esperado | No enviar ni presentar fechas límite de tickets. Roadmap agrupa por creación en Lima; Gantt muestra tiempo observado; las columnas y eventos históricos no se alteran. Expiración de sesiones/reservas intacta. |
+| Criterio de aceptación | No enviar ni presentar fechas límite de tickets. Roadmap agrupa por creación en Lima; Gantt muestra tiempo observado; las columnas y eventos históricos no se alteran. Expiración de sesiones/reservas intacta. |
 | Implementación frontend/servidor | [src/App.tsx](../../src/App.tsx); [src/components/boards/RoadmapView.tsx](../../src/components/boards/RoadmapView.tsx); `app_private.board_creation_payload`; M12. |
 | Prueba correspondiente | [tests/ui/portal-navigation.ui.test.mjs](../../tests/ui/portal-navigation.ui.test.mjs) |
 | Evidencia y alcance | [E-INT](TESTING_SPEC.md#e-int) |
@@ -1386,7 +1405,7 @@ Base de implementación `16064c5c096f3b69943a81a0d1c64fef5ae8e5f0`; cambios aún
 | DASH-004 | Dashboard no ofrece filtros Estudio/Área; Tickets por estudio incluye todos los estudios con filtro de periodo. Exportar mantiene CSV activos/completados. Los conteos no se truncan a 1.000 ni se presentan parciales. | `DashboardView.tsx`, `useDashboardData.ts`, `verified-pagination.ts`, pruebas Node/UI. | CUMPLE local; remoto pendiente |
 | TEAM-001 | Equipo centraliza usuarios internos, carga de trabajo y gestión Portafolios/proyectos respetando permisos existentes. | `App.tsx`, `WorkloadView.tsx`, `PortfolioPanel.tsx`; suite UI. | CUMPLE local |
 | PORT-002 | Confirmar solicitud ofrece asociación dependiente Portafolio→Iniciativa o independiente, validada y auditada atómicamente por servidor. | M20 `approve_request_with_portfolio`; UI; `m20-qa.json` PostgreSQL local previo. | PARCIAL hasta publicar frontend; M20 remota aplicada |
-| BOARD-004 | Tarjetas ordenan Portafolio→Proyecto→Título y separan REQ, prioridad, fase y responsable. | `ProjectCard.tsx`, Tabla, pruebas UI. | CUMPLE local |
+| BOARD-004 | Título principal y Producto→Subproducto→Portafolio→Proyecto completos; número, checklist, avatar y nombre separados; cada ticket conserva sus propios datos. | `ProjectCard.tsx`, Tabla, pruebas UI. | CUMPLE local |
 | BOARD-005 | Fase es posición y no porcentaje; checklist cuenta únicamente filas persistidas, nunca sugerencias no aceptadas. Históricos ambiguos no se reclasifican. | `ProjectModal.tsx`, `ChecklistSection.tsx`, `checklist-progress.ts`, pruebas Node/UI. | CUMPLE local |
 | QA-001 | QA usa datos `QA-FICTICIO` locales; nunca inserta solicitudes de prueba en producción. | Generador y fixture UI, `QA_FIXTURES.md`. | CUMPLE |
 

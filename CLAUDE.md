@@ -4,6 +4,17 @@
 
 - **No incluir Co-Authored-By en ningún commit.** No agregar líneas `Co-Authored-By: Claude` ni ninguna variante al mensaje de commit. Los commits deben aparecer solo con el autor del proyecto.
 
+## Corrección funcional autorizada — regla vigente del 27/11/2026
+
+El usuario solicita implementar y publicar la corrección en una intervención, sin depender de Claude. Las restricciones documentales del cierre siguiente son históricas y quedan sustituidas para este trabajo por la autorización de regresiones, TypeScript, build y publicación normal GitHub/Vercel.
+
+- Tickets **sin vencimiento**, sin KPIs, filtros, inputs, CSV ni alertas de entrega. Columnas y datos históricos intactos; no escribir ni limpiar due_date/start_date/SLA desde estas pantallas.
+- Antigüedad civil de Lima desde **projects.created_at**: Hoy / 1 día en tablero / N días en tablero. No reiniciar por fase, edición o responsable ni colorear la antigüedad como alerta. No confundir antigüedad con Cycle/Lead Time ni con expiración de sesiones/reservas.
+- **Producto → Subproducto → Portafolio → Proyecto → Ticket → Checklist**. catalog_systems y catalog_subsystems son producto/subproducto; portfolio_initiatives es el proyecto operativo; projects es el ticket. Relaciones reales por IDs, sin nombres prefijados ni asociaciones inventadas. Cada ticket tiene fase, prioridad, responsable y checklist propios.
+- Tarjetas con nombres completos de los cuatro primeros niveles, título destacado, número separado, checklist 0/0 explícito, avatar y nombre. No superponer progreso/contador/responsable/asignación. Preservar colores personales y bloqueo, con estados ausentes explícitos.
+- Comprobar nombres largos, bloqueo, 0/0, 3/3, 3/18, dos responsables en el mismo proyecto, antigüedad sin alertas, temas claro/oscuro y tres tamaños. Capturas antes/después, regresiones, TypeScript y build. Revisión del usuario en Vercel, sin pedir revisiones localhost.
+- No modificar Supabase ni datos existentes, no aplicar migraciones. Conservar la carpeta original protegida y usar la copia independiente escribible. Los 17 PASS SQL externos no son pruebas de estas nuevas pantallas.
+
 ## Documentación vigente
 
 Revisión documental vigente: **27/11/2026**; base funcional `406a46351411fdf845a73a811cb798b7964617b1`, más el cierre documental iniciado en `94b2329`. Corte histórico anterior: 20/11/2026 sobre `c857a727c8e7640bbce8daada940f973acbf013e`. [Fuente oficial de requisitos](docs/specs/PRODUCT_REQUIREMENTS.md). Las evidencias históricas no sustituyen el estado de [PROJECT_STATUS](docs/PROJECT_STATUS.md).
@@ -53,7 +64,7 @@ Los conteos post-ROLLBACK reportados, RLS en 19 tablas y publicación Realtime d
 - Hay un archivo vacío `1` sin seguimiento en la raíz del checkout.
 - Tolerancia M16b: pendiente de retirar con una migración futura. Exportación sin snapshot transaccional.
 
-## Publicación documental autorizada
+## Publicación documental anterior — corte histórico
 
 El usuario autorizó publicar por push normal a main y el despliegue automático de Vercel resultante. El alcance es exclusivamente documentación: integrar `94b2329`, recuperar este archivo y registrar observaciones. No fusionar `integration/board-operations` ni el archivo `0f353de`; no ejecutar pruebas ni modificar código funcional, Supabase o datos.
 

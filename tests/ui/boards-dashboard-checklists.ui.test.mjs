@@ -124,7 +124,7 @@ for (const theme of ['light', 'dark']) {
     const bar = page.locator('.board-toolbar')
     assert.equal(await bar.locator('label').filter({ hasText: /^Área/ }).count(), 0)
     await bar.locator('label').filter({ hasText: /^Estudio/ }).waitFor()   // el catálogo de estudios llega aparte
-    assert.deepEqual((await bar.locator('.prio-select-label, .toolbar-field > span').allInnerTexts()).map(t => t.trim()), ['Prioridad', 'Estudio', 'Responsable'])
+    assert.deepEqual((await bar.locator('.prio-select-label, .toolbar-field > span').allInnerTexts()).map(t => t.trim()), ['Prioridad', 'Estudio', 'Producto', 'Subproducto', 'Responsable'])
     for (const name of ['Activos', 'Completados', 'Archivados', 'Nuevo ticket', 'Kanban', 'Tabla', 'Gantt', 'Roadmap', 'Mi color de tarjeta']) {
       assert.equal(await bar.getByRole('button', { name, exact: false }).first().isVisible(), true, name)
     }

@@ -2,6 +2,8 @@
 
 Mesa de solicitudes de Procont Business: recepción autenticada de clientes Quipu/QuipuFac, validación interna, trabajo Development de ocho fases, historial, evidencias y métricas basadas en eventos.
 
+Los tickets no vencen: su antigüedad se calcula desde la creación en tablero con días civiles de Lima. La jerarquía visible es Producto → Subproducto → Portafolio → Proyecto → Ticket → Checklist, con relaciones reales y datos por ticket. [Corrección funcional y evidencia](docs/validation/ticket-age-hierarchy-20261127/REPORT.md).
+
 Revisión: **27/11/2026** · Base funcional: **`406a46351411fdf845a73a811cb798b7964617b1`** · **22 migraciones** confirmadas · Vercel **SUCCESS** para ese commit.
 
 La **única fuente oficial de requisitos funcionales aprobados** es [PRODUCT_REQUIREMENTS.md](docs/specs/PRODUCT_REQUIREMENTS.md). Comenzar por [PROJECT_STATUS](docs/PROJECT_STATUS.md) y el [cierre técnico](docs/validation/technical-close-20261127/REPORT.md). Se incorporaron **17 PASS externos de ChatGPT** de SQL/RPC en producción con BEGIN/ROLLBACK; no son pruebas E2E ni ejecuciones de Codex. Permanecen pendientes proveedores reales, UI con roles activos, binarios mediante reservas y recepción E2E de eventos Realtime.

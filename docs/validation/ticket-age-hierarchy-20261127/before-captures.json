@@ -1,0 +1,61 @@
+{
+  "stage": "before",
+  "environment": "React/Chromium with local REST/Auth fixtures; not hosted E2E",
+  "captures": [
+    {
+      "file": "before-light-desktop.png",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "sha256": "fbf50e59bd3c1542a58f87c6e421188c7014931af167488d2dee5013fab7e961"
+    },
+    {
+      "file": "before-light-tablet.png",
+      "theme": "light",
+      "viewport": {
+        "width": 834,
+        "height": 1112
+      },
+      "sha256": "da7739718c21a9e6c9629685031f122f47888fae9e88c16031c71c021c462b17"
+    },
+    {
+      "file": "before-light-mobile.png",
+      "theme": "light",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "f044069264a6fadac065daefaceab35766a58c79b25c3760114da30db7809d7b"
+    },
+    {
+      "file": "before-dark-desktop.png",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "sha256": "63023bdb298eca27fa3da2c0dc3a89ef0e27ccff2809206f02514a9c2ed4057c"
+    },
+    {
+      "file": "before-dark-tablet.png",
+      "theme": "dark",
+      "viewport": {
+        "width": 834,
+        "height": 1112
+      },
+      "sha256": "7b834dee188e7948f561fde3a53cc8ba80304f63f7c1b8b78d52b00d52d04307"
+    },
+    {
+      "file": "before-dark-mobile.png",
+      "theme": "dark",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "55451ba876607146d76935bd43f19a672603b175bc6ab7d1136c3dcdff5b5c5d"
+    }
+  ],
+  "source": "main@99a0be8 extracted into isolated /tmp checkout"
+}

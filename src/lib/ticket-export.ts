@@ -1,3 +1,6 @@
+import { ticketAgeLabel } from './ticket-age.ts'
+import { ticketHierarchy, EMPTY_PRODUCTS, type ProductCatalog } from './ticket-hierarchy.ts'
+import type { Portfolio, Initiative } from './portfolio-model.ts'
 // Exportación de tickets terminados con métricas POR TICKET del servidor (get_ticket_performance, M11).
 //
 // Algoritmo (sin cargar todos los estados ni confiar en una sola respuesta):
@@ -69,7 +72,9 @@ export async function fetchDonePerformance(client: ExportClient, pageSize = PERF
   return rows
 }
 
-export interface ProjectInfo { id: string; title: string; priority: string; project_type: string; requests?: { requester_area?: string | null } | null }
+export interface ProjectInfo { id: string; title: string; priority: string; project_type: string; created_at?: string; portfolio_id?: string | null; initiative_id?: string | null; requests?: { requester_area?: string | null; system_id?: string | null; subsystem_id?: string | null } | null }
+export interface ExportHierarchy { products: ProductCatalog; portfolios: { portfolios: Portfolio[]; initiatives: Initiative[] } }
+const EMPTY_HIERARCHY: ExportHierarchy = { products: EMPTY_PRODUCTS, portfolios: { portfolios: [], initiatives: [] } }
 
 /** Datos descriptivos de los proyectos por lotes acotados (cada lote < límite de filas). */
 export async function fetchProjects(client: ExportClient, ids: string[], chunkSize = PROJECT_CHUNK_SIZE) {
@@ -77,7 +82,7 @@ export async function fetchProjects(client: ExportClient, ids: string[], chunkSi
   const byId = new Map<string, ProjectInfo>()
   for (let i = 0; i < unique.length; i += chunkSize) {
     const chunk = unique.slice(i, i + chunkSize)
-    const result = await (client.from('projects').select('id, title, priority, project_type, requests(requester_area)') as ProjectQuery)
+    const result = await (client.from('projects').select('id, title, priority, project_type, created_at, portfolio_id, initiative_id, requests(requester_area, system_id, subsystem_id)') as ProjectQuery)
       .in('id', chunk)
     if (result.error || !Array.isArray(result.data) || result.data.length > chunk.length) {
       throw new ExportError('No se pudieron cargar los datos de los proyectos. No se descargó ningún archivo.')
@@ -99,11 +104,11 @@ const METRIC_STATUS_ES: Record<TicketPerformance['metric_status'], string> = {
 const days = (seconds: number | null) => seconds == null ? '' : (Number(seconds) / 86400).toFixed(1)
 const limaDate = (iso: string | null) => iso ? new Date(iso).toLocaleDateString('en-CA', { timeZone: 'America/Lima' }) : ''
 
-export const COMPLETED_HEADERS = ['Número', 'Proyecto', 'Área', 'Prioridad', 'Tipo', 'Inicio de trabajo', 'Finalización',
-  'Cycle Time (d)', 'Lead Time (d)', 'Estado de la métrica']
+export const COMPLETED_HEADERS = ['Número', 'Ticket', 'Área', 'Prioridad', 'Tipo', 'Inicio de trabajo', 'Finalización',
+  'Cycle Time (d)', 'Lead Time (d)', 'Estado de la métrica', 'Producto', 'Subproducto', 'Portafolio', 'Proyecto', 'Antigüedad']
 
 /** Filas del CSV: valores desconocidos quedan vacíos y su motivo en «Estado de la métrica». */
-export function completedRows(done: TicketPerformance[], projects: Map<string, ProjectInfo>) {
+export function completedRows(done: TicketPerformance[], projects: Map<string, ProjectInfo>, hierarchy: ExportHierarchy = EMPTY_HIERARCHY) {
   return [...done]
     .sort((a, b) => (b.completed_at ?? '').localeCompare(a.completed_at ?? '') || a.request_id.localeCompare(b.request_id))
     .map(t => {
@@ -119,14 +124,16 @@ export function completedRows(done: TicketPerformance[], projects: Map<string, P
         days(t.cycle_time_seconds),
         days(t.lead_time_seconds),
         METRIC_STATUS_ES[t.metric_status] ?? t.metric_status,
+        ...Object.values(ticketHierarchy(p ?? {}, hierarchy.products, hierarchy.portfolios)),
+        ticketAgeLabel(p?.created_at),
       ]
     })
 }
 
 /** Exportación completa o error: nunca filas parciales. */
-export async function buildCompletedExport(client: ExportClient) {
+export async function buildCompletedExport(client: ExportClient, hierarchy: ExportHierarchy = EMPTY_HIERARCHY) {
   const done = await fetchDonePerformance(client)
   if (done.length === 0) return null
   const projects = await fetchProjects(client, done.map(t => t.project_id).filter((id): id is string => !!id))
-  return { headers: COMPLETED_HEADERS, rows: completedRows(done, projects) }
+  return { headers: COMPLETED_HEADERS, rows: completedRows(done, projects, hierarchy) }
 }

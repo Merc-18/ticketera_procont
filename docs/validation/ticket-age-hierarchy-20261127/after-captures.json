@@ -1,0 +1,73 @@
+{
+  "stage": "after",
+  "environment": "React/Chromium with local REST/Auth fixtures; not hosted E2E",
+  "captures": [
+    {
+      "file": "after-light-desktop.png",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "sha256": "f6482e06b1542ed90dc18407c95100191cc86eb615e8c4f29159ffdbf57fa5e8"
+    },
+    {
+      "file": "after-light-tablet.png",
+      "theme": "light",
+      "viewport": {
+        "width": 834,
+        "height": 1112
+      },
+      "sha256": "4f8f241f6e81bcfac99fbd35d6751d5d9206b00f401b9b9c27c900ac5b3e60f8"
+    },
+    {
+      "file": "after-light-mobile.png",
+      "theme": "light",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "17291e5304ad9851bf92999d2e42f2381ffccf4e31567609958534b85ef28622"
+    },
+    {
+      "file": "after-dark-desktop.png",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "sha256": "7bf147b04915a13f7aa796f11abd42ea5ab9eb3a248423e6ba2353c868b9717a"
+    },
+    {
+      "file": "after-dark-tablet.png",
+      "theme": "dark",
+      "viewport": {
+        "width": 834,
+        "height": 1112
+      },
+      "sha256": "f49729d4716cf0c3664ffbdcee19c444f8bc707c043b65246e14bc3c9fa198b9"
+    },
+    {
+      "file": "after-dark-mobile.png",
+      "theme": "dark",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "2347070b4658d7e2e17bafc3434a17246aa5b1f88c0143763e4b7268a9e847cb"
+    },
+    {
+      "file": "after-gantt-desktop.png",
+      "theme": "light",
+      "view": "Gantt",
+      "sha256": "57d7f2620be906dd27dfbdd40a19c47015c2af5f9feef981b77fa010ed475960"
+    },
+    {
+      "file": "after-roadmap-desktop.png",
+      "theme": "light",
+      "view": "Roadmap",
+      "sha256": "9855644c4aa8520a03dc67e139949afa29998f5bd899909e7b50a18578816825"
+    }
+  ],
+  "source": "fix/ticket-age-hierarchy-cards-20261127 on main@99a0be8"
+}

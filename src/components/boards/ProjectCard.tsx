@@ -4,14 +4,18 @@ import { canEdit } from '../../lib/access'
 import type { Project, ProjectFlow, User } from '../../types/database.types'
 import { getInitials, PRIORITY_COLORS, PRIORITY_LABEL, AREA_COLORS } from '../../lib/constants'
 import { avatarClass, ownerClass, useOwnerColors } from '../../lib/card-colors'
-import { usePortfolios } from '../../lib/portfolios'
+import TicketHierarchy from './TicketHierarchy'
+import TicketAge from './TicketAge'
+import type { ProductCatalog } from '../../lib/ticket-hierarchy'
 import { checklistCount } from '../../lib/board'
 
 interface ProjectWithArea extends Project {
-  requests?: { requester_area: string | null; requester_name?: string; request_number?: string; studio_id?: string | null; studio_code_id?: string | null } | null
+  requests?: { requester_area: string | null; requester_name?: string; request_number?: string; studio_id?: string | null; system_id?: string | null; subsystem_id?: string | null; requested_subsystem_id?: string | null; studio_code_id?: string | null } | null
 }
 
 interface Props {
+  className?: string
+  products?: ProductCatalog
   /** UUID del código interno exacto PROCONT. */
   procontCodeId?: string | null
   project: ProjectWithArea
@@ -23,26 +27,12 @@ interface Props {
   onSelect?: (projectId: string) => void
 }
 
-function getDueDateBadge(dueDate?: string | null) {
-  if (!dueDate) return null
-  const today = new Date().toISOString().slice(0, 10)
-  const diff = Math.ceil((new Date(dueDate).getTime() - new Date(today).getTime()) / 86400000)
-  if (diff < 0)  return { label: `Vencido (${Math.abs(diff)} d)`, icon: 'alert' as const, cls: 'bg-red-50 text-red-700 border border-red-200' }
-  if (diff === 0) return { label: 'Vence hoy', icon: 'alert' as const, cls: 'bg-red-50 text-red-700 border border-red-200' }
-  if (diff <= 3)  return { label: `Vence en ${diff} d`, icon: 'clock' as const, cls: 'bg-accent-100 text-accent-700 border border-accent-300' }
-  return { label: new Date(dueDate + 'T00:00:00').toLocaleDateString('es-PE', { day: '2-digit', month: 'short' }), icon: 'calendar' as const, cls: 'bg-gray-100 text-gray-600 border border-gray-300' }
-}
-
-export default function ProjectCard({ project, flow, onClick, users = [], onAssign, selected, onSelect, procontCodeId }: Props) {
+export default function ProjectCard({ project, flow, onClick, users = [], onAssign, selected, onSelect, procontCodeId, products, className = '' }: Props) {
   const area = project.requests?.studio_code_id === procontCodeId && procontCodeId ? project.requests?.requester_area : null
   const ownerColors = useOwnerColors()
-  const catalog = usePortfolios()
-  const portfolioName = catalog.portfolios.find(p => p.id === project.portfolio_id)?.name ?? (project.portfolio_id ? 'Portafolio no disponible' : null)
-  const initiativeName = catalog.initiatives.find(i => i.id === project.initiative_id)?.name ?? (project.initiative_id ? 'Proyecto no disponible' : null)
   const owner = ownerClass(ownerColors, flow.assigned_to)
   const requestNumber = project.requests?.request_number ?? project.project_number
   const areaColorClass = area ? (AREA_COLORS[area] ?? 'bg-gray-100 text-gray-600') : ''
-  const dueBadge = getDueDateBadge(project.due_date)
 
   // Solo tareas incorporadas; las sugerencias y las heredadas de la siembra anterior no cuentan (checklist-progress.ts).
   const { done: checkDone, total: checkTotal } = checklistCount(flow as any)
@@ -76,28 +66,17 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
       onClick={onClick}
       data-priority={project.priority}
       data-blocked={project.is_blocked ? 'true' : undefined}
-      className={`project-card relative cursor-pointer group/card prio-${project.priority} ${owner ? `has-owner ${owner}` : ''} ${
+      className={`project-card ${className} relative cursor-pointer group/card prio-${project.priority} ${owner ? `has-owner ${owner}` : ''} ${
         project.is_blocked ? 'is-blocked' : ''} ${selected ? 'is-selected' : ''}`}
     >
-      {onSelect && (
-        <div
-          className={`card-select absolute z-10 transition-opacity ${selected ? 'opacity-100' : 'opacity-0 group-hover/card:opacity-100'}`}
-          onClick={e => { e.stopPropagation(); onSelect(project.id) }}
-        >
-          <input aria-label={`Seleccionar ${project.title}`} type="checkbox" checked={selected ?? false} readOnly className="w-4 h-4 cursor-pointer accent-brand-600" />
-        </div>
-      )}
-
-      {/* Jerarquía: Portafolio → Proyecto/Iniciativa → título (24/11/2026). Sin nombres de personas en la tarjeta. */}
-      <p className="card-hierarchy" aria-label={portfolioName ? `Portafolio ${portfolioName}${initiativeName ? `, proyecto ${initiativeName}` : ''}` : 'Sin portafolio'}>
-        {portfolioName ? (<>
-          <span className="card-tag card-tag-portfolio" title={`Portafolio: ${portfolioName}`}><Icon name="layers" size={12} aria-hidden="true" /><span className="truncate">{portfolioName}</span></span>
-          {initiativeName && <span className="card-tag-group"><Icon name="arrow" size={12} className="card-tag-sep" aria-hidden="true" /><span className="card-tag card-tag-project" title={`Proyecto: ${initiativeName}`}><span className="truncate">{initiativeName}</span></span></span>}
-        </>) : <span className="card-tag card-tag-none">Sin portafolio</span>}
-      </p>
-
-      {/* Título: elemento principal */}
-      <h3 className="card-title line-clamp-2">{project.title}</h3>
+      <div className="card-number-row">
+        <span className="card-number">{requestNumber ?? 'Interno'}</span>
+        {onSelect && <label className="card-select" onClick={e => e.stopPropagation()}>
+          <input aria-label={`Seleccionar ${project.title}`} type="checkbox" checked={selected ?? false} onChange={() => onSelect(project.id)} />
+        </label>}
+      </div>
+      <h3 className="card-title">{project.title}</h3>
+      <TicketHierarchy ticket={project} products={products} />
 
       {/* Estado crítico: indicador semántico propio, independiente de prioridad y responsable */}
       {project.is_blocked && (
@@ -121,42 +100,29 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
             Dual (histórico)
           </span>
         )}
-        {dueBadge && (
-          <span className={`card-badge ${dueBadge.cls}`}>
-            <Icon name={dueBadge.icon} size={12} />{dueBadge.label}
-          </span>
-        )}
+
       </div>
 
-      {/* Pie: número REQ (metadato secundario), progreso REAL del checklist y responsable (avatar con su color) */}
+      {/* Pie: antigüedad neutral, progreso REAL del checklist y responsable (avatar con su color) */}
       <div className="project-card-footer">
-        <span className="card-foot-meta">
-        {requestNumber
-          ? <span className="card-number">{requestNumber}</span>
-          : <span className="card-internal">Interno</span>}
-        {checkTotal > 0 && (
-          <span className={`card-progress ${checkDone === checkTotal ? 'is-complete' : ''}`} aria-label={`Checklist ${checkDone} de ${checkTotal}`}>
-            <span className="card-progress-track" aria-hidden="true">
-              <span className="card-progress-fill" style={{ transform: `scaleX(${checkDone / checkTotal})` }} />
-            </span>
-            <span aria-hidden="true" className="card-progress-label"><Icon name="check" size={12} />{checkDone}/{checkTotal}</span>
-          </span>
-        )}
-        </span>
+        <TicketAge createdAt={project.created_at} />
+        <div className={`card-progress ${checkTotal > 0 && checkDone === checkTotal ? 'is-complete' : ''}`} aria-label={`Checklist ${checkDone} de ${checkTotal}`}>
+          <span className="card-progress-caption">{checkTotal ? 'Checklist' : 'Sin checklist'}</span>
+          <span className="card-progress-track" aria-hidden="true"><span className="card-progress-fill" style={{ transform: `scaleX(${checkTotal ? checkDone / checkTotal : 0})` }} /></span>
+          <span className="card-progress-label">{checkDone}/{checkTotal}</span>
+        </div>
 
         <div className="card-owner">
           {/* Responsables asignados (anillo = color personal persistido en Supabase) */}
           {owners > 0 ? (
-            <div className="flex items-center gap-1.5 min-w-0">
-              <div className="card-avatars">
+            <div className="card-avatars">
                 {assignedUsers.map(({ user, flowType }) => (
-                  <div key={user.id} role="img" aria-label={`Responsable: ${user.full_name}`} title={`${user.full_name} (${flowType === 'development' ? 'Development' : 'Administrative'})`}
+                  <div className="card-assignee" key={user.id}><div role="img" aria-label={`Responsable: ${user.full_name}`} title={`${user.full_name} (${flowType === 'development' ? 'Development' : 'Administrative'})`}
                     className={`card-avatar ${avatarClass(ownerColors, user.id, user.full_name)}`}>
                     {getInitials(user.full_name)}
-                  </div>
+                  </div><span className="card-owner-name">{user.full_name}</span></div>
                 ))}
               </div>
-            </div>
           ) : (
             <span className="card-unassigned"><span className="card-avatar-empty" aria-hidden="true" />Sin responsable</span>
           )}
@@ -192,7 +158,7 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
                       <div className={`w-7 h-7 rounded-full ${avatarClass(ownerColors, u.id, u.full_name)} flex items-center justify-center text-white text-[13px] font-medium shrink-0`}>
                         {getInitials(u.full_name)}
                       </div>
-                      {u.full_name.split(' ').slice(0, 2).join(' ')}
+                      {u.full_name}
                       {flow.assigned_to === u.id && <Icon name="check" size={14} className="ml-auto" aria-label="Asignado" />}
                     </button>
                   ))}

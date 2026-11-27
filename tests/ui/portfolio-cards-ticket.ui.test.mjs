@@ -144,7 +144,7 @@ test('Portafolio: chip en la tarjeta, filtro por portafolio/iniciativa, columna 
   const page = await open()
   const cards = await page.locator('.project-card').evaluateAll(els => els.map(el => ({ portfolio: el.querySelector('.card-tag-portfolio')?.textContent?.trim() ?? null, project: el.querySelector('.card-tag-project')?.textContent?.trim() ?? null })))
   assert.ok(cards.some(x => x.portfolio === 'Gestión' && x.project === 'Beneficiarios finales'))
-  assert.ok(cards.some(x => x.portfolio === 'Operaciones' && x.project === null))
+  assert.ok(cards.some(x => x.portfolio === 'Operaciones' && x.project === 'Sin proyecto específico'))
   const filter = page.locator('.board-toolbar label').filter({ hasText: /^Portafolio/ }).locator('select')
   await filter.selectOption(`i:${BENEF}`)
   assert.equal(await page.locator('.project-card').count(), 2)
@@ -160,11 +160,11 @@ test('Portafolio: chip en la tarjeta, filtro por portafolio/iniciativa, columna 
   await page.locator('.data-view table').waitFor()   // la vista Tabla se carga en diferido
   const headers = (await page.locator('.data-view thead th').allInnerTexts()).map(t => t.replace(/[↑↓↕]/g, '').trim())
   // 25/11/2026: la Tabla usa la misma jerarquía que la tarjeta en la primera columna (Portafolio → Proyecto → Título).
-  assert.ok(headers.includes('Portafolio → Proyecto → Título'))
+  assert.ok(headers.includes('Ticket y jerarquía'))
   const row = page.locator('.data-view tbody tr').filter({ hasText: kanbanProjects[5].title })
   const cell = row.locator('td').first()
-  assert.equal(await cell.locator('.card-tag-portfolio').textContent(), 'Portafolio: Gestión', 'nivel con nombre accesible')
-  assert.equal(await cell.locator('.card-tag-project').textContent(), 'Proyecto: Beneficiarios finales')
+  assert.equal(await cell.locator('.card-tag-portfolio').textContent(), 'Gestión', 'valor completo en definición Portafolio')
+  assert.equal(await cell.locator('.card-tag-project').textContent(), 'Beneficiarios finales')
   assert.deepEqual(page.errors, [])
   await page.context().close()
 })

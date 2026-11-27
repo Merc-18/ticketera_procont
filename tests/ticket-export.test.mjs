@@ -74,7 +74,7 @@ test('B. algunos terminados → exportación exacta con sus columnas', async () 
   assert.deepEqual(result.headers, COMPLETED_HEADERS)
   assert.equal(result.rows.length, 3)
   const first = result.rows.find(r => r[0] === 'REQ26-0100')
-  assert.deepEqual(first, ['REQ26-0100', 'Proyecto simulado', 'Área', 'Alta', 'Desarrollo', '2026-11-03', '2026-11-06', '3.0', '5.0', 'Completa'])
+  assert.deepEqual(first, ['REQ26-0100', 'Proyecto simulado', 'Área', 'Alta', 'Desarrollo', '2026-11-03', '2026-11-06', '3.0', '5.0', 'Completa', 'Sin producto', 'Sin subproducto', 'Sin portafolio', 'Sin proyecto específico', 'Antigüedad no disponible'])
 })
 
 test('C/D. más de 1.000 registros y terminados fuera de la primera página: ninguno se omite', async () => {
@@ -121,8 +121,8 @@ test('G. null en Cycle/Lead y fechas desconocidas permanecen vacíos con su moti
     row(2, 'done', { completed_at: null, cycle_time_seconds: null, lead_time_seconds: null, metric_status: 'missing_completion' }),
   ], new Map())
   const byReq = Object.fromEntries(rows.map(r => [r[0], r]))
-  assert.deepEqual(byReq['REQ26-0001'].slice(5), ['', '2026-11-06', '', '5.0', 'Sin inicio de trabajo registrado'])
-  assert.deepEqual(byReq['REQ26-0002'].slice(5), ['2026-11-03', '', '', '', 'Sin finalización registrada'])
+  assert.deepEqual(byReq['REQ26-0001'].slice(5, 10), ['', '2026-11-06', '', '5.0', 'Sin inicio de trabajo registrado'])
+  assert.deepEqual(byReq['REQ26-0002'].slice(5, 10), ['2026-11-03', '', '', '', 'Sin finalización registrada'])
   assert.equal(rows.flat().includes('0') || rows.flat().includes('0.0'), false, 'nunca cero inventado')
 })
 

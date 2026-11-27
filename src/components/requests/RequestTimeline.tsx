@@ -20,7 +20,7 @@ const ACTION: Record<string, string> = {
   bulk_updated: 'Operación masiva', evidence_reserved: 'Evidencia reservada', evidence_uploaded: 'Evidencia subida',
   // activity_logs (historial del proyecto)
   created: 'Proyecto creado', sla_started: 'SLA iniciado (histórico)', phase_change: 'Cambio de fase (tablero)',
-  edited: 'Proyecto editado', due_date_changed: 'Fecha de entrega cambiada', sla_completed: 'Trabajo completado (histórico)',
+  edited: 'Proyecto editado', sla_completed: 'Trabajo completado (histórico)',
   comment: 'Comentario', comment_added: 'Comentario agregado', status_changed: 'Estado del proyecto cambiado', project_deleted: 'Proyecto eliminado', project_restored: 'Proyecto restaurado',
 }
 const PRIORITY: Record<string, string> = PRIORITY_LABEL
@@ -72,7 +72,7 @@ export default function RequestTimeline({ requestId, projectId, catalogs, refres
       if (e.action === 'classified') {
         const isProcont = codeOf(d.studio_code_id) === 'PROCONT'
         detail = [codeOf(d.studio_code_id) && `Código ${codeOf(d.studio_code_id)}`,
-          nameOf(catalogs.subsystems, d.subsystem_id) && `Subproyecto ${nameOf(catalogs.subsystems, d.subsystem_id)}`,
+          nameOf(catalogs.subsystems, d.subsystem_id) && `Subproducto ${nameOf(catalogs.subsystems, d.subsystem_id)}`,
           isProcont && nameOf(catalogs.areas, d.area_id) && `Área ${nameOf(catalogs.areas, d.area_id)}`,
           isProcont && nameOf(catalogs.areas, d.subarea_id) && `Subárea ${nameOf(catalogs.areas, d.subarea_id)}`].filter(Boolean).join(' · ')
       }
@@ -106,10 +106,9 @@ export default function RequestTimeline({ requestId, projectId, catalogs, refres
     }
     for (const l of logs.data ?? []) {
       // Registro anterior del proyecto (solo lectura). Bloqueos ya constan en request_events.
-      if (['blocked', 'unblocked'].includes(l.action)) continue
+      if (['blocked', 'unblocked', 'due_date_changed'].includes(l.action)) continue
       const d = (l.details ?? {}) as Record<string, any>
       const detail = l.action === 'priority_changed' ? `${PRIORITY[d.from] ?? d.from} → ${PRIORITY[d.to] ?? d.to}`
-        : l.action === 'due_date_changed' ? `${d.from ?? '—'} → ${d.to ?? '—'}`
         : ['phase_changed', 'phase_change'].includes(l.action) ? `${phase(d.from)} → ${phase(d.to)}`
         : ['assigned', 'reassigned'].includes(l.action) ? `${d.from ? who.get(d.from) ?? '—' : 'Sin responsable'} → ${d.to ? who.get(d.to) ?? '—' : '—'}`
         : l.action === 'status_changed' ? `${d.from ?? '—'} → ${d.to ?? '—'}` : undefined

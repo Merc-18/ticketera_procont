@@ -104,7 +104,7 @@ export default function PublicRequestForm({ client }: { client: ClientFormConfig
     const errors: Partial<Record<FieldKey, string>> = {}
     if (!individual && !form.requester_name.trim()) errors['ticket-requester'] = 'Escribe el nombre de quien hace la solicitud.'
     if (!client.products.some(p => p.id === form.system_id)) errors['ticket-product'] = 'Elige el producto de la solicitud.'
-    else if (ready && ((requiresSubproject && !form.subsystem_id) || (form.subsystem_id && !options.items.some(p => p.id === form.subsystem_id)))) errors['ticket-subproject'] = 'Elige un subproyecto de este producto.'
+    else if (ready && ((requiresSubproject && !form.subsystem_id) || (form.subsystem_id && !options.items.some(p => p.id === form.subsystem_id)))) errors['ticket-subproject'] = 'Elige un subproducto de este producto.'
     if (!form.request_type_id) errors['ticket-type'] = 'Elige el tipo de solicitud.'
     if (!form.title.trim()) errors['ticket-title'] = 'Escribe un título breve.'
     if (!form.description.trim()) errors['ticket-description'] = 'Describe qué necesitas.'
@@ -116,7 +116,7 @@ export default function PublicRequestForm({ client }: { client: ClientFormConfig
       document.getElementById(failed[0])?.focus()
       return
     }
-    if (!ready) { setError('Espera a que se carguen los subproyectos del producto.'); return }
+    if (!ready) { setError('Espera a que se carguen los subproductos del producto.'); return }
     if (!prepared) { setError('Espera a que terminen de prepararse los adjuntos.'); return }
     if (!prepared.ok) { setError(prepared.error); return }
     setLoading(true); setError(null)
@@ -260,16 +260,16 @@ export default function PublicRequestForm({ client }: { client: ClientFormConfig
                   </div>
                 )}
                 <div>
-                  {label('ticket-subproject', 'Subproyecto', requiresSubproject)}
+                  {label('ticket-subproject', 'Subproducto', requiresSubproject)}
                   <select id="ticket-subproject" className={field} value={form.subsystem_id ?? ''} required={requiresSubproject}
                     disabled={!ready || options.items.length === 0} aria-invalid={fieldErrors['ticket-subproject'] ? true : undefined}
                     aria-describedby={fieldErrors['ticket-subproject'] ? 'ticket-subproject-error ticket-subproject-help' : 'ticket-subproject-help'}
                     onChange={e => set({ subsystem_id: e.target.value || null })}>
-                    <option value="">{!product ? 'Selecciona primero un producto' : options.failed && options.systemId === form.system_id ? 'Opciones no disponibles' : !ready ? 'Cargando subproyectos…' : !options.items.length ? 'Sin subproyectos' : requiresSubproject ? 'Selecciona un subproyecto' : 'Sin subproyecto'}</option>
+                    <option value="">{!product ? 'Selecciona primero un producto' : options.failed && options.systemId === form.system_id ? 'Opciones no disponibles' : !ready ? 'Cargando subproductos…' : !options.items.length ? 'Sin subproductos' : requiresSubproject ? 'Selecciona un subproducto' : 'Sin subproducto'}</option>
                     {options.systemId === form.system_id && options.items.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                   </select>
                   {fieldError('ticket-subproject')}
-                  <p id="ticket-subproject-help" role="status" className="text-xs text-gray-600 mt-2">{!product ? 'Elige un producto para consultar sus opciones.' : options.systemId !== form.system_id || options.loading ? 'Cargando subproyectos…' : options.failed ? 'No pudimos cargar los subproyectos. Reintenta para continuar.' : !options.items.length ? 'Este producto no tiene subproyectos disponibles. Puedes continuar.' : requiresSubproject ? 'Selecciona un subproyecto para continuar.' : 'Subproyecto opcional para este producto.'}</p>
+                  <p id="ticket-subproject-help" role="status" className="text-xs text-gray-600 mt-2">{!product ? 'Elige un producto para consultar sus opciones.' : options.systemId !== form.system_id || options.loading ? 'Cargando subproductos…' : options.failed ? 'No pudimos cargar los subproductos. Reintenta para continuar.' : !options.items.length ? 'Este producto no tiene subproductos disponibles. Puedes continuar.' : requiresSubproject ? 'Selecciona un subproducto para continuar.' : 'Subproducto opcional para este producto.'}</p>
                 </div>
               </section>
 
@@ -313,7 +313,7 @@ export default function PublicRequestForm({ client }: { client: ClientFormConfig
               </section>
 
             </fieldset>
-            {options.systemId === form.system_id && options.failed && <button type="button" className="ui-button ui-button-secondary" onClick={() => setRetry(n => n + 1)}>Reintentar subproyectos</button>}
+            {options.systemId === form.system_id && options.failed && <button type="button" className="ui-button ui-button-secondary" onClick={() => setRetry(n => n + 1)}>Reintentar subproductos</button>}
             {client.uncertain && <p role="status" className="text-sm text-gray-700">No pudimos confirmar el envío. Reintenta con los mismos datos para recuperar la constancia sin duplicar tu solicitud.</p>}
             <div className="form-actions">
               <button type="submit" disabled={loading}
