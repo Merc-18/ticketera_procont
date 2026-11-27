@@ -1,3 +1,4 @@
+import type { DraggableProvidedDragHandleProps } from '@hello-pangea/dnd'
 import Icon from '../ui/Icon'
 import { useState, useRef, useEffect } from 'react'
 import { canEdit } from '../../lib/access'
@@ -23,11 +24,13 @@ interface Props {
   onClick: () => void
   users?: User[]
   onAssign?: (flowId: string, userId: string) => void
+  selectionMode?: boolean
+  dragHandleProps?: DraggableProvidedDragHandleProps | null
   selected?: boolean
   onSelect?: (projectId: string) => void
 }
 
-export default function ProjectCard({ project, flow, onClick, users = [], onAssign, selected, onSelect, products, className = '' }: Props) {
+export default function ProjectCard({ project, flow, onClick, users = [], onAssign, selected, onSelect, selectionMode = false, dragHandleProps, products, className = '' }: Props) {
   const ownerColors = useOwnerColors()
   const owner = ownerClass(ownerColors, flow.assigned_to)
 
@@ -58,9 +61,23 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
     .filter((x, i, arr) => arr.findIndex(y => y.user.id === x.user.id) === i)
 
   const owners = assignedUsers.length
+  const activate = () => selectionMode && onSelect ? onSelect(project.id) : onClick()
   return (
     <div
-      onClick={onClick}
+      {...dragHandleProps}
+      role="button"
+      tabIndex={0}
+      aria-label={`${selectionMode ? 'Seleccionar' : 'Abrir'} ${project.title}`}
+      aria-pressed={selectionMode ? !!selected : undefined}
+      aria-describedby={selectionMode ? 'kanban-selection-help' : dragHandleProps?.['aria-describedby']}
+      onClick={activate}
+      onKeyDown={e => {
+        if (e.target !== e.currentTarget) return
+        // Space keeps the existing keyboard drag in normal Kanban mode.
+        if (e.key === 'Enter' || (e.key === ' ' && !dragHandleProps)) {
+          e.preventDefault(); e.stopPropagation(); activate()
+        }
+      }}
       data-ticket-id={project.id}
       data-priority={project.priority}
       data-blocked={project.is_blocked ? 'true' : undefined}
@@ -74,16 +91,13 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
             <Icon name="block" size={16} aria-hidden="true" /><span className="sr-only">Bloqueado</span>
           </span>}
         </h3>
-        {onSelect && <label className="card-select" onClick={e => e.stopPropagation()}>
-          <input aria-label={`Seleccionar ${project.title}`} type="checkbox" checked={selected ?? false} onChange={() => onSelect(project.id)} />
-        </label>}
       </div>
       <TicketHierarchy ticket={project} products={products} compact />
       <div className="card-status-row">
         <span className={`card-badge card-priority border ${PRIORITY_COLORS[project.priority]}`} title="Prioridad definitiva asignada por el personal">
           <Icon name="flag" size={12} /><span className="sr-only">Prioridad definitiva: </span>{PRIORITY_LABEL[project.priority] ?? project.priority}
         </span>
-        <TicketAge createdAt={project.created_at} />
+        <TicketAge createdAt={project.created_at} compact />
       </div>
       <div className="project-card-footer">
         <div className={`card-progress ${checkTotal > 0 && checkDone === checkTotal ? 'is-complete' : ''}`} aria-label={`Checklist ${checkDone} de ${checkTotal}`}>
@@ -96,19 +110,19 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
           {/* Responsables asignados (anillo = color personal persistido en Supabase) */}
           {owners > 0 ? (
             <div className="card-avatars">
-                {assignedUsers.map(({ user, flowType }) => (
-                  <div className="card-assignee" key={user.id}><div role="img" aria-label={`Responsable: ${user.full_name}`} title={`${user.full_name} (${flowType === 'development' ? 'Development' : 'Administrative'})`}
+                {assignedUsers.map(({ user }) => (
+                  <div key={user.id} role="img" aria-label={`Responsable: ${user.full_name}`} title={user.full_name}
                     className={`card-avatar ${avatarClass(ownerColors, user.id, user.full_name)}`}>
                     {getInitials(user.full_name)}
-                  </div><span className="card-owner-name" title={user.full_name}>{user.full_name}</span></div>
+                  </div>
                 ))}
-              </div>
+            </div>
           ) : (
-            <span className="card-unassigned" title="Sin responsable"><span className="card-avatar-empty" aria-hidden="true" /><span>Sin responsable</span></span>
+            <span className="card-avatar-empty" role="img" aria-label="Sin responsable" title="Sin responsable" />
           )}
 
           {/* Quick assign button */}
-          {onAssign && users.length > 0 && (
+          {!selectionMode && onAssign && users.length > 0 && (
             <div className="relative" ref={assignRef}>
               <button
                 onClick={e => { e.stopPropagation(); setShowAssign(v => !v) }}
@@ -116,7 +130,7 @@ export default function ProjectCard({ project, flow, onClick, users = [], onAssi
                 aria-label="Asignar responsable" aria-expanded={showAssign}
                 className="assign-toggle"
               >
-                <Icon name={owners > 0 ? 'edit' : 'plus'} size={14} />
+                <Icon name={owners > 0 ? 'edit' : 'plus'} size={12} />
               </button>
 
               {showAssign && (

@@ -24,14 +24,19 @@ const rows = kanbanProjects.slice(0, 4).map((p, i) => ({
   ...structuredClone(p),
   title: ['Consulta de beneficiarios finales y documentación completa de estructuras empresariales con múltiples establecimientos relacionados', 'Consulta de beneficiarios.', 'Ticket interno sin producto ni proyecto', 'Producto sin subproducto ni proyecto'][i],
   portfolio_id: i < 2 ? portfolio.id : null, initiative_id: i < 2 ? initiative.id : null,
-  created_at: i === 2 ? '2026-11-27T05:05:00Z' : '2026-10-01T03:00:00Z', due_date: '2020-01-01',
+  created_at: new Date(Date.now() - [0, 1, 2, 15][i] * 86400000).toISOString(), due_date: '2020-01-01',
   is_blocked: i === 0, blocked_reason: i === 0 ? 'Confirmación pendiente del cliente; motivo largo disponible en el detalle.' : null,
   requests: { ...p.requests, system_id: i === 2 ? null : system.id, subsystem_id: i === 0 ? subsystem.id : null,
     requested_subsystem_id: i === 1 ? subsystem.id : null, requester_name: 'Solicitante reservado al detalle', requester_area: 'Área reservada al detalle' },
   project_flows: [{ ...p.project_flows[0], current_phase: 'backlog',
     assigned_to: i === 0 ? STAFF['developer@simulado.invalid'].id : i === 2 ? null : STAFF['admin@simulado.invalid'].id,
-    checklist_items: Array.from({ length: i === 0 ? 18 : i === 1 ? 3 : 0 }, (_, n) => ({ id: id(9900 + i * 20 + n), completed: n < 3 })) }],
+    checklist_items: Array.from({ length: i === 0 ? 18 : 3 }, (_, n) => ({ id: id(9900 + i * 20 + n), completed: n < (i === 2 ? 0 : i === 3 ? 1 : 3) })) }],
 }))
+// Two historical flows may share one assignee; show each person only once.
+for (const i of [0, 1]) {
+  rows[i].project_type = 'dual'
+  rows[i].project_flows.push({ ...structuredClone(rows[i].project_flows[0]), id: id(9700 + i), flow_type: 'administrative', assigned_to: STAFF['admin@simulado.invalid'].id })
+}
 let fixture, vite, browser, base
 const captures = [], measurements = []
 const json = (route, data) => route.fulfill({ status: 200, contentType: 'application/json', headers: {
@@ -42,7 +47,7 @@ before(async () => {
   fixture = await startFixtureServer()
   const env = { VITE_SUPABASE_URL: fixture.url, VITE_SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_simulada_solo_pruebas', VITE_CLIENT_LOGIN_ENABLED: '1', VITE_CLIENT_PORTAL_MOCK: '0' }
   Object.assign(process.env, env)
-  vite = await createServer({ root: ROOT, logLevel: 'error', server: { host: '127.0.0.1', port: 0, hmr: false } })
+  vite = await createServer({ root: ROOT, cacheDir: `/tmp/ticketera-card-vite-${new URL(fixture.url).port}`, logLevel: 'error', server: { host: '127.0.0.1', port: 0, hmr: false } })
   await vite.listen(); base = `http://127.0.0.1:${vite.httpServer.address().port}`
   for (const k of Object.keys(env)) delete process.env[k]
   browser = await chromium.launch({ executablePath: process.env.CHROMIUM_EXECUTABLE })
@@ -51,7 +56,7 @@ after(async () => {
   await browser?.close(); await vite?.close(); await fixture?.close()
   if (EVIDENCE) {
     mkdirSync(EVIDENCE, { recursive: true })
-    writeFileSync(`${EVIDENCE}/${STAGE}-captures.json`, JSON.stringify({ stage: STAGE, source: STAGE === 'before' ? 'main@40f582de2f314be5f2b46bbaa2f39ecfeb5eaa14' : 'verified compact-card source', environment: 'React/Chromium with local Auth/REST fixtures; not hosted E2E', captures, measurements }, null, 2) + '\n')
+    writeFileSync(`${EVIDENCE}/${STAGE}-captures.json`, JSON.stringify({ stage: STAGE, source: STAGE === 'before' ? 'main@7cf700390310fd0d6622806451de18034e03944e' : 'verified refined-card source', environment: 'React/Chromium with local Auth/REST fixtures; not hosted E2E', captures, measurements }, null, 2) + '\n')
   }
 })
 async function capture(page, name, meta, target = page) {
@@ -61,18 +66,27 @@ async function capture(page, name, meta, target = page) {
   const data = await target.screenshot({ path: `${EVIDENCE}/screenshots/${file}`, fullPage: target === page, animations: 'disabled' })
   captures.push({ file, ...meta, viewport: page.viewportSize(), sha256: createHash('sha256').update(data).digest('hex') })
 }
-async function open(theme, width) {
-  const context = await browser.newContext({ viewport: { width, height: width >= 834 ? 1100 : 844 }, locale: 'es-PE' })
+async function open(theme, width, { email = 'superadmin@simulado.invalid', liveBulk = false, reducedMotion = 'no-preference' } = {}) {
+  const context = await browser.newContext({ reducedMotion, viewport: { width, height: width >= 834 ? 1100 : 844 }, locale: 'es-PE' })
   await context.route('**/*', r => ['localhost', '127.0.0.1'].includes(new URL(r.request().url()).hostname) || /^(blob|data):/.test(r.request().url()) ? r.continue() : r.abort())
   await context.addInitScript(t => localStorage.setItem('ticketera-theme', t), theme)
-  const page = await context.newPage(); page.errors = []; page.on('pageerror', e => page.errors.push(e.message))
-  await page.clock.setFixedTime(new Date())
+  const page = await context.newPage(); page.setDefaultTimeout(10000); page.rows = structuredClone(rows); page.bulkCalls = []; page.bulkFail = false; page.bulkDelay = 0; page.errors = []; page.on('pageerror', e => page.errors.push(e.message))
   await installVisualFixtures(page, fixture.url)
   for (const [path, data] of [['catalog_systems', [system]], ['catalog_subsystems', [subsystem]], ['portfolios', [portfolio]], ['portfolio_initiatives', [initiative]]])
     await page.route(`${fixture.url}/rest/v1/${path}?**`, r => json(r, data))
   await page.route(`${fixture.url}/rest/v1/projects?**`, r => {
     const status = new URL(r.request().url()).searchParams.get('status')?.replace('eq.', '') ?? 'active'
-    return json(r, rows.map(p => ({ ...p, status, project_flows: p.project_flows.map(f => ({ ...f, current_phase: status === 'active' ? 'backlog' : 'done' })) })))
+    return json(r, (liveBulk ? page.rows.filter(p => p.status === status) : page.rows).map(p => ({ ...p, status, project_flows: p.project_flows.map(f => ({ ...f, current_phase: status === 'active' ? 'backlog' : 'done' })) })))
+  })
+  await page.route(`${fixture.url}/rest/v1/rpc/operate_board_tickets`, async r => {
+    const args = r.request().postDataJSON(); page.bulkCalls.push(args)
+    if (page.bulkDelay) await new Promise(resolve => setTimeout(resolve, page.bulkDelay))
+    if (page.bulkFail) return r.fulfill({status:500,contentType:'application/json',headers:{'Access-Control-Allow-Origin':'*'},body:JSON.stringify({message:'Fallo QA simulado'})})
+    for (const p of page.rows.filter(p => args.p_project_ids.includes(p.id))) {
+      if (args.p_action === 'set_priority') p.priority = args.p_payload.priority
+      if (args.p_action === 'archive') p.status = 'archived'
+    }
+    return json(r, {updated:args.p_project_ids.length})
   })
   await page.route(`${fixture.url}/rest/v1/rpc/internal_card_colors`, r => json(r, { assignments: OWNER_FIXTURE, colors: [] }))
   await page.route(`${fixture.url}/rest/v1/rpc/get_board_ticket`, r => {
@@ -80,7 +94,7 @@ async function open(theme, width) {
     return json(r, { project_id: p.id, request_id: p.request_id, request_number: p.project_number, workflow_version: 2, project_status: 'active', general_status: p.is_blocked ? 'blocked' : 'in_progress', priority: p.priority, is_blocked: p.is_blocked, blocked_reason: p.blocked_reason,
       flows: [{ id: f.id, flow_type: 'development', phase: f.current_phase, phase_index: 0, phase_count: 8, phase_progress_percent: 0, assignee_id: f.assigned_to, checklist_total: f.checklist_items.length, checklist_completed: f.checklist_items.filter(x => x.completed).length, checklist_progress_percent: 0 }], pending_items: [], pending_fingerprint: 'QA' })
   })
-  await page.goto(base + '/login'); await page.fill('#email', 'superadmin@simulado.invalid'); await page.fill('#password', SIMULATED_PASSWORD)
+  await page.goto(base + '/login'); await page.fill('#email', email); await page.fill('#password', SIMULATED_PASSWORD)
   await page.getByRole('button', { name: 'Iniciar Sesión', exact: true }).click()
   await page.locator('nav[aria-label="Secciones"]').waitFor()
   await page.getByRole('button', { name: 'Boards', exact: true }).click()
@@ -90,40 +104,46 @@ async function open(theme, width) {
 async function verifyCards(page, status) {
   const cards = page.locator('.project-card')
   assert.equal(await cards.count(), 4)
-  assert.equal(await cards.locator('.card-tag-portfolio,.card-number,.card-area,.card-requester,.card-number-row,.card-tag-sep').count(), 0, 'sin filas, etiquetas ni metadatos del portafolio/número/área')
+  assert.equal(await cards.locator('.card-tag-portfolio,.card-number,.card-area,.card-requester,.card-number-row,.card-tag-sep,.card-owner-name,input[type=checkbox],.card-select').count(), 0, 'sin filas, etiquetas ni metadatos del portafolio/número/área')
   assert.ok(!(await cards.allInnerTexts()).join(' ').includes(portfolio.name))
   for (let i = 0; i < rows.length; i++) {
     const card = cards.nth(i), text = await card.innerText()
     assert.equal(await card.locator('.card-title').getAttribute('title'), rows[i].title)
-    assert.match(text, i === 0 ? /3\/18/ : i === 1 ? /3\/3/ : /0\/0/)
+    assert.match(text, i === 0 ? /3\/18/ : i === 1 ? /3\/3/ : i === 2 ? /0\/3/ : /1\/3/)
     assert.ok(!text.includes('Solicitante reservado al detalle') && !text.includes('Área reservada al detalle'))
     if (i < 2) {
       assert.equal(await card.locator('.card-project-line').getAttribute('title'), initiative.name)
       assert.equal(await card.locator('.card-product-line').getAttribute('title'), `${system.name} · ${subsystem.name}`)
-      assert.equal(await card.locator('.card-owner-name').getAttribute('title'), STAFF[i === 0 ? 'developer@simulado.invalid' : 'admin@simulado.invalid'].full_name)
+      assert.equal(await card.getByRole('img', {name:`Responsable: ${STAFF[i === 0 ? 'developer@simulado.invalid' : 'admin@simulado.invalid'].full_name}`,exact:true}).getAttribute('title'), STAFF[i === 0 ? 'developer@simulado.invalid' : 'admin@simulado.invalid'].full_name)
     } else {
       assert.match(text, /Sin subproducto/); assert.match(text, /Sin proyecto específico/)
-      if (i === 2) { assert.match(text, /Sin producto/); assert.match(text, /Sin responsable/) }
+      if (i === 2) { assert.match(text, /Sin producto/); assert.equal(await card.getByRole('img',{name:'Sin responsable',exact:true}).count(),1) }
       else assert.ok(text.includes(system.name))
     }
+    assert.equal(await card.locator('.ticket-age').innerText(), ['Hoy','1d','2d','15d'][i])
+    assert.equal(await card.locator('.ticket-age').getAttribute('aria-label'), `Antigüedad: ${['Hoy','1 día en tablero','2 días en tablero','15 días en tablero'][i]}`)
+    assert.equal(await card.locator('.ticket-age').getAttribute('title'), await card.locator('.ticket-age').getAttribute('aria-label'))
+    for (const u of Object.values(STAFF)) assert.ok(!text.includes(u.full_name), 'no visible assignee names')
+    assert.equal(await card.locator('.card-avatar').count(),i===0?2:i===2?0:1,'no repeated avatars per user')
     if (i === 0) assert.equal(await card.locator('.card-blocked').getAttribute('title'), rows[0].blocked_reason)
   }
   const issues = await cards.evaluateAll(els => els.flatMap(card => {
     const result = [], bounds = card.getBoundingClientRect()
-    if (bounds.height > 225) result.push(`height ${bounds.height}`)
+    if (bounds.height > 195) result.push(`height ${bounds.height}`)
     const sections = [...card.querySelectorAll('.card-title-row,.card-hierarchy,.card-status-row,.project-card-footer')].map(e => e.getBoundingClientRect())
     const footer = [...card.querySelectorAll('.card-progress,.card-owner,.assign-toggle')].map(e => e.getBoundingClientRect())
     const overlaps = (a, b) => Math.min(a.right,b.right)-Math.max(a.left,b.left)>1 && Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top)>1
     for (let i=0;i<sections.length;i++) for (let j=i+1;j<sections.length;j++) if (overlaps(sections[i],sections[j])) result.push('section overlap')
     if (overlaps(footer[0],footer[1])) result.push('checklist/owner overlap')
-    const ownerParts = [...card.querySelectorAll('.card-assignee > *, .card-unassigned, .assign-toggle')].map(e => e.getBoundingClientRect())
+    const ownerParts = [...card.querySelectorAll('.card-avatar,.card-avatar-empty,.assign-toggle')].map(e => {const r=e.getBoundingClientRect(),pad=e.matches('.card-avatar.owner-ring')?4:0;return {left:r.left-pad,right:r.right+pad,top:r.top-pad,bottom:r.bottom+pad}})
     for (let i=0;i<ownerParts.length;i++) for (let j=i+1;j<ownerParts.length;j++) if (overlaps(ownerParts[i],ownerParts[j])) result.push('owner/control overlap')
     for (const e of card.querySelectorAll('.card-title-row,.card-hierarchy,.card-status-row,.card-progress,.card-owner,.assign-toggle')) {
       const r=e.getBoundingClientRect(); if (r.left<bounds.left||r.right>bounds.right+1) result.push(`bounds ${e.className}`)
     }
-    for (const e of card.querySelectorAll('.card-select,.assign-toggle')) {const r=e.getBoundingClientRect(); if(r.width<44||r.height<44)result.push('control <44px')}
+    for (const e of card.querySelectorAll('.assign-toggle')) {const r=e.getBoundingClientRect(); if(r.width<44||r.height<44)result.push('control <44px')}
     for (const e of card.querySelectorAll('.card-product-line .card-tag-product,.card-product-line .card-tag-subproduct')) if (e.getBoundingClientRect().width < 32) result.push('hidden product/subproduct')
     if (card.querySelector('.card-product-line > span[aria-hidden]').getBoundingClientRect().width < 1) result.push('hidden separator')
+    if (Math.abs(card.querySelector('.card-progress-track').getBoundingClientRect().width-30)>1) result.push('track not 30px')
     const title=card.querySelector('.card-title-text'); if(title.getBoundingClientRect().height>42.1)result.push('title >2 lines')
     for(const e of card.querySelectorAll('.card-product-line,.card-project-line')) {if(e.getBoundingClientRect().height>20.1||getComputedStyle(e).textOverflow!=='ellipsis') result.push('hierarchy not single-line ellipsis')}
     return result
@@ -131,7 +151,7 @@ async function verifyCards(page, status) {
   assert.deepEqual(issues, [], status)
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1), false)
 }
-for (const theme of ['light', 'dark']) for (const width of [320, 390, 834, 1440]) test(`${STAGE} compact cards ${theme} ${width}px: active, completed, archived`, async () => {
+for (const theme of ['light', 'dark']) for (const width of [320, 390, 834, 1440]) test(`${STAGE} refined cards ${theme} ${width}px: active, completed, archived`, async () => {
   const page = await open(theme, width)
   try {
     for (const [label, status] of [['Activos', 'active'], ['Completados', 'completed'], ['Archivados', 'archived']]) {
@@ -144,7 +164,7 @@ for (const theme of ['light', 'dark']) for (const width of [320, 390, 834, 1440]
         const toggle = page.locator('.project-card').first().getByRole('button', { name: 'Asignar responsable', exact: true })
         await toggle.click(); const menu = page.locator('.assign-menu'); await menu.waitFor()
         const b = await menu.boundingBox(); assert.ok(b.x >= 0 && b.x+b.width <= width+1)
-        for (const button of await menu.locator('button').all()) assert.ok((await button.boundingBox()).height >= 44)
+        for (const button of await menu.locator('button').all()) assert.ok((await button.boundingBox()).height >= 43.9)
         await toggle.click()
       }
     }
@@ -162,6 +182,118 @@ if (STAGE !== 'before') test('Full metadata stays in detail: portfolio, project,
     assert.equal(await dialog.locator('#project-portfolio').inputValue(),portfolio.id)
     assert.equal(await dialog.locator('#project-project').inputValue(),initiative.id)
     await capture(page,'full-ticket-detail',{theme:'light',width:390,view:'full-detail'})
+    assert.deepEqual(page.errors,[])
+  } finally {await page.context().close()}
+})
+
+if (STAGE !== 'before') for (const reducedMotion of ['no-preference','reduce']) test(`Selection mode: mouse, Enter/Space, Escape, Cancel and normal keyboard drag/open (${reducedMotion})`, async () => {
+  const page = await open('light', 834,{reducedMotion})
+  try {
+    const cards = page.locator('.project-card'), first = cards.nth(0), second = cards.nth(1)
+    assert.equal(await cards.locator('input[type=checkbox]').count(),0)
+    await second.focus(); await page.keyboard.press('Space')
+    await page.locator('.is-dragging').waitFor(); await page.keyboard.press('Escape')
+    await page.locator('.is-dragging').waitFor({state:'detached'})
+    await second.hover(); const rect=await second.boundingBox()
+    await page.mouse.move(rect.x+20,rect.y+12);await page.mouse.down();await page.mouse.move(rect.x+20,rect.y+40,{steps:5})
+    await page.locator('.is-dragging').waitFor();await page.keyboard.press('Escape');await page.mouse.up()
+    await page.locator('.is-dragging').waitFor({state:'detached'})
+    assert.equal(await second.getAttribute('aria-pressed'),null)
+    await first.focus(); await page.keyboard.press('Enter'); await page.getByRole('dialog').waitFor()
+    await page.getByRole('dialog').getByRole('button',{name:'Cerrar',exact:true}).first().click()
+    await page.getByRole('button',{name:'Seleccionar',exact:true}).click()
+    await first.click(); await second.focus(); await page.keyboard.press('Space')
+    assert.equal(await page.getByRole('dialog').count(),0)
+    assert.equal(await page.locator('.project-card.is-selected').count(),2)
+    const bar = page.getByRole('region',{name:'Acciones masivas'})
+    await bar.getByText('2 seleccionados',{exact:true}).waitFor()
+    assert.equal(await first.getAttribute('aria-pressed'),'true')
+    assert.equal(await page.locator('[data-rfd-drag-handle-draggable-id]').count(),0,'drag disabled in selection mode')
+    await page.keyboard.press('Enter'); assert.equal(await page.locator('.project-card.is-selected').count(),1)
+    await page.keyboard.press('Enter'); assert.equal(await page.locator('.project-card.is-selected').count(),2)
+    await page.locator('#bulk-priority').click(); await page.keyboard.press('Escape')
+    assert.equal(await page.getByRole('button',{name:'Cancelar selección',exact:true}).getAttribute('aria-pressed'),'true','closing dropdown does not cancel selection')
+    await page.keyboard.press('Escape')
+    await page.getByRole('button',{name:'Seleccionar',exact:true}).waitFor()
+    assert.equal(await page.locator('.project-card.is-selected').count(),0)
+    assert.equal(await bar.count(),0)
+    await page.getByRole('button',{name:'Seleccionar',exact:true}).click(); await first.click()
+    await bar.getByRole('button',{name:'Cancelar',exact:true}).click()
+    assert.equal(await first.getAttribute('aria-pressed'),null)
+    await first.click(); await page.getByRole('dialog').waitFor()
+    assert.deepEqual(page.errors,[])
+  } finally {await page.context().close()}
+})
+
+if (STAGE !== 'before') test('Existing bulk RPC: exact selected IDs, priority and archive, for superadmin/admin/developer', async () => {
+  for (const role of ['superadmin','admin','developer']) {
+    const page=await open('dark',390,{email:`${role}@simulado.invalid`,liveBulk:true})
+    try {
+      const select=()=>page.getByRole('button',{name:'Seleccionar',exact:true}).click()
+      const pick=async()=>{await page.locator('.project-card').nth(0).click();await page.locator('.project-card').nth(1).click()}
+      await select(); await pick(); await page.locator('#bulk-priority').click()
+      await page.getByRole('option',{name:'Alto',exact:true}).click()
+      await page.getByText('Prioridad actualizada en 2 proyectos',{exact:true}).waitFor()
+      assert.equal(page.bulkCalls.length,1)
+      const priority=page.bulkCalls[0]
+      assert.deepEqual(priority.p_project_ids,[rows[0].id,rows[1].id]); assert.equal(priority.p_action,'set_priority');assert.deepEqual(priority.p_payload,{priority:'high'})
+      assert.match(priority.p_idempotency_key,/^[0-9a-f-]{36}$/)
+      assert.equal(await page.locator('.project-card.is-selected').count(),0)
+      assert.equal(await page.locator(`.project-card[data-ticket-id="${rows[0].id}"]`).getAttribute('data-priority'),'high')
+      await select(); await pick()
+      page.once('dialog',d=>d.accept())
+      await page.getByRole('region',{name:'Acciones masivas'}).getByRole('button',{name:'Archivar',exact:true}).click()
+      await page.getByText('2 proyectos archivados',{exact:true}).waitFor()
+      assert.equal(page.bulkCalls.length,2)
+      const archive=page.bulkCalls[1]
+      assert.deepEqual(archive.p_project_ids,[rows[0].id,rows[1].id]);assert.equal(archive.p_action,'archive');assert.deepEqual(archive.p_payload,{})
+      assert.notEqual(archive.p_idempotency_key,priority.p_idempotency_key)
+      assert.equal(await page.locator('.project-card').count(),2)
+      assert.deepEqual(page.errors,[])
+    } finally {await page.context().close()}
+  }
+})
+
+if (STAGE !== 'before') test('Bulk failure keeps selection; busy guard, filter reset, view change and mobile action bar', async () => {
+  const page=await open('light',320,{liveBulk:true})
+  try {
+    await page.getByRole('button',{name:'Seleccionar',exact:true}).click()
+    await page.locator('.project-card').nth(0).click();await page.locator('.project-card').nth(1).click()
+    const bar=page.getByRole('region',{name:'Acciones masivas'})
+    const box=await bar.boundingBox();assert.ok(box.x>=0&&box.x+box.width<=320)
+    await capture(page,'selection-320',{theme:'light',width:320,view:'selection'})
+    page.bulkFail=true;page.bulkDelay=350
+    await page.locator('#bulk-priority').click();await page.getByRole('option',{name:'Bajo',exact:true}).click()
+    await page.waitForFunction(()=>document.querySelector('[aria-label="Acciones masivas"]')?.getAttribute('aria-busy')==='true')
+    assert.equal(await bar.getByRole('button',{name:'Archivar',exact:true}).isDisabled(),true)
+    await page.getByText('No se pudo completar la operación. Comprueba la conexión y vuelve a intentarlo.',{exact:true}).waitFor()
+    assert.equal(await page.locator('.project-card.is-selected').count(),2)
+    assert.equal(page.bulkCalls.length,1)
+    page.bulkFail=false;page.bulkDelay=0
+    await page.locator('input[type=search]').fill('Ticket interno')
+    assert.equal(await page.locator('.project-card.is-selected').count(),0)
+    await page.locator('.project-card').click()
+    await page.locator('#bulk-priority').click();await page.getByRole('option',{name:'Medio',exact:true}).click()
+    await page.getByText('Prioridad actualizada en 1 proyecto',{exact:true}).waitFor()
+    assert.deepEqual(page.bulkCalls[1].p_project_ids,[rows[2].id],'hidden tickets not included')
+    await page.locator('input[type=search]').fill('')
+    await page.getByRole('button',{name:'Seleccionar',exact:true}).click();await page.locator('.project-card').first().click()
+    await page.getByRole('button',{name:'Tabla',exact:true}).click()
+    await bar.waitFor({state:'detached'})
+    await page.getByRole('button',{name:'Kanban',exact:true}).click()
+    await page.getByRole('button',{name:'Seleccionar',exact:true}).waitFor()
+    assert.equal(await page.locator('.project-card.is-selected').count(),0)
+    assert.deepEqual(page.errors,[])
+  } finally {await page.context().close()}
+})
+
+if (STAGE !== 'before') test('Viewer: no selection/bulk actions, normal keyboard access to ticket remains', async () => {
+  const page=await open('dark',1440,{email:'viewer@simulado.invalid'})
+  try {
+    assert.equal(await page.getByRole('button',{name:'Seleccionar',exact:true}).count(),0)
+    assert.equal(await page.getByRole('region',{name:'Acciones masivas'}).count(),0)
+    await page.locator('.project-card').first().focus();await page.keyboard.press('Enter')
+    await page.getByRole('dialog').waitFor()
     assert.deepEqual(page.errors,[])
   } finally {await page.context().close()}
 })

@@ -1,0 +1,25 @@
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✔ after refined cards light 320px: active, completed, archived (2601.123904ms)
+✔ after refined cards light 390px: active, completed, archived (1494.569787ms)
+✔ after refined cards light 834px: active, completed, archived (1291.228306ms)
+✔ after refined cards light 1440px: active, completed, archived (1505.969663ms)
+✔ after refined cards dark 320px: active, completed, archived (1400.264687ms)
+✔ after refined cards dark 390px: active, completed, archived (1309.56076ms)
+✔ after refined cards dark 834px: active, completed, archived (1310.411786ms)
+✔ after refined cards dark 1440px: active, completed, archived (1352.022054ms)
+✔ Full metadata stays in detail: portfolio, project, INT/REQ, requester, area and administrative controls (897.537557ms)
+✔ Selection mode: mouse, Enter/Space, Escape, Cancel and normal keyboard drag/open (no-preference) (1428.497327ms)
+✔ Selection mode: mouse, Enter/Space, Escape, Cancel and normal keyboard drag/open (reduce) (1465.838637ms)
+✔ Existing bulk RPC: exact selected IDs, priority and archive, for superadmin/admin/developer (14597.516052ms)
+✔ Bulk failure keeps selection; busy guard, filter reset, view change and mobile action bar (2564.89393ms)
+✔ Viewer: no selection/bulk actions, normal keyboard access to ticket remains (730.412156ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 34354.601804

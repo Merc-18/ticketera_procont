@@ -1,6 +1,9 @@
-import { ticketAgeLabel } from '../../lib/ticket-age'
+import { ticketAgeDays, ticketAgeLabel } from '../../lib/ticket-age'
 import { useLimaDay } from '../../hooks/useLimaDay'
-export default function TicketAge({ createdAt }: { createdAt?: string | null }) {
+export default function TicketAge({ createdAt, compact = false }: { createdAt?: string | null; compact?: boolean }) {
   const today = useLimaDay()
-  return <span className="ticket-age" aria-label={`Antigüedad: ${ticketAgeLabel(createdAt, today)}`}>{ticketAgeLabel(createdAt, today)}</span>
+  const label = ticketAgeLabel(createdAt, today)
+  const days = ticketAgeDays(createdAt, today)
+  const value = compact ? (days === null ? '—' : days === 0 ? 'Hoy' : `${days}d`) : label
+  return <span className="ticket-age" title={`Antigüedad: ${label}`} aria-label={`Antigüedad: ${label}`}>{value}</span>
 }

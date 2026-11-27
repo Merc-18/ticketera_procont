@@ -3,7 +3,7 @@ import ControlLabel from '../ui/ControlLabel'
 import Icon, { type IconName } from '../ui/Icon'
 import ScrollHint from '../ui/ScrollHint'
 import { DragDropContext, DropResult } from '@hello-pangea/dnd'
-import { useState, useEffect, lazy, Suspense } from 'react'
+import { useState, useEffect, useRef, lazy, Suspense } from 'react'
 import BoardColumn from './BoardColumn'
 import { preloadOnIntent } from '../../lib/client-routes'
 import { useProjects } from '../../hooks/useProjects'
@@ -100,6 +100,13 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
   const [selectedProject, setSelectedProject] = useState<{ project: any; flow: ProjectFlow } | null>(null)
   const [showNewModal, setShowNewModal] = useState(false)
   const [selectedIds, setSelectedIds] = useState<string[]>([])
+  const [selectionMode, setSelectionMode] = useState(false)
+  const [bulkBusy, setBulkBusy] = useState(false)
+  const selectionButton = useRef<HTMLButtonElement>(null)
+  const cancelSelection = () => {
+    setSelectedIds([]); setSelectionMode(false)
+    requestAnimationFrame(() => selectionButton.current?.focus())
+  }
   // Cierre por arrastre con tareas pendientes: requiere confirmación explícita.
   const [pendingClose, setPendingClose] = useState<{ ticket: BoardTicket; flowId: string; title: string; key: string } | null>(null)
   const [closing, setClosing] = useState(false)
@@ -138,7 +145,16 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
   useEffect(() => { localStorage.setItem('kanban_userFilter', userFilter) },         [userFilter])
   useEffect(() => { localStorage.setItem('kanban_myProjectsOnly', String(myProjectsOnly)) }, [myProjectsOnly])
   useEffect(() => { localStorage.setItem('kanban_viewMode', viewMode) },              [viewMode])
-  useEffect(() => { setSelectedIds([]) }, [statusFilter])
+  useEffect(() => { setSelectedIds([]); setSelectionMode(false) }, [statusFilter, viewMode, boardType, canEdit])
+  useEffect(() => { setSelectedIds([]) }, [priorityFilter, studioFilter, portfolioFilter, productFilter, subproductFilter, userFilter, myProjectsOnly, searchQuery])
+  useEffect(() => {
+    if (!selectionMode || bulkBusy) return
+    const escape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && !event.defaultPrevented) { event.preventDefault(); cancelSelection() }
+    }
+    document.addEventListener('keydown', escape)
+    return () => document.removeEventListener('keydown', escape)
+  }, [selectionMode, bulkBusy])
 
   // Sincronizar selectedProject con datos frescos después de cada reload
   useEffect(() => {
@@ -360,6 +376,13 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
                 </button>
               ))}
             </div>
+            {canEdit && viewMode === 'kanban' && statusFilter === 'active' && (
+              <button ref={selectionButton} type="button" className="ui-button ui-button-secondary"
+                aria-pressed={selectionMode} aria-controls="kanban-grid" disabled={bulkBusy}
+                onClick={() => selectionMode ? cancelSelection() : setSelectionMode(true)}>
+                {selectionMode ? 'Cancelar selección' : 'Seleccionar'}
+              </button>
+            )}
             {canManage && boardType === 'development' && (
               <button
                 onClick={() => setShowNewModal(true)}
@@ -512,11 +535,14 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
         </div>
       )}
 
+      {selectionMode && <p id="kanban-selection-help" role="status" className="text-sm text-gray-600 mb-3">
+        Selecciona tickets con clic, Enter o Espacio. Escape cancela la selección.
+      </p>}
       {/* ── VISTA KANBAN ── */}
       {viewMode === 'kanban' && statusFilter === 'active' && !(filteredProjects.length === 0 && hasFilters) && (
         <DragDropContext onDragEnd={handleDragEnd}>
           <ScrollHint>Desliza horizontalmente para ver todas las fases del tablero.</ScrollHint>
-          <div role="region" aria-label="Tablero Kanban, desplazamiento horizontal" tabIndex={0} className="kanban-scroll flex gap-4 overflow-x-auto pb-4">
+          <div id="kanban-grid" role="region" aria-label="Tablero Kanban, desplazamiento horizontal" tabIndex={0} className="kanban-scroll flex gap-4 overflow-x-auto pb-4">
             {phases.map((phase) => (
               <BoardColumn
                 key={phase.id}
@@ -526,8 +552,9 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
                 users={users}
                 onAssign={(projectId, flowId, userId) => { void assignFlow(projectId, flowId, userId).then(() => toast.success('Responsable actualizado')).catch(err => toast.error(errorMessage(err))) }}
                 canManage={canManage}
+                selectionMode={selectionMode && canEdit}
                 selectedIds={canEdit ? selectedIds : []}
-                onSelect={canEdit ? (id => setSelectedIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id])) : undefined}
+                onSelect={canEdit && selectionMode ? (id => { if (!bulkBusy) setSelectedIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]) }) : undefined}
                 procontCodeId={canonicalProcontCodeId}
                 products={catalogs}
               />
@@ -564,41 +591,46 @@ export default function KanbanBoard({ boardType, openProjectId, onOpenHandled }:
         </div>
       )}
 
+      {/* Leave scroll room for the fixed bulk action bar, including its mobile wrapping. */}
+      {selectionMode && selectedIds.length > 0 && <div aria-hidden="true" className="h-44" />}
       {/* ── BULK ACTION BAR ── */}
-      {canEdit && selectedIds.length > 0 && (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-surface border border-gray-200 shadow-2xl rounded-2xl px-4 py-3 flex flex-wrap items-center justify-center gap-3 w-max max-w-[calc(100vw-2rem)]">
+      {canEdit && selectionMode && selectedIds.length > 0 && (
+        <div role="region" aria-label="Acciones masivas" aria-busy={bulkBusy} className="bulk-action-bar fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-surface border border-gray-200 shadow-2xl rounded-2xl px-4 py-3 flex flex-wrap items-center justify-center gap-3 w-max max-w-[calc(100vw-2rem)]">
           <span role="status" className="text-sm font-medium text-gray-700">
             {selectedIds.length} seleccionado{selectedIds.length !== 1 ? 's' : ''}
           </span>
           {selectedIds.length > 100 && <span className="text-xs text-red-700">Máximo 100 por operación</span>}
           <div className="h-5 w-px bg-gray-300" aria-hidden="true" />
-          <PrioritySelect id="bulk-priority" label="Prioridad definitiva" value={'' as string} disabled={selectedIds.length > 100}
+          <PrioritySelect id="bulk-priority" label="Prioridad definitiva" value={'' as string} disabled={bulkBusy || selectedIds.length > 100}
             className="prio-select-inline" extraOptions={[{ value: '', label: 'Elegir…' }]}
             onChange={async val => {
-              if (!val) return
+              if (!val || bulkBusy) return
+              setBulkBusy(true)
               try {
                 await bulkUpdate(selectedIds, 'set_priority', { priority: val as any })
-                setSelectedIds([])
+                cancelSelection()
                 toast.success(`Prioridad actualizada en ${selectedIds.length} proyecto${selectedIds.length !== 1 ? 's' : ''}`)
-              } catch (err) { toast.error(errorMessage(err)) }
+              } catch (err) { toast.error(errorMessage(err)) } finally { setBulkBusy(false) }
             }} />
           <button
-            disabled={selectedIds.length > 100}
+            disabled={bulkBusy || selectedIds.length > 100}
             onClick={async () => {
+              if (bulkBusy) return
               const count = selectedIds.length
               if (!confirm(`¿Archivar ${count} ticket(s)? Se conserva su historial y pueden restaurarse.`)) return
+              setBulkBusy(true)
               try {
                 await bulkUpdate(selectedIds, 'archive', {})
-                setSelectedIds([])
+                cancelSelection()
                 toast.success(`${count} proyecto${count !== 1 ? 's' : ''} archivado${count !== 1 ? 's' : ''}`)
-              } catch (err) { toast.error(errorMessage(err)) }
+              } catch (err) { toast.error(errorMessage(err)) } finally { setBulkBusy(false) }
             }}
             className="ui-button ui-button-secondary"
           >
             <ControlLabel icon="archive">Archivar</ControlLabel>
           </button>
           <button
-            onClick={() => setSelectedIds([])}
+            onClick={cancelSelection} disabled={bulkBusy}
             className="ui-button ui-button-secondary"
           >
             Cancelar

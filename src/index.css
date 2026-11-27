@@ -538,8 +538,6 @@ html[data-theme-switching] *, html[data-theme-switching] *::before, html[data-th
 .project-card.has-owner, :root[data-theme="dark"] .board-column .project-card.has-owner { box-shadow: inset 4px 0 0 var(--owner), inset 5px 0 0 var(--p-ink), var(--card-shadow); padding-left: 18px; }
 .project-card.is-blocked { background: var(--danger-bg); border-color: color-mix(in srgb, var(--danger) 45%, var(--line)); }
 .project-card.is-selected { border-color: var(--p-action); outline: 2px solid color-mix(in srgb, var(--p-action) 35%, transparent); outline-offset: 0; }
-.project-card .card-select { top: 8px; right: 8px; opacity: 1; }
-.project-card input[type=checkbox] { width: 20px; height: 20px; }
 .card-meta { display: flex; align-items: center; gap: 8px; min-width: 0; padding-right: 28px; font-size: 13px; line-height: 20px; color: var(--p-muted); }
 .card-number { font-family: var(--font-mono); font-variant-numeric: tabular-nums; color: var(--p-ink-2); white-space: nowrap; letter-spacing: -.01em; }
 .card-internal { padding: 0 6px; border-radius: 4px; background: var(--p-alt); color: var(--p-muted); font-weight: 500; }
@@ -999,7 +997,6 @@ html:not([data-input=keyboard]) .dashboard-export-menu { transition: opacity 150
 .project-card .card-title-row { display: flex; align-items: flex-start; gap: 4px; min-width: 0; }
 .project-card .card-title { display: flex; align-items: flex-start; gap: 5px; flex: 1; min-width: 0; font-size: 15px; line-height: 21px; font-weight: 650; }
 .project-card .card-title-text { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; }
-.project-card .card-select { position: static; flex: 0 0 44px; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; cursor: pointer; }
 .project-card .card-blocked { display: inline-flex; flex-shrink: 0; padding: 2px 0; margin: 0; background: none; }
 .project-card .card-blocked svg { margin: 0; }
 .card-hierarchy.card-hierarchy-compact { display: grid; gap: 2px; padding: 0; margin: 0; min-width: 0; }
@@ -1010,15 +1007,26 @@ html:not([data-input=keyboard]) .dashboard-export-menu { transition: opacity 150
 .project-card .card-status-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; min-width: 0; }
 .project-card .card-status-row .ticket-age { font-size: 12px; white-space: nowrap; }
 .project-card .card-priority { font-size: 12px; line-height: 20px; padding: 0 5px; flex-shrink: 0; }
-.project-card .project-card-footer { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; min-height: 44px; margin: 0; padding-top: 4px; }
-.project-card .card-progress { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; flex: 0 0 60px; gap: 5px; width: auto; min-width: 0; }
-.project-card .card-progress-track { width: 100%; min-width: 0; height: 4px; }
+.project-card .project-card-footer { display: flex; flex-wrap: nowrap; align-items: center; gap: 4px 8px; min-height: 44px; margin: 0; padding-top: 4px; }
+.project-card .card-progress { display: grid; grid-template-columns: 30px auto; align-items: center; flex: 0 0 auto; gap: 5px; width: auto; min-width: 0; }
+.project-card .card-progress-track { width: 30px; min-width: 0; height: 4px; }
 .project-card .card-progress-label { min-width: 0; font-size: 12px; }
-.project-card .card-owner { flex: 1 1 150px; gap: 4px; }
+.project-card .card-owner { display: flex; flex: 1 1 auto; justify-content: flex-end; gap: 6px; }
 .project-card .card-assignee { gap: 5px; }
 .project-card .card-owner-name { max-width: none; min-width: 0; font-size: 13px; line-height: 20px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.project-card .card-avatars { gap: 2px; }
+.project-card .card-avatars { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .project-card .card-unassigned { min-width: 0; gap: 5px; }
 .project-card .card-unassigned > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .project-card .card-avatar-empty { flex-shrink: 0; }
-.project-card .assign-toggle { flex-shrink: 0; width: 44px; height: 44px; min-height: 44px; margin: 0; }
+.project-card .assign-toggle { flex-shrink: 0; width: 44px; height: 44px; min-height: 44px; margin: 0; color: var(--p-meta); }
+.project-card:focus-visible { outline: 2px solid var(--p-action); outline-offset: 2px; }
+
+/* Bulk controls stay usable above the fixed action bar, including the last priority option. */
+.bulk-action-bar .prio-select-list { max-height: min(280px, 55vh); overflow-y: auto; }
+.bulk-action-bar .prio-select-option { min-height: 44px; }
+
+/* DnD completes its state on transitionend; 1ms preserves keyboard/reduced-motion behavior. */
+html[data-input=keyboard] .is-drop-animating[data-rfd-draggable-id] { transition-property: transform !important; transition-duration: 1ms !important; }
+@media (prefers-reduced-motion: reduce) {
+  .is-drop-animating[data-rfd-draggable-id] { transition-property: transform !important; transition-duration: 1ms !important; }
+}

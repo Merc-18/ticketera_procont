@@ -193,6 +193,7 @@ test('Tarjetas compactas: proyecto y responsables; metadatos completos conservad
     title: el.querySelector('.card-title')?.textContent?.trim(),
     number: el.querySelector('.card-number')?.textContent?.trim(),
     text: el.innerText,
+    assignees: [...el.querySelectorAll('.card-avatar')].map(a => a.getAttribute('aria-label')),
   })))
   const active = QA.projects.filter(p => p.status === 'active')
   assert.equal(cards.length, active.length)
@@ -204,7 +205,7 @@ test('Tarjetas compactas: proyecto y responsables; metadatos completos conservad
     assert.equal(c.portfolio, null); assert.equal(c.project, ini); assert.equal(c.none, false)
     assert.equal(c.number, undefined)
     assert.equal(await page.locator('.project-card .card-requester').count(), 0, 'no añadir un campo de solicitante a las tarjetas')
-    for (const f of p.project_flows ?? []) { const u = QA.users.find(u => u.id === f.assigned_to); if (u) assert.ok(c.text.includes(u.full_name), `${c.title}: responsable visible`) }
+    for (const f of p.project_flows ?? []) { const u = QA.users.find(u => u.id === f.assigned_to); if (u) assert.ok(c.assignees.includes(`Responsable: ${u.full_name}`), `${c.title}: avatar accesible con nombre`) }
   }
   // Etiquetas completas, sin recorte: «Beneficiarios finales» no se trunca dentro de la columna.
   const clipped = await page.locator('.card-tag .truncate').evaluateAll(els => els.filter(e => e.scrollWidth > e.clientWidth + 1).map(e => e.textContent))

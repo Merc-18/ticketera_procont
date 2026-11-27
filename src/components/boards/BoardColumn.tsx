@@ -19,6 +19,7 @@ interface Props {
   onAssign?: (projectId: string, flowId: string, userId: string) => void
   /** admin/superadmin: pueden reasignar también tickets bloqueados. */
   canManage?: boolean
+  selectionMode?: boolean
   selectedIds?: string[]
   onSelect?: (projectId: string) => void
   procontCodeId?: string | null
@@ -28,7 +29,7 @@ interface Props {
  * Columna del Kanban. La ETAPA tiene identidad propia (data-stage → fondo teñido sutil, acento superior,
  * icono y contador en su tono); las tarjetas quedan neutras para que prioridad y responsable se lean aparte.
  */
-export default function BoardColumn({ phase, projects, onProjectClick, users = [], onAssign, canManage, selectedIds, onSelect, procontCodeId, products }: Props) {
+export default function BoardColumn({ phase, projects, onProjectClick, users = [], onAssign, canManage, selectionMode, selectedIds, onSelect, procontCodeId, products }: Props) {
   const blocked = projects.filter(p => p.project.is_blocked).length
   return (
     <section className="board-column flex-shrink-0 w-72" data-stage={stageTone(phase.id)} aria-label={`${phase.title}: ${projects.length} tickets`}>
@@ -60,14 +61,13 @@ export default function BoardColumn({ phase, projects, onProjectClick, users = [
                 key={item.flow.id}
                 draggableId={item.flow.id}
                 index={index}
-                isDragDisabled={item.project.is_blocked}
+                isDragDisabled={item.project.is_blocked || selectionMode}
               >
                 {(provided, snapshot) => (
                   <div
                     ref={provided.innerRef}
                     {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                    className={snapshot.isDragging ? 'is-dragging' : ''}
+                    className={`${snapshot.isDragging ? 'is-dragging' : ''} ${snapshot.isDropAnimating ? 'is-drop-animating' : ''}`}
                   >
                     <ProjectCard
                       products={products}
@@ -76,6 +76,8 @@ export default function BoardColumn({ phase, projects, onProjectClick, users = [
                       onClick={() => onProjectClick(item)}
                       users={users}
                       onAssign={onAssign && (!item.project.is_blocked || canManage) ? (flowId, userId) => onAssign(item.project.id, flowId, userId) : undefined}
+                      dragHandleProps={provided.dragHandleProps}
+                      selectionMode={selectionMode}
                       selected={selectedIds?.includes(item.project.id)}
                       onSelect={onSelect}
                       procontCodeId={procontCodeId}

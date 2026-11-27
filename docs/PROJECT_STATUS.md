@@ -1,6 +1,10 @@
 # Estado operativo — Ticketera Procont
 
-## Simplificación vigente de tarjetas — 27/11/2026
+## Refinamiento visual vigente — 27/11/2026
+
+Base main `7cf700390310fd0d6622806451de18034e03944e`. Solo frontend: avatares sin nombres visibles, nombre completo accesible/tooltip, selección explícita del Kanban sin checkbox, antigüedad Hoy/1d/Nd y barra de checklist de 30 px. Se conservan cálculo Lima, acciones masivas, relaciones y administración. [Informe, pruebas, capturas y autocrítica](validation/card-refinement-20261127/REPORT.md). Sin cambios de Supabase ni datos.
+
+## Simplificación anterior de tarjetas — 27/11/2026
 
 Base: main `40f582de2f314be5f2b46bbaa2f39ecfeb5eaa14`. Se compacta la presentación a Producto → Subproducto → Proyecto; título de dos líneas, prioridad/antigüedad juntas y checklist/responsable separados. Portafolio, INT/REQ, área y solicitante permanecen en detalle; filtros, RPC y administración conservados. Sin Supabase, migraciones ni escrituras de datos. [Pruebas y capturas de esta entrega](validation/compact-ticket-cards-20261127/REPORT.md). La copia original protegida permanece intacta.
 

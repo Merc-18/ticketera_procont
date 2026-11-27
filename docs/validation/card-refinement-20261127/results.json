@@ -1,0 +1,143 @@
+{
+  "node": {
+    "tests": 215,
+    "pass": 215,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "ui": {
+    "tests": 174,
+    "pass": 168,
+    "fail": 0,
+    "skipped": 6,
+    "cancelled": 0
+  },
+  "focused": {
+    "tests": 14,
+    "pass": 14,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "baseline": {
+    "tests": 8,
+    "pass": 8,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "base_commit": "7cf700390310fd0d6622806451de18034e03944e",
+  "typecheck": "PASS (tsc en npm run build)",
+  "build": "PASS Vite",
+  "focused_included_in_ui": true,
+  "focused_recheck": "14 casos repetidos después del ajuste visual final de separación entre anillos; no sumar de nuevo a la suite.",
+  "methodology": "Codex; React/Vite/Chromium real, Auth/REST fixtures locales, red externa bloqueada. No es E2E autenticado de producción.",
+  "visual_inspection": {
+    "executor": "Codex",
+    "reviewed": [
+      {
+        "theme": "light",
+        "width": 320,
+        "file": "after-light-320-active.png"
+      },
+      {
+        "theme": "light",
+        "width": 390,
+        "file": "after-light-390-active.png"
+      },
+      {
+        "theme": "light",
+        "width": 834,
+        "file": "after-light-834-active.png"
+      },
+      {
+        "theme": "light",
+        "width": 1440,
+        "file": "after-light-1440-active.png"
+      },
+      {
+        "theme": "dark",
+        "width": 320,
+        "file": "after-dark-320-active.png"
+      },
+      {
+        "theme": "dark",
+        "width": 390,
+        "file": "after-dark-390-active.png"
+      },
+      {
+        "theme": "dark",
+        "width": 834,
+        "file": "after-dark-834-active.png"
+      },
+      {
+        "theme": "dark",
+        "width": 1440,
+        "file": "after-dark-1440-active.png"
+      }
+    ],
+    "ratings": [
+      {
+        "dimension": "Jerarquía visual",
+        "score": 9,
+        "justification": "Título primero, hasta dos líneas; producto/subproducto y proyecto secundarios; prioridad y edad en su fila. Sin checkbox ni metadatos que compitan."
+      },
+      {
+        "dimension": "Densidad de información",
+        "score": 9,
+        "justification": "Solo iniciales, edad compacta y barra de 30 px con contador exacto; sin nombres o responsables repetidos. Altura de 171–192 px en los casos activos observados."
+      },
+      {
+        "dimension": "Consistencia de alineación",
+        "score": 9,
+        "justification": "Prioridad/edad alineadas y pie con contador a la izquierda, avatares y edición a la derecha. Se corrigió la proximidad de los anillos con 10 px de separación y se verificó su contorno exterior."
+      },
+      {
+        "dimension": "Legibilidad",
+        "score": 8,
+        "justification": "Texto principal y contador legibles en ambos temas; nombres y edad completos accesibles/tooltip. Iniciales y elipsis requieren tooltip o detalle para identificar textos completos, especialmente en móvil; es la reducción de información visible solicitada."
+      },
+      {
+        "dimension": "Responsive",
+        "score": 9,
+        "justification": "Inspección de 320, 390, 834 y 1440 px en claro/oscuro sin choque de elementos dentro de la tarjeta; edición de 44 px. Kanban conserva desplazamiento horizontal intencionado por fases; no hay overflow del documento."
+      }
+    ],
+    "criteria": "Sin checkbox permanente ni nombres visibles/repetidos; edad compacta; contador y barra real; controles internos separados, incluidos anillos; selección masiva funcional en simulador.",
+    "corrected_findings": [
+      "Anillos de dos avatares demasiado próximos: separación ampliada y geometría de contornos verificada.",
+      "Regla global de teclado/reduced-motion impedía transitionend de DnD: cierre mínimo de 1 ms verificado con teclado y ratón, ambos modos de movimiento."
+    ]
+  },
+  "height_comparison": [
+    {
+      "width": 320,
+      "before_mean_px": 219.5,
+      "after_mean_px": 186.75
+    },
+    {
+      "width": 390,
+      "before_mean_px": 197.5,
+      "after_mean_px": 186.75
+    },
+    {
+      "width": 834,
+      "before_mean_px": 197.5,
+      "after_mean_px": 186.75
+    },
+    {
+      "width": 1440,
+      "before_mean_px": 197.5,
+      "after_mean_px": 186.75
+    }
+  ],
+  "supabase_changes": false,
+  "migrations": 0,
+  "hosted_data_writes": false,
+  "unchanged_sha256": {
+    "tests/ui/qa-dataset.json": "887dad6090d69f9137ab9c3dfa06849620151057c20fa75ec25c4e470aabe195",
+    "package-lock.json": "dd17abe69176c5d9fea3d159c64f0e030630f9222d0f5e72aa6486ebdf3c2abc"
+  },
+  "pending": "Seis SKIP históricos y validaciones alojadas de proveedores/roles/adjuntos reservados/Postgres Realtime conservan sus límites anteriores."
+}
