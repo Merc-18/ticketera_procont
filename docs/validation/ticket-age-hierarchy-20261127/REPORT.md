@@ -38,6 +38,8 @@ El esquema no contiene FK de subproducto a portafolio: no se inventa esa asociac
 | TypeScript + build | **PASS** | npm run build ejecuta tsc y Vite; log completo conservado |
 | Captura del antes | **6 capturas, sin errores JS** | Fuente main@99a0be8 aislada, mismo escenario ficticio; no constituye aprobación de las reglas nuevas |
 
+Los seis SKIP pendientes son cuatro escenarios históricos de carga de ambos ingresos (desktop, laptop, tablet y móvil) y dos de presupuesto/carga diferida de vistas internas y Planner (desktop y móvil). No se declaran aprobados.
+
 Los ocho casos específicos cubren: claro/oscuro × escritorio 1440, tablet 834 y móvil 390; nombres largos en jerarquía y responsables; bloqueo; 0/0, 3/3, 3/18; dos responsables del mismo proyecto; fechas históricas de entrega en 2020 ignoradas; CSV, Gantt/Roadmap, detalle, formulario sin fechas, Equipo y tarjetas completadas/archivadas. La geometría comprueba overflow del documento/tarjeta y cruce entre número, checklist y responsable.
 
 Las regresiones relacionadas también cubren 320/360/768/1920 px, colores/contraste, creación/aprobación con IDs, portafolios dependientes, importador, filtros, refresco compartido, exportación paginada, adjuntos y contratos de cliente. Las expectativas antiguas de fechas límite y responsables ocultos se actualizaron a las reglas aprobadas. Se corrigió una lectura redundante de catálogos: Dashboard solo los solicita al exportar.
