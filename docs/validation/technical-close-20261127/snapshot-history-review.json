@@ -1,0 +1,1161 @@
+[
+  {
+    "path": "docs/PROJECT_STATUS.md",
+    "state": "file",
+    "same_as_main": false,
+    "main_has_path": true,
+    "bytes": 7787,
+    "sha256": "555bf7772d1b2c7438f9ac636402df9a91c01c0510e76722e2fc477ecb81a543",
+    "exact_blob_in_main_history": null
+  },
+  {
+    "path": "docs/specs/API_CONTRACTS.md",
+    "state": "file",
+    "same_as_main": false,
+    "main_has_path": true,
+    "bytes": 24621,
+    "sha256": "ff600a64aa6d86cfc81d277cc453357b4c0a7ebd932a212f09e4f925500fc40a",
+    "exact_blob_in_main_history": null
+  },
+  {
+    "path": "docs/specs/DATABASE_SPEC.md",
+    "state": "file",
+    "same_as_main": false,
+    "main_has_path": true,
+    "bytes": 55688,
+    "sha256": "20da6769d713d40f42593017b76569eaddbe8993a1c2c67d6928de7986b5f24c",
+    "exact_blob_in_main_history": null
+  },
+  {
+    "path": "docs/specs/DECISION_LOG.md",
+    "state": "file",
+    "same_as_main": false,
+    "main_has_path": true,
+    "bytes": 29786,
+    "sha256": "738d8a428eb745442778e8cdd7d9f8e1f138a91f3207a31e02d4ae403f864b38",
+    "exact_blob_in_main_history": null
+  },
+  {
+    "path": "docs/specs/PERMISSIONS_SPEC.md",
+    "state": "file",
+    "same_as_main": false,
+    "main_has_path": true,
+    "bytes": 11749,
+    "sha256": "df5d72aebdf29661382055daf83d9ae267582ec5487b158a3f44e8ae1c094e0a",
+    "exact_blob_in_main_history": null
+  },
+  {
+    "path": "docs/specs/PRODUCT_REQUIREMENTS.md",
+    "state": "file",
+    "same_as_main": false,
+    "main_has_path": true,
+    "bytes": 96365,
+    "sha256": "7d9cefb767ceee3c69b59e50a3b6d29fd246c5f00b5e8d8e82a1ef1502043aee",
+    "exact_blob_in_main_history": null
+  },
+  {
+    "path": "docs/specs/SECURITY_SPEC.md",
+    "state": "file",
+    "same_as_main": false,
+    "main_has_path": true,
+    "bytes": 14741,
+    "sha256": "e9dab8b08185eed38b237825478d1971f5b4ed0c199655222e0830c99050c572",
+    "exact_blob_in_main_history": null
+  },
+  {
+    "path": "docs/specs/TESTING_SPEC.md",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 19541,
+    "sha256": "4085c1372ee14699b1d839e16973cfc36133cbfdd47d7625fcb5c58c882ff30d"
+  },
+  {
+    "path": "docs/specs/WORKFLOWS_SPEC.md",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 8429,
+    "sha256": "d0d098870d4cdd43d05bdb9d3bdd333aa0aa3132b9f2da5b9e936352219f91a8"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/ACCESSIBILITY_REPORT.md",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 645,
+    "sha256": "934fb40ee00a1ccec7b1d1f07bd763d08afd60973de6c5ed73869df8b983e0ad"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/CHECKLIST_PROGRESS.md",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 1009,
+    "sha256": "5283aec4d48cfb6b3e4b50fb9a278647001d5fd20115ff94e98d1a6457f0e18c"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/DASHBOARD_TEAM.md",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 1194,
+    "sha256": "0d7c2da78fa6b14e72794555257dfc6607d1e610197ac813ffccd0c23f8a64bf"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/EXECUTIVE_SUMMARY.md",
+    "state": "file",
+    "same_as_main": false,
+    "main_has_path": true,
+    "bytes": 950,
+    "sha256": "58346fbbcf186c0d28723f057662f7af87625e7f6efc245bc18aa06f576ecb77",
+    "exact_blob_in_main_history": null
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/INTERNAL_TICKET_CREATION.md",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 755,
+    "sha256": "d53963223c8ed975a3b80310f84e89b0202b8fa18c4f34921cbe049a55c966c0"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/KANBAN_CARD_HIERARCHY.md",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 637,
+    "sha256": "69808e15ac10252da0186593aa1e1e3c5b5d3e6caf49851e31b78bca006ae266"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/PORTFOLIO_ASSIGNMENT.md",
+    "state": "file",
+    "same_as_main": false,
+    "main_has_path": true,
+    "bytes": 1196,
+    "sha256": "2673bd225a270661263b7024fea3a08307e50fb8874d79209aa459e29c7f9c93",
+    "exact_blob_in_main_history": null
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/QA_FIXTURES.md",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 1273,
+    "sha256": "2294c9181c6d20d1e8f5965eb4bc146008074be1c31abd154e6df4d352122456"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/REPORT.md",
+    "state": "file",
+    "same_as_main": false,
+    "main_has_path": true,
+    "bytes": 4871,
+    "sha256": "da06fb3310c89d253c3dbf477286cf6d9642197e3c0d0628d39d2a593b56e894",
+    "exact_blob_in_main_history": null
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/RESPONSIVE_REPORT.md",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 523,
+    "sha256": "828a499e4146c308aeb4204a48cde87ac97312143a335f683926c48856deb04a"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/SHA256SUMS",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 8981,
+    "sha256": "727a28159ed8783b80b4eb162d88bbc3e9d64f8715f2b0ce02059c985fb2be29"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/data/m20-qa.json",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 4311,
+    "sha256": "e91eb1aa8264d955b94b16dafafd40a6b47ee3bf0c76b10fd6e23c2385338c78"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots-manifest.json",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 27586,
+    "sha256": "12530758587dc1b94117ee7e3c0b58645a07f6769f0c0cc25d1187ab574b1642"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-columna-analysis-dark.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 46732,
+    "sha256": "13203cbf35e29acb0c1518ff39ac5ab18545d0f84c34213773bff1235518f40c"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-columna-analysis-light.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 46119,
+    "sha256": "4a37706485764a6b191d7588ae353e8591088ec4cd07a23a160df06b19c6f4b5"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-confirmar-solicitud-dark.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 69187,
+    "sha256": "07eb1c228908a7375d33e9c63c7da5c1cd29679cc9548d6da5bf6e4f2a171abd"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-confirmar-solicitud-light.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 72661,
+    "sha256": "f6c59ee07b0284ffef81edf4a58dfe353bf93b46d9ffb969906b658f4673a012"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-dashboard-dark-1440.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 193755,
+    "sha256": "28a2f475ee596ebe69e20aa836a7a594ea90913b5221f4ccea7bb6b2ec5960cd"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-dashboard-dark-1920.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 120863,
+    "sha256": "e04b408a70321fa833f03bdcebb34880a321fec41339157c643b8579062f803e"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-dashboard-dark-320.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 43466,
+    "sha256": "cd4d1d4f5c3990914168a56efeba30450d991c973227a025a90703e1593a0d7f"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-dashboard-dark-360.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 47478,
+    "sha256": "0a161298a5d391be8634deb0306b19bf28028ea0ddd2a4bff2a10453df0d1f72"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-dashboard-dark-390.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 53014,
+    "sha256": "d060f111763efab5e84b9bd1e2f29453a93aee995c4e72767dd10a8e2247675a"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-dashboard-dark-768.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 89246,
+    "sha256": "5c028a9b58e6095d3be6daf2fbda39eac2241deccdc7b47237c1e0e6c5632b1c"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-dashboard-exportar-dark.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 10170,
+    "sha256": "84ffcb03a63220573b735d335d78be976ca2968bc4727c69833fa861c8a80abe"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-dashboard-exportar-light.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 10102,
+    "sha256": "5fc705be98c126f6463759bc31747b4c1ff4efda01c3779148eaffa801fce904"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-dashboard-light-1440.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 189893,
+    "sha256": "6b8361bc660587aadab60d651ba48b1e634bc7ffb4afa93ef2f89d51d0f38668"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-dashboard-light-1920.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 118418,
+    "sha256": "f8ada53a1152b013b3a893f7a01d3361b8f7075eaa9fd66900395e33816ee064"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-dashboard-light-320.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 42231,
+    "sha256": "e18df2a9d4dfee00bcffc25ada8b2c2601a80a23f0f5a3c42636d0dcae6891d1"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-dashboard-light-360.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 46682,
+    "sha256": "be5978ebb5855d403319f1db949997336f8a9a2fdf44ea055b730263bc761223"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-dashboard-light-390.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 52054,
+    "sha256": "0d8a38dbe0ce9a4cf5a9f7558bf1069b8ff47cd7e9f4718691a9b0846f1e306a"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-dashboard-light-768.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 87931,
+    "sha256": "d1a3a143634172112f0d6b41b146c57d79cccba893eeb2463bc361c0e1b7b1ec"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-detalle-checklist-historico-dark.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 74392,
+    "sha256": "cb662b5e7ecf58be8c10dbccf211fff64b5310d69af042dfca828be59ada5da4"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-detalle-checklist-historico-light.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 74063,
+    "sha256": "15d972a9168b34ebc16ae00f74c26b3d53f536d48bbfd1079b21da171287bd8a"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-detalle-progreso-dark.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 69408,
+    "sha256": "67c9a6dafba952d5a3183337b60673bdbb7e334e49ede9de51d1b5f1347e5a9d"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-detalle-progreso-light.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 68685,
+    "sha256": "f945335562337a58e0c47f63a8a0e7e22fe87963faebdd55115139236d817785"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-detalle-sin-tareas-dark.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 76151,
+    "sha256": "cb6dacfe89107bcdd0bade7174d64525a3cd78f8792193a79644c018f5d69685"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-detalle-sin-tareas-light.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 75550,
+    "sha256": "25852a9974e1c4124548e1666739cd4423186aa7bafe2f0d57d3f580d6632d30"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-equipo-carga-dark.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 121452,
+    "sha256": "5b1eafa91e839bb8948796a92fd2dd9a9f1a7c0c57bb910a12ec91386de03e20"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-equipo-carga-light.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 120648,
+    "sha256": "c9a52b14fb0369ef1e6d9f448e3ccfc26b5b481bb008a612e7f96020d2075dad"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-equipo-dark.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 121459,
+    "sha256": "fce1944bbef08d29a7f96cf700c2b1bd3e6ec8f9f32531d49403aa62cba454f9"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-equipo-light.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 120466,
+    "sha256": "721b897fb81642b19883aac617ad8d5742cb510fb65d2600ee5981e07972344c"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-equipo-portafolios-dark.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 92374,
+    "sha256": "d806065692082027d2195a433beb48163a6edbef583cf7fb2e50839742ed5c7a"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-equipo-portafolios-light.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 91848,
+    "sha256": "9d57bc9a78e89fcb254e1f726a9ea9b7de7563593108079b578257109d889fa5"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-equipo-usuarios-dark.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 163051,
+    "sha256": "7f50631a07a3f6be043c78deb3a6ae5dd90e9d9b10bf1e87e1a9239269e99c3b"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-equipo-usuarios-light.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 159136,
+    "sha256": "f7376b7ebc0e17e905734547da40681d14e2c337d578697fc5eca2d54b909f7a"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-gantt-dark-1440.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 131973,
+    "sha256": "3b0f5904f33d131ba1150f85406697bc12c380ae89e2c63b7348a47bb51f96f2"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-gantt-dark-1920.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 111748,
+    "sha256": "974ae15d22b79af67db8064357425076ef05f8e95a6f10efa9b907e0be970ec5"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-gantt-dark-320.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 44588,
+    "sha256": "b8050d496e5b035a2378c9ac1efbb1ec63c1c47bd0bed7eb3b7f2a4395fa13e3"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-gantt-dark-360.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 48639,
+    "sha256": "806b20edf37dd8c6ec2c2eb5eab8128a50cd10c10d2f029a10c92ca6f77cde8f"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-gantt-dark-390.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 52574,
+    "sha256": "c4397746539d81c0de7e191fff9107faa6ebc8da01fb387b849a54e54f3d3326"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-gantt-dark-768.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 82200,
+    "sha256": "f6ab66ecdb78278c7eac8817b094f419fe92ea1da28b80f0c84fa96033382246"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-gantt-light-1440.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 129739,
+    "sha256": "32de1f886672bd9a85b86ab0fb7ec9cf1f22a850fb1e78a7f2d4c3cbd641192c"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-gantt-light-1920.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 110696,
+    "sha256": "05597ac3ffd5af48f851b311e8ad7b782aeeb55128f91e05016a1422204cb279"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-gantt-light-320.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 43798,
+    "sha256": "043ad08ac4aafe2a98b4fdcd546ff45c5459715f32e7f9d073abb26ea9dedccc"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-gantt-light-360.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 47801,
+    "sha256": "da6e39b355785b57cf2588988396e2cd0a985d744fec6e5446181ad888433a25"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-gantt-light-390.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 51769,
+    "sha256": "9a24c3ea554e9efb9c060dcfb4839a68a714ac4f4ac9ef4ff2c0030eaea5dd9d"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-gantt-light-768.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 81821,
+    "sha256": "5c9f4150112009aac746692c8306e0980c9e9973f2110e6f0d183f2c56cea979"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-kanban-dark-1440.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 201902,
+    "sha256": "e3cf9630086a2db948c01e53d1b1e8ff7dbc5701ed502af8bd5e25fe7b4f17f4"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-kanban-dark-1920.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 250548,
+    "sha256": "b06bd936841755afec7efea1efe70f58ecc0fa346c933483fd29736b876133ff"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-kanban-dark-320.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 44706,
+    "sha256": "a2c5f67df01082d4083f0686d712957b7e08d4a6673447bb037bb306e5a56878"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-kanban-dark-360.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 48766,
+    "sha256": "b5dc47db3a8409b6185f2d4d417bc6bfc9da9afd718274a12930874db04372a3"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-kanban-dark-390.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 52702,
+    "sha256": "4758a517133ddbe3522ad14716a9910ca494038c3001ecfe4c979a38a6627a21"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-kanban-dark-768.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 98579,
+    "sha256": "33d3cb5046a41ebf0be500518d62cbedd564037510a6cedab6405bea0cdd9f67"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-kanban-light-1440.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 198726,
+    "sha256": "c4c5445fe612ae541993f24d69206e3489dc522e83f99122198580de81ce3455"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-kanban-light-1920.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 247233,
+    "sha256": "dd0c096be7231954cbf8ed859b9a4770de51cf4c5f1b35c4c8f85d7df6674e78"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-kanban-light-320.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 43921,
+    "sha256": "0258b4cc06c26e76919afa10395b3a3deca717fe40dbd911e36d2b74a2f56072"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-kanban-light-360.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 47936,
+    "sha256": "241611e7c70a9b91d68c630ce692254fce7b9ad71f5b9fa4e847deaf8968373c"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-kanban-light-390.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 51897,
+    "sha256": "2ecbef28a57c76fac57527052cb4d08da6079cb68ffb1652b070d68ff8389027"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-kanban-light-768.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 97919,
+    "sha256": "354b91176d22bb2771b997f709a147675cfe1692a49888d660799d74a87fb88a"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-nuevo-ticket-dark-1440.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 49685,
+    "sha256": "9a3359df74ab6be3791b4f4330ec13d5a2ec92c7af5141bccdb7c10831cbbbd2"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-nuevo-ticket-dark-1920.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 65370,
+    "sha256": "f6b9f80b0053786220f09386b95a8c8f0c8a3a9cfac2fe30950bf3b8e7a33648"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-nuevo-ticket-dark-320.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 32851,
+    "sha256": "95015933e15e047741bdd27197076168be5e8ad8bee5de58c558889beee88fa5"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-nuevo-ticket-dark-360.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 35544,
+    "sha256": "8dd13d3dd1c665598111a73d41f56493d718b307ac8f65956d99e063fba9ec2d"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-nuevo-ticket-dark-390.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 36744,
+    "sha256": "38014356805a0ca8551af0489aa7287f504e384fd746abf99eb51e114064071d"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-nuevo-ticket-dark-768.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 60581,
+    "sha256": "ea70715fef8036b537f50a56fc5021d1ca2425a1678a9e187930d4947fab57b1"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-nuevo-ticket-light-1440.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 49167,
+    "sha256": "864aa0895b65ab32d19453014846ff79de7b925903a6f1f0fd081e962421049b"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-nuevo-ticket-light-1920.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 64609,
+    "sha256": "1911051d5a0c928623e602a3da5f2cf644de3029b7a1cf1d862e6d27fa8d8ea5"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-nuevo-ticket-light-320.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 32397,
+    "sha256": "7e7933622c01d9efca968fc1a156c9c0fcdc5bbbe004390309dc6184b00c3991"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-nuevo-ticket-light-360.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 35157,
+    "sha256": "0fff4b5f05d852f511bc68d06227a2a890424f9559ee82200c355a13fcae6cc6"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-nuevo-ticket-light-390.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 36330,
+    "sha256": "dc31a327caddd99218ef95da0549cf00c42d18582e6dd211740781d1cbce61e1"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-nuevo-ticket-light-768.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 60001,
+    "sha256": "08026a1b7b734ad3f0b7ca4cd1dfeecc454fb9567619c59f8699ffbeaacd2b8b"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-roadmap-dark-1440.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 117191,
+    "sha256": "5b8cc1703895e2de29e694c9032920dba0cbec36d185e6ac5358fd36eb92e9af"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-roadmap-dark-1920.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 117018,
+    "sha256": "b1b177f45b7bc8af9a77f9638316b82e66d02ed053563367db3be13b0e77ca06"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-roadmap-dark-320.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 44660,
+    "sha256": "ba19216194c36cfdbb1cb3aca87ee16fb8a31050eea8d5fbc6fb080558adc467"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-roadmap-dark-360.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 48729,
+    "sha256": "a34889b5e350ab0e9545f6f0110adf453d32cede9c6bc95b8a0821d55c4d3361"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-roadmap-dark-390.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 52662,
+    "sha256": "1a6c228a0a4be0976acf34c941c13cbd89adf094c07cc249169084460157f8ba"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-roadmap-dark-768.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 79086,
+    "sha256": "cdb13a5bd3674b1c4a355b55c683a75f154e51b2010c43f95b6666023012b4b1"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-roadmap-light-1440.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 115934,
+    "sha256": "01e7481c866c70ba27209e07294e98b915547221137184c8ef82799d4de1f9a6"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-roadmap-light-1920.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 115745,
+    "sha256": "510aa93b49ea52600817d222c6361091df6aa7650f73f2a94dc212b4afaf2e0b"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-roadmap-light-320.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 43873,
+    "sha256": "6a3333225994f7a1516ab29fddac78ce8771bca50a698b6b68868e17bdeba842"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-roadmap-light-360.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 47891,
+    "sha256": "4614c7f39fc5a6d4ef6e0184d57c58b60c4b5ecd940be1d5d65655115ecc558c"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-roadmap-light-390.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 51857,
+    "sha256": "cb78b7af726fe7fd0ea000bf698d06ac7767f25bd6381c19405de18b332c56cc"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-roadmap-light-768.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 78501,
+    "sha256": "10b4ea4e964300662edd3b881647d1f933a16cb8ba32dc4ed4273bfee904594f"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-tabla-dark.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 150776,
+    "sha256": "6b4fa62e1ff6d7d015a6edfc70da312f207fc1c4079a4e70069b15afef2e8a90"
+  },
+  {
+    "path": "docs/validation/dashboard-team-portfolio-progress-20261124/screenshots/despues-tabla-light.png",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 149994,
+    "sha256": "e4db8d32077520b2b4ab6c17e37d043972b915a7b839e6eeb094ef050e559ceb"
+  },
+  {
+    "path": "src/App.tsx",
+    "state": "file",
+    "same_as_main": false,
+    "main_has_path": true,
+    "bytes": 12299,
+    "sha256": "34ae838217113eaf224c1489edd0b7a342bdd28ecd99c82ae702d229084865df",
+    "exact_blob_in_main_history": "75a9e1cec5b7253ebdab56f64dafa823430830ea"
+  },
+  {
+    "path": "src/components/admin/PortfolioPanel.tsx",
+    "state": "file",
+    "same_as_main": false,
+    "main_has_path": true,
+    "bytes": 10945,
+    "sha256": "a654a56b4819a8819bc854e6bffd7246bc60f5683819e7dcfec3eb3dc7aa66bc",
+    "exact_blob_in_main_history": "75a9e1cec5b7253ebdab56f64dafa823430830ea"
+  },
+  {
+    "path": "src/components/admin/WorkloadView.tsx",
+    "state": "file",
+    "same_as_main": false,
+    "main_has_path": true,
+    "bytes": 9686,
+    "sha256": "a4775907bddcaea033b5692662ff00ef20ae4e9fba806a1818aef6c05f379082",
+    "exact_blob_in_main_history": "75a9e1cec5b7253ebdab56f64dafa823430830ea"
+  },
+  {
+    "path": "src/components/boards/KanbanBoard.tsx",
+    "state": "file",
+    "same_as_main": false,
+    "main_has_path": true,
+    "bytes": 29937,
+    "sha256": "e2769123b8f4771936a412fe2dd9ed3cfef60de52f59e69809d41c60384582e1",
+    "exact_blob_in_main_history": "75a9e1cec5b7253ebdab56f64dafa823430830ea"
+  },
+  {
+    "path": "src/components/boards/PortfolioManagerModal.tsx",
+    "state": "deleted_in_workspace",
+    "also_absent_from_main": true
+  },
+  {
+    "path": "src/components/boards/PortfolioProjectFields.tsx",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 2791,
+    "sha256": "f6ed5a7a898a128bbe3a2f5d701935cb11fcac0ef78a00efebedebe4ed9b0d1e"
+  },
+  {
+    "path": "src/components/boards/ProjectCard.tsx",
+    "state": "file",
+    "same_as_main": false,
+    "main_has_path": true,
+    "bytes": 11039,
+    "sha256": "2a5ad6c5cf2e3ccd8f9c6a7725e6db4f497b5f69af9512baaa21dfbe3e15127d",
+    "exact_blob_in_main_history": "75a9e1cec5b7253ebdab56f64dafa823430830ea"
+  },
+  {
+    "path": "src/components/boards/TableView.tsx",
+    "state": "file",
+    "same_as_main": false,
+    "main_has_path": true,
+    "bytes": 13831,
+    "sha256": "84cb9acefb1c2a479dfe536c1d50e997f650e75b6939be52ee92e84f0dfe7012",
+    "exact_blob_in_main_history": "75a9e1cec5b7253ebdab56f64dafa823430830ea"
+  },
+  {
+    "path": "src/components/dashboard/DashboardView.tsx",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 19553,
+    "sha256": "1839189aa50fb027a7d49130296c690a491d996b07c08ce81c9bec25dcc9fc97"
+  },
+  {
+    "path": "src/components/projects/ChecklistSection.tsx",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 14110,
+    "sha256": "81cc80d0216981e8f0b0612facd2b56e74868d4dc799ffa99567f2435926f024"
+  },
+  {
+    "path": "src/components/projects/NewProjectModal.tsx",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 17459,
+    "sha256": "89b16b3cb374bbfcacb86de4497d8f408fff619479095aab0f7114bf2945a352"
+  },
+  {
+    "path": "src/components/projects/ProjectModal.tsx",
+    "state": "file",
+    "same_as_main": false,
+    "main_has_path": true,
+    "bytes": 31948,
+    "sha256": "daa0edca40bfc59350fd15aaf02d07d794ce9f16da63a33c5a4ec06593cf7c81",
+    "exact_blob_in_main_history": "75a9e1cec5b7253ebdab56f64dafa823430830ea"
+  },
+  {
+    "path": "src/components/requests/RequestInbox.tsx",
+    "state": "file",
+    "same_as_main": false,
+    "main_has_path": true,
+    "bytes": 17477,
+    "sha256": "d7048cab70586f41fb1cd1f56592092da626e3d523e763da2e4dc88532f88f9b",
+    "exact_blob_in_main_history": "75a9e1cec5b7253ebdab56f64dafa823430830ea"
+  },
+  {
+    "path": "src/components/requests/RequestValidationModal.tsx",
+    "state": "file",
+    "same_as_main": false,
+    "main_has_path": true,
+    "bytes": 20641,
+    "sha256": "c52666616dbc31c623e3577550c6d8e215e95de89c106470b2deddd181337e85",
+    "exact_blob_in_main_history": "75a9e1cec5b7253ebdab56f64dafa823430830ea"
+  },
+  {
+    "path": "src/components/ui/PrioritySelect.tsx",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 5183,
+    "sha256": "22c8e7d39fbfce52046537fa6ee3f3ab0289ae8330d791a72ccec94262a5d2cc"
+  },
+  {
+    "path": "src/hooks/useDashboardData.ts",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 8815,
+    "sha256": "4a718f75131512ac4b87a445ec8f0359a53d96227151c8a86e0cbe9dd502b6db"
+  },
+  {
+    "path": "src/hooks/useProjects.ts",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 5630,
+    "sha256": "f00a7480677f75c327989b58ba6f8a3058b133ace7ec5019b63fc046a6f4ef44"
+  },
+  {
+    "path": "src/hooks/useRequests.ts",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 2017,
+    "sha256": "330d1197fbd262b1632803b17156bccb4a61b257d54a0cb0d25dd0ed03403f1b"
+  },
+  {
+    "path": "src/index.css",
+    "state": "file",
+    "same_as_main": false,
+    "main_has_path": true,
+    "bytes": 84215,
+    "sha256": "df55948762b7ca061f20b2af036240594f667b6273d84d9e45b89d57627d6e59",
+    "exact_blob_in_main_history": "75a9e1cec5b7253ebdab56f64dafa823430830ea"
+  },
+  {
+    "path": "src/lib/board.ts",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 7103,
+    "sha256": "d98d1da911d476c878eb328f42225b8bcb27d8a0d73128ecf05d6d37fc1f968c"
+  },
+  {
+    "path": "src/lib/checklist-progress.ts",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 1354,
+    "sha256": "6a9a552f2cfa2683a8d17c7ac31a40082c176d80742ae3ef21fe078298a388b0"
+  },
+  {
+    "path": "src/lib/operations.ts",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 12638,
+    "sha256": "6960ad0492d13ac587ccb37919a5fe71e490256fd456b3a31dc9b86e5aa68428"
+  },
+  {
+    "path": "src/lib/portfolio-model.ts",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 3251,
+    "sha256": "bc681d6394883304dec009196afa42f5afbfd2e2c72ec73430c6370d8cc91999"
+  },
+  {
+    "path": "src/lib/verified-pagination.ts",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 2249,
+    "sha256": "b994a6c1cdc008aeb6f88bcdecd162ad60314ceef5a429331f0d5f2aca2738b8"
+  },
+  {
+    "path": "supabase/migrations/20261124000300_approve_request_with_portfolio.sql",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 3403,
+    "sha256": "0d5990cb4a4abbe34142f0666a3359f8fbf8b352f63fce4637954a39d37e83e3"
+  },
+  {
+    "path": "supabase/tests/m20_qa_fixtures_local.py",
+    "state": "file",
+    "same_as_main": false,
+    "main_has_path": true,
+    "bytes": 34162,
+    "sha256": "7eb28103effdab11d8ad574abd04725094fa489fcb5f255b8d739a7eedd1bf26",
+    "exact_blob_in_main_history": "75a9e1cec5b7253ebdab56f64dafa823430830ea"
+  },
+  {
+    "path": "tests/boards-dashboard-checklists.test.mjs",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 10873,
+    "sha256": "1aa4a50d5a843967534b7b129fb5d0bf7987bddf8287f0cb3836f6c08c413f9d"
+  },
+  {
+    "path": "tests/ui/boards-dashboard-checklists.ui.test.mjs",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 21502,
+    "sha256": "13f397278d2ac6797734b5108b797b51f7c307d46052b7264d24d349df971f46"
+  },
+  {
+    "path": "tests/ui/capture-qa.mjs",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 8867,
+    "sha256": "9932622a073ae1418cb2ee5cf8cb7516c142450c016a4e36f27fa78b8c81f762"
+  },
+  {
+    "path": "tests/ui/dashboard-boards.ui.test.mjs",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 17349,
+    "sha256": "4861a889437659b47934c6291315cbe65fb18135c405b1c6823c06b0431f6209"
+  },
+  {
+    "path": "tests/ui/kanban-attachments.ui.test.mjs",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 30744,
+    "sha256": "3872b02ee3767fd7e8ef1d3b8dbe5cc52e27b9539b6f5da4632ec1b67e12eee2"
+  },
+  {
+    "path": "tests/ui/portal-navigation.ui.test.mjs",
+    "state": "file",
+    "same_as_main": false,
+    "main_has_path": true,
+    "bytes": 27952,
+    "sha256": "bf1dd9ed981531238d993f5529610c19c8396660334d555ba50377b62dc6c7c1",
+    "exact_blob_in_main_history": "75a9e1cec5b7253ebdab56f64dafa823430830ea"
+  },
+  {
+    "path": "tests/ui/portfolio-cards-ticket.ui.test.mjs",
+    "state": "file",
+    "same_as_main": false,
+    "main_has_path": true,
+    "bytes": 21460,
+    "sha256": "817daa6f98cf28a56a377ae08cc55f14da1c66c8ff03a036b78754858e6bee2e",
+    "exact_blob_in_main_history": "75a9e1cec5b7253ebdab56f64dafa823430830ea"
+  },
+  {
+    "path": "tests/ui/qa-dataset.json",
+    "state": "file",
+    "same_as_main": false,
+    "main_has_path": true,
+    "bytes": 125422,
+    "sha256": "958f38f9c9798b43d11a0a5d59c80e291cb58d5fbbed176e47b0f70710206274",
+    "exact_blob_in_main_history": "75a9e1cec5b7253ebdab56f64dafa823430830ea"
+  },
+  {
+    "path": "tests/ui/qa-fixtures.mjs",
+    "state": "file",
+    "same_as_main": false,
+    "main_has_path": true,
+    "bytes": 7105,
+    "sha256": "d13b12d1d6ee04a2faadd6966050afcfb264ddc607a0d83a469b6980d8afbffb",
+    "exact_blob_in_main_history": "75a9e1cec5b7253ebdab56f64dafa823430830ea"
+  },
+  {
+    "path": "tests/ui/ux-fixtures.mjs",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 6935,
+    "sha256": "06e11c6ddd27107282783e9aec6a7fbf80d7a7d179bb1b1c369a6693d5e47f98"
+  },
+  {
+    "path": "tests/ui/ux-four-areas.ui.test.mjs",
+    "state": "file",
+    "same_as_main": false,
+    "main_has_path": true,
+    "bytes": 50098,
+    "sha256": "b5ca542ab36f349c793b84082031da12a32f93b7956ff99ca49183740b70203d",
+    "exact_blob_in_main_history": "75a9e1cec5b7253ebdab56f64dafa823430830ea"
+  },
+  {
+    "path": "tests/verified-pagination.test.mjs",
+    "state": "file",
+    "same_as_main": true,
+    "main_has_path": true,
+    "bytes": 2367,
+    "sha256": "fbc64c9a0a6587963443a2e8c00ae506e1a15af993ff565be85e1bd501aabcac"
+  }
+]

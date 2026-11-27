@@ -1,0 +1,1665 @@
+[
+  {
+    "head": "07fb762fcc9cc0f7ea52e11491e5653e2d8a6fff",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-build-version",
+        "branch": "backup/main-pre-rewrite-07fb762"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-build-version",
+        "branch": "integration/client-login-local"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-integration",
+        "branch": "backup/main-pre-rewrite-07fb762"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-integration",
+        "branch": "integration/client-login-local"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-login-deploy",
+        "branch": "backup/main-pre-rewrite-07fb762"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-login-deploy",
+        "branch": "integration/client-login-local"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-portal",
+        "branch": "backup/main-pre-rewrite-07fb762"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-portal",
+        "branch": "integration/client-login-local"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-deploy-prep",
+        "branch": "backup/main-pre-rewrite-07fb762"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-deploy-prep",
+        "branch": "integration/client-login-local"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-fix-client-flow",
+        "branch": "backup/main-pre-rewrite-07fb762"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-fix-client-flow",
+        "branch": "integration/client-login-local"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-login-throttle",
+        "branch": "backup/main-pre-rewrite-07fb762"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-login-throttle",
+        "branch": "integration/client-login-local"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont",
+        "branch": "backup/main-pre-rewrite-07fb762"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont",
+        "branch": "integration/client-login-local"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/boards-dashboard-checklists-20261124",
+        "branch": "backup/main-pre-rewrite-07fb762"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/boards-dashboard-checklists-20261124",
+        "branch": "integration/client-login-local"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/dashboard-team-portfolio-progress-20261124",
+        "branch": "backup/main-pre-rewrite-07fb762"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/dashboard-team-portfolio-progress-20261124",
+        "branch": "integration/client-login-local"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/kanban-attachments-20261124",
+        "branch": "backup/main-pre-rewrite-07fb762"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/kanban-attachments-20261124",
+        "branch": "integration/client-login-local"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/portfolio-checklists-cards-20261124",
+        "branch": "backup/main-pre-rewrite-07fb762"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/portfolio-checklists-cards-20261124",
+        "branch": "integration/client-login-local"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/qa-integral-claude",
+        "branch": "backup/main-pre-rewrite-07fb762"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/qa-integral-claude",
+        "branch": "integration/client-login-local"
+      }
+    ],
+    "ancestor_of_main": false,
+    "patch_equivalent_commits": 48,
+    "unique_commits": [
+      {
+        "sha": "c6e79f4d9f7b5df1b0e6d10db32d9790fea7a4b2",
+        "subject": "chore: preparar configuraci\u00f3n y procedimiento de Supabase"
+      }
+    ]
+  },
+  {
+    "head": "f3c22c8216aa27d5437ffd7a6bf328e6a52e384d",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-build-version",
+        "branch": "claude/client-login-throttle"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-integration",
+        "branch": "claude/client-login-throttle"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-login-deploy",
+        "branch": "claude/client-login-throttle"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-portal",
+        "branch": "claude/client-login-throttle"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-deploy-prep",
+        "branch": "claude/client-login-throttle"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-fix-client-flow",
+        "branch": "claude/client-login-throttle"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-login-throttle",
+        "branch": "claude/client-login-throttle"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont",
+        "branch": "claude/client-login-throttle"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/boards-dashboard-checklists-20261124",
+        "branch": "claude/client-login-throttle"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/dashboard-team-portfolio-progress-20261124",
+        "branch": "claude/client-login-throttle"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/kanban-attachments-20261124",
+        "branch": "claude/client-login-throttle"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/portfolio-checklists-cards-20261124",
+        "branch": "claude/client-login-throttle"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/qa-integral-claude",
+        "branch": "claude/client-login-throttle"
+      }
+    ],
+    "ancestor_of_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": []
+  },
+  {
+    "head": "aeeaa12fe3b2a45596875850ecda25ef3f1f9e3d",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-build-version",
+        "branch": "claude/client-portal"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-integration",
+        "branch": "claude/client-portal"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-login-deploy",
+        "branch": "claude/client-portal"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-portal",
+        "branch": "claude/client-portal"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-deploy-prep",
+        "branch": "claude/client-portal"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-fix-client-flow",
+        "branch": "claude/client-portal"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-login-throttle",
+        "branch": "claude/client-portal"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont",
+        "branch": "claude/client-portal"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/boards-dashboard-checklists-20261124",
+        "branch": "claude/client-portal"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/dashboard-team-portfolio-progress-20261124",
+        "branch": "claude/client-portal"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/kanban-attachments-20261124",
+        "branch": "claude/client-portal"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/portfolio-checklists-cards-20261124",
+        "branch": "claude/client-portal"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/qa-integral-claude",
+        "branch": "claude/client-portal"
+      }
+    ],
+    "ancestor_of_main": false,
+    "patch_equivalent_commits": 38,
+    "unique_commits": [
+      {
+        "sha": "c6e79f4d9f7b5df1b0e6d10db32d9790fea7a4b2",
+        "subject": "chore: preparar configuraci\u00f3n y procedimiento de Supabase"
+      }
+    ]
+  },
+  {
+    "head": "44cebebca91c0424762c3dd640c0a1f8ae4deaff",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-build-version",
+        "branch": "claude/deploy-prep"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-integration",
+        "branch": "claude/deploy-prep"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-login-deploy",
+        "branch": "claude/deploy-prep"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-portal",
+        "branch": "claude/deploy-prep"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-deploy-prep",
+        "branch": "claude/deploy-prep"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-fix-client-flow",
+        "branch": "claude/deploy-prep"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-login-throttle",
+        "branch": "claude/deploy-prep"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont",
+        "branch": "claude/deploy-prep"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/boards-dashboard-checklists-20261124",
+        "branch": "claude/deploy-prep"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/dashboard-team-portfolio-progress-20261124",
+        "branch": "claude/deploy-prep"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/kanban-attachments-20261124",
+        "branch": "claude/deploy-prep"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/portfolio-checklists-cards-20261124",
+        "branch": "claude/deploy-prep"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/qa-integral-claude",
+        "branch": "claude/deploy-prep"
+      }
+    ],
+    "ancestor_of_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": []
+  },
+  {
+    "head": "42b5af7b7557c131f796bee82a1fcd819d7da477",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-build-version",
+        "branch": "claude/reports-ui"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-integration",
+        "branch": "claude/reports-ui"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-login-deploy",
+        "branch": "claude/reports-ui"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-portal",
+        "branch": "claude/reports-ui"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-deploy-prep",
+        "branch": "claude/reports-ui"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-fix-client-flow",
+        "branch": "claude/reports-ui"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-login-throttle",
+        "branch": "claude/reports-ui"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont",
+        "branch": "claude/reports-ui"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/boards-dashboard-checklists-20261124",
+        "branch": "claude/reports-ui"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/dashboard-team-portfolio-progress-20261124",
+        "branch": "claude/reports-ui"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/kanban-attachments-20261124",
+        "branch": "claude/reports-ui"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/portfolio-checklists-cards-20261124",
+        "branch": "claude/reports-ui"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/qa-integral-claude",
+        "branch": "claude/reports-ui"
+      }
+    ],
+    "ancestor_of_main": false,
+    "patch_equivalent_commits": 26,
+    "unique_commits": [
+      {
+        "sha": "c6e79f4d9f7b5df1b0e6d10db32d9790fea7a4b2",
+        "subject": "chore: preparar configuraci\u00f3n y procedimiento de Supabase"
+      }
+    ]
+  },
+  {
+    "head": "1ba71b2fe18add7fe287ffa14d489a7862cc8abb",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-build-version",
+        "branch": "codex/board-operations"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-integration",
+        "branch": "codex/board-operations"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-login-deploy",
+        "branch": "codex/board-operations"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-portal",
+        "branch": "codex/board-operations"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-deploy-prep",
+        "branch": "codex/board-operations"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-fix-client-flow",
+        "branch": "codex/board-operations"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-login-throttle",
+        "branch": "codex/board-operations"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont",
+        "branch": "codex/board-operations"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/boards-dashboard-checklists-20261124",
+        "branch": "codex/board-operations"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/dashboard-team-portfolio-progress-20261124",
+        "branch": "codex/board-operations"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/kanban-attachments-20261124",
+        "branch": "codex/board-operations"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/portfolio-checklists-cards-20261124",
+        "branch": "codex/board-operations"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/qa-integral-claude",
+        "branch": "codex/board-operations"
+      }
+    ],
+    "ancestor_of_main": false,
+    "patch_equivalent_commits": 31,
+    "unique_commits": [
+      {
+        "sha": "c6e79f4d9f7b5df1b0e6d10db32d9790fea7a4b2",
+        "subject": "chore: preparar configuraci\u00f3n y procedimiento de Supabase"
+      }
+    ]
+  },
+  {
+    "head": "77fe5935588ad027e88bac50cf7563bbdfda1aab",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-build-version",
+        "branch": "codex/client-access-m13"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-integration",
+        "branch": "codex/client-access-m13"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-login-deploy",
+        "branch": "codex/client-access-m13"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-portal",
+        "branch": "codex/client-access-m13"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-deploy-prep",
+        "branch": "codex/client-access-m13"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-fix-client-flow",
+        "branch": "codex/client-access-m13"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-login-throttle",
+        "branch": "codex/client-access-m13"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont",
+        "branch": "codex/client-access-m13"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/boards-dashboard-checklists-20261124",
+        "branch": "codex/client-access-m13"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/dashboard-team-portfolio-progress-20261124",
+        "branch": "codex/client-access-m13"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/kanban-attachments-20261124",
+        "branch": "codex/client-access-m13"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/portfolio-checklists-cards-20261124",
+        "branch": "codex/client-access-m13"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/qa-integral-claude",
+        "branch": "codex/client-access-m13"
+      }
+    ],
+    "ancestor_of_main": false,
+    "patch_equivalent_commits": 38,
+    "unique_commits": [
+      {
+        "sha": "c6e79f4d9f7b5df1b0e6d10db32d9790fea7a4b2",
+        "subject": "chore: preparar configuraci\u00f3n y procedimiento de Supabase"
+      }
+    ]
+  },
+  {
+    "head": "ae26716d78495e53d47be9d02ca7897f06bfc125",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-build-version",
+        "branch": "codex/client-login-dev-contracts"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-integration",
+        "branch": "codex/client-login-dev-contracts"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-login-deploy",
+        "branch": "codex/client-login-dev-contracts"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-portal",
+        "branch": "codex/client-login-dev-contracts"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-deploy-prep",
+        "branch": "codex/client-login-dev-contracts"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-fix-client-flow",
+        "branch": "codex/client-login-dev-contracts"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-login-throttle",
+        "branch": "codex/client-login-dev-contracts"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont",
+        "branch": "codex/client-login-dev-contracts"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/boards-dashboard-checklists-20261124",
+        "branch": "codex/client-login-dev-contracts"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/dashboard-team-portfolio-progress-20261124",
+        "branch": "codex/client-login-dev-contracts"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/kanban-attachments-20261124",
+        "branch": "codex/client-login-dev-contracts"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/portfolio-checklists-cards-20261124",
+        "branch": "codex/client-login-dev-contracts"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/qa-integral-claude",
+        "branch": "codex/client-login-dev-contracts"
+      }
+    ],
+    "ancestor_of_main": false,
+    "patch_equivalent_commits": 45,
+    "unique_commits": [
+      {
+        "sha": "c6e79f4d9f7b5df1b0e6d10db32d9790fea7a4b2",
+        "subject": "chore: preparar configuraci\u00f3n y procedimiento de Supabase"
+      }
+    ]
+  },
+  {
+    "head": "a67764cab85d5bfb5e60e65ed57500b0adf773f9",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-build-version",
+        "branch": "codex/ticket-security-guards"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-integration",
+        "branch": "codex/ticket-security-guards"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-login-deploy",
+        "branch": "codex/ticket-security-guards"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-portal",
+        "branch": "codex/ticket-security-guards"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-deploy-prep",
+        "branch": "codex/ticket-security-guards"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-fix-client-flow",
+        "branch": "codex/ticket-security-guards"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-login-throttle",
+        "branch": "codex/ticket-security-guards"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont",
+        "branch": "codex/ticket-security-guards"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/boards-dashboard-checklists-20261124",
+        "branch": "codex/ticket-security-guards"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/dashboard-team-portfolio-progress-20261124",
+        "branch": "codex/ticket-security-guards"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/kanban-attachments-20261124",
+        "branch": "codex/ticket-security-guards"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/portfolio-checklists-cards-20261124",
+        "branch": "codex/ticket-security-guards"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/qa-integral-claude",
+        "branch": "codex/ticket-security-guards"
+      }
+    ],
+    "ancestor_of_main": false,
+    "patch_equivalent_commits": 20,
+    "unique_commits": [
+      {
+        "sha": "c6e79f4d9f7b5df1b0e6d10db32d9790fea7a4b2",
+        "subject": "chore: preparar configuraci\u00f3n y procedimiento de Supabase"
+      }
+    ]
+  },
+  {
+    "head": "354fbf49de85f13f6fe8b31a45cfbe7c829efc0e",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-build-version",
+        "branch": "feature/build-version"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-integration",
+        "branch": "feature/build-version"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-login-deploy",
+        "branch": "feature/build-version"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-portal",
+        "branch": "feature/build-version"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-deploy-prep",
+        "branch": "feature/build-version"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-fix-client-flow",
+        "branch": "feature/build-version"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-login-throttle",
+        "branch": "feature/build-version"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont",
+        "branch": "feature/build-version"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/boards-dashboard-checklists-20261124",
+        "branch": "feature/build-version"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/dashboard-team-portfolio-progress-20261124",
+        "branch": "feature/build-version"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/kanban-attachments-20261124",
+        "branch": "feature/build-version"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/portfolio-checklists-cards-20261124",
+        "branch": "feature/build-version"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/qa-integral-claude",
+        "branch": "feature/build-version"
+      }
+    ],
+    "ancestor_of_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": []
+  },
+  {
+    "head": "c857a727c8e7640bbce8daada940f973acbf013e",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-build-version",
+        "branch": "fix/client-login-no-dev-fallback"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-integration",
+        "branch": "fix/client-login-no-dev-fallback"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-login-deploy",
+        "branch": "fix/client-login-no-dev-fallback"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-portal",
+        "branch": "fix/client-login-no-dev-fallback"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-deploy-prep",
+        "branch": "fix/client-login-no-dev-fallback"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-fix-client-flow",
+        "branch": "fix/client-login-no-dev-fallback"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-login-throttle",
+        "branch": "fix/client-login-no-dev-fallback"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont",
+        "branch": "fix/client-login-no-dev-fallback"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/boards-dashboard-checklists-20261124",
+        "branch": "fix/client-login-no-dev-fallback"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/dashboard-team-portfolio-progress-20261124",
+        "branch": "fix/client-login-no-dev-fallback"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/kanban-attachments-20261124",
+        "branch": "fix/client-login-no-dev-fallback"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/portfolio-checklists-cards-20261124",
+        "branch": "fix/client-login-no-dev-fallback"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/qa-integral-claude",
+        "branch": "fix/client-login-no-dev-fallback"
+      }
+    ],
+    "ancestor_of_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": []
+  },
+  {
+    "head": "e528bc77fb4b42609e1344056786e41083dd56cb",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-build-version",
+        "branch": "fix/ticketera-client-flow-ui"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-integration",
+        "branch": "fix/ticketera-client-flow-ui"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-login-deploy",
+        "branch": "fix/ticketera-client-flow-ui"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-portal",
+        "branch": "fix/ticketera-client-flow-ui"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-deploy-prep",
+        "branch": "fix/ticketera-client-flow-ui"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-fix-client-flow",
+        "branch": "fix/ticketera-client-flow-ui"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-login-throttle",
+        "branch": "fix/ticketera-client-flow-ui"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont",
+        "branch": "fix/ticketera-client-flow-ui"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/boards-dashboard-checklists-20261124",
+        "branch": "fix/ticketera-client-flow-ui"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/dashboard-team-portfolio-progress-20261124",
+        "branch": "fix/ticketera-client-flow-ui"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/kanban-attachments-20261124",
+        "branch": "fix/ticketera-client-flow-ui"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/portfolio-checklists-cards-20261124",
+        "branch": "fix/ticketera-client-flow-ui"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/qa-integral-claude",
+        "branch": "fix/ticketera-client-flow-ui"
+      }
+    ],
+    "ancestor_of_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": []
+  },
+  {
+    "head": "c0ef20e0d7d31bd9b2f28eebcef2f6618aaed74d",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-build-version",
+        "branch": "integration/attachments-security"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-integration",
+        "branch": "integration/attachments-security"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-login-deploy",
+        "branch": "integration/attachments-security"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-portal",
+        "branch": "integration/attachments-security"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-deploy-prep",
+        "branch": "integration/attachments-security"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-fix-client-flow",
+        "branch": "integration/attachments-security"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-login-throttle",
+        "branch": "integration/attachments-security"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont",
+        "branch": "integration/attachments-security"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/boards-dashboard-checklists-20261124",
+        "branch": "integration/attachments-security"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/dashboard-team-portfolio-progress-20261124",
+        "branch": "integration/attachments-security"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/kanban-attachments-20261124",
+        "branch": "integration/attachments-security"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/portfolio-checklists-cards-20261124",
+        "branch": "integration/attachments-security"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/qa-integral-claude",
+        "branch": "integration/attachments-security"
+      }
+    ],
+    "ancestor_of_main": false,
+    "patch_equivalent_commits": 23,
+    "unique_commits": [
+      {
+        "sha": "c6e79f4d9f7b5df1b0e6d10db32d9790fea7a4b2",
+        "subject": "chore: preparar configuraci\u00f3n y procedimiento de Supabase"
+      }
+    ]
+  },
+  {
+    "head": "2858a02bbae8f3aabb12d0f342fb816c6939bc8c",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-build-version",
+        "branch": "integration/board-operations"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-integration",
+        "branch": "integration/board-operations"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-login-deploy",
+        "branch": "integration/board-operations"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-portal",
+        "branch": "integration/board-operations"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-deploy-prep",
+        "branch": "integration/board-operations"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-fix-client-flow",
+        "branch": "integration/board-operations"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-login-throttle",
+        "branch": "integration/board-operations"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont",
+        "branch": "integration/board-operations"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/agent1",
+        "branch": "integration/board-operations"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/boards-dashboard-checklists-20261124",
+        "branch": "integration/board-operations"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/dashboard-team-portfolio-progress-20261124",
+        "branch": "integration/board-operations"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/kanban-attachments-20261124",
+        "branch": "integration/board-operations"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/portfolio-checklists-cards-20261124",
+        "branch": "integration/board-operations"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/qa-integral-claude",
+        "branch": "integration/board-operations"
+      }
+    ],
+    "ancestor_of_main": false,
+    "patch_equivalent_commits": 32,
+    "unique_commits": [
+      {
+        "sha": "c6e79f4d9f7b5df1b0e6d10db32d9790fea7a4b2",
+        "subject": "chore: preparar configuraci\u00f3n y procedimiento de Supabase"
+      }
+    ]
+  },
+  {
+    "head": "94bd8fd17972d0e7a96137f7a3a7d72c8b4cb445",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-build-version",
+        "branch": "integration/business-metrics"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-integration",
+        "branch": "integration/business-metrics"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-login-deploy",
+        "branch": "integration/business-metrics"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-portal",
+        "branch": "integration/business-metrics"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-deploy-prep",
+        "branch": "integration/business-metrics"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-fix-client-flow",
+        "branch": "integration/business-metrics"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-login-throttle",
+        "branch": "integration/business-metrics"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont",
+        "branch": "integration/business-metrics"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/boards-dashboard-checklists-20261124",
+        "branch": "integration/business-metrics"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/dashboard-team-portfolio-progress-20261124",
+        "branch": "integration/business-metrics"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/kanban-attachments-20261124",
+        "branch": "integration/business-metrics"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/portfolio-checklists-cards-20261124",
+        "branch": "integration/business-metrics"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/qa-integral-claude",
+        "branch": "integration/business-metrics"
+      }
+    ],
+    "ancestor_of_main": false,
+    "patch_equivalent_commits": 30,
+    "unique_commits": [
+      {
+        "sha": "c6e79f4d9f7b5df1b0e6d10db32d9790fea7a4b2",
+        "subject": "chore: preparar configuraci\u00f3n y procedimiento de Supabase"
+      }
+    ]
+  },
+  {
+    "head": "19a10a8c2c07d1df3658e1482f2043842bbd18dd",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-build-version",
+        "branch": "integration/client-portal"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-integration",
+        "branch": "integration/client-portal"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-login-deploy",
+        "branch": "integration/client-portal"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-portal",
+        "branch": "integration/client-portal"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-deploy-prep",
+        "branch": "integration/client-portal"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-fix-client-flow",
+        "branch": "integration/client-portal"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-login-throttle",
+        "branch": "integration/client-portal"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont",
+        "branch": "integration/client-portal"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/boards-dashboard-checklists-20261124",
+        "branch": "integration/client-portal"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/dashboard-team-portfolio-progress-20261124",
+        "branch": "integration/client-portal"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/kanban-attachments-20261124",
+        "branch": "integration/client-portal"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/portfolio-checklists-cards-20261124",
+        "branch": "integration/client-portal"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/qa-integral-claude",
+        "branch": "integration/client-portal"
+      }
+    ],
+    "ancestor_of_main": false,
+    "patch_equivalent_commits": 40,
+    "unique_commits": [
+      {
+        "sha": "c6e79f4d9f7b5df1b0e6d10db32d9790fea7a4b2",
+        "subject": "chore: preparar configuraci\u00f3n y procedimiento de Supabase"
+      }
+    ]
+  },
+  {
+    "head": "2382b36a2b1cdc65b29609dea973b06c3f2ff20f",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-build-version",
+        "branch": "local/boards-dashboard-checklists-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-integration",
+        "branch": "local/boards-dashboard-checklists-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-login-deploy",
+        "branch": "local/boards-dashboard-checklists-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-portal",
+        "branch": "local/boards-dashboard-checklists-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-deploy-prep",
+        "branch": "local/boards-dashboard-checklists-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-fix-client-flow",
+        "branch": "local/boards-dashboard-checklists-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-login-throttle",
+        "branch": "local/boards-dashboard-checklists-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont",
+        "branch": "local/boards-dashboard-checklists-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/boards-dashboard-checklists-20261124",
+        "branch": "local/boards-dashboard-checklists-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/dashboard-team-portfolio-progress-20261124",
+        "branch": "local/boards-dashboard-checklists-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/kanban-attachments-20261124",
+        "branch": "local/boards-dashboard-checklists-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/portfolio-checklists-cards-20261124",
+        "branch": "local/boards-dashboard-checklists-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/qa-integral-claude",
+        "branch": "local/boards-dashboard-checklists-20261124"
+      }
+    ],
+    "ancestor_of_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": []
+  },
+  {
+    "head": "16064c5c096f3b69943a81a0d1c64fef5ae8e5f0",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-build-version",
+        "branch": "local/dashboard-team-portfolio-progress-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-build-version",
+        "branch": "local/portfolio-checklists-cards-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-build-version",
+        "branch": "main"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-integration",
+        "branch": "local/dashboard-team-portfolio-progress-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-integration",
+        "branch": "local/portfolio-checklists-cards-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-integration",
+        "branch": "main"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-login-deploy",
+        "branch": "local/dashboard-team-portfolio-progress-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-login-deploy",
+        "branch": "local/portfolio-checklists-cards-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-login-deploy",
+        "branch": "main"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-portal",
+        "branch": "local/dashboard-team-portfolio-progress-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-portal",
+        "branch": "local/portfolio-checklists-cards-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-portal",
+        "branch": "main"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-deploy-prep",
+        "branch": "local/dashboard-team-portfolio-progress-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-deploy-prep",
+        "branch": "local/portfolio-checklists-cards-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-deploy-prep",
+        "branch": "main"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-fix-client-flow",
+        "branch": "local/dashboard-team-portfolio-progress-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-fix-client-flow",
+        "branch": "local/portfolio-checklists-cards-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-fix-client-flow",
+        "branch": "main"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-login-throttle",
+        "branch": "local/dashboard-team-portfolio-progress-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-login-throttle",
+        "branch": "local/portfolio-checklists-cards-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-login-throttle",
+        "branch": "main"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont",
+        "branch": "local/dashboard-team-portfolio-progress-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont",
+        "branch": "local/portfolio-checklists-cards-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont",
+        "branch": "main"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/boards-dashboard-checklists-20261124",
+        "branch": "local/dashboard-team-portfolio-progress-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/boards-dashboard-checklists-20261124",
+        "branch": "local/portfolio-checklists-cards-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/boards-dashboard-checklists-20261124",
+        "branch": "main"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/dashboard-team-portfolio-progress-20261124",
+        "branch": "local/dashboard-team-portfolio-progress-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/dashboard-team-portfolio-progress-20261124",
+        "branch": "local/portfolio-checklists-cards-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/dashboard-team-portfolio-progress-20261124",
+        "branch": "main"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/kanban-attachments-20261124",
+        "branch": "local/dashboard-team-portfolio-progress-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/kanban-attachments-20261124",
+        "branch": "local/portfolio-checklists-cards-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/kanban-attachments-20261124",
+        "branch": "main"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/portfolio-checklists-cards-20261124",
+        "branch": "local/dashboard-team-portfolio-progress-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/portfolio-checklists-cards-20261124",
+        "branch": "local/portfolio-checklists-cards-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/portfolio-checklists-cards-20261124",
+        "branch": "main"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/qa-integral-claude",
+        "branch": "local/dashboard-team-portfolio-progress-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/qa-integral-claude",
+        "branch": "local/portfolio-checklists-cards-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/qa-integral-claude",
+        "branch": "main"
+      }
+    ],
+    "ancestor_of_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": []
+  },
+  {
+    "head": "485e449154a17413a4a3f6a97649a1d97243dc51",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-build-version",
+        "branch": "local/kanban-attachments-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-integration",
+        "branch": "local/kanban-attachments-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-login-deploy",
+        "branch": "local/kanban-attachments-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-portal",
+        "branch": "local/kanban-attachments-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-deploy-prep",
+        "branch": "local/kanban-attachments-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-fix-client-flow",
+        "branch": "local/kanban-attachments-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-login-throttle",
+        "branch": "local/kanban-attachments-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont",
+        "branch": "local/kanban-attachments-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/boards-dashboard-checklists-20261124",
+        "branch": "local/kanban-attachments-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/dashboard-team-portfolio-progress-20261124",
+        "branch": "local/kanban-attachments-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/kanban-attachments-20261124",
+        "branch": "local/kanban-attachments-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/portfolio-checklists-cards-20261124",
+        "branch": "local/kanban-attachments-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/qa-integral-claude",
+        "branch": "local/kanban-attachments-20261124"
+      }
+    ],
+    "ancestor_of_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": []
+  },
+  {
+    "head": "58725e058c55876906e8c0f8fb35295c9024fdc9",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-build-version",
+        "branch": "local/qa-integral-claude-20261125"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-integration",
+        "branch": "local/qa-integral-claude-20261125"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-login-deploy",
+        "branch": "local/qa-integral-claude-20261125"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-portal",
+        "branch": "local/qa-integral-claude-20261125"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-deploy-prep",
+        "branch": "local/qa-integral-claude-20261125"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-fix-client-flow",
+        "branch": "local/qa-integral-claude-20261125"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-login-throttle",
+        "branch": "local/qa-integral-claude-20261125"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont",
+        "branch": "local/qa-integral-claude-20261125"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/boards-dashboard-checklists-20261124",
+        "branch": "local/qa-integral-claude-20261125"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/dashboard-team-portfolio-progress-20261124",
+        "branch": "local/qa-integral-claude-20261125"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/kanban-attachments-20261124",
+        "branch": "local/qa-integral-claude-20261125"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/portfolio-checklists-cards-20261124",
+        "branch": "local/qa-integral-claude-20261125"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/qa-integral-claude",
+        "branch": "local/qa-integral-claude-20261125"
+      }
+    ],
+    "ancestor_of_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": []
+  },
+  {
+    "head": "89df40004bfe10cc94633382358e675d4fa12dbb",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-build-version",
+        "branch": "rewrite/main-89df400"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-integration",
+        "branch": "rewrite/main-89df400"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-login-deploy",
+        "branch": "rewrite/main-89df400"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-client-portal",
+        "branch": "rewrite/main-89df400"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-deploy-prep",
+        "branch": "rewrite/main-89df400"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-fix-client-flow",
+        "branch": "rewrite/main-89df400"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-login-throttle",
+        "branch": "rewrite/main-89df400"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont",
+        "branch": "rewrite/main-89df400"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/boards-dashboard-checklists-20261124",
+        "branch": "rewrite/main-89df400"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/dashboard-team-portfolio-progress-20261124",
+        "branch": "rewrite/main-89df400"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/kanban-attachments-20261124",
+        "branch": "rewrite/main-89df400"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/portfolio-checklists-cards-20261124",
+        "branch": "rewrite/main-89df400"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/qa-integral-claude",
+        "branch": "rewrite/main-89df400"
+      }
+    ],
+    "ancestor_of_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": []
+  },
+  {
+    "head": "b795fb9368b2e9a9104f516b9933e04af254f610",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/agent1",
+        "branch": "rebuild/ticketera-client-data-security-20261123"
+      }
+    ],
+    "ancestor_of_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": []
+  },
+  {
+    "head": "a61450c93f5180ecd623d945b100424a47a3a5d3",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/agent2",
+        "branch": "main"
+      }
+    ],
+    "ancestor_of_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": []
+  },
+  {
+    "head": "947eeeefb5f8bb66744dba69fba24f76a780a1fb",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/agent2",
+        "branch": "rebuild/ticketera-client-experience-ui-20261123"
+      }
+    ],
+    "ancestor_of_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": []
+  },
+  {
+    "head": "3ec665907bfc13dc64f17f7236c0dcb02bebf8f2",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/claude-integration",
+        "branch": "color-distribution-20261123"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/claude-integration",
+        "branch": "main"
+      }
+    ],
+    "ancestor_of_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": []
+  },
+  {
+    "head": "afc112e6dc555c9a2be16e126bb79011c38f55b5",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/claude-integration",
+        "branch": "dark-mode-20261123"
+      }
+    ],
+    "ancestor_of_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": []
+  },
+  {
+    "head": "e653138fd339a9503238825db32f27d34c698bb8",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/claude-integration",
+        "branch": "dashboard-boards-20261123"
+      }
+    ],
+    "ancestor_of_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": []
+  },
+  {
+    "head": "849f41fbb990dfbc90d7bd5764daaa77c10c6dc3",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/claude-integration",
+        "branch": "integration/ticketera-client-experience-final"
+      }
+    ],
+    "ancestor_of_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": []
+  },
+  {
+    "head": "49cca39b0288192f8d1b5817f42255271ab90fd6",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/claude-integration",
+        "branch": "ux-ui-correction-20261123"
+      }
+    ],
+    "ancestor_of_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": []
+  },
+  {
+    "head": "21ee2b9ad349f57ae51fee321ea8f5aefac437a8",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/dashboard-team-portfolio-complete-20261124",
+        "branch": "Merc-18/closure-audit-20261125"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/publish-dashboard-team-portfolio-20261124",
+        "branch": "Merc-18/closure-audit-20261125"
+      }
+    ],
+    "ancestor_of_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": []
+  },
+  {
+    "head": "699dfd862d9997669f012452b728c31d6ddc8932",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/dashboard-team-portfolio-complete-20261124",
+        "branch": "codex/closure-real-qa-20261125"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/dashboard-team-portfolio-complete-20261124",
+        "branch": "main"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/publish-dashboard-team-portfolio-20261124",
+        "branch": "codex/closure-real-qa-20261125"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/publish-dashboard-team-portfolio-20261124",
+        "branch": "main"
+      }
+    ],
+    "ancestor_of_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": []
+  },
+  {
+    "head": "733d2594d9abd140f8f5108e68728daa6c545fa3",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/dashboard-team-portfolio-complete-20261124",
+        "branch": "fix/team-workload-completeness-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/publish-dashboard-team-portfolio-20261124",
+        "branch": "fix/team-workload-completeness-20261124"
+      }
+    ],
+    "ancestor_of_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": []
+  },
+  {
+    "head": "75a9e1cec5b7253ebdab56f64dafa823430830ea",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/dashboard-team-portfolio-complete-20261124",
+        "branch": "local/dashboard-team-portfolio-progress-20261124"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/publish-dashboard-team-portfolio-20261124",
+        "branch": "local/dashboard-team-portfolio-progress-20261124"
+      }
+    ],
+    "ancestor_of_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": []
+  },
+  {
+    "head": "ec022c768461aa8b4de143e3db94975853a5d34c",
+    "refs": [
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/dashboard-team-portfolio-complete-20261124",
+        "branch": "local/qa-integral-codex-20261125"
+      },
+      {
+        "path": "/home/procont/projects/ticketera-procont/.agent-workspaces/publish-dashboard-team-portfolio-20261124",
+        "branch": "local/qa-integral-codex-20261125"
+      }
+    ],
+    "ancestor_of_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": []
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "commit": "406a46351411fdf845a73a811cb798b7964617b1",
+  "source": "GitHub connector get_commit_combined_status",
+  "statuses": [
+    {
+      "context": "Vercel",
+      "state": "success",
+      "target_url": "https://vercel.com/merc-18s-projects/ticketera-procont/EncbzJ62P6ZyWXLkN5wjMJQtBQuv"
+    }
+  ]
+}

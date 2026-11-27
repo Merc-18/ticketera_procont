@@ -1,0 +1,681 @@
+{
+  "run": "qa-audit-20261126-93983171",
+  "project": "xsxdpaiivklqeudgqoqf",
+  "site": "https://ticketera-procont.vercel.app",
+  "started": "2026-11-26T14:44:19.578Z",
+  "results": [
+    {
+      "name": "Secure service credential available",
+      "status": "PASS",
+      "persisted": false
+    },
+    {
+      "name": "Service reads application profiles",
+      "status": "BLOCKED",
+      "http": 403,
+      "code": "42501"
+    },
+    {
+      "name": "Auth Admin creates fresh superadmin",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "Service provisions ONLY new QA operator profile (INSERT, no upsert)",
+      "status": "BLOCKED",
+      "http": 403,
+      "code": "42501"
+    },
+    {
+      "name": "Auth Admin creates fresh admin",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "Auth Admin creates fresh developer",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "Auth Admin creates fresh viewer",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "QA superadmin identity: genuine Auth password login (application role unassigned)",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "superadmin application role provisioning",
+      "status": "BLOCKED",
+      "reason": "service_role has no INSERT privilege on public.users; private provision_auth_profile is not exposed. No active authenticated QA administrator exists."
+    },
+    {
+      "name": "QA superadmin identity: Auth verifies issued JWT",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "Unprofiled QA superadmin JWT cannot read workspace rows",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "Unprofiled QA superadmin cannot use board RPC",
+      "status": "PASS",
+      "http": 403,
+      "code": "42501"
+    },
+    {
+      "name": "Unprofiled QA superadmin cannot use dashboard RPC",
+      "status": "PASS",
+      "http": 403,
+      "code": "42501"
+    },
+    {
+      "name": "Unprofiled QA superadmin cannot create internal ticket",
+      "status": "PASS",
+      "http": 403,
+      "code": "42501"
+    },
+    {
+      "name": "Unprofiled QA superadmin cannot reserve application evidence",
+      "status": "PASS",
+      "http": 403,
+      "code": "42501"
+    },
+    {
+      "name": "Unprofiled QA superadmin cannot elevate its role",
+      "status": "PASS",
+      "http": 403,
+      "code": "42501"
+    },
+    {
+      "name": "Unprofiled QA superadmin cannot directly insert privileged profile",
+      "status": "PASS",
+      "http": 403,
+      "code": "42501"
+    },
+    {
+      "name": "admin-users rejects unprofiled QA superadmin before account creation",
+      "status": "PASS",
+      "http": 403,
+      "code": "forbidden"
+    },
+    {
+      "name": "QA admin identity: genuine Auth password login (application role unassigned)",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "admin application role provisioning",
+      "status": "BLOCKED",
+      "reason": "service_role has no INSERT privilege on public.users; private provision_auth_profile is not exposed. No active authenticated QA administrator exists."
+    },
+    {
+      "name": "QA admin identity: Auth verifies issued JWT",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "Unprofiled QA admin JWT cannot read workspace rows",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "Unprofiled QA admin cannot use board RPC",
+      "status": "PASS",
+      "http": 403,
+      "code": "42501"
+    },
+    {
+      "name": "Unprofiled QA admin cannot use dashboard RPC",
+      "status": "PASS",
+      "http": 403,
+      "code": "42501"
+    },
+    {
+      "name": "Unprofiled QA admin cannot create internal ticket",
+      "status": "PASS",
+      "http": 403,
+      "code": "42501"
+    },
+    {
+      "name": "Unprofiled QA admin cannot reserve application evidence",
+      "status": "PASS",
+      "http": 403,
+      "code": "42501"
+    },
+    {
+      "name": "Unprofiled QA admin cannot elevate its role",
+      "status": "PASS",
+      "http": 403,
+      "code": "42501"
+    },
+    {
+      "name": "Unprofiled QA admin cannot directly insert privileged profile",
+      "status": "PASS",
+      "http": 403,
+      "code": "42501"
+    },
+    {
+      "name": "admin-users rejects unprofiled QA admin before account creation",
+      "status": "PASS",
+      "http": 403,
+      "code": "forbidden"
+    },
+    {
+      "name": "QA developer identity: genuine Auth password login (application role unassigned)",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "developer application role provisioning",
+      "status": "BLOCKED",
+      "reason": "service_role has no INSERT privilege on public.users; private provision_auth_profile is not exposed. No active authenticated QA administrator exists."
+    },
+    {
+      "name": "QA developer identity: Auth verifies issued JWT",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "Unprofiled QA developer JWT cannot read workspace rows",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "Unprofiled QA developer cannot use board RPC",
+      "status": "PASS",
+      "http": 403,
+      "code": "42501"
+    },
+    {
+      "name": "Unprofiled QA developer cannot use dashboard RPC",
+      "status": "PASS",
+      "http": 403,
+      "code": "42501"
+    },
+    {
+      "name": "Unprofiled QA developer cannot create internal ticket",
+      "status": "PASS",
+      "http": 403,
+      "code": "42501"
+    },
+    {
+      "name": "Unprofiled QA developer cannot reserve application evidence",
+      "status": "PASS",
+      "http": 403,
+      "code": "42501"
+    },
+    {
+      "name": "Unprofiled QA developer cannot elevate its role",
+      "status": "PASS",
+      "http": 403,
+      "code": "42501"
+    },
+    {
+      "name": "Unprofiled QA developer cannot directly insert privileged profile",
+      "status": "PASS",
+      "http": 403,
+      "code": "42501"
+    },
+    {
+      "name": "admin-users rejects unprofiled QA developer before account creation",
+      "status": "PASS",
+      "http": 403,
+      "code": "forbidden"
+    },
+    {
+      "name": "QA viewer identity: genuine Auth password login (application role unassigned)",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "viewer application role provisioning",
+      "status": "BLOCKED",
+      "reason": "service_role has no INSERT privilege on public.users; private provision_auth_profile is not exposed. No active authenticated QA administrator exists."
+    },
+    {
+      "name": "QA viewer identity: Auth verifies issued JWT",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "Unprofiled QA viewer JWT cannot read workspace rows",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "Unprofiled QA viewer cannot use board RPC",
+      "status": "PASS",
+      "http": 403,
+      "code": "42501"
+    },
+    {
+      "name": "Unprofiled QA viewer cannot use dashboard RPC",
+      "status": "PASS",
+      "http": 403,
+      "code": "42501"
+    },
+    {
+      "name": "Unprofiled QA viewer cannot create internal ticket",
+      "status": "PASS",
+      "http": 403,
+      "code": "42501"
+    },
+    {
+      "name": "Unprofiled QA viewer cannot reserve application evidence",
+      "status": "PASS",
+      "http": 403,
+      "code": "42501"
+    },
+    {
+      "name": "Unprofiled QA viewer cannot elevate its role",
+      "status": "PASS",
+      "http": 403,
+      "code": "42501"
+    },
+    {
+      "name": "Unprofiled QA viewer cannot directly insert privileged profile",
+      "status": "PASS",
+      "http": 403,
+      "code": "42501"
+    },
+    {
+      "name": "admin-users rejects unprofiled QA viewer before account creation",
+      "status": "PASS",
+      "http": 403,
+      "code": "forbidden"
+    },
+    {
+      "name": "Auth rejects wrong password for new QA identity",
+      "status": "PASS",
+      "http": 400,
+      "code": "400"
+    },
+    {
+      "name": "Auth performs genuine refresh-token rotation",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "QA changes its own user_metadata with fake role claim",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "User-editable metadata grants no application access",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "Fake metadata superadmin cannot invoke role RPC",
+      "status": "PASS",
+      "http": 403,
+      "code": "42501"
+    },
+    {
+      "name": "Service-only account provision rejects nonexistent QA administrator",
+      "status": "PASS",
+      "http": 403,
+      "code": "42501"
+    },
+    {
+      "name": "Published Chromium QA superadmin: Auth succeeds but missing profile blocks panel",
+      "status": "PASS",
+      "auth_http": 200,
+      "panel_visible": false,
+      "page_errors": 0
+    },
+    {
+      "name": "Published Chromium QA admin: Auth succeeds but missing profile blocks panel",
+      "status": "PASS",
+      "auth_http": 200,
+      "panel_visible": false,
+      "page_errors": 0
+    },
+    {
+      "name": "Published Chromium QA developer: Auth succeeds but missing profile blocks panel",
+      "status": "PASS",
+      "auth_http": 200,
+      "panel_visible": false,
+      "page_errors": 0
+    },
+    {
+      "name": "Published Chromium QA viewer: Auth succeeds but missing profile blocks panel",
+      "status": "PASS",
+      "auth_http": 200,
+      "panel_visible": false,
+      "page_errors": 0
+    },
+    {
+      "name": "Application bucket is private, max 2.5 MB and MIME restricted",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "Storage creates isolated private temporary QA bucket",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "Storage service uploads actual QA binary",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "Storage list shows persisted exact file size",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "Storage service download matches uploaded SHA-256",
+      "status": "PASS",
+      "http": 200,
+      "bytes": 64,
+      "sha256": "560a7c393929ad4b7f02fd28dc76a0585c68f492c03edb169c0f590965ef71db"
+    },
+    {
+      "name": "Storage issues signed download for actual private binary",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "Signed download matches uploaded SHA-256",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "Private QA bucket denies public URL",
+      "status": "PASS",
+      "http": 400
+    },
+    {
+      "name": "Unprofiled QA superadmin cannot download isolated private object",
+      "status": "PASS",
+      "http": 400
+    },
+    {
+      "name": "Unprofiled QA superadmin cannot upload arbitrary private object",
+      "status": "PASS",
+      "http": 400,
+      "code": "AccessDenied"
+    },
+    {
+      "name": "Unprofiled QA admin cannot download isolated private object",
+      "status": "PASS",
+      "http": 400
+    },
+    {
+      "name": "Unprofiled QA admin cannot upload arbitrary private object",
+      "status": "PASS",
+      "http": 400,
+      "code": "AccessDenied"
+    },
+    {
+      "name": "Unprofiled QA developer cannot download isolated private object",
+      "status": "PASS",
+      "http": 400
+    },
+    {
+      "name": "Unprofiled QA developer cannot upload arbitrary private object",
+      "status": "PASS",
+      "http": 400,
+      "code": "AccessDenied"
+    },
+    {
+      "name": "Unprofiled QA viewer cannot download isolated private object",
+      "status": "PASS",
+      "http": 400
+    },
+    {
+      "name": "Unprofiled QA viewer cannot upload arbitrary private object",
+      "status": "PASS",
+      "http": 400,
+      "code": "AccessDenied"
+    },
+    {
+      "name": "Storage engine rejects disallowed MIME (real bytes)",
+      "status": "PASS",
+      "http": 400,
+      "code": "invalid_mime_type"
+    },
+    {
+      "name": "Storage engine rejects over-limit binary (2500001 bytes)",
+      "status": "PASS",
+      "http": 400,
+      "code": "EntityTooLarge"
+    },
+    {
+      "name": "Storage removes temporary QA binary via official API",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "Storage confirms binary absent after deletion",
+      "status": "FAIL",
+      "http": 200
+    },
+    {
+      "name": "Cleanup isolated QA bucket contents",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "Cleanup deletes isolated QA bucket",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "Application Storage denies unreserved QA superadmin upload",
+      "status": "PASS",
+      "http": 400
+    },
+    {
+      "name": "Application Storage denies unreserved QA admin upload",
+      "status": "PASS",
+      "http": 400
+    },
+    {
+      "name": "Application Storage denies unreserved QA developer upload",
+      "status": "PASS",
+      "http": 400
+    },
+    {
+      "name": "Application Storage denies unreserved QA viewer upload",
+      "status": "PASS",
+      "http": 400
+    },
+    {
+      "name": "QA superadmin real JWT opens Realtime broadcast channel",
+      "status": "PASS",
+      "subscription_status": "SUBSCRIBED"
+    },
+    {
+      "name": "QA superadmin actual Realtime broadcast delivery",
+      "status": "PASS",
+      "send_status": "ok",
+      "event_received": true
+    },
+    {
+      "name": "QA admin real JWT opens Realtime broadcast channel",
+      "status": "PASS",
+      "subscription_status": "SUBSCRIBED"
+    },
+    {
+      "name": "QA admin actual Realtime broadcast delivery",
+      "status": "PASS",
+      "send_status": "ok",
+      "event_received": true
+    },
+    {
+      "name": "QA developer real JWT opens Realtime broadcast channel",
+      "status": "PASS",
+      "subscription_status": "SUBSCRIBED"
+    },
+    {
+      "name": "QA developer actual Realtime broadcast delivery",
+      "status": "PASS",
+      "send_status": "ok",
+      "event_received": true
+    },
+    {
+      "name": "QA viewer real JWT opens Realtime broadcast channel",
+      "status": "PASS",
+      "subscription_status": "SUBSCRIBED"
+    },
+    {
+      "name": "QA viewer actual Realtime broadcast delivery",
+      "status": "PASS",
+      "send_status": "ok",
+      "event_received": true
+    },
+    {
+      "name": "Role-specific active superadmin/admin/developer/viewer application permissions",
+      "status": "BLOCKED",
+      "reason": "Cannot activate QA application profiles with available service-role grants. No role simulation or permission/schema modification."
+    },
+    {
+      "name": "Authenticated board changes, checklist, comments and M20 approval",
+      "status": "BLOCKED",
+      "reason": "Cannot activate QA application profiles with available service-role grants. No role simulation or permission/schema modification."
+    },
+    {
+      "name": "Application-bucket reserved upload / download / count limit / actor binding",
+      "status": "BLOCKED",
+      "reason": "Cannot activate QA application profiles with available service-role grants. No role simulation or permission/schema modification."
+    },
+    {
+      "name": "Postgres Realtime events under active application roles",
+      "status": "BLOCKED",
+      "reason": "Cannot activate QA application profiles with available service-role grants. No role simulation or permission/schema modification."
+    },
+    {
+      "name": "Quipu / QuipuFac provider login and client isolation",
+      "status": "BLOCKED",
+      "reason": "No verified provider QA credentials. Creating a synthetic verified client session would not test real authentication."
+    },
+    {
+      "name": "Audit continuation exception",
+      "status": "BLOCKED",
+      "reason": "role_tests_blocked_remaining_possible_tests_completed",
+      "error_type": "Error"
+    }
+  ],
+  "fixtures": {
+    "accounts": [
+      {
+        "id": "cc6038ef-c948-477b-9b13-f048d14e2ac5",
+        "label": "superadmin"
+      },
+      {
+        "id": "aa0c60eb-40f4-4097-8cbb-44d8f415215b",
+        "label": "admin"
+      },
+      {
+        "id": "0d50f669-b125-459d-bc4e-70c8c052966b",
+        "label": "developer"
+      },
+      {
+        "id": "2ad23df2-6f0d-4f2b-8ebb-106a4f45e3ad",
+        "label": "viewer"
+      }
+    ],
+    "projects": [],
+    "portfolios": []
+  },
+  "notes": [
+    "Application table access is denied to service_role; no existing profiles were retrieved or modified.",
+    "No QA application profiles were provisioned: the INSERT-only attempt was rejected with 42501. All subsequent application checks use unprofiled real Auth sessions and are not counted as role tests."
+  ],
+  "cleanup": [
+    {
+      "operation": "deactivate_QA_profile",
+      "label": "viewer",
+      "status": "BLOCKED",
+      "http": 403,
+      "code": "42501"
+    },
+    {
+      "operation": "revoke_QA_sessions",
+      "label": "viewer",
+      "status": "BLOCKED",
+      "http": 403,
+      "code": "403"
+    },
+    {
+      "operation": "ban_temporary_QA_Auth",
+      "label": "viewer",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "operation": "deactivate_QA_profile",
+      "label": "developer",
+      "status": "BLOCKED",
+      "http": 403,
+      "code": "42501"
+    },
+    {
+      "operation": "revoke_QA_sessions",
+      "label": "developer",
+      "status": "BLOCKED",
+      "http": 403,
+      "code": "403"
+    },
+    {
+      "operation": "ban_temporary_QA_Auth",
+      "label": "developer",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "operation": "deactivate_QA_profile",
+      "label": "admin",
+      "status": "BLOCKED",
+      "http": 403,
+      "code": "42501"
+    },
+    {
+      "operation": "revoke_QA_sessions",
+      "label": "admin",
+      "status": "BLOCKED",
+      "http": 403,
+      "code": "403"
+    },
+    {
+      "operation": "ban_temporary_QA_Auth",
+      "label": "admin",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "operation": "deactivate_QA_profile",
+      "label": "superadmin",
+      "status": "BLOCKED",
+      "http": 403,
+      "code": "42501"
+    },
+    {
+      "operation": "revoke_QA_sessions",
+      "label": "superadmin",
+      "status": "BLOCKED",
+      "http": 403,
+      "code": "403"
+    },
+    {
+      "operation": "ban_temporary_QA_Auth",
+      "label": "superadmin",
+      "status": "PASS",
+      "http": 200
+    }
+  ],
+  "completed": "2026-11-26T14:45:01.156Z",
+  "totals": {
+    "PASS": 88,
+    "FAIL": 1,
+    "BLOCKED": 12
+  }
+}

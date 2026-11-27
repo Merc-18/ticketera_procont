@@ -1,0 +1,71 @@
+{
+  "run": "qa-audit-20261126-93983171",
+  "started": "2026-11-26T14:45:40.205Z",
+  "results": [
+    {
+      "name": "Delete only newly created temporary QA superadmin Auth account",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "QA superadmin Auth identity absent after deletion",
+      "status": "PASS",
+      "http": 404
+    },
+    {
+      "name": "Delete only newly created temporary QA admin Auth account",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "QA admin Auth identity absent after deletion",
+      "status": "PASS",
+      "http": 404
+    },
+    {
+      "name": "Delete only newly created temporary QA developer Auth account",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "QA developer Auth identity absent after deletion",
+      "status": "PASS",
+      "http": 404
+    },
+    {
+      "name": "Delete only newly created temporary QA viewer Auth account",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "QA viewer Auth identity absent after deletion",
+      "status": "PASS",
+      "http": 404
+    },
+    {
+      "name": "Temporary QA bucket absent",
+      "status": "FAIL",
+      "http": 400
+    },
+    {
+      "name": "Deleted QA object original URL lookup",
+      "status": "PASS",
+      "http": 400,
+      "cache_control": null,
+      "cf_cache_status": "DYNAMIC",
+      "age": null,
+      "x_cache": null
+    },
+    {
+      "name": "Deleted QA object fresh URL lookup",
+      "status": "PASS",
+      "http": 400,
+      "cache_control": null,
+      "cf_cache_status": "DYNAMIC",
+      "age": null,
+      "x_cache": null
+    }
+  ],
+  "cleanup": [],
+  "completed": "2026-11-26T14:45:43.144Z"
+}

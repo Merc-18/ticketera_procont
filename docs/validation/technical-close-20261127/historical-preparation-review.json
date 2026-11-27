@@ -1,0 +1,57 @@
+[
+  {
+    "path": ".gitignore",
+    "present_in_main": true,
+    "same_blob": true
+  },
+  {
+    "path": "README.md",
+    "present_in_main": true,
+    "same_blob": false
+  },
+  {
+    "path": "docs/fase-2b1-integracion.md",
+    "present_in_main": true,
+    "same_blob": false
+  },
+  {
+    "path": "docs/fase-2b2-preparacion.md",
+    "present_in_main": true,
+    "same_blob": false
+  },
+  {
+    "path": "docs/validation/fase-2b2-cli.json",
+    "present_in_main": true,
+    "same_blob": true
+  },
+  {
+    "path": "docs/validation/fase-2b2-migrations.json",
+    "present_in_main": true,
+    "same_blob": true
+  },
+  {
+    "path": "docs/validation/fase-2b2-preparation.txt",
+    "present_in_main": true,
+    "same_blob": true
+  },
+  {
+    "path": "scripts/prepare_supabase_local.py",
+    "present_in_main": true,
+    "same_blob": false
+  },
+  {
+    "path": "supabase/.gitignore",
+    "present_in_main": true,
+    "same_blob": true
+  },
+  {
+    "path": "supabase/config.toml",
+    "present_in_main": true,
+    "same_blob": false
+  },
+  {
+    "path": "tests/test_supabase_preparation.py",
+    "present_in_main": true,
+    "same_blob": false
+  }
+]

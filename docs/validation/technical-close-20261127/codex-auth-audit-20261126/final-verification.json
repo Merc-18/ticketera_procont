@@ -1,0 +1,34 @@
+{
+  "run": "qa-audit-20261126-93983171",
+  "completed": "2026-11-26T23:13:59.645Z",
+  "checks": [
+    {
+      "name": "Deleted QA bucket returns Bucket not found",
+      "status": "PASS",
+      "http": 400,
+      "response": {
+        "statusCode": "404",
+        "error": "Bucket not found",
+        "message": "Bucket not found",
+        "code": "NoSuchBucket"
+      }
+    },
+    {
+      "name": "Authoritative bucket list contains no temporary QA bucket",
+      "status": "PASS",
+      "http": 200,
+      "bucket_count": 1
+    },
+    {
+      "name": "Deleted QA binary is unavailable after propagation",
+      "status": "PASS",
+      "http": 400
+    },
+    {
+      "name": "Auth Admin list confirms zero remaining accounts from this audit",
+      "status": "PASS",
+      "http": 200,
+      "remaining_QA_accounts": 0
+    }
+  ]
+}

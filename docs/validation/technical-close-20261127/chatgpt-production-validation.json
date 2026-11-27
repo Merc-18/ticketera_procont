@@ -1,0 +1,143 @@
+{
+  "project_id": "xsxdpaiivklqeudgqoqf",
+  "date": "2026-11-27",
+  "source": "External evidence reported by ChatGPT, supplied explicitly by the user in this conversation on 2026-11-27",
+  "executed_by": "ChatGPT via Supabase MCP",
+  "executed_by_codex": false,
+  "classification": "production PostgreSQL SQL/RPC authorization with synthetic identities and BEGIN/ROLLBACK; not E2E",
+  "passed": 17,
+  "failed": 0,
+  "cases": [
+    {
+      "number": 1,
+      "name": "same_RUC_two_Quipu_users_and_QuipuFac_separated",
+      "result": "PASS"
+    },
+    {
+      "number": 2,
+      "name": "QuipuFac_company_identity_shared_across_sessions",
+      "result": "PASS"
+    },
+    {
+      "number": 3,
+      "name": "Quipu_lists_only_own_ticket",
+      "result": "PASS"
+    },
+    {
+      "number": 4,
+      "name": "Quipu_other_user_same_RUC_empty_list",
+      "result": "PASS"
+    },
+    {
+      "number": 5,
+      "name": "QuipuFac_lists_company_ticket_only",
+      "result": "PASS"
+    },
+    {
+      "number": 6,
+      "name": "own_detail_allowed",
+      "result": "PASS"
+    },
+    {
+      "number": 7,
+      "name": "Quipu_other_user_detail_denied",
+      "result": "PASS"
+    },
+    {
+      "number": 8,
+      "name": "QuipuFac_cannot_read_Quipu_ticket",
+      "result": "PASS"
+    },
+    {
+      "number": 9,
+      "name": "Quipu_cannot_read_QuipuFac_ticket",
+      "result": "PASS"
+    },
+    {
+      "number": 10,
+      "name": "foreign_attachment_reservation_denied",
+      "result": "PASS"
+    },
+    {
+      "number": 11,
+      "name": "unknown_session_denied",
+      "result": "PASS"
+    },
+    {
+      "number": 12,
+      "name": "expired_session_denied",
+      "result": "PASS"
+    },
+    {
+      "number": 13,
+      "name": "revoked_session_denied",
+      "result": "PASS"
+    },
+    {
+      "number": 14,
+      "name": "logout_does_not_revoke_other_identity",
+      "result": "PASS"
+    },
+    {
+      "number": 15,
+      "name": "anonymous_internal_ticket_denied",
+      "result": "PASS"
+    },
+    {
+      "number": 16,
+      "name": "authenticated_without_active_profile_denied",
+      "result": "PASS"
+    },
+    {
+      "number": 17,
+      "name": "unprofiled_account_management_denied",
+      "result": "PASS"
+    }
+  ],
+  "methodology": {
+    "database": "Real production PostgreSQL",
+    "contexts": [
+      "anon",
+      "authenticated"
+    ],
+    "synthetic_ruc": "00000000000",
+    "ruc_prechecked_absent": true,
+    "existing_QA_requests_used": 2,
+    "transaction": "BEGIN/ROLLBACK",
+    "real_provider_authentication": false,
+    "persisted_generated_data": false
+  },
+  "post_rollback_reported": {
+    "QA_tickets": 30,
+    "QA_requests": 35,
+    "pending_QA_requests": 5,
+    "real_tickets": 2,
+    "real_requests": 6,
+    "residual_synthetic_companies": 0,
+    "residual_synthetic_identities": 0,
+    "residual_QA_Auth_accounts": 0,
+    "preexisting_client_sessions": 27,
+    "preexisting_client_request_links": 5,
+    "migrations": 22,
+    "public_tables_with_RLS": 19,
+    "realtime_tables": [
+      "projects",
+      "project_flows",
+      "notifications",
+      "requests"
+    ]
+  },
+  "production": {
+    "commit": "406a46351411fdf845a73a811cb798b7964617b1",
+    "github_url": "https://github.com/Merc-18/ticketera_procont/commit/406a46351411fdf845a73a811cb798b7964617b1",
+    "vercel": "SUCCESS",
+    "site": "https://ticketera-procont.vercel.app"
+  },
+  "limitations": [
+    "Does not prove real Quipu/QuipuFac provider authentication",
+    "Does not prove UI under four active staff roles",
+    "Does not prove binary transfer using Ticketera attachment reservations",
+    "Does not prove E2E delivery of Postgres Realtime events"
+  ],
+  "not_reexecuted_for_closure": true
+}

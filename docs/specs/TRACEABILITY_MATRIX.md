@@ -1,5 +1,11 @@
 # Matriz completa de trazabilidad
 
+## Evidencia vigente añadida — 27/11/2026
+
+[Cierre técnico](../validation/technical-close-20261127/REPORT.md), base `406a463`, 22 migraciones. [17 casos externos PASS de ChatGPT](../validation/technical-close-20261127/chatgpt-production-validation.json): identidad Quipu/QuipuFac, aislamiento de listado/detalle/adjuntos, sesiones desconocidas/expiradas/revocadas, logout y rechazo de acceso interno sin perfil activo. SQL/RPC de producción con BEGIN/ROLLBACK; no ejecutados por Codex ni E2E.
+
+Esta adición acredita exclusivamente esos casos de backend. No convierte los pendientes UI, proveedor real, Storage binario mediante reservas ni eventos Realtime en CUMPLE/PASS. Las filas históricas conservan la clase de su evidencia; para el estado actual consultar PROJECT_STATUS y los límites del cierre.
+
 Revisión: **23/11/2026** · Código de referencia: **`2f9ab74aff3d612951596986490b5641a27f3932`** (tag `ticketera-production-20261123`, [release](../validation/production-release-20261123/REPORT.md)). Revisión anterior: 20/11/2026 sobre `c857a72`.
 
 Fuente oficial de requisitos: [PRODUCT_REQUIREMENTS.md](PRODUCT_REQUIREMENTS.md).

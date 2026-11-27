@@ -1,0 +1,218 @@
+[
+  {
+    "branch": "backup/main-pre-rewrite-07fb762",
+    "head": "07fb762fcc9cc0f7ea52e11491e5653e2d8a6fff",
+    "ancestor_of_github_main": false,
+    "patch_equivalent_commits": 48,
+    "unique_commits": 1,
+    "unique_commit_subjects": [
+      "c6e79f4 chore: preparar configuración y procedimiento de Supabase"
+    ]
+  },
+  {
+    "branch": "claude/client-login-throttle",
+    "head": "f3c22c8216aa27d5437ffd7a6bf328e6a52e384d",
+    "ancestor_of_github_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": 0,
+    "unique_commit_subjects": []
+  },
+  {
+    "branch": "claude/client-portal",
+    "head": "aeeaa12fe3b2a45596875850ecda25ef3f1f9e3d",
+    "ancestor_of_github_main": false,
+    "patch_equivalent_commits": 38,
+    "unique_commits": 1,
+    "unique_commit_subjects": [
+      "c6e79f4 chore: preparar configuración y procedimiento de Supabase"
+    ]
+  },
+  {
+    "branch": "claude/deploy-prep",
+    "head": "44cebebca91c0424762c3dd640c0a1f8ae4deaff",
+    "ancestor_of_github_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": 0,
+    "unique_commit_subjects": []
+  },
+  {
+    "branch": "claude/reports-ui",
+    "head": "42b5af7b7557c131f796bee82a1fcd819d7da477",
+    "ancestor_of_github_main": false,
+    "patch_equivalent_commits": 26,
+    "unique_commits": 1,
+    "unique_commit_subjects": [
+      "c6e79f4 chore: preparar configuración y procedimiento de Supabase"
+    ]
+  },
+  {
+    "branch": "codex/board-operations",
+    "head": "1ba71b2fe18add7fe287ffa14d489a7862cc8abb",
+    "ancestor_of_github_main": false,
+    "patch_equivalent_commits": 31,
+    "unique_commits": 1,
+    "unique_commit_subjects": [
+      "c6e79f4 chore: preparar configuración y procedimiento de Supabase"
+    ]
+  },
+  {
+    "branch": "codex/client-access-m13",
+    "head": "77fe5935588ad027e88bac50cf7563bbdfda1aab",
+    "ancestor_of_github_main": false,
+    "patch_equivalent_commits": 38,
+    "unique_commits": 1,
+    "unique_commit_subjects": [
+      "c6e79f4 chore: preparar configuración y procedimiento de Supabase"
+    ]
+  },
+  {
+    "branch": "codex/client-login-dev-contracts",
+    "head": "ae26716d78495e53d47be9d02ca7897f06bfc125",
+    "ancestor_of_github_main": false,
+    "patch_equivalent_commits": 45,
+    "unique_commits": 1,
+    "unique_commit_subjects": [
+      "c6e79f4 chore: preparar configuración y procedimiento de Supabase"
+    ]
+  },
+  {
+    "branch": "codex/ticket-security-guards",
+    "head": "a67764cab85d5bfb5e60e65ed57500b0adf773f9",
+    "ancestor_of_github_main": false,
+    "patch_equivalent_commits": 20,
+    "unique_commits": 1,
+    "unique_commit_subjects": [
+      "c6e79f4 chore: preparar configuración y procedimiento de Supabase"
+    ]
+  },
+  {
+    "branch": "feature/build-version",
+    "head": "354fbf49de85f13f6fe8b31a45cfbe7c829efc0e",
+    "ancestor_of_github_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": 0,
+    "unique_commit_subjects": []
+  },
+  {
+    "branch": "fix/client-login-no-dev-fallback",
+    "head": "c857a727c8e7640bbce8daada940f973acbf013e",
+    "ancestor_of_github_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": 0,
+    "unique_commit_subjects": []
+  },
+  {
+    "branch": "fix/ticketera-client-flow-ui",
+    "head": "e528bc77fb4b42609e1344056786e41083dd56cb",
+    "ancestor_of_github_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": 0,
+    "unique_commit_subjects": []
+  },
+  {
+    "branch": "integration/attachments-security",
+    "head": "c0ef20e0d7d31bd9b2f28eebcef2f6618aaed74d",
+    "ancestor_of_github_main": false,
+    "patch_equivalent_commits": 23,
+    "unique_commits": 1,
+    "unique_commit_subjects": [
+      "c6e79f4 chore: preparar configuración y procedimiento de Supabase"
+    ]
+  },
+  {
+    "branch": "integration/board-operations",
+    "head": "2858a02bbae8f3aabb12d0f342fb816c6939bc8c",
+    "ancestor_of_github_main": false,
+    "patch_equivalent_commits": 32,
+    "unique_commits": 1,
+    "unique_commit_subjects": [
+      "c6e79f4 chore: preparar configuración y procedimiento de Supabase"
+    ]
+  },
+  {
+    "branch": "integration/business-metrics",
+    "head": "94bd8fd17972d0e7a96137f7a3a7d72c8b4cb445",
+    "ancestor_of_github_main": false,
+    "patch_equivalent_commits": 30,
+    "unique_commits": 1,
+    "unique_commit_subjects": [
+      "c6e79f4 chore: preparar configuración y procedimiento de Supabase"
+    ]
+  },
+  {
+    "branch": "integration/client-login-local",
+    "head": "07fb762fcc9cc0f7ea52e11491e5653e2d8a6fff",
+    "ancestor_of_github_main": false,
+    "patch_equivalent_commits": 48,
+    "unique_commits": 1,
+    "unique_commit_subjects": [
+      "c6e79f4 chore: preparar configuración y procedimiento de Supabase"
+    ]
+  },
+  {
+    "branch": "integration/client-portal",
+    "head": "19a10a8c2c07d1df3658e1482f2043842bbd18dd",
+    "ancestor_of_github_main": false,
+    "patch_equivalent_commits": 40,
+    "unique_commits": 1,
+    "unique_commit_subjects": [
+      "c6e79f4 chore: preparar configuración y procedimiento de Supabase"
+    ]
+  },
+  {
+    "branch": "local/boards-dashboard-checklists-20261124",
+    "head": "2382b36a2b1cdc65b29609dea973b06c3f2ff20f",
+    "ancestor_of_github_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": 0,
+    "unique_commit_subjects": []
+  },
+  {
+    "branch": "local/dashboard-team-portfolio-progress-20261124",
+    "head": "16064c5c096f3b69943a81a0d1c64fef5ae8e5f0",
+    "ancestor_of_github_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": 0,
+    "unique_commit_subjects": []
+  },
+  {
+    "branch": "local/kanban-attachments-20261124",
+    "head": "485e449154a17413a4a3f6a97649a1d97243dc51",
+    "ancestor_of_github_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": 0,
+    "unique_commit_subjects": []
+  },
+  {
+    "branch": "local/portfolio-checklists-cards-20261124",
+    "head": "16064c5c096f3b69943a81a0d1c64fef5ae8e5f0",
+    "ancestor_of_github_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": 0,
+    "unique_commit_subjects": []
+  },
+  {
+    "branch": "local/qa-integral-claude-20261125",
+    "head": "58725e058c55876906e8c0f8fb35295c9024fdc9",
+    "ancestor_of_github_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": 0,
+    "unique_commit_subjects": []
+  },
+  {
+    "branch": "main",
+    "head": "16064c5c096f3b69943a81a0d1c64fef5ae8e5f0",
+    "ancestor_of_github_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": 0,
+    "unique_commit_subjects": []
+  },
+  {
+    "branch": "rewrite/main-89df400",
+    "head": "89df40004bfe10cc94633382358e675d4fa12dbb",
+    "ancestor_of_github_main": true,
+    "patch_equivalent_commits": 0,
+    "unique_commits": 0,
+    "unique_commit_subjects": []
+  }
+]

@@ -1,5 +1,13 @@
 # Base de datos y migraciones M1–M17 (M17 local; remoto no verificado)
 
+## Inventario vigente — 27/11/2026
+
+**22/22 migraciones**: los 22 archivos de `main@406a463` coinciden en versión/nombre con Supabase MCP `list_migrations` del proyecto `xsxdpaiivklqeudgqoqf`. [Manifiesto](../validation/technical-close-20261127/supabase-migrations.json).
+
+La última, `20261126231933_realtime_requests_postgres_changes`, agrega `public.requests` a la publicación existente de Realtime. No se aplicó ni modificó SQL en este cierre. El resto de los cortes 15/15, 17/17, 18/18, 19/19 y 21/21 del documento son antecedentes con fecha.
+
+RLS habilitado en **19 tablas públicas** y Realtime en `projects`, `project_flows`, `notifications`, `requests`: comprobación externa posterior al ROLLBACK de ChatGPT, no nueva inspección SQL de Codex. Las 17 pruebas de backend no acreditan una transferencia Storage ni recepción E2E de eventos. [Procedencia y límites](../validation/technical-close-20261127/chatgpt-production-validation.json).
+
 Revisión: **23/11/2026** · Código de referencia: **`2f9ab74aff3d612951596986490b5641a27f3932`** (tag `ticketera-production-20261123`, [release](../validation/production-release-20261123/REPORT.md)). Revisión anterior: 20/11/2026 sobre `c857a72`.
 
 Fuente oficial de requisitos: [PRODUCT_REQUIREMENTS.md](PRODUCT_REQUIREMENTS.md).

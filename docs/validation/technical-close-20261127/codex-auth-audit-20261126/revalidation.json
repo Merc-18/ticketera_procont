@@ -1,0 +1,13 @@
+{
+  "checked_at": "2026-11-26T23:13:59.645Z",
+  "operations": "read-only revalidation; no new QA accounts or resources created",
+  "service_auth_admin_http": 200,
+  "service_storage_http": 200,
+  "service_application_profiles_http": 403,
+  "service_application_profiles_code": "42501",
+  "remaining_accounts_from_previous_QA_run": 0,
+  "temporary_bucket_absent": true,
+  "temporary_object_absent": true,
+  "role_tests": "BLOCKED: official application provisioning requires an authorized application administrator; service_role cannot read or insert application profiles",
+  "secrets_exposed": false
+}

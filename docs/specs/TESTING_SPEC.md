@@ -1,5 +1,16 @@
 # Pruebas, evidencias y reproducción segura
 
+## Corte vigente — cierre del 27/11/2026
+
+Referencia `406a463`; 22 migraciones confirmadas por consulta de historial, sin aplicar SQL. [Informe](../validation/technical-close-20261127/REPORT.md).
+
+- **ChatGPT externo: 17 PASS / 0 FAIL**, producción PostgreSQL real, contextos SQL anon/authenticated, identidades sintéticas y BEGIN/ROLLBACK. [Lista exacta y procedencia](../validation/technical-close-20261127/chatgpt-production-validation.json). No ejecutado por Codex, no login externo ni E2E.
+- **Auditoría Codex del 26/11:** Auth real, round trip binario de bucket aislado y broadcast Realtime. No autoriza a dar por aprobados perfiles de aplicación, Storage con reservas ni eventos PostgreSQL.
+- **Pendientes:** proveedores reales, UI de cuatro roles, M20 desde UI alojada, binarios con reservas y entrega E2E de eventos. Los seis SKIP siguen SKIP.
+- No se repitieron suites aprobadas. En el cierre solo se comprobaron procedencia, Git, archivos, JSON, enlaces y hashes.
+
+Todo resultado fechado anterior que sigue es **histórico**, con su clase y alcance originales. No sumar sus conteos a los 17 casos externos ni usar los cortes 17/17 o 21/21 como historial actual.
+
 Revisión: **23/11/2026** · Código de referencia: **`2f9ab74aff3d612951596986490b5641a27f3932`** (tag `ticketera-production-20261123`, [release](../validation/production-release-20261123/REPORT.md)). Revisión anterior: 20/11/2026 sobre `c857a72`.
 
 Fuente oficial de requisitos: [PRODUCT_REQUIREMENTS.md](PRODUCT_REQUIREMENTS.md).

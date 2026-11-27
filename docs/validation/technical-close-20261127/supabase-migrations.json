@@ -1,0 +1,96 @@
+{
+  "project_id": "xsxdpaiivklqeudgqoqf",
+  "confirmed_on": "2026-11-27",
+  "source": "Supabase MCP list_migrations, read-only during technical closure",
+  "count": 22,
+  "migrations": [
+    {
+      "version": "20261117000100",
+      "name": "schema"
+    },
+    {
+      "version": "20261117000200",
+      "name": "security"
+    },
+    {
+      "version": "20261117000300",
+      "name": "operations"
+    },
+    {
+      "version": "20261117000400",
+      "name": "reference_checklists"
+    },
+    {
+      "version": "20261118000100",
+      "name": "account_administration"
+    },
+    {
+      "version": "20261118000200",
+      "name": "areas"
+    },
+    {
+      "version": "20261118000300",
+      "name": "ticket_catalogs"
+    },
+    {
+      "version": "20261118000400",
+      "name": "request_intake"
+    },
+    {
+      "version": "20261118000500",
+      "name": "ticket_security"
+    },
+    {
+      "version": "20261118000600",
+      "name": "request_tracking"
+    },
+    {
+      "version": "20261118000700",
+      "name": "business_metrics"
+    },
+    {
+      "version": "20261118000800",
+      "name": "board_operations"
+    },
+    {
+      "version": "20261119000100",
+      "name": "client_access"
+    },
+    {
+      "version": "20261119000200",
+      "name": "client_login_throttle"
+    },
+    {
+      "version": "20261119000300",
+      "name": "security_request_creation"
+    },
+    {
+      "version": "20261123000100",
+      "name": "client_request_data_security"
+    },
+    {
+      "version": "20261123000200",
+      "name": "client_legacy_payload_compat"
+    },
+    {
+      "version": "20261123000300",
+      "name": "internal_area_scope_and_card_preferences"
+    },
+    {
+      "version": "20261124000100",
+      "name": "limit_card_colors_and_seed_missing_checklists"
+    },
+    {
+      "version": "20261124000200",
+      "name": "suggested_checklists_portfolios_internal_tickets"
+    },
+    {
+      "version": "20261124000300",
+      "name": "approve_request_with_portfolio"
+    },
+    {
+      "version": "20261126231933",
+      "name": "realtime_requests_postgres_changes"
+    }
+  ]
+}
