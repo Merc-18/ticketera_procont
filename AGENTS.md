@@ -2,14 +2,14 @@
 
 ## Estado de referencia al 27/11/2026
 
-- GitHub `main`: `406a46351411fdf845a73a811cb798b7964617b1`; Vercel SUCCESS confirmado mediante el estado del commit.
+- Base funcional de GitHub: `406a46351411fdf845a73a811cb798b7964617b1`; Vercel SUCCESS confirmado para ese corte. main incorpora después el cierre documental `94b2329` y la recuperación de CLAUDE.md. Consultar la [nota de publicación](docs/validation/technical-close-20261127/PUBLICATION.md) para procedencia y límites.
 - Único Supabase autorizado: `xsxdpaiivklqeudgqoqf`; **22 migraciones** confirmadas por `list_migrations`, incluida `20261126231933_realtime_requests_postgres_changes`.
 - Leer [PROJECT_STATUS](docs/PROJECT_STATUS.md) y el [cierre técnico](docs/validation/technical-close-20261127/REPORT.md). Los requisitos funcionales se mantienen en [PRODUCT_REQUIREMENTS](docs/specs/PRODUCT_REQUIREMENTS.md).
 - Las fechas y resultados antiguos son históricos. Los 17 PASS de ChatGPT son evidencia externa de SQL/RPC en producción con identidades sintéticas y BEGIN/ROLLBACK; no son ejecuciones de Codex ni pruebas E2E.
 
 ## Alcance y conservación
 
-- El cierre autorizado es documental: no repetir pruebas aprobadas, añadir funcionalidades, aplicar migraciones, desplegar, cambiar permisos/secretos ni escribir en producción.
+- El cierre autorizado es documental: no repetir pruebas, añadir funcionalidades, aplicar migraciones, cambiar permisos/secretos ni escribir datos en producción. El usuario autorizó expresamente el push normal de este cierre a main y el despliegue automático Vercel resultante.
 - Conservar datos ficticios, solicitudes/tickets QA y registros reales. No ejecutar seeds, bootstrap, purgas ni SQL histórico como instalación general.
 - No exponer claves de servicio, contraseñas, JWT, cookies ni URLs firmadas. Nunca configurar service_role en VITE_*.
 - Registrar bloqueos y SKIP como pendientes. No sustituir proveedores, Auth, Storage o Realtime alojados por mocks para declarar PASS.
@@ -25,5 +25,5 @@
 - Comprobar branch, upstream, diff y trabajo preexistente antes de editar. No descartar cambios ajenos ni integrar ramas históricas por su nombre.
 - En esta sesión `.git` del checkout original es de solo lectura. La copia independiente de cierre contiene `main` actualizado y los commits documentales; esto no actualiza los metadatos de la carpeta original.
 - Los cambios preexistentes del worktree dashboard-team-portfolio-progress están preservados en el commit local de archivo `0f353decf35b03d310df7900e2906620be8b17f4` y bundle de recuperación. Ese archivo no es una rama funcional que deba mezclarse con main.
-- Un push a main puede activar Vercel. Este cierre no autoriza ese despliegue; entregar commits locales y evidencia de la diferencia con GitHub.
+- Publicar únicamente documentación en main y verificar GitHub/Vercel para el SHA final. Esta autorización de despliegue no autoriza cambios de código funcional, Supabase o datos. Dictamen final: **APROBADO CON OBSERVACIONES**.
 - Respetar CLAUDE.md: no añadir Co-Authored-By a commits. Mantener lockfile; ejecutar comprobaciones proporcionales. Para documentación, revisar diff, enlaces, JSON y hashes; no reejecutar suites aprobadas.

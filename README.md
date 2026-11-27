@@ -2,7 +2,7 @@
 
 Mesa de solicitudes de Procont Business: recepción autenticada de clientes Quipu/QuipuFac, validación interna, trabajo Development de ocho fases, historial, evidencias y métricas basadas en eventos.
 
-Revisión: **27/11/2026** · Referencia GitHub/producción: **`406a46351411fdf845a73a811cb798b7964617b1`** · **22 migraciones** confirmadas · Vercel **SUCCESS** para ese commit.
+Revisión: **27/11/2026** · Base funcional: **`406a46351411fdf845a73a811cb798b7964617b1`** · **22 migraciones** confirmadas · Vercel **SUCCESS** para ese commit.
 
 La **única fuente oficial de requisitos funcionales aprobados** es [PRODUCT_REQUIREMENTS.md](docs/specs/PRODUCT_REQUIREMENTS.md). Comenzar por [PROJECT_STATUS](docs/PROJECT_STATUS.md) y el [cierre técnico](docs/validation/technical-close-20261127/REPORT.md). Se incorporaron **17 PASS externos de ChatGPT** de SQL/RPC en producción con BEGIN/ROLLBACK; no son pruebas E2E ni ejecuciones de Codex. Permanecen pendientes proveedores reales, UI con roles activos, binarios mediante reservas y recepción E2E de eventos Realtime.
 
@@ -57,6 +57,6 @@ M15 revoca creación antigua, conserva M13 por llamada interna y exige perfil ac
 
 El historial de Supabase al 27/11/2026 contiene **22 migraciones**, incluida `20261126231933_realtime_requests_postgres_changes`. [Manifiesto contrastado](docs/validation/technical-close-20261127/supabase-migrations.json). La configuración RLS/Realtime reportada por ChatGPT se distingue de pruebas de entrega de eventos.
 
-El cierre conserva los datos ficticios y reales existentes. No reejecuta pruebas aprobadas ni modifica producción. Los commits de documentación quedan locales en la copia independiente de cierre; `.git` del checkout original está montado como solo lectura. [Estado y límites de Git](docs/validation/technical-close-20261127/REPORT.md#git-ramas-y-material-local).
+El cierre conserva los datos ficticios y reales existentes. No reejecuta pruebas aprobadas ni modifica producción. El cierre documental se publica desde la copia independiente mediante push normal a main, con despliegue automático Vercel expresamente autorizado. Dictamen: **APROBADO CON OBSERVACIONES**. `.git` del checkout original sigue montado como solo lectura; esa carpeta y sus archivos se conservan sin forzar sincronización. [Estado y límites de Git](docs/validation/technical-close-20261127/REPORT.md#git-ramas-y-material-local).
 
 Antecedente del README anterior conservado en [docs/history](docs/history/README-before-specs-20261120.md), con sus fechas y contexto. No usar informes de preparación como estado actual.

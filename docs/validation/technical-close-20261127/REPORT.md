@@ -2,12 +2,12 @@
 
 Referencia de código: **406a46351411fdf845a73a811cb798b7964617b1**. Proyecto Supabase: **xsxdpaiivklqeudgqoqf**. Sitio: https://ticketera-procont.vercel.app.
 
-El estado de código y base queda documentado, con **22 migraciones confirmadas** y **17 validaciones adicionales PASS externas de ChatGPT**. No se ejecutaron nuevas pruebas de producto ni escrituras en producción. El cierre del checkout original no puede declararse completo: su `.git` es de solo lectura y conserva material local anterior. Se entregan commits y una copia independiente limpia, además del archivo recuperable de ese material.
+El estado de código y base queda documentado, con **22 migraciones confirmadas** y **17 validaciones adicionales PASS externas de ChatGPT**. No se ejecutaron nuevas pruebas de producto ni escrituras de datos en producción. **Dictamen final: APROBADO CON OBSERVACIONES.** Se autoriza expresamente el push documental y su despliegue automático Vercel. El checkout original conserva una observación de permisos: su `.git` es de solo lectura y conserva material local anterior. Se entregan commits y una copia independiente limpia, además del archivo recuperable de ese material.
 
 ## Referencia y comprobaciones de este cierre
 
-- GitHub `main` confirmado en `406a463`; su padre es `b69afbd81059108302000966ab82d3149b0797a4` (refresh/filtros de catálogo).
-- Check GitHub Vercel **success**, [deployment](https://vercel.com/merc-18s-projects/ticketera-procont/EncbzJ62P6ZyWXLkN5wjMJQtBQuv). No se volvió a desplegar ni se afirmó de nuevo el SHA/versión servido por navegación.
+- Base funcional de GitHub `main` antes de la publicación documental: `406a463`; su padre es `b69afbd81059108302000966ab82d3149b0797a4` (refresh/filtros de catálogo).
+- Check GitHub Vercel **success**, [deployment](https://vercel.com/merc-18s-projects/ticketera-procont/EncbzJ62P6ZyWXLkN5wjMJQtBQuv). Este estado corresponde a la base funcional anterior. La publicación documental y su despliegue automático se autorizan en la continuación; el SHA final y el check se comprueban al finalizar, sin volver a ejecutar pruebas de navegación.
 - Supabase MCP `list_migrations` devuelve **22 filas**. Se contrastaron versión/nombre con los 22 archivos de la referencia Git. [Manifiesto](supabase-migrations.json). La última es `20261126231933_realtime_requests_postgres_changes`; este cierre no la aplicó.
 - Únicas comprobaciones nuevas: historial de migraciones de solo lectura; metadatos GitHub; integridad/procedencia de documentación; inventario de ramas/worktrees; igualdad de datos ficticios locales. Sin SQL de negocio, Auth Admin, Storage, Edge Functions, cambios de secretos o permisos.
 
@@ -81,14 +81,18 @@ El inventario encontró cambios sin commit en `.agent-workspaces/dashboard-team-
 
 De las 26 variantes, las 16 que comprenden código, pruebas y datos coinciden byte por byte con versiones del historial de main; las diez restantes son documentos históricos conservados en el archivo. [Comparación por blobs](snapshot-history-review.json). No se identificó funcionalidad nueva necesaria por integrar.
 
-La copia de cierre registra únicamente documentación y estado; no cambia código funcional, migraciones ni fixtures respecto de `406a463`. Su main contiene el commit documental local y queda limpio. El dataset `tests/ui/qa-dataset.json` de main se conserva byte por byte; la variante histórica también queda recuperable en el archivo.
+La copia de cierre registra únicamente documentación y estado; no cambia código funcional, migraciones ni fixtures respecto de `406a463`. Su main integra `94b2329` y la actualización selectiva de CLAUDE.md para publicación. No se fusionan la rama antigua ni el archivo histórico. El dataset `tests/ui/qa-dataset.json` de main se conserva byte por byte; la variante histórica también queda recuperable en el archivo.
 
-**Límites administrativos pendientes:** el checkout original y el worktree histórico mantienen su estado físico protegido; los untracked de dependencias, respaldos y capturas se conservaron. No se afirma que todas las carpetas originales estén limpias. El commit documental queda **local**, sin push a main, para evitar activar un despliegue automático Vercel que esta instrucción prohíbe. GitHub permanece en `406a463`.
+**Observación administrativa conservada:** el checkout original y el worktree histórico mantienen su estado físico protegido; los untracked de dependencias, respaldos y capturas se conservaron. No se afirma que todas las carpetas originales estén limpias. La restricción inicial de publicación quedó superada por la autorización expresa del usuario: publicar exclusivamente el cierre documental mediante push normal a main y verificar el despliegue automático Vercel. La limitación de permisos original no impide publicar desde la copia independiente y no se intenta forzar su sincronización.
 
 Inventarios: [ramas completas](all-branches-review.json), [workspaces](workspaces-inventory.json), [material no registrado](uncommitted-material-review.json), [preparación histórica](historical-preparation-review.json). Los inventarios describen el estado previo al archivo, no una limpieza de los directorios originales.
 
 ## Entrega y comprobaciones documentales
 
-Se actualizaron AGENTS.md, README, PROJECT_STATUS y las cabeceras de TESTING_SPEC, DATABASE_SPEC y TRACEABILITY_MATRIX. Los cortes históricos se conservan identificados; el registro externo contiene los 17 nombres exactos y su metodología. No se ejecutaron las suites aprobadas.
+Se recuperó únicamente la actualización de CLAUDE.md de Claude, sin fusionar `integration/board-operations`; se reconciliaron sus cortes históricos con el estado vigente. Se actualizaron AGENTS.md, README, PROJECT_STATUS y las cabeceras de TESTING_SPEC, DATABASE_SPEC y TRACEABILITY_MATRIX. Los cortes históricos se conservan identificados; el registro externo contiene los 17 nombres exactos y su metodología. No se ejecutaron las suites aprobadas.
 
 El manifiesto `SHA256SUMS` cubre la evidencia de este directorio. La verificación de cierre comprueba solo JSON, enlaces nuevos, correspondencia de 22 migraciones, árbol funcional idéntico a `406a463`, dataset intacto y Git limpio en la copia independiente. Los SHA finales de commits, bundle y evidencia de estado se entregan en el recibo local `CLOSURE_RECEIPT.json`, fuera del commit para evitar referencias circulares.
+
+## Publicación final autorizada
+
+**APROBADO CON OBSERVACIONES.** Se conservan todas las validaciones pendientes y la limitación de permisos de la carpeta original. [Nota de publicación y procedencia selectiva de CLAUDE.md](PUBLICATION.md). La verificación GitHub/Vercel se realiza sobre el SHA final, sin nuevos tests y sin modificar código funcional, Supabase ni datos.

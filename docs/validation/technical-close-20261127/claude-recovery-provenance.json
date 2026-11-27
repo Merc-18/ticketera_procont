@@ -1,0 +1,18 @@
+{
+  "source": "Uncommitted CLAUDE.md update by Claude in the original integration/board-operations checkout, selected explicitly by user",
+  "source_checkout": "/home/procont/projects/ticketera-procont",
+  "source_branch": "integration/board-operations",
+  "source_sha256": "c53557539a57393723693310b9b0742ce120ee44fb812e3cbc8eadbd1594e862",
+  "recovered_path_only": "CLAUDE.md",
+  "source_branch_merged": false,
+  "archive_0f353de_merged": false,
+  "integration": "Recovered review observations and reconciled superseded documentation against 94b2329 and the 17 external ChatGPT SQL PASS cases",
+  "verdict": "APROBADO CON OBSERVACIONES",
+  "push_normal_main_authorized": true,
+  "automatic_vercel_deployment_authorized": true,
+  "product_tests_reexecuted": false,
+  "functional_code_modified": false,
+  "supabase_modified": false,
+  "data_modified": false,
+  "original_checkout_forced_or_files_removed": false
+}
