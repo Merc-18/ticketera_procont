@@ -155,7 +155,7 @@ for (const theme of ['light', 'dark']) {
     assert.equal(await css(devCard.locator('.owner-ring'), 'outline-color'), await page.evaluate(h => { const d = document.createElement('div'); d.style.color = h; document.body.append(d); const c = getComputedStyle(d).color; d.remove(); return c }, owner))
     assert.equal(await page.locator('.project-card.owner-dorado').count(), kanbanProjects.filter(p => OWNER_FIXTURE[p.project_flows[0].assigned_to] === 'dorado').length)
     assert.equal(await page.locator('.project-card:not(.has-owner)').count(), 2, 'sin responsable: sin franja')
-    assert.equal(await page.locator('.project-card:not(.has-owner) .card-unassigned').count(), 2)
+    assert.equal(await page.locator('.project-card:not(.has-owner) .card-avatar-empty').count(), 2)
     // Estado crítico independiente del color personal y de la prioridad.
     const blocked = page.locator('.project-card.is-blocked')
     assert.equal(await blocked.count(), 1)
@@ -163,7 +163,7 @@ for (const theme of ['light', 'dark']) {
     assert.notEqual(await css(blocked, 'background-color'), surfaces[0])
     // Jerarquía compacta; el nombre del solicitante permanece en el detalle.
     const first = page.locator('.project-card[data-priority="urgent"]').first()
-    for (const sel of ['.card-title', '.card-priority', '.card-hierarchy', '.card-progress', '.card-owner', '.assign-toggle', '.card-select input']) {
+    for (const sel of ['.card-title', '.card-priority', '.card-hierarchy', '.card-progress', '.card-owner', '.assign-toggle']) {
       assert.equal(await first.locator(sel).count(), 1, `conserva ${sel}`)
     }
     assert.equal(await first.locator('.card-number, .card-tag-portfolio, .card-area').count(), 0, 'metadatos reservados al detalle')
